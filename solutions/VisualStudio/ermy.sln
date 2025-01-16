@@ -1,0 +1,79 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35209.166
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ermy", "ermy.vcxproj", "{B3BE6AF8-E1FB-4B76-BF40-B04C4531C6AA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testbed_xr", "testbed_xr.vcxproj", "{CB61BCDE-E524-4124-9049-E02DC89C0F03}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "editor", "editor.vcxproj", "{1B12F158-78BB-456D-A297-492B1419A09F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testbed", "testbed.vcxproj", "{584374E0-59D1-4033-A960-3A28A0B1EEA3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Android-arm64-v8a = Debug|Android-arm64-v8a
+		Debug|x64 = Debug|x64
+		Dev|Android-arm64-v8a = Dev|Android-arm64-v8a
+		Dev|x64 = Dev|x64
+		Retail|Android-arm64-v8a = Retail|Android-arm64-v8a
+		Retail|x64 = Retail|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B3BE6AF8-E1FB-4B76-BF40-B04C4531C6AA}.Debug|Android-arm64-v8a.ActiveCfg = Debug|Android-arm64-v8a
+		{B3BE6AF8-E1FB-4B76-BF40-B04C4531C6AA}.Debug|Android-arm64-v8a.Build.0 = Debug|Android-arm64-v8a
+		{B3BE6AF8-E1FB-4B76-BF40-B04C4531C6AA}.Debug|x64.ActiveCfg = Debug|x64
+		{B3BE6AF8-E1FB-4B76-BF40-B04C4531C6AA}.Debug|x64.Build.0 = Debug|x64
+		{B3BE6AF8-E1FB-4B76-BF40-B04C4531C6AA}.Dev|Android-arm64-v8a.ActiveCfg = Dev|Android-arm64-v8a
+		{B3BE6AF8-E1FB-4B76-BF40-B04C4531C6AA}.Dev|Android-arm64-v8a.Build.0 = Dev|Android-arm64-v8a
+		{B3BE6AF8-E1FB-4B76-BF40-B04C4531C6AA}.Dev|x64.ActiveCfg = Dev|x64
+		{B3BE6AF8-E1FB-4B76-BF40-B04C4531C6AA}.Dev|x64.Build.0 = Dev|x64
+		{B3BE6AF8-E1FB-4B76-BF40-B04C4531C6AA}.Retail|Android-arm64-v8a.ActiveCfg = Retail|Android-arm64-v8a
+		{B3BE6AF8-E1FB-4B76-BF40-B04C4531C6AA}.Retail|Android-arm64-v8a.Build.0 = Retail|Android-arm64-v8a
+		{B3BE6AF8-E1FB-4B76-BF40-B04C4531C6AA}.Retail|x64.ActiveCfg = Retail|x64
+		{B3BE6AF8-E1FB-4B76-BF40-B04C4531C6AA}.Retail|x64.Build.0 = Retail|x64
+		{CB61BCDE-E524-4124-9049-E02DC89C0F03}.Debug|Android-arm64-v8a.ActiveCfg = Debug|Android-arm64-v8a
+		{CB61BCDE-E524-4124-9049-E02DC89C0F03}.Debug|Android-arm64-v8a.Build.0 = Debug|Android-arm64-v8a
+		{CB61BCDE-E524-4124-9049-E02DC89C0F03}.Debug|x64.ActiveCfg = Debug|x64
+		{CB61BCDE-E524-4124-9049-E02DC89C0F03}.Debug|x64.Build.0 = Debug|x64
+		{CB61BCDE-E524-4124-9049-E02DC89C0F03}.Dev|Android-arm64-v8a.ActiveCfg = Dev|Android-arm64-v8a
+		{CB61BCDE-E524-4124-9049-E02DC89C0F03}.Dev|Android-arm64-v8a.Build.0 = Dev|Android-arm64-v8a
+		{CB61BCDE-E524-4124-9049-E02DC89C0F03}.Dev|x64.ActiveCfg = Dev|x64
+		{CB61BCDE-E524-4124-9049-E02DC89C0F03}.Dev|x64.Build.0 = Dev|x64
+		{CB61BCDE-E524-4124-9049-E02DC89C0F03}.Retail|Android-arm64-v8a.ActiveCfg = Retail|Android-arm64-v8a
+		{CB61BCDE-E524-4124-9049-E02DC89C0F03}.Retail|Android-arm64-v8a.Build.0 = Retail|Android-arm64-v8a
+		{CB61BCDE-E524-4124-9049-E02DC89C0F03}.Retail|x64.ActiveCfg = Retail|x64
+		{CB61BCDE-E524-4124-9049-E02DC89C0F03}.Retail|x64.Build.0 = Retail|x64
+		{1B12F158-78BB-456D-A297-492B1419A09F}.Debug|Android-arm64-v8a.ActiveCfg = Debug|Android-arm64-v8a
+		{1B12F158-78BB-456D-A297-492B1419A09F}.Debug|Android-arm64-v8a.Build.0 = Debug|Android-arm64-v8a
+		{1B12F158-78BB-456D-A297-492B1419A09F}.Debug|x64.ActiveCfg = Debug|x64
+		{1B12F158-78BB-456D-A297-492B1419A09F}.Debug|x64.Build.0 = Debug|x64
+		{1B12F158-78BB-456D-A297-492B1419A09F}.Dev|Android-arm64-v8a.ActiveCfg = Dev|Android-arm64-v8a
+		{1B12F158-78BB-456D-A297-492B1419A09F}.Dev|Android-arm64-v8a.Build.0 = Dev|Android-arm64-v8a
+		{1B12F158-78BB-456D-A297-492B1419A09F}.Dev|x64.ActiveCfg = Dev|x64
+		{1B12F158-78BB-456D-A297-492B1419A09F}.Dev|x64.Build.0 = Dev|x64
+		{1B12F158-78BB-456D-A297-492B1419A09F}.Retail|Android-arm64-v8a.ActiveCfg = Retail|Android-arm64-v8a
+		{1B12F158-78BB-456D-A297-492B1419A09F}.Retail|Android-arm64-v8a.Build.0 = Retail|Android-arm64-v8a
+		{1B12F158-78BB-456D-A297-492B1419A09F}.Retail|x64.ActiveCfg = Retail|x64
+		{1B12F158-78BB-456D-A297-492B1419A09F}.Retail|x64.Build.0 = Retail|x64
+		{584374E0-59D1-4033-A960-3A28A0B1EEA3}.Debug|Android-arm64-v8a.ActiveCfg = Debug|Android-arm64-v8a
+		{584374E0-59D1-4033-A960-3A28A0B1EEA3}.Debug|Android-arm64-v8a.Build.0 = Debug|Android-arm64-v8a
+		{584374E0-59D1-4033-A960-3A28A0B1EEA3}.Debug|x64.ActiveCfg = Debug|x64
+		{584374E0-59D1-4033-A960-3A28A0B1EEA3}.Debug|x64.Build.0 = Debug|x64
+		{584374E0-59D1-4033-A960-3A28A0B1EEA3}.Dev|Android-arm64-v8a.ActiveCfg = Dev|Android-arm64-v8a
+		{584374E0-59D1-4033-A960-3A28A0B1EEA3}.Dev|Android-arm64-v8a.Build.0 = Dev|Android-arm64-v8a
+		{584374E0-59D1-4033-A960-3A28A0B1EEA3}.Dev|x64.ActiveCfg = Dev|x64
+		{584374E0-59D1-4033-A960-3A28A0B1EEA3}.Dev|x64.Build.0 = Dev|x64
+		{584374E0-59D1-4033-A960-3A28A0B1EEA3}.Retail|Android-arm64-v8a.ActiveCfg = Retail|Android-arm64-v8a
+		{584374E0-59D1-4033-A960-3A28A0B1EEA3}.Retail|Android-arm64-v8a.Build.0 = Retail|Android-arm64-v8a
+		{584374E0-59D1-4033-A960-3A28A0B1EEA3}.Retail|x64.ActiveCfg = Retail|x64
+		{584374E0-59D1-4033-A960-3A28A0B1EEA3}.Retail|x64.Build.0 = Retail|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BE8956C6-B384-44A9-B445-E931AE804A7E}
+	EndGlobalSection
+EndGlobal

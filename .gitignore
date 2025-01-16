@@ -31,3 +31,8 @@
 *.out
 *.app
 build
+solutions/VisualStudio/.vs
+solutions/VisualStudio/Debug
+solutions/VisualStudio/x64
+solutions/VisualStudio/Retail
+solutions/VisualStudio/Dev

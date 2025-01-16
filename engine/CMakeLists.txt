@@ -10,6 +10,7 @@ target_include_directories(engine
 target_sources(engine
     PRIVATE
     src/ermy.cpp
+    src/static_constraints.cpp
         # Add source files here as they are created
 )
 

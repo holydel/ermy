@@ -1,5 +1,38 @@
 #pragma once
 
-#ifdef _WIN32
-#define ERMY_WINDOWS
-#endif
+#define ERMY_OS_WINDOWS
+//#define ERMY_OS_LINUX
+//#define ERMY_OS_MACOS
+//#define ERMY_OS_ANDROID
+//#define ERMY_OS_EMSCRIPTEN
+
+#define ERMY_PLATFORM_NONE
+//#define ERMY_PLATFORM_STEAM
+//#define ERMY_PLATFORM_GOOGLEPLAY
+//#define ERMY_PLATFORM_APPLESTORE
+//#define ERMY_PLATFORM_HORIZON
+//#define ERMY_PLATFORM_WEB
+
+#define EMRY_GAPI_VULKAN
+//#define EMRY_GAPI_D3D12
+//#define EMRY_GAPI_METAL
+//#define EMRY_GAPI_WEBGPU
+
+#define ERMY_DEVICE_PC
+//#define ERMY_DEVICE_HEADSET
+//#define ERMY_DEVICE_MOBILE
+//#define ERMY_DEVICE_HANDHELD
+
+#define ERMY_SOUND_NONE
+//#define ERMY_SOUND_MINIAUDIO
+//#define ERMY_SOUND_FMOD
+//#define ERMY_SOUND_WWISE
+
+#define ERMY_PHYSICS_NONE
+//#define ERMY_PHYSICS_BULLET
+//#define ERMY_PHYSICS_PHYSX
+
+#define ERMY_XR_NONE
+//#define ERMY_XR_OPENXR
+//#define ERMY_XR_WEBXR
+//#define ERMY_XR_APPLE_REALITY_KIT

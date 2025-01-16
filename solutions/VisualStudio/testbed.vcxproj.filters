@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\testbed\testbed.cpp" />
+    <ClCompile Include="AndroidPackaging\app\src\main\cpp\JniBindings.cpp">
+      <Filter>AndroidPackaging\app\src\main\cpp</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="AndroidPackaging">
+      <UniqueIdentifier>{b4602a1c-081c-4e10-89c5-db3beadb693a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AndroidPackaging\gradle">
+      <UniqueIdentifier>{97162611-6054-4a41-8093-2080fcc67dd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AndroidPackaging\gradle\wrapper">
+      <UniqueIdentifier>{3f486676-3bf8-49ed-bb2b-9402ba309c71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AndroidPackaging\app">
+      <UniqueIdentifier>{3a0cfe97-e8ae-4cca-a899-bb06e78900b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AndroidPackaging\app\src">
+      <UniqueIdentifier>{86608c87-ebd7-499e-bb97-03cfabf72c08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AndroidPackaging\app\src\main">
+      <UniqueIdentifier>{1e329e9c-8a53-4f42-afdd-d047ec9b373d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AndroidPackaging\app\src\main\cpp">
+      <UniqueIdentifier>{82cd8ece-77b3-4249-89d7-50fc1a4f1d51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AndroidPackaging\app\src\main\java">
+      <UniqueIdentifier>{c14fb53d-d4bd-4f9f-9a11-dc0dd8e58aa2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AndroidPackaging\app\src\main\java\com">
+      <UniqueIdentifier>{5dd91a84-28a3-4b0b-b79d-69b7a578ee7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AndroidPackaging\app\src\main\java\com\hexcelltechvr">
+      <UniqueIdentifier>{8be1a655-b1db-46ac-8d52-41ec1c3fec31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AndroidPackaging\app\src\main\java\com\hexcelltechvr\ermy">
+      <UniqueIdentifier>{2d750c2f-30c1-4a98-851d-99683572f7aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AndroidPackaging\app\src\main\java\com\hexcelltechvr\ermy\testbed">
+      <UniqueIdentifier>{f1f61c96-e95a-4f52-a4fe-600fbcc7e190}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AndroidPackaging\app\src\main\res">
+      <UniqueIdentifier>{ad24ffc4-5314-4e90-88e6-77fbf0582095}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AndroidPackaging\app\src\main\res\drawable">
+      <UniqueIdentifier>{b507cce7-e6f5-49a1-b7e3-4d3cb71efeab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AndroidPackaging\app\src\main\res\drawable-v24">
+      <UniqueIdentifier>{5b530ed4-1e30-4f5e-96f6-b192711dc00c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AndroidPackaging\app\src\main\res\layout">
+      <UniqueIdentifier>{78bafe4d-a157-49a1-bfc1-a883516e768b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AndroidPackaging\app\src\main\res\mipmap-anydpi-v26">
+      <UniqueIdentifier>{6308e37f-b97c-4230-bda3-6509e95945f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AndroidPackaging\app\src\main\res\mipmap-hdpi">
+      <UniqueIdentifier>{4fcb9c0b-4f40-49d9-80fd-b4c56b7211cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AndroidPackaging\app\src\main\res\mipmap-mdpi">
+      <UniqueIdentifier>{c39045d2-975e-4747-b6e5-e5b033b220c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AndroidPackaging\app\src\main\res\mipmap-xhdpi">
+      <UniqueIdentifier>{9e805b5d-e3df-455b-ad43-54b4434392f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AndroidPackaging\app\src\main\res\mipmap-xxhdpi">
+      <UniqueIdentifier>{339f82ea-47f3-4144-bd61-90c01a5625ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AndroidPackaging\app\src\main\res\mipmap-xxxhdpi">
+      <UniqueIdentifier>{96393ab8-2c07-492f-a338-57d35f21e896}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AndroidPackaging\app\src\main\res\values">
+      <UniqueIdentifier>{a25041dd-791c-4f55-8b6f-2a7dc6cb3109}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AndroidPackaging\gradle\wrapper\gradle-wrapper.jar">
+      <Filter>AndroidPackaging\gradle\wrapper</Filter>
+    </None>
+    <None Include="AndroidPackaging\gradle\wrapper\gradle-wrapper.properties">
+      <Filter>AndroidPackaging\gradle\wrapper</Filter>
+    </None>
+    <None Include="AndroidPackaging\build.gradle">
+      <Filter>AndroidPackaging</Filter>
+    </None>
+    <None Include="AndroidPackaging\gradle.properties">
+      <Filter>AndroidPackaging</Filter>
+    </None>
+    <None Include="AndroidPackaging\gradlew">
+      <Filter>AndroidPackaging</Filter>
+    </None>
+    <None Include="AndroidPackaging\gradlew.bat">
+      <Filter>AndroidPackaging</Filter>
+    </None>
+    <None Include="AndroidPackaging\settings.gradle">
+      <Filter>AndroidPackaging</Filter>
+    </None>
+    <None Include="AndroidPackaging\app\src\main\java\com\hexcelltechvr\ermy\testbed\MainActivity.java">
+      <Filter>AndroidPackaging\app\src\main\java\com\hexcelltechvr\ermy\testbed</Filter>
+    </None>
+    <None Include="AndroidPackaging\app\src\main\res\drawable\ic_launcher_background.xml">
+      <Filter>AndroidPackaging\app\src\main\res\drawable</Filter>
+    </None>
+    <None Include="AndroidPackaging\app\src\main\res\drawable-v24\ic_launcher_foreground.xml">
+      <Filter>AndroidPackaging\app\src\main\res\drawable-v24</Filter>
+    </None>
+    <None Include="AndroidPackaging\app\src\main\res\layout\activity_main.xml">
+      <Filter>AndroidPackaging\app\src\main\res\layout</Filter>
+    </None>
+    <None Include="AndroidPackaging\app\src\main\res\mipmap-anydpi-v26\ic_launcher.xml">
+      <Filter>AndroidPackaging\app\src\main\res\mipmap-anydpi-v26</Filter>
+    </None>
+    <None Include="AndroidPackaging\app\src\main\res\mipmap-anydpi-v26\ic_launcher_round.xml">
+      <Filter>AndroidPackaging\app\src\main\res\mipmap-anydpi-v26</Filter>
+    </None>
+    <None Include="AndroidPackaging\app\src\main\res\mipmap-hdpi\ic_launcher.png">
+      <Filter>AndroidPackaging\app\src\main\res\mipmap-hdpi</Filter>
+    </None>
+    <None Include="AndroidPackaging\app\src\main\res\mipmap-hdpi\ic_launcher_round.png">
+      <Filter>AndroidPackaging\app\src\main\res\mipmap-hdpi</Filter>
+    </None>
+    <None Include="AndroidPackaging\app\src\main\res\mipmap-mdpi\ic_launcher.png">
+      <Filter>AndroidPackaging\app\src\main\res\mipmap-mdpi</Filter>
+    </None>
+    <None Include="AndroidPackaging\app\src\main\res\mipmap-mdpi\ic_launcher_round.png">
+      <Filter>AndroidPackaging\app\src\main\res\mipmap-mdpi</Filter>
+    </None>
+    <None Include="AndroidPackaging\app\src\main\res\mipmap-xhdpi\ic_launcher.png">
+      <Filter>AndroidPackaging\app\src\main\res\mipmap-xhdpi</Filter>
+    </None>
+    <None Include="AndroidPackaging\app\src\main\res\mipmap-xhdpi\ic_launcher_round.png">
+      <Filter>AndroidPackaging\app\src\main\res\mipmap-xhdpi</Filter>
+    </None>
+    <None Include="AndroidPackaging\app\src\main\res\mipmap-xxhdpi\ic_launcher.png">
+      <Filter>AndroidPackaging\app\src\main\res\mipmap-xxhdpi</Filter>
+    </None>
+    <None Include="AndroidPackaging\app\src\main\res\mipmap-xxhdpi\ic_launcher_round.png">
+      <Filter>AndroidPackaging\app\src\main\res\mipmap-xxhdpi</Filter>
+    </None>
+    <None Include="AndroidPackaging\app\src\main\res\mipmap-xxxhdpi\ic_launcher.png">
+      <Filter>AndroidPackaging\app\src\main\res\mipmap-xxxhdpi</Filter>
+    </None>
+    <None Include="AndroidPackaging\app\src\main\res\mipmap-xxxhdpi\ic_launcher_round.png">
+      <Filter>AndroidPackaging\app\src\main\res\mipmap-xxxhdpi</Filter>
+    </None>
+    <None Include="AndroidPackaging\app\src\main\res\values\colors.xml">
+      <Filter>AndroidPackaging\app\src\main\res\values</Filter>
+    </None>
+    <None Include="AndroidPackaging\app\src\main\res\values\strings.xml">
+      <Filter>AndroidPackaging\app\src\main\res\values</Filter>
+    </None>
+    <None Include="AndroidPackaging\app\src\main\res\values\styles.xml">
+      <Filter>AndroidPackaging\app\src\main\res\values</Filter>
+    </None>
+    <None Include="AndroidPackaging\app\src\main\AndroidManifest.xml">
+      <Filter>AndroidPackaging\app\src\main</Filter>
+    </None>
+    <None Include="AndroidPackaging\app\build.gradle">
+      <Filter>AndroidPackaging\app</Filter>
+    </None>
+    <None Include="AndroidPackaging\app\proguard-rules.pro">
+      <Filter>AndroidPackaging\app</Filter>
+    </None>
+  </ItemGroup>
+</Project>
