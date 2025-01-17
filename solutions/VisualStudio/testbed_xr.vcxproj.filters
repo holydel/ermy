@@ -164,5 +164,6 @@
     <ClCompile Include="AndroidPackagingTestBedXR\app\src\main\cpp\JniBindings.cpp">
       <Filter>AndroidPackagingTestBedXR\app\src\main\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\testbed_xr\testbed_xr.cpp" />
   </ItemGroup>
 </Project>

@@ -9,4 +9,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">
     <AndroidDebugTarget>None</AndroidDebugTarget>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <AndroidDebugTarget>None</AndroidDebugTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">
+    <AndroidDebugTarget>None</AndroidDebugTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">
+    <AndroidDebugTarget>None</AndroidDebugTarget>
+  </PropertyGroup>
 </Project>

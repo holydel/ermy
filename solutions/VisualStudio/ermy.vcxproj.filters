@@ -13,6 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\os">
+      <UniqueIdentifier>{09fcce10-287b-436a-950e-fe468f24880a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\os\windows">
+      <UniqueIdentifier>{be2704ee-3760-44a3-a214-33825e0b0e71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\os\android">
+      <UniqueIdentifier>{556b3d07-0110-45fe-9187-571820a67048}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\engine\src\ermy.cpp">
@@ -20,6 +29,18 @@
     </ClCompile>
     <ClCompile Include="..\..\engine\src\static_constraints.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\src\os\windows\win_entry_point.cpp">
+      <Filter>Source Files\os\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\src\os\windows\win_utils.cpp">
+      <Filter>Source Files\os\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\src\os\android\android_entry_point.cpp">
+      <Filter>Source Files\os\android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\src\os\android\android_utils.cpp">
+      <Filter>Source Files\os\android</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -31,6 +52,12 @@
     </ClInclude>
     <ClInclude Include="..\..\engine\include\ermy_entry_point.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\os\ermy_os_entry_point.h">
+      <Filter>Source Files\os</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\os\ermy_os_utils.h">
+      <Filter>Source Files\os</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
