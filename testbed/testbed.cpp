@@ -3,12 +3,15 @@
 
 #include "ermy_entry_point.h"
 
-int main()
+class TestBedApplication : public ermy::Application
 {
-    std::cout << "testbed entry point" << std::endl;
-    
-    ermy::InitializeEngine();
-    ermy::ShutdownEngine();
+public:
+	void OnConfigure() override
+	{
+		auto& logConfig = ermy::logger::Config();
 
-    return 0;
-}
+		logConfig.FileMirroring.enabled = true;
+	}
+};
+
+static TestBedApplication myTestBedApp;

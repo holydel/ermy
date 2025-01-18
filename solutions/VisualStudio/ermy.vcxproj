@@ -35,6 +35,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dev|Android-arm64-v8a'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\..\engine\src\application.cpp" />
+    <ClCompile Include="..\..\engine\src\logger.cpp" />
     <ClCompile Include="..\..\engine\src\os\android\android_entry_point.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">true</ExcludedFromBuild>
@@ -67,9 +69,15 @@
   <ItemGroup>
     <ClInclude Include="..\..\engine\include\ermy.h" />
     <ClInclude Include="..\..\engine\include\ermy_api.h" />
+    <ClInclude Include="..\..\engine\include\ermy_application.h" />
     <ClInclude Include="..\..\engine\include\ermy_entry_point.h" />
+    <ClInclude Include="..\..\engine\include\ermy_log.h" />
+    <ClInclude Include="..\..\engine\src\application.h" />
+    <ClInclude Include="..\..\engine\src\logger.h" />
+    <ClInclude Include="..\..\engine\src\os\ermy_os.h" />
     <ClInclude Include="..\..\engine\src\os\ermy_os_entry_point.h" />
     <ClInclude Include="..\..\engine\src\os\ermy_os_utils.h" />
+    <ClInclude Include="..\..\engine\src\os\windows\win_utils.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -176,7 +184,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>../../engine/include;../../engine/src</AdditionalIncludeDirectories>
     </ClCompile>

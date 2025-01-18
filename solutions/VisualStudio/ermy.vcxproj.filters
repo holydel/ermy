@@ -42,6 +42,12 @@
     <ClCompile Include="..\..\engine\src\os\android\android_utils.cpp">
       <Filter>Source Files\os\android</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\engine\src\application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\src\logger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\engine\include\ermy.h">
@@ -58,6 +64,24 @@
     </ClInclude>
     <ClInclude Include="..\..\engine\src\os\ermy_os_utils.h">
       <Filter>Source Files\os</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\include\ermy_application.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\os\windows\win_utils.h">
+      <Filter>Source Files\os\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\include\ermy_log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\logger.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\os\ermy_os.h">
+      <Filter>Source Files\os</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\application.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

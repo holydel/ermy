@@ -1,4 +1,4 @@
 #pragma once
-
 #include "ermy_application.h"
-#include "ermy_log.h"
+
+void ErmyApplicationRun();
