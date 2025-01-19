@@ -6,9 +6,18 @@
 #include "../ermy_os_utils.h"
 #include "application.h"
 
+#pragma comment(lib,"Winmm.lib")
+#pragma comment(lib, "Shell32.lib")
+#pragma comment(lib, "Ole32.lib")
+
 void PlatformRun(int argc, char* argv[], HINSTANCE hInstance, int nCmdShow)
 {
+    timeBeginPeriod(1);
+    SetProcessDPIAware();
+
     ErmyApplicationRun();
+
+    timeEndPeriod(1);
 }
 
 int main(int argc, char* argv[])

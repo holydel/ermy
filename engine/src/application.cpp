@@ -1,9 +1,14 @@
 #include "application.h"
 #include <cassert>
-#include "os/ermy_os_utils.h"
+#include "os/ermy_os.h"
 #include "logger.h"
 
 ermy::Application* gApplication = nullptr;
+
+ermy::Application& GetApplication()
+{
+	return *gApplication;
+}
 
 ermy::Application::Application()
 {
@@ -24,10 +29,10 @@ void ErmyApplicationRun()
 
 	//initialize engine
 	loggerImpl::Initialize();
+	ermy::logger::EnqueueLogMessageRAW(ermy::LogSeverity::Debug, "start initialize ermy engine for application: %s", gApplication->staticConfig.appName.c_str()); //
+	
+	os::CreateNativeWindow();
 
-
-
-	ermy::logger::EnqueueLogMessageRAW(ermy::LogSeverity::Debug, "start initialize ermy engine for application: %s", gApplication->staticConfig.name.c_str()); //
 	gApplication->OnInitialization();
 
 	//initialize engine built-in data
@@ -39,7 +44,7 @@ void ErmyApplicationRun()
 		gApplication->OnBeginFrame();
 		gApplication->OnEndFrame();
 
-		os::Sleep(1);
+		os::Update();		
 	}
 	
 	gApplication->OnUnLoad();

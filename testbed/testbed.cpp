@@ -11,7 +11,7 @@ public:
 		auto& logConfig = ermy::logger::Config();
 		logConfig.FileMirroring.enabled = true;
 
-		staticConfig.name = "TestBed";
+		staticConfig.appName = "TestBed";
 	}
 };
 

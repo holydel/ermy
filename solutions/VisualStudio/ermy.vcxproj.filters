@@ -48,6 +48,9 @@
     <ClCompile Include="..\..\engine\src\logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\engine\src\os\windows\win_window.cpp">
+      <Filter>Source Files\os\windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\engine\include\ermy.h">

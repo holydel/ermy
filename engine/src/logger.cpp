@@ -41,7 +41,7 @@ void ermy::logger::EnqueueLogMessageRAWTagged(LogSeverity severity, const char *
 	//char *data = static_cast<char *>(alloca(size + 2));
 
 	// Format the string
-	int size = std::vsnprintf(data, sizeof(data), message, args);
+	int size = std::vsnprintf(data, sizeof(data)-2, message, args);
 	data[size] = '\n';
 	data[size + 1] = '\0';
 

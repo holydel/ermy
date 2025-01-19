@@ -33,3 +33,9 @@ void os::Sleep(int ms)
 {
 	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 }
+
+void os::WriteDebugLogMessageIDE(const char* utf8Message)
+{
+	//TODO: research output debug string for Android Studio
+	//OutputDebugStringA(utf8Message);
+}

@@ -7,14 +7,26 @@ target_include_directories(engine
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
+# Define platform-specific source files
+if(WIN32)
+    set(PLATFORM_DEPENDENT_SRC
+        src/os/windows/win_entry_point.cpp
+        src/os/windows/win_utils.cpp
+    )
+elseif(ANDROID)
+    set(PLATFORM_DEPENDENT_SRC
+        src/os/android/android_entry_point.cpp
+        src/os/android/android_utils.cpp
+    )
+endif()
+
 target_sources(engine
     PRIVATE
     src/ermy.cpp
     src/static_constraints.cpp
     src/application.cpp
     src/logger.cpp
-    src/os/windows/win_entry_point.cpp
-    src/os/windows/win_utils.cpp
+    ${PLATFORM_DEPENDENT_SRC}
         # Add source files here as they are created
 )
 

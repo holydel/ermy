@@ -2,3 +2,5 @@
 #include "ermy_application.h"
 
 void ErmyApplicationRun();
+
+ermy::Application& GetApplication();
