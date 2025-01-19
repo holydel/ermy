@@ -6,7 +6,13 @@
 class Editor : public ermy::Application
 {
 public:
+	void OnConfigure() override
+	{
+		auto& logConfig = ermy::logger::Config();
+		logConfig.FileMirroring.enabled = true;
 
+		staticConfig.name = "Ermy Editor";
+	}
 };
 
 static Editor editor;

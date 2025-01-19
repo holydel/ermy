@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 namespace ermy
 {
@@ -7,6 +8,11 @@ namespace ermy
 	private:
 
 	public:
+		struct StaticConfig
+		{
+			std::string name = "Unnamed Ermy APP";
+		} staticConfig;
+
 		Application();
 		virtual ~Application();
 	

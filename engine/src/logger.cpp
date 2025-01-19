@@ -1,27 +1,61 @@
 #include "logger.h"
+#include "os/ermy_os_utils.h"
 
 #include <iostream>
+#include <cstdarg>
 
 ermy::logger::LoggersConfig gAppLoggerConfig = {};
 ermy::logger::LoggersConfig gUsedLoggerConfig = {};
 
 void loggerImpl::Initialize()
 {
-	gUsedLoggerConfig = gAppLoggerConfig; 
-	//after app initialization we cannot change logger config
+	gUsedLoggerConfig = gAppLoggerConfig;
+
+	ermy::logger::EnqueueLogMessageRAW(ermy::LogSeverity::Debug, "logger initialized"); //
+	// after app initialization we cannot change logger config
 }
 
 void loggerImpl::Shutdown()
 {
-
 }
 
-void ermy::logger::EnqueueLogMessageRAW(ermy::LogSeverity severity, const char* tag, const char* message)
+void ermy::logger::EnqueueLogMessageRAW(LogSeverity severity, const char* message, ...)
 {
-	std::cout << message << std::endl;
+	va_list args;
+	va_start(args, message);
+	EnqueueLogMessageRAWTagged(severity, Config().tag.c_str(), message, args);
+	va_end(args);
 }
 
-ermy::logger::LoggersConfig& ermy::logger::Config()
+void ermy::logger::EnqueueLogMessageRAWTagged(LogSeverity severity, const char *tag, const char *message, va_list args)
+{
+	// Determine the required buffer size
+	//auto v = va_arg(args, const char*);
+	char data[256];
+	//int size = vsprintf_s(data, message, args);
+	//va_list args_copy;
+	//va_copy(args_copy, args);
+	//int size = std::snprintf(nullptr, 0, message, args_copy);
+	//va_end(args_copy);
+
+	//char *data = static_cast<char *>(alloca(size + 2));
+
+	// Format the string
+	int size = std::vsnprintf(data, sizeof(data), message, args);
+	data[size] = '\n';
+	data[size + 1] = '\0';
+
+	if (gUsedLoggerConfig.ConsoleMirroring)
+	{
+		std::cout << data;
+	}
+	if (gUsedLoggerConfig.IDEMirroring)
+	{
+		os::WriteDebugLogMessageIDE(data);
+	}
+}
+
+ermy::logger::LoggersConfig &ermy::logger::Config()
 {
 	return gAppLoggerConfig;
 }

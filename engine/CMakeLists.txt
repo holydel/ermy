@@ -11,6 +11,10 @@ target_sources(engine
     PRIVATE
     src/ermy.cpp
     src/static_constraints.cpp
+    src/application.cpp
+    src/logger.cpp
+    src/os/windows/win_entry_point.cpp
+    src/os/windows/win_utils.cpp
         # Add source files here as they are created
 )
 

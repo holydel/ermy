@@ -20,13 +20,14 @@ ermy::Application::~Application()
 void ErmyApplicationRun()
 {
 	assert(gApplication != nullptr);
-	
-	
 	gApplication->OnConfigure();
 
 	//initialize engine
 	loggerImpl::Initialize();
 
+
+
+	ermy::logger::EnqueueLogMessageRAW(ermy::LogSeverity::Debug, "start initialize ermy engine for application: %s", gApplication->staticConfig.name.c_str()); //
 	gApplication->OnInitialization();
 
 	//initialize engine built-in data
@@ -38,7 +39,7 @@ void ErmyApplicationRun()
 		gApplication->OnBeginFrame();
 		gApplication->OnEndFrame();
 
-		os::sleep(1);
+		os::Sleep(1);
 	}
 	
 	gApplication->OnUnLoad();

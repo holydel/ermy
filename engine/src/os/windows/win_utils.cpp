@@ -20,7 +20,12 @@ void os::WCSToUTF8(const wchar_t* wcs8string, char* outBuff, int maxBuffSize)
 	WideCharToMultiByte(CP_UTF8, 0, wcs8string, -1, outBuff, maxBuffSize, nullptr, nullptr);
 }
 
-void os::sleep(int ms)
+void os::Sleep(int ms)
 {
-	Sleep(ms);
+	::Sleep(ms);
+}
+
+void os::WriteDebugLogMessageIDE(const char* utf8Message)
+{
+	OutputDebugStringA(utf8Message);
 }

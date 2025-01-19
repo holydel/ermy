@@ -47,6 +47,9 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>Clang</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <AndroidMinSdkVersion>24</AndroidMinSdkVersion>
+    <AndroidNdkVersion>27.0.12077973</AndroidNdkVersion>
+    <CppLanguageStandard>cpp2a</CppLanguageStandard>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -68,6 +71,9 @@
     <PlatformToolset>Clang</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <AndroidMinSdkVersion>24</AndroidMinSdkVersion>
+    <AndroidNdkVersion>27.0.12077973</AndroidNdkVersion>
+    <CppLanguageStandard>cpp2a</CppLanguageStandard>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -75,6 +81,9 @@
     <PlatformToolset>Clang</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <AndroidMinSdkVersion>24</AndroidMinSdkVersion>
+    <AndroidNdkVersion>27.0.12077973</AndroidNdkVersion>
+    <CppLanguageStandard>cpp2a</CppLanguageStandard>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">

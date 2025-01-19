@@ -9,8 +9,9 @@ public:
 	void OnConfigure() override
 	{
 		auto& logConfig = ermy::logger::Config();
-
 		logConfig.FileMirroring.enabled = true;
+
+		staticConfig.name = "TestBed";
 	}
 };
 

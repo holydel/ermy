@@ -19,5 +19,6 @@ namespace os
 		WCSToUTF8(wcsString, outBuff, N * sizeof(char));
 	}
 
-	void sleep(int ms);
+	void Sleep(int ms);
+	void WriteDebugLogMessageIDE(const char* utf8Message);
 }

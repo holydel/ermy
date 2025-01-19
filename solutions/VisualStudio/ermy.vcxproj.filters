@@ -83,5 +83,8 @@
     <ClInclude Include="..\..\engine\src\application.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\engine\src\os\android\android_utils.h">
+      <Filter>Source Files\os\android</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

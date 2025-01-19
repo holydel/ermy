@@ -2,6 +2,7 @@
 
 #include "ermy_api.h"
 #include <string>
+#include <cstdarg>
 
 namespace ermy
 {
@@ -51,10 +52,14 @@ namespace ermy
 				int maxRecords = 50;
 				int fontSize = 16;
 			} OnScreenMirroring;
+
+			std::string tag = "ErmyAPP";
 		};
 
 		LoggersConfig& Config();
 
-		void EnqueueLogMessageRAW(LogSeverity severity, const char* tag, const char* message);
+		void EnqueueLogMessageRAWTagged(LogSeverity severity, const char* tag, const char* message, va_list args);
+
+		void EnqueueLogMessageRAW(LogSeverity severity, const char* message, ...);
 	}
 }
