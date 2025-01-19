@@ -12,12 +12,19 @@ if(WIN32)
     set(PLATFORM_DEPENDENT_SRC
         src/os/windows/win_entry_point.cpp
         src/os/windows/win_utils.cpp
+        src/os/windows/win_window.cpp
     )
 elseif(ANDROID)
     set(PLATFORM_DEPENDENT_SRC
         src/os/android/android_entry_point.cpp
         src/os/android/android_utils.cpp
     )
+elseif(EMSCRIPTEN)
+    set(PLATFORM_DEPENDENT_SRC
+        src/os/emscripten/emscripten_entry_point.cpp
+        src/os/emscripten/emscripten_utils.cpp
+        src/os/emscripten/emscripten_window.cpp
+    )    
 endif()
 
 target_sources(engine
