@@ -58,7 +58,7 @@ namespace ermy
 
 		LoggersConfig& Config();
 
-		void EnqueueLogMessageRAWTagged(LogSeverity severity, const char* tag, const char* message, va_list args);
+		void EnqueueLogMessageRAWTagged(LogSeverity severity, const char* tag, const char* message, va_list args = nullptr);
 		void EnqueueLogMessageRAW(LogSeverity severity, const char* message, ...);
 	}
 }

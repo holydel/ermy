@@ -4,12 +4,6 @@
 #include "../ermy_os_utils.h"
 #include "application.h"
 
-#include <iostream>
-#include <thread>
-#include <emscripten.h>
-#include <emscripten/html5.h>
-#include "emscripten/html5_webgpu.h"
-
 EM_BOOL one_iter(double time, void* userData) {
     // Can render to the screen here, etc.
     //if(!gApplication->Update())
@@ -20,7 +14,8 @@ EM_BOOL one_iter(double time, void* userData) {
     // Return true to keep the loop running.
     float ftime = time;
    // printf("one frame. time: %f\n",ftime);
-
+    ErmyApplicationStep();
+    
     return EM_TRUE;
 }
 
@@ -71,5 +66,8 @@ int main()
     emscripten_set_mouseup_callback("canvas", nullptr, true, MouseEvent);
 
     emscripten_request_animation_frame_loop(one_iter, 0);
+
+    ErmyApplicationStart();
+
     return 0;
 }

@@ -7,6 +7,7 @@ target_include_directories(engine
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
+
 # Define platform-specific source files
 if(WIN32)
     set(PLATFORM_DEPENDENT_SRC
@@ -24,6 +25,8 @@ elseif(EMSCRIPTEN)
         src/os/emscripten/emscripten_entry_point.cpp
         src/os/emscripten/emscripten_utils.cpp
         src/os/emscripten/emscripten_window.cpp
+
+        src/rendering/webgpu/webgpu_interface.cpp
     )    
 endif()
 
@@ -33,6 +36,8 @@ target_sources(engine
     src/static_constraints.cpp
     src/application.cpp
     src/logger.cpp
+    
+    src/graphics/canvas.cpp
     ${PLATFORM_DEPENDENT_SRC}
         # Add source files here as they are created
 )

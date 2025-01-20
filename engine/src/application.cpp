@@ -3,16 +3,18 @@
 #include "os/ermy_os.h"
 #include "logger.h"
 
-ermy::Application* gApplication = nullptr;
+#include "rendering/rendering_interface.h"
 
-ermy::Application& GetApplication()
+ermy::Application *gApplication = nullptr;
+
+ermy::Application &GetApplication()
 {
 	return *gApplication;
 }
 
 ermy::Application::Application()
 {
-	//only one application per executable may be used
+	// only one application per executable may be used
 	assert(gApplication == nullptr);
 	gApplication = this;
 }
@@ -22,34 +24,56 @@ ermy::Application::~Application()
 	gApplication = nullptr;
 }
 
-void ErmyApplicationRun()
+void ErmyApplicationStart()
 {
 	assert(gApplication != nullptr);
 	gApplication->OnConfigure();
 
-	//initialize engine
+	// initialize engine
 	loggerImpl::Initialize();
 	ermy::logger::EnqueueLogMessageRAW(ermy::LogSeverity::Debug, "start initialize ermy engine for application: %s", gApplication->staticConfig.appName.c_str()); //
-	
+
 	os::CreateNativeWindow();
+	rendering::Initialize();
 
 	gApplication->OnInitialization();
 
-	//initialize engine built-in data
+	// initialize engine built-in data
 
 	gApplication->OnLoad();
+}
 
-	while (true)
-	{
-		gApplication->OnBeginFrame();
-		gApplication->OnEndFrame();
+bool ErmyApplicationStep()
+{
+	gApplication->OnBeginFrame();
 
-		os::Update();		
-	}
+	rendering::Process();
 	
+	gApplication->OnEndFrame();
+
+	os::Update();
+	return true;
+}
+
+void ErmyApplicationShutdown()
+{
 	gApplication->OnUnLoad();
 
 	gApplication->OnShutdown();
 
+	rendering::Shutdown();
 	loggerImpl::Shutdown();
+}
+
+void ErmyApplicationRun()
+{
+	ErmyApplicationStart();
+
+	while (true)
+	{
+		if(!ErmyApplicationStep())
+			break;
+	}
+
+	ErmyApplicationShutdown();
 }

@@ -3,4 +3,8 @@
 
 void ErmyApplicationRun();
 
+bool ErmyApplicationStep();
+void ErmyApplicationShutdown();
+void ErmyApplicationStart();
+
 ermy::Application& GetApplication();
