@@ -1,6 +1,24 @@
 #pragma once
 
+// Define platform macros based on the detected platform
+#if defined(_WIN32)
 #define ERMY_OS_WINDOWS
+#elif defined(__ANDROID__)
+#define ERMY_OS_ANDROID
+#elif defined(__linux__)
+#define ERMY_OS_LINUX
+#elif defined(__APPLE__)
+#include "TargetConditionals.h"
+#if TARGET_OS_MAC
+#define ERMY_OS_MACOS
+#endif
+#elif defined(__EMSCRIPTEN__)
+#define ERMY_OS_EMSCRIPTEN
+#else
+#error "Unsupported platform"
+#endif
+
+//#define ERMY_OS_WINDOWS
 //#define ERMY_OS_LINUX
 //#define ERMY_OS_MACOS
 //#define ERMY_OS_ANDROID

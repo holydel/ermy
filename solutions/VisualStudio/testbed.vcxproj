@@ -48,7 +48,7 @@
     <PlatformToolset>Clang</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <AndroidMinSdkVersion>24</AndroidMinSdkVersion>
-    <AndroidNdkVersion>27.0.12077973</AndroidNdkVersion>
+    <AndroidNdkVersion>26.3.11579264</AndroidNdkVersion>
     <CppLanguageStandard>cpp2a</CppLanguageStandard>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|x64'" Label="Configuration">
@@ -151,6 +151,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <LibraryDependencies>log;%(LibraryDependencies)</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">
@@ -202,6 +203,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <LibraryDependencies>log;%(LibraryDependencies)</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">
@@ -219,6 +221,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <LibraryDependencies>log;%(LibraryDependencies)</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -228,16 +231,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\testbed\testbed.cpp" />
-    <ClCompile Include="AndroidPackaging\app\src\main\cpp\JniBindings.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="AndroidPackaging\app\build.gradle" />
     <None Include="AndroidPackaging\app\proguard-rules.pro" />
-    <None Include="AndroidPackaging\app\src\main\java\com\hexcelltechvr\ermy\testbed\MainActivity.java" />
     <None Include="AndroidPackaging\build.gradle" />
     <None Include="AndroidPackaging\gradle.properties" />
     <None Include="AndroidPackaging\gradlew" />

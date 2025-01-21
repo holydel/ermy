@@ -58,7 +58,14 @@ namespace ermy
 
 		LoggersConfig& Config();
 
-		void EnqueueLogMessageRAWTagged(LogSeverity severity, const char* tag, const char* message, va_list args = nullptr);
+		//TODO: Think about tempalte variant with char8_t
+		void EnqueueLogMessageRAWTagged(LogSeverity severity, const char* tag, const char* message, ...);
 		void EnqueueLogMessageRAW(LogSeverity severity, const char* message, ...);
 	}
 }
+
+#define ERMY_LOG(message,...) ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Debug,ermy::logger::Config().tag.c_str(), message, __VA_ARGS__)
+#define ERMY_WARNING(message,...) ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Warning,ermy::logger::Config().tag.c_str(), message, __VA_ARGS__)
+#define ERMY_INFO(message,...) ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Verbose,ermy::logger::Config().tag.c_str(), message, __VA_ARGS__)
+#define ERMY_ERROR(message,...) ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Error,ermy::logger::Config().tag.c_str(), message, __VA_ARGS__)
+#define ERMY_FATAL(message,...) ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Fatal,ermy::logger::Config().tag.c_str(), message, __VA_ARGS__)

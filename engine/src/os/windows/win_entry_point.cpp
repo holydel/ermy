@@ -1,9 +1,9 @@
-#include "../ermy_os_entry_point.h"
+#include "../os_entry_point.h"
 #include <iostream>
 #include "win_utils.h"
 #include "../../logger.h"
 #include <thread>
-#include "../ermy_os_utils.h"
+#include "../os_utils.h"
 #include "application.h"
 
 #pragma comment(lib,"Winmm.lib")

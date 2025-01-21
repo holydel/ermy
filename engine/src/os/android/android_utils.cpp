@@ -1,10 +1,7 @@
 
 #include "android_utils.h"
 
-#include <android/window.h>
-#include <android/log.h>
 
-#include <thread>
 
 
 void os::SetNativeThreadName(void* nativeThreadHandle, const char* utf8threadName)
@@ -36,6 +33,13 @@ void os::Sleep(int ms)
 
 void os::WriteDebugLogMessageIDE(const char* utf8Message)
 {
+	__android_log_print(ANDROID_LOG_DEBUG, "TAG", "%s", utf8Message);
 	//TODO: research output debug string for Android Studio
 	//OutputDebugStringA(utf8Message);
 }
+#ifdef EMRY_GAPI_VULKAN
+const char* os::GetVulkanRuntimeLibraryName()
+{
+	return "libvulkan.so";
+}
+#endif

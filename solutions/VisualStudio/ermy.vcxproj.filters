@@ -22,6 +22,15 @@
     <Filter Include="Source Files\os\android">
       <UniqueIdentifier>{556b3d07-0110-45fe-9187-571820a67048}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\graphics">
+      <UniqueIdentifier>{2b972b41-1514-4ac2-ba7c-6b496f416270}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rendering">
+      <UniqueIdentifier>{853e0af1-b5ce-4ac3-9f92-9c87230f3ee6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rendering\vulkan">
+      <UniqueIdentifier>{03e4bf24-308b-4a73-bf94-35eefa783215}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\engine\src\ermy.cpp">
@@ -51,6 +60,18 @@
     <ClCompile Include="..\..\engine\src\os\windows\win_window.cpp">
       <Filter>Source Files\os\windows</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\engine\src\rendering\vulkan\vulkan_interface.cpp">
+      <Filter>Source Files\rendering\vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\src\graphics\canvas.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\src\os\android\android_window.cpp">
+      <Filter>Source Files\os\android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\src\rendering\vulkan\ermy_vulkan.cpp">
+      <Filter>Source Files\rendering\vulkan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\engine\include\ermy.h">
@@ -62,10 +83,10 @@
     <ClInclude Include="..\..\engine\include\ermy_entry_point.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\engine\src\os\ermy_os_entry_point.h">
+    <ClInclude Include="..\..\engine\src\os\os_entry_point.h">
       <Filter>Source Files\os</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\engine\src\os\ermy_os_utils.h">
+    <ClInclude Include="..\..\engine\src\os\os_utils.h">
       <Filter>Source Files\os</Filter>
     </ClInclude>
     <ClInclude Include="..\..\engine\include\ermy_application.h">
@@ -80,7 +101,7 @@
     <ClInclude Include="..\..\engine\src\logger.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\engine\src\os\ermy_os.h">
+    <ClInclude Include="..\..\engine\src\os\os.h">
       <Filter>Source Files\os</Filter>
     </ClInclude>
     <ClInclude Include="..\..\engine\src\application.h">
@@ -88,6 +109,15 @@
     </ClInclude>
     <ClInclude Include="..\..\engine\src\os\android\android_utils.h">
       <Filter>Source Files\os\android</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\rendering\vulkan\vulkan_interface.h">
+      <Filter>Source Files\rendering\vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\graphics\canvas.h">
+      <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\rendering\vulkan\ermy_vulkan.h">
+      <Filter>Source Files\rendering\vulkan</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

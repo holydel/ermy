@@ -1,6 +1,6 @@
 #include "application.h"
 #include <cassert>
-#include "os/ermy_os.h"
+#include "os/os.h"
 #include "logger.h"
 
 #include "rendering/rendering_interface.h"
@@ -31,7 +31,7 @@ void ErmyApplicationStart()
 
 	// initialize engine
 	loggerImpl::Initialize();
-	ermy::logger::EnqueueLogMessageRAW(ermy::LogSeverity::Debug, "start initialize ermy engine for application: %s", gApplication->staticConfig.appName.c_str()); //
+	ERMY_LOG("start initialize ermy engine for application: %s", gApplication->staticConfig.appName.c_str()); //
 
 	os::CreateNativeWindow();
 	rendering::Initialize();

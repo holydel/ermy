@@ -2,9 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\..\testbed\testbed.cpp" />
-    <ClCompile Include="AndroidPackaging\app\src\main\cpp\JniBindings.cpp">
-      <Filter>AndroidPackaging\app\src\main\cpp</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="AndroidPackaging">
@@ -24,24 +21,6 @@
     </Filter>
     <Filter Include="AndroidPackaging\app\src\main">
       <UniqueIdentifier>{1e329e9c-8a53-4f42-afdd-d047ec9b373d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AndroidPackaging\app\src\main\cpp">
-      <UniqueIdentifier>{82cd8ece-77b3-4249-89d7-50fc1a4f1d51}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AndroidPackaging\app\src\main\java">
-      <UniqueIdentifier>{c14fb53d-d4bd-4f9f-9a11-dc0dd8e58aa2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AndroidPackaging\app\src\main\java\com">
-      <UniqueIdentifier>{5dd91a84-28a3-4b0b-b79d-69b7a578ee7e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AndroidPackaging\app\src\main\java\com\hexcelltechvr">
-      <UniqueIdentifier>{8be1a655-b1db-46ac-8d52-41ec1c3fec31}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AndroidPackaging\app\src\main\java\com\hexcelltechvr\ermy">
-      <UniqueIdentifier>{2d750c2f-30c1-4a98-851d-99683572f7aa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AndroidPackaging\app\src\main\java\com\hexcelltechvr\ermy\testbed">
-      <UniqueIdentifier>{f1f61c96-e95a-4f52-a4fe-600fbcc7e190}</UniqueIdentifier>
     </Filter>
     <Filter Include="AndroidPackaging\app\src\main\res">
       <UniqueIdentifier>{ad24ffc4-5314-4e90-88e6-77fbf0582095}</UniqueIdentifier>
@@ -98,9 +77,6 @@
     </None>
     <None Include="AndroidPackaging\settings.gradle">
       <Filter>AndroidPackaging</Filter>
-    </None>
-    <None Include="AndroidPackaging\app\src\main\java\com\hexcelltechvr\ermy\testbed\MainActivity.java">
-      <Filter>AndroidPackaging\app\src\main\java\com\hexcelltechvr\ermy\testbed</Filter>
     </None>
     <None Include="AndroidPackaging\app\src\main\res\drawable\ic_launcher_background.xml">
       <Filter>AndroidPackaging\app\src\main\res\drawable</Filter>

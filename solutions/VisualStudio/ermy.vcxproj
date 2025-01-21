@@ -36,6 +36,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\..\engine\src\application.cpp" />
+    <ClCompile Include="..\..\engine\src\graphics\canvas.cpp" />
     <ClCompile Include="..\..\engine\src\logger.cpp" />
     <ClCompile Include="..\..\engine\src\os\android\android_entry_point.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -43,6 +44,11 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\engine\src\os\android\android_utils.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\src\os\android\android_window.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">true</ExcludedFromBuild>
@@ -57,7 +63,19 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dev|Android-arm64-v8a'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\engine\src\os\windows\win_window.cpp" />
+    <ClCompile Include="..\..\engine\src\os\windows\win_window.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Android-arm64-v8a'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dev|Android-arm64-v8a'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\src\rendering\vulkan\ermy_vulkan.cpp">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Android-arm64-v8a'">../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Dev|Android-arm64-v8a'">../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\src\rendering\vulkan\vulkan_interface.cpp" />
     <ClCompile Include="..\..\engine\src\static_constraints.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Android-arm64-v8a'">NotUsing</PrecompiledHeader>
@@ -74,12 +92,15 @@
     <ClInclude Include="..\..\engine\include\ermy_entry_point.h" />
     <ClInclude Include="..\..\engine\include\ermy_log.h" />
     <ClInclude Include="..\..\engine\src\application.h" />
+    <ClInclude Include="..\..\engine\src\graphics\canvas.h" />
     <ClInclude Include="..\..\engine\src\logger.h" />
     <ClInclude Include="..\..\engine\src\os\android\android_utils.h" />
-    <ClInclude Include="..\..\engine\src\os\ermy_os.h" />
-    <ClInclude Include="..\..\engine\src\os\ermy_os_entry_point.h" />
-    <ClInclude Include="..\..\engine\src\os\ermy_os_utils.h" />
+    <ClInclude Include="..\..\engine\src\os\os.h" />
+    <ClInclude Include="..\..\engine\src\os\os_entry_point.h" />
+    <ClInclude Include="..\..\engine\src\os\os_utils.h" />
     <ClInclude Include="..\..\engine\src\os\windows\win_utils.h" />
+    <ClInclude Include="..\..\engine\src\rendering\vulkan\ermy_vulkan.h" />
+    <ClInclude Include="..\..\engine\src\rendering\vulkan\vulkan_interface.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -102,8 +123,9 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <AndroidMinSdkVersion>24</AndroidMinSdkVersion>
-    <AndroidNdkVersion>27.0.12077973</AndroidNdkVersion>
+    <AndroidMinSdkVersion>25</AndroidMinSdkVersion>
+    <AndroidNdkVersion>26.3.11579264</AndroidNdkVersion>
+    <CppLanguageStandard>cpp2a</CppLanguageStandard>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -127,8 +149,9 @@
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <AndroidMinSdkVersion>24</AndroidMinSdkVersion>
-    <AndroidNdkVersion>27.0.12077973</AndroidNdkVersion>
+    <AndroidMinSdkVersion>25</AndroidMinSdkVersion>
+    <AndroidNdkVersion>26.3.11579264</AndroidNdkVersion>
+    <CppLanguageStandard>cpp2a</CppLanguageStandard>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -136,8 +159,9 @@
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <AndroidMinSdkVersion>24</AndroidMinSdkVersion>
-    <AndroidNdkVersion>27.0.12077973</AndroidNdkVersion>
+    <AndroidMinSdkVersion>25</AndroidMinSdkVersion>
+    <AndroidNdkVersion>26.3.11579264</AndroidNdkVersion>
+    <CppLanguageStandard>cpp2a</CppLanguageStandard>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -171,7 +195,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -194,7 +218,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -212,7 +236,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -239,7 +263,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -264,7 +288,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -284,7 +308,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>

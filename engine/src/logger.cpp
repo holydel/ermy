@@ -1,5 +1,5 @@
 #include "logger.h"
-#include "os/ermy_os_utils.h"
+#include "os/os_utils.h"
 
 #include <iostream>
 #include <cstdarg>
@@ -27,7 +27,7 @@ void ermy::logger::EnqueueLogMessageRAW(LogSeverity severity, const char* messag
 	va_end(args);
 }
 
-void ermy::logger::EnqueueLogMessageRAWTagged(LogSeverity severity, const char *tag, const char *message, va_list args)
+void ermy::logger::EnqueueLogMessageRAWTagged(LogSeverity severity, const char *tag, const char *message, ...)
 {
 	// Determine the required buffer size
 	//auto v = va_arg(args, const char*);
@@ -41,6 +41,8 @@ void ermy::logger::EnqueueLogMessageRAWTagged(LogSeverity severity, const char *
 	//char *data = static_cast<char *>(alloca(size + 2));
 
 	// Format the string
+	va_list args;
+	va_start(args, message);
 	int size = std::vsnprintf(data, sizeof(data)-2, message, args);
 	data[size] = '\n';
 	data[size + 1] = '\0';
@@ -53,6 +55,7 @@ void ermy::logger::EnqueueLogMessageRAWTagged(LogSeverity severity, const char *
 	{
 		os::WriteDebugLogMessageIDE(data);
 	}
+	va_end(args);
 }
 
 ermy::logger::LoggersConfig &ermy::logger::Config()

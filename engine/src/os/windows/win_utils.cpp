@@ -1,6 +1,5 @@
-#include "../ermy_os_utils.h"
+#include "../os_utils.h"
 #include "win_utils.h"
-
 
 void os::SetNativeThreadName(void* nativeThreadHandle, const char* utf8threadName)
 {
@@ -29,3 +28,38 @@ void os::WriteDebugLogMessageIDE(const char* utf8Message)
 {
 	OutputDebugStringA(utf8Message);
 }
+
+void* os::LoadSharedLibrary(const char* utf8libname)
+{
+	return LoadLibraryA(utf8libname);
+}
+
+bool os::UnloadSharedLibrary(void* library)
+{
+	return FreeLibrary(static_cast<HMODULE>(library));
+}
+
+void* os::GetFuncPtrImpl(void* library, const char* funcName)
+{
+	return reinterpret_cast<void*>(GetProcAddress(static_cast<HMODULE>(library), funcName));
+}
+
+void os::FatalFail(const char* reason)
+{
+	ERMY_FATAL("Fatal error: %s", reason);
+	DebugBreak();
+}
+
+const char* os::GetSharedLibraryFullFilename(void* libHandle)
+{
+	static char buffer[1024];
+	GetModuleFileNameA(static_cast<HMODULE>(libHandle), buffer, sizeof(buffer));
+	return buffer;
+}
+
+#ifdef EMRY_GAPI_VULKAN
+const char* os::GetVulkanRuntimeLibraryName()
+{
+	return "vulkan-1.dll";
+}
+#endif
