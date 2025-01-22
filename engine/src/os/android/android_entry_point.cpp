@@ -1,4 +1,4 @@
-#include "../ermy_os_entry_point.h"
+#include "../os_entry_point.h"
 #include "android_utils.h"
 #include "../../logger.h"
 /**

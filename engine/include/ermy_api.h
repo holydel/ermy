@@ -55,6 +55,14 @@
 //#define ERMY_XR_WEBXR
 //#define ERMY_XR_APPLE_REALITY_KIT
 
+#ifdef ERMY_OS_WINDOWS
+#include <xmmintrin.h>
+#endif
+
+#ifdef ERMY_OS_ANDROID
+#include <arm_neon.h>
+#endif
+
 namespace ermy
 {
 	typedef unsigned	long long	u64;
@@ -72,11 +80,11 @@ namespace ermy
 	//TODO: if supported f16
 	typedef	unsigned short			f16;
 
-#ifdef MERCURY_PLATFORM_WINDOWS
+#ifdef ERMY_OS_WINDOWS
 	typedef __m128					f32v4;
 #endif
 
-#ifdef MERCURY_PLATFORM_ANDROID
+#ifdef ERMY_OS_ANDROID
 	typedef float32x4_t				f32v4;
 #endif
 

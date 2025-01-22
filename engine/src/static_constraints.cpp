@@ -6,11 +6,11 @@
 #endif
 #endif
 
-#if defined(ERMY_DEVICE_PC)
-#if !defined(ERMY_OS_WINDOWS) && !defined(ERMY_OS_LINUX) && !defined(ERMY_OS_MACOS)
-#error "PC DEVICE REQUIRES DESKTOP OS (WINDOWS, LINUX OR MACOS)"
-#endif
-#endif
+//#if defined(ERMY_DEVICE_PC)
+//#if !defined(ERMY_OS_WINDOWS) && !defined(ERMY_OS_LINUX) && !defined(ERMY_OS_MACOS)
+//#error "PC DEVICE REQUIRES DESKTOP OS (WINDOWS, LINUX OR MACOS)"
+//#endif
+//#endif
 
 #if defined(ERMY_DEVICE_MOBILE) 
 #if !defined(ERMY_OS_ANDROID)

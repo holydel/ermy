@@ -72,6 +72,9 @@
     <ClCompile Include="..\..\engine\src\rendering\vulkan\ermy_vulkan.cpp">
       <Filter>Source Files\rendering\vulkan</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\engine\src\rendering\vulkan\vulkan_swapchain.cpp">
+      <Filter>Source Files\rendering\vulkan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\engine\include\ermy.h">
@@ -117,6 +120,15 @@
       <Filter>Source Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\engine\src\rendering\vulkan\ermy_vulkan.h">
+      <Filter>Source Files\rendering\vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\rendering\rendering_interface.h">
+      <Filter>Source Files\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\rendering\swapchain_interface.h">
+      <Filter>Source Files\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\rendering\vulkan\vulkan_swapchain.h">
       <Filter>Source Files\rendering\vulkan</Filter>
     </ClInclude>
   </ItemGroup>

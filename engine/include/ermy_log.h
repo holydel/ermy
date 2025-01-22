@@ -64,8 +64,8 @@ namespace ermy
 	}
 }
 
-#define ERMY_LOG(message,...) ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Debug,ermy::logger::Config().tag.c_str(), message, __VA_ARGS__)
-#define ERMY_WARNING(message,...) ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Warning,ermy::logger::Config().tag.c_str(), message, __VA_ARGS__)
-#define ERMY_INFO(message,...) ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Verbose,ermy::logger::Config().tag.c_str(), message, __VA_ARGS__)
-#define ERMY_ERROR(message,...) ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Error,ermy::logger::Config().tag.c_str(), message, __VA_ARGS__)
-#define ERMY_FATAL(message,...) ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Fatal,ermy::logger::Config().tag.c_str(), message, __VA_ARGS__)
+#define ERMY_LOG(...) ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Debug,ermy::logger::Config().tag.c_str(), __VA_ARGS__)
+#define ERMY_WARNING(...) ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Warning,ermy::logger::Config().tag.c_str(), __VA_ARGS__)
+#define ERMY_INFO(...) ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Verbose,ermy::logger::Config().tag.c_str(), __VA_ARGS__)
+#define ERMY_ERROR(...) ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Error,ermy::logger::Config().tag.c_str(), __VA_ARGS__)
+#define ERMY_FATAL(...) ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Fatal,ermy::logger::Config().tag.c_str(), __VA_ARGS__)

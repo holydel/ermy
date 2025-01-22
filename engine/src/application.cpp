@@ -4,6 +4,7 @@
 #include "logger.h"
 
 #include "rendering/rendering_interface.h"
+#include "rendering/swapchain_interface.h"
 
 ermy::Application *gApplication = nullptr;
 
@@ -35,7 +36,7 @@ void ErmyApplicationStart()
 
 	os::CreateNativeWindow();
 	rendering::Initialize();
-
+	swapchain::Initialize();
 	gApplication->OnInitialization();
 
 	// initialize engine built-in data
@@ -48,7 +49,8 @@ bool ErmyApplicationStep()
 	gApplication->OnBeginFrame();
 
 	rendering::Process();
-	
+	swapchain::Process();
+
 	gApplication->OnEndFrame();
 
 	os::Update();
@@ -61,6 +63,7 @@ void ErmyApplicationShutdown()
 
 	gApplication->OnShutdown();
 
+	swapchain::Shutdown();
 	rendering::Shutdown();
 	loggerImpl::Shutdown();
 }

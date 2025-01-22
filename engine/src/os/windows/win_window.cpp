@@ -12,6 +12,7 @@ constexpr const wchar_t* winClassName = L"ErmyWindow";
 
 void* os::CreateNativeWindow()
 {
+	gWinSystemInstance = GetModuleHandleA(nullptr);
 	auto& config = GetApplication().staticConfig;
 	auto& winCfg = GetApplication().staticConfig.output;
 
@@ -148,4 +149,13 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 
 	return 0;
+}
+
+void* os::getNativeWindowHandle()
+{
+	return gMainWindow;
+}
+void* os::getAppInstanceHandle()
+{
+	return gWinSystemInstance;
 }

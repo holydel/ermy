@@ -1,5 +1,5 @@
 #include "android_utils.h"
-#include "../ermy_os.h"
+#include "../os.h"
 
 void* os::CreateNativeWindow()
 {

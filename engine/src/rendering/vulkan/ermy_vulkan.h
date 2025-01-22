@@ -73,20 +73,20 @@ VK_DECLARE_FUNCTION(vkGetPhysicalDeviceSparseImageFormatProperties);
 VK_DECLARE_FUNCTION(vkGetPhysicalDeviceImageFormatProperties);
 VK_DECLARE_FUNCTION(vkEnumeratePhysicalDeviceGroups);
 
-#ifdef MERCURY_PLATFORM_WINDOWS
+#ifdef ERMY_OS_WINDOWS
 VK_DECLARE_FUNCTION(vkCreateWin32SurfaceKHR);
 VK_DECLARE_FUNCTION(vkGetPhysicalDeviceWin32PresentationSupportKHR);
 #endif
 
-#ifdef MERCURY_PLATFORM_ANDROID
+#ifdef ERMY_OS_ANDROID
 VK_DECLARE_FUNCTION(vkCreateAndroidSurfaceKHR);
 #endif
 
-#ifdef MERCURY_PLATFORM_LINUX
+#ifdef ERMY_OS_LINUX
 VK_DECLARE_FUNCTION(vkCreateXcbSurfaceKHR);
 #endif
 
-#ifdef MERCURY_PLATFORM_MACOS
+#ifdef ERMY_OS_MACOS
 VK_DECLARE_FUNCTION(vkCreateMetalSurfaceEXT);
 #endif
 
@@ -198,7 +198,7 @@ VK_DECLARE_FUNCTION(vkGetImageMemoryRequirements2);
 VK_DECLARE_FUNCTION(vkCmdDecompressMemoryNV);
 
 
-#ifdef MERCURY_PLATFORM_WINDOWS
+#ifdef ERMY_OS_WINDOWS
 VK_DECLARE_FUNCTION(vkGetWinrtDisplayNV);
 VK_DECLARE_FUNCTION(vkAcquireWinrtDisplayNV);
 #endif

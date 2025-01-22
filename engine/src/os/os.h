@@ -7,4 +7,8 @@ namespace os
 {
 	void* CreateNativeWindow();
 	bool Update();
+
+	void* getNativeWindowHandle();
+	void* getAppInstanceHandle();
+
 }
