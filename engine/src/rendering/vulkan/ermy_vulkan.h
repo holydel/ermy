@@ -318,3 +318,151 @@ std::vector<T> EnumerateVulkanObjects(VkResult(VKAPI_CALL* pfunc) (uint32_t* cnt
 
 	return std::vector<T>(0);
 }
+
+struct VKInstanceExtender
+{
+	std::vector<const char*> enabledLayers;
+	std::vector<const char*> enabledExtensions;
+
+	std::vector<VkLayerProperties> all_layers;
+	std::vector<VkExtensionProperties> all_extensions;
+
+	VKInstanceExtender()
+	{
+		all_layers = EnumerateVulkanObjects(vkEnumerateInstanceLayerProperties);
+		all_extensions = EnumerateVulkanObjects(vkEnumerateInstanceExtensionProperties);
+
+		ERMY_LOG("Instance layers lists:");
+
+		for (auto& layer : all_layers)
+		{
+			ERMY_LOG("layer: %s description: %s", layer.layerName, layer.description);
+		}
+
+		ERMY_LOG("Instance extension lists:");
+
+		for (auto& ex : all_extensions)
+		{
+			ERMY_LOG(ex.extensionName);
+		}
+	}
+
+	bool TryAddLayer(const char* layer_name)
+	{
+		bool exists = false;
+
+		for (auto& l : all_layers)
+		{
+			if (strcmp(l.layerName, layer_name) == 0)
+			{
+				exists = true;
+				break;
+			}
+		}
+
+		if (exists)
+		{
+			enabledLayers.push_back(layer_name);
+		}
+
+		return exists;
+	}
+
+	bool TryAddExtension(const char* extension_name)
+	{
+		bool exists = false;
+
+		for (auto& e : all_extensions)
+		{
+			if (strcmp(e.extensionName, extension_name) == 0)
+			{
+				exists = true;
+				break;
+			}
+		}
+
+		if (exists)
+		{
+			enabledExtensions.push_back(extension_name);
+		}
+
+		return exists;
+	}
+
+	ermy::u32 NumEnabledLayers() const
+	{
+		return (ermy::u32)enabledLayers.size();
+	}
+
+	ermy::u32 NumEnabledExtension() const
+	{
+		return (ermy::u32)enabledExtensions.size();
+	}
+
+	const char** const EnabledLayers() const
+	{
+		return (const char** const)enabledLayers.data();
+	}
+
+	const char** const EnabledExtensions() const
+	{
+		return (const char** const)enabledExtensions.data();
+	}
+};
+
+struct VKDeviceExtender
+{
+	std::vector<const char*> enabledExtensions;
+	std::vector<VkExtensionProperties> all_extensions;
+	std::string all_extensions_str;
+
+	VKDeviceExtender(VkPhysicalDevice physDevice)
+	{
+		all_extensions_str.reserve(65536);
+
+		const char* fakeLayer = nullptr;
+		all_extensions = EnumerateVulkanObjects(physDevice, fakeLayer, vkEnumerateDeviceExtensionProperties);
+
+		ERMY_LOG("Device extension lists:");
+
+		for (auto& ex : all_extensions)
+		{
+			ERMY_LOG(ex.extensionName);
+
+			all_extensions_str += ex.extensionName;
+			all_extensions_str += "\n";
+		}
+	}
+
+	bool TryAddExtension(const char* extension_name)
+	{
+		bool exists = false;
+
+		for (auto& e : all_extensions)
+		{
+			if (strcmp(e.extensionName, extension_name) == 0)
+			{
+				exists = true;
+				break;
+			}
+		}
+
+		if (exists)
+		{
+			enabledExtensions.push_back(extension_name);
+		}
+
+		return exists;
+	}
+
+	ermy::u32 NumEnabledExtension() const
+	{
+		return (ermy::u32)enabledExtensions.size();
+	}
+
+	const char** const EnabledExtensions() const
+	{
+		return (const char** const)enabledExtensions.data();
+	}
+
+};

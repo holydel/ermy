@@ -6,6 +6,47 @@ VkSwapchainKHR gVKSwapchain = VK_NULL_HANDLE;
 VkSurfaceKHR gVKSurface = VK_NULL_HANDLE;
 VkSurfaceCapabilitiesKHR gVKSurfaceCaps;
 
+bool hasSurfaceMaintance1 = false;
+
+bool hasMaintenance1 = false;
+bool hasPresentId = false;
+bool hasPresentWait = false;
+bool hasGoogleTiming = false;
+
+void swapchain::RequestInstanceExtensions(VKInstanceExtender& instanceExtender)
+{
+	#ifdef ERMY_OS_WINDOWS
+		instanceExtender.TryAddExtension(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
+	#endif
+	#ifdef ERMY_OS_ANDROID
+		instanceExtender.TryAddExtension(VK_KHR_ANDROID_SURFACE_EXTENSION_NAME);
+	#endif
+	#ifdef ERMY_OS_LINUX
+		//VK_KHR_xcb_surface
+		instanceExtender.TryAddExtension("VK_KHR_xcb_surface");
+	#endif
+	#ifdef ERMY_OS_MACOS
+		instanceExtender.TryAddExtension(VK_EXT_METAL_SURFACE_EXTENSION_NAME);
+	#endif
+
+
+	hasSurfaceMaintance1 = instanceExtender.TryAddExtension(VK_EXT_SURFACE_MAINTENANCE_1_EXTENSION_NAME);
+}
+
+void swapchain::RequestDeviceExtensions(VKDeviceExtender& device_extender)
+{
+	device_extender.TryAddExtension(VK_KHR_SWAPCHAIN_EXTENSION_NAME); //TODO: fill device info with supported features
+
+	if (hasSurfaceMaintance1)
+	{
+		hasMaintenance1 = device_extender.TryAddExtension(VK_EXT_SWAPCHAIN_MAINTENANCE_1_EXTENSION_NAME);
+	}
+	
+	hasPresentId = device_extender.TryAddExtension(VK_KHR_PRESENT_ID_EXTENSION_NAME);
+	hasPresentWait = device_extender.TryAddExtension(VK_KHR_PRESENT_WAIT_EXTENSION_NAME);
+	hasGoogleTiming = device_extender.TryAddExtension(VK_GOOGLE_DISPLAY_TIMING_EXTENSION_NAME);
+}
+
 void swapchain::Initialize()
 {
 #ifdef ERMY_OS_WINDOWS

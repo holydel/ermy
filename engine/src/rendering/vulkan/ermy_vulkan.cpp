@@ -240,6 +240,8 @@ void LoadVkInstanceLevelFuncs(VkInstance instance)
 #ifdef ERMY_OS_WINDOWS
 	VK_LOAD_INSTANCE_FUNC(vkCreateWin32SurfaceKHR);
 	VK_LOAD_INSTANCE_FUNC(vkGetPhysicalDeviceWin32PresentationSupportKHR);
+	VK_LOAD_INSTANCE_FUNC(vkGetWinrtDisplayNV);
+	VK_LOAD_INSTANCE_FUNC(vkAcquireWinrtDisplayNV);
 #endif
 
 #ifdef ERMY_OS_ANDROID
@@ -361,12 +363,6 @@ void LoadVkDeviceLevelFuncs(VkDevice device)
 	VK_LOAD_DEVICE_FUNC(vkGetBufferMemoryRequirements2);
 	VK_LOAD_DEVICE_FUNC(vkGetImageMemoryRequirements2);
 	VK_LOAD_DEVICE_FUNC(vkCmdDecompressMemoryNV);
-
-
-#ifdef ERMY_OS_WINDOWS
-	VK_LOAD_DEVICE_FUNC(vkGetWinrtDisplayNV);
-	VK_LOAD_DEVICE_FUNC(vkAcquireWinrtDisplayNV);
-#endif
 }
 
 const char* VkResultToString(VkResult res)

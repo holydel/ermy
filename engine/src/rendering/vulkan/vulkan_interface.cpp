@@ -4,6 +4,7 @@
 #include "../../graphics/canvas.h"
 #include "../../application.h"
 #include "../../os/os_utils.h"
+#include "vulkan_swapchain.h"
 
 VkInstance gVKInstance = VK_NULL_HANDLE;
 VkAllocationCallbacks* gVKGlobalAllocationsCallbacks = nullptr;
@@ -64,83 +65,7 @@ void InitializeInstance()
 		ERMY_LOG("Found vulkan instance: %d.%d.%d", major, minor, patch);
 	}
 
-	struct InstanceExtender
-	{
-		std::vector<const char*> enabledLayers;
-		std::vector<const char*> enabledExtensions;
-
-		std::vector<VkLayerProperties> all_layers;
-		std::vector<VkExtensionProperties> all_extensions;
-
-		InstanceExtender()
-		{
-			all_layers = EnumerateVulkanObjects(vkEnumerateInstanceLayerProperties);
-			all_extensions = EnumerateVulkanObjects(vkEnumerateInstanceExtensionProperties);
-		}
-
-		bool TryAddLayer(const char* layer_name)
-		{
-			bool exists = false;
-
-			for (auto& l : all_layers)
-			{
-				if (strcmp(l.layerName, layer_name) == 0)
-				{
-					exists = true;
-					break;
-				}
-			}
-
-			if (exists)
-			{
-				enabledLayers.push_back(layer_name);
-			}
-
-			return exists;
-		}
-
-		bool TryAddExtension(const char* extension_name)
-		{
-			bool exists = false;
-
-			for (auto& e : all_extensions)
-			{
-				if (strcmp(e.extensionName, extension_name) == 0)
-				{
-					exists = true;
-					break;
-				}
-			}
-
-			if (exists)
-			{
-				enabledExtensions.push_back(extension_name);
-			}
-
-			return exists;
-		}
-
-		u32 NumEnabledLayers() const
-		{
-			return (u32)enabledLayers.size();
-		}
-
-		u32 NumEnabledExtension() const
-		{
-			return (u32)enabledExtensions.size();
-		}
-
-		const char** const EnabledLayers() const
-		{
-			return (const char** const)enabledLayers.data();
-		}
-
-		const char** const EnabledExtensions() const
-		{
-			return (const char** const)enabledExtensions.data();
-		}
-
-	} instance_extender;
+	VKInstanceExtender instance_extender;
 
 	bool isDebugLayers = renderCfg.enableDebugLayers;
 
@@ -153,6 +78,7 @@ void InitializeInstance()
 	if (GetApplication().staticConfig.outputMode != Application::StaticConfig::OutputMode::Headless)
 	{
 		instance_extender.TryAddExtension(VK_KHR_SURFACE_EXTENSION_NAME);
+		swapchain::RequestInstanceExtensions(instance_extender);
 	}
 
 	//test debug reporter instance level
@@ -160,22 +86,11 @@ void InitializeInstance()
 
 	instance_extender.TryAddExtension(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
 
-#ifdef ERMY_OS_WINDOWS
-	instance_extender.TryAddExtension(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
-#endif
-#ifdef ERMY_OS_ANDROID
-	instance_extender.TryAddExtension(VK_KHR_ANDROID_SURFACE_EXTENSION_NAME);
-#endif
-#ifdef ERMY_OS_LINUX
-	//VK_KHR_xcb_surface
-	instance_extender.TryAddExtension("VK_KHR_xcb_surface");
-#endif
 #ifdef ERMY_OS_MACOS
 	//Found drivers that contain devices which support the portability subset, but the instance does not enumerate portability drivers!
 	//Applications that wish to enumerate portability drivers must set the VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR bit in the VkInstanceCreateInfo flags
 	//and enable the VK_KHR_portability_enumeration instance extension.
 	instance_extender.TryAddExtension(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
-	instance_extender.TryAddExtension(VK_EXT_METAL_SURFACE_EXTENSION_NAME);
 #endif
 
 	if (isDebugLayers)	
@@ -302,62 +217,7 @@ static void ChoosePhysicalDevice()
 
 void CreateDevice()
 {
-	struct DeviceExtender
-	{
-		std::vector<const char*> enabledExtensions;
-		std::vector<VkExtensionProperties> all_extensions;
-		std::string all_extensions_str;
-
-		DeviceExtender()
-		{
-			all_extensions_str.reserve(65536);
-
-			const char* fakeLayer = nullptr;
-			all_extensions = EnumerateVulkanObjects(gVKPhysicalDevice, fakeLayer, vkEnumerateDeviceExtensionProperties);
-
-			ERMY_LOG("Device extension lists:");
-
-			for (auto& ex : all_extensions)
-			{
-				ERMY_LOG(ex.extensionName);
-
-				all_extensions_str += ex.extensionName;
-				all_extensions_str += "\n";
-			}
-		}
-
-		bool TryAddExtension(const char* extension_name)
-		{
-			bool exists = false;
-
-			for (auto& e : all_extensions)
-			{
-				if (strcmp(e.extensionName, extension_name) == 0)
-				{
-					exists = true;
-					break;
-				}
-			}
-
-			if (exists)
-			{
-				enabledExtensions.push_back(extension_name);
-			}
-
-			return exists;
-		}
-
-		u32 NumEnabledExtension() const
-		{
-			return (u32)enabledExtensions.size();
-		}
-
-		const char** const EnabledExtensions() const
-		{
-			return (const char** const)enabledExtensions.data();
-		}
-
-	} device_extender;
+	VKDeviceExtender device_extender(gVKPhysicalDevice);
 
 	std::vector<VkQueueFamilyProperties> queueFamilies(32);
 
@@ -471,7 +331,7 @@ void CreateDevice()
 	std::vector< VkDeviceQueueCreateInfo> requestedQueues;
 	requestedQueues.push_back(queueCreateInfoGraphics);
 
-	device_extender.TryAddExtension(VK_KHR_SWAPCHAIN_EXTENSION_NAME); //TODO: fill device info with supported features
+	swapchain::RequestDeviceExtensions(device_extender);
 
 	device_extender.TryAddExtension(VK_NV_MEMORY_DECOMPRESSION_EXTENSION_NAME);
 	device_extender.TryAddExtension(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME);
