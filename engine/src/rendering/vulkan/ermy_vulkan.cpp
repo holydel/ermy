@@ -59,6 +59,8 @@ VK_DEFINE_FUNCTION(vkGetPhysicalDeviceImageFormatProperties);
 VK_DEFINE_FUNCTION(vkEnumeratePhysicalDeviceGroups);
 VK_DEFINE_FUNCTION(vkDestroyDescriptorSetLayout);
 VK_DEFINE_FUNCTION(vkFreeDescriptorSets);
+VK_DEFINE_FUNCTION(vkWaitSemaphores);
+VK_DEFINE_FUNCTION(vkQueueSubmit2KHR);
 
 #ifdef ERMY_OS_WINDOWS
 VK_DEFINE_FUNCTION(vkCreateWin32SurfaceKHR);
@@ -363,6 +365,8 @@ void LoadVkDeviceLevelFuncs(VkDevice device)
 	VK_LOAD_DEVICE_FUNC(vkGetBufferMemoryRequirements2);
 	VK_LOAD_DEVICE_FUNC(vkGetImageMemoryRequirements2);
 	VK_LOAD_DEVICE_FUNC(vkCmdDecompressMemoryNV);
+	VK_LOAD_DEVICE_FUNC(vkWaitSemaphores);
+	VK_LOAD_DEVICE_FUNC(vkQueueSubmit2KHR);
 }
 
 const char* VkResultToString(VkResult res)

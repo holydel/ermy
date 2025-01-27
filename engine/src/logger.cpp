@@ -31,7 +31,7 @@ void ermy::logger::EnqueueLogMessageRAWTagged(LogSeverity severity, const char *
 {
 	// Determine the required buffer size
 	//auto v = va_arg(args, const char*);
-	char data[256];
+	char data[4096];
 	//int size = vsprintf_s(data, message, args);
 	//va_list args_copy;
 	//va_copy(args_copy, args);

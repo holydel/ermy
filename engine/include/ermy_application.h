@@ -35,6 +35,12 @@ namespace ermy
 
 			};
 
+			struct ImguiConfig
+			{
+				bool enable  = true;
+				bool enableDocking  = false;
+			};
+
 			struct EngineConfig
 			{
 				bool EnableIMGUI = false;
@@ -42,8 +48,8 @@ namespace ermy
 				bool EnableBulletPhysics = false;
 				bool EnableXR = false;
 
-				bool GraphicsValidation = false;
-				bool XRValidation = false;
+				bool GraphicsValidation  = false;
+				bool XRValidation  = false;				
 			};
 
 			struct RendererConfig
@@ -58,9 +64,10 @@ namespace ermy
 			};
 
 			OutputMode outputMode = OutputMode::Window;
-			WindowConfig output;
+			WindowConfig window;
 			EngineConfig engine;
 			RendererConfig render;
+			ImguiConfig imgui;
 
 			struct Version
 			{
@@ -81,10 +88,10 @@ namespace ermy
 
 			const std::string& GetWindowTitle()
 			{
-				if (output.title.empty())
+				if (window.title.empty())
 					return appName;
 				else
-					return output.title;
+					return window.title;
 			}
 		} staticConfig;
 

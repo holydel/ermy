@@ -14,7 +14,7 @@ void* os::CreateNativeWindow()
 {
 	gWinSystemInstance = GetModuleHandleA(nullptr);
 	auto& config = GetApplication().staticConfig;
-	auto& winCfg = GetApplication().staticConfig.output;
+	auto& winCfg = GetApplication().staticConfig.window;
 
 	const char* utf8WinCaption = config.GetWindowTitle().c_str();
 	bool is_maximized = winCfg.mode != ermy::Application::StaticConfig::WindowConfig::WindowMode::Windowed;

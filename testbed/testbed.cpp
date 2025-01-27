@@ -13,6 +13,8 @@ public:
 		logConfig.FileMirroring.enabled = true;
 
 		staticConfig.appName = "TestBed";
+
+		staticConfig.render.adapterID = 0;
 	}
 
 	void OnInitialization() override;

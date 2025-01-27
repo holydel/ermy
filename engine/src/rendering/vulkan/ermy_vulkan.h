@@ -196,8 +196,8 @@ VK_DECLARE_FUNCTION(vkBindImageMemory2);
 VK_DECLARE_FUNCTION(vkGetBufferMemoryRequirements2);
 VK_DECLARE_FUNCTION(vkGetImageMemoryRequirements2);
 VK_DECLARE_FUNCTION(vkCmdDecompressMemoryNV);
-
-
+VK_DECLARE_FUNCTION(vkWaitSemaphores);
+VK_DECLARE_FUNCTION(vkQueueSubmit2KHR);
 #ifdef ERMY_OS_WINDOWS
 VK_DECLARE_FUNCTION(vkGetWinrtDisplayNV);
 VK_DECLARE_FUNCTION(vkAcquireWinrtDisplayNV);
@@ -466,3 +466,11 @@ struct VKDeviceExtender
 	}
 
 };
+
+// Helper to chain elements to the pNext
+template <typename MainT, typename NewT>
+static void NextChainPushFront(MainT* mainStruct, NewT* newStruct)
+{
+	newStruct->pNext = mainStruct->pNext;
+	mainStruct->pNext = newStruct;
+}

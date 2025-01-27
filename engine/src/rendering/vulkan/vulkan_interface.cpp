@@ -55,7 +55,6 @@ void InitializeInstance()
 
 	if (vkEnumerateInstanceVersion != nullptr)
 	{
-		
 		VK_CALL(vkEnumerateInstanceVersion(&installedVersion));
 
 		int major = VK_VERSION_MAJOR(installedVersion);
@@ -75,6 +74,8 @@ void InitializeInstance()
 		instance_extender.TryAddExtension(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 	}
 
+	swapchain::Configure(GetApplication().staticConfig);
+
 	if (GetApplication().staticConfig.outputMode != Application::StaticConfig::OutputMode::Headless)
 	{
 		instance_extender.TryAddExtension(VK_KHR_SURFACE_EXTENSION_NAME);
@@ -85,6 +86,8 @@ void InitializeInstance()
 	//instance_extender.enabledExtensions.push_back("grtehg54rhg45h");
 
 	instance_extender.TryAddExtension(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
+	instance_extender.TryAddExtension(VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME);
+	instance_extender.TryAddExtension(VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME);
 
 #ifdef ERMY_OS_MACOS
 	//Found drivers that contain devices which support the portability subset, but the instance does not enumerate portability drivers!
@@ -92,9 +95,6 @@ void InitializeInstance()
 	//and enable the VK_KHR_portability_enumeration instance extension.
 	instance_extender.TryAddExtension(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
 #endif
-
-	if (isDebugLayers)	
-		instance_extender.TryAddExtension(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
 
 	VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
 	debugCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
@@ -160,18 +160,13 @@ static void ChoosePhysicalDevice()
 		vkGetPhysicalDeviceProperties(phys_devices[i], &props);
 
 		std::string deviceType = "DISCRETE";
+
 		if(props.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU)
-		{
 			deviceType = "INTEGRATED";
-		}
-		else if (props.deviceType == VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU)
-		{
+		if (props.deviceType == VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU)
 			deviceType = "VIRTUAL";
-		}
-		else if (props.deviceType == VK_PHYSICAL_DEVICE_TYPE_CPU)
-		{
+		if (props.deviceType == VK_PHYSICAL_DEVICE_TYPE_CPU)
 			deviceType = "CPU";
-		}
 
 		ERMY_LOG("Found VK device (%d): %s - (%s)", i, props.deviceName,deviceType.c_str());
 	}
@@ -336,13 +331,28 @@ void CreateDevice()
 	device_extender.TryAddExtension(VK_NV_MEMORY_DECOMPRESSION_EXTENSION_NAME);
 	device_extender.TryAddExtension(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME);
 	device_extender.TryAddExtension(VK_KHR_DEDICATED_ALLOCATION_EXTENSION_NAME);
+	device_extender.TryAddExtension(VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME);
+	device_extender.TryAddExtension(VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME);
+
+	VkPhysicalDeviceVulkan11Features features11 = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES, nullptr };
+	VkPhysicalDeviceVulkan12Features features12 = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES, nullptr };
+	VkPhysicalDeviceVulkan13Features features13 = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES, nullptr };
+	VkPhysicalDeviceVulkan14Features features14 = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_4_FEATURES, nullptr };
+	
+	features11.pNext = &features12;
+
+	features12.timelineSemaphore = true;
+
+	VkPhysicalDeviceSynchronization2Features sync2Features = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES, nullptr };
+	sync2Features.synchronization2 = true;
+	features12.pNext = &sync2Features;
 
 #ifdef ERMY_OS_MACOS
 	device_extender.TryAddExtension(VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME);
 #endif
 	VkDeviceCreateInfo deviceCreateInfo;
 	deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-	deviceCreateInfo.pNext = nullptr;
+	deviceCreateInfo.pNext = &features11;
 	deviceCreateInfo.flags = 0;
 	deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(requestedQueues.size());
 	deviceCreateInfo.pQueueCreateInfos = requestedQueues.data();
@@ -352,13 +362,14 @@ void CreateDevice()
 	deviceCreateInfo.ppEnabledExtensionNames = device_extender.EnabledExtensions(); //deprecated
 	deviceCreateInfo.enabledExtensionCount = device_extender.NumEnabledExtension();
 
-	VkPhysicalDeviceBufferDeviceAddressFeatures pfeture = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES };
-	pfeture.bufferDeviceAddress = true;
+	//VkPhysicalDeviceBufferDeviceAddressFeatures pfeture = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES };
+	//pfeture.bufferDeviceAddress = true;
 
-	VkPhysicalDeviceFeatures2 enabledFeatures = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2 };
-	enabledFeatures.pNext = &pfeture;
+	//VkPhysicalDeviceFeatures2 enabledFeatures = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2 };
+	//
+	//enabledFeatures.pNext = &pfeture;
 
-	deviceCreateInfo.pNext = &enabledFeatures;
+	//deviceCreateInfo.pNext = &enabledFeatures;
 	VK_CALL(vkCreateDevice(gVKPhysicalDevice, &deviceCreateInfo, gVKGlobalAllocationsCallbacks, &gVKDevice));
 
 
@@ -421,7 +432,7 @@ void CreateDevice()
 	//VK_CALL(vkCreateCommandPool(gDevice, &poolInfo, gGlobalAllocationsCallbacks, &gOneTimeSubmitCommandPool));
 }
 
-void rendering::Initialize()
+void rendering_interface::Initialize()
 {
    ERMY_LOG("VULKAN Initialize");
   
@@ -433,14 +444,14 @@ void rendering::Initialize()
    //printf("RENDERING","WEBGPU Initialize/n");
 }
 
-void rendering::Shutdown()
+void rendering_interface::Shutdown()
 {
     ERMY_LOG("VULKAN Shutdown");
 
     //printf("RENDERING","WEBGPU Shutdown/n");
 }
 
-void rendering::Process()
+void rendering_interface::Process()
 {
   
 }

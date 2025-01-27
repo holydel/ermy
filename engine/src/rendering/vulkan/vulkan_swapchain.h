@@ -13,4 +13,9 @@ namespace swapchain
 {
 	void RequestInstanceExtensions(VKInstanceExtender &instanceExtender);
 	void RequestDeviceExtensions(VKDeviceExtender& device_extender);
+
+	VkSemaphore GetWaitSemaphores();
+	VkSemaphore GetSignalSemaphores();
+	VkFramebuffer GetFramebuffer();
+	VkRenderPass GetRenderPass();
 }

@@ -3,8 +3,7 @@
 #include "os/os.h"
 #include "logger.h"
 
-#include "rendering/rendering_interface.h"
-#include "rendering/swapchain_interface.h"
+#include "rendering/rendering.h"
 
 ermy::Application *gApplication = nullptr;
 
@@ -35,24 +34,28 @@ void ErmyApplicationStart()
 	ERMY_LOG("start initialize ermy engine for application: %s", gApplication->staticConfig.appName.c_str()); //
 
 	os::CreateNativeWindow();
+
 	rendering::Initialize();
-	swapchain::Initialize();
 	gApplication->OnInitialization();
 
 	// initialize engine built-in data
 
 	gApplication->OnLoad();
+
+
 }
 
 bool ErmyApplicationStep()
 {
+	rendering::BeginFrame();
 	gApplication->OnBeginFrame();
 
 	rendering::Process();
-	swapchain::Process();
 
 	gApplication->OnEndFrame();
 
+	rendering::EndFrame();
+	
 	os::Update();
 	return true;
 }
@@ -63,12 +66,11 @@ void ErmyApplicationShutdown()
 
 	gApplication->OnShutdown();
 
-	swapchain::Shutdown();
 	rendering::Shutdown();
 	loggerImpl::Shutdown();
 }
 
-void ErmyApplicationRun()
+void ErmyApplicationRun() //some systems (emscriten, macos) have dedicated step functions, so this is just a wrapper
 {
 	ErmyApplicationStart();
 

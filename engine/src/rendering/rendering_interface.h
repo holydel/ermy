@@ -1,7 +1,7 @@
 #pragma once
 #include "ermy_api.h"
 
-namespace rendering
+namespace rendering_interface
 {
     void Initialize();
     void Shutdown();
