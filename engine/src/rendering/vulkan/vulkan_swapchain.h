@@ -18,4 +18,10 @@ namespace swapchain
 	VkSemaphore GetSignalSemaphores();
 	VkFramebuffer GetFramebuffer();
 	VkRenderPass GetRenderPass();
+
+	void InitSwapchain();
+	void ShutdownSwapchain();
+	void ShutdownOldSwapchain();
+	void InitSwapchainResources();
+	void ShutdownSwapchainResources();
 }

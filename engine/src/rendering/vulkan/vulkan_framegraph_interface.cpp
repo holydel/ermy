@@ -75,6 +75,8 @@ namespace framegraph_interface
 
 	void Process()
 	{
+		swapchain::ReInitIfNeeded();
+
 		auto& frame = gFrames[gFrameRingCurrent];
 
 		const uint64_t            waitValue = frame.frameIndex;

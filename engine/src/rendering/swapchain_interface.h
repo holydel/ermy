@@ -24,4 +24,6 @@ namespace swapchain
     void Present();
 
     int GetNumFrames();
+
+    bool ReInitIfNeeded();
 }

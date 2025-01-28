@@ -6,6 +6,7 @@
 using namespace ermy;
 
 VkSwapchainKHR gVKSwapchain = VK_NULL_HANDLE;
+VkSwapchainKHR gVKOldSwapchain = VK_NULL_HANDLE;
 VkSurfaceKHR gVKSurface = VK_NULL_HANDLE;
 VkSurfaceCapabilitiesKHR gVKSurfaceCaps;
 VkFormat gVKSurfaceFormat;
@@ -14,6 +15,7 @@ VkSemaphore gSwapchainSemaphore = VK_NULL_HANDLE;
 VkRenderPass gVKRenderPass = VK_NULL_HANDLE;
 int gSwapchainCurrentFrame = 0;
 int gNumberOfFrames = 3;
+bool gSwapchainNeedRebuild = false;
 
 struct FrameInFlight
 {
@@ -67,80 +69,12 @@ struct SwapchainExt
 SwapchainExt gSwapchainEXT;
 VkCommandPool gVKCommandPool = VK_NULL_HANDLE;
 
-void createSwapchain()
+void swapchain::InitSwapchainResources()
 {
-	VkSwapchainCreateInfoKHR createInfo {VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR};
-	createInfo.clipped = VK_TRUE;
-	createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
-	createInfo.imageArrayLayers = 1;
-	createInfo.imageColorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
-	createInfo.imageExtent = gVKSurfaceCaps.currentExtent;
-	createInfo.imageFormat = gVKSurfaceFormat;
-	createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-	createInfo.minImageCount = gNumberOfFrames;
-	createInfo.presentMode = VK_PRESENT_MODE_MAILBOX_KHR;
-	createInfo.surface = gVKSurface;
-	createInfo.preTransform = gVKSurfaceCaps.currentTransform;
-
-	vkCreateSwapchainKHR(gVKDevice, &createInfo, nullptr, &gVKSwapchain);
-
 	u32 imageCount = 0;
 	vkGetSwapchainImagesKHR(gVKDevice, gVKSwapchain, &imageCount, nullptr);
 	std::vector<VkImage> images(imageCount);
 	vkGetSwapchainImagesKHR(gVKDevice, gVKSwapchain, &imageCount, images.data());
-
-	VkRenderPassCreateInfo renderPassInfo{ VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO };
-	VkAttachmentDescription colorAttachment{};
-	colorAttachment.format = gVKSurfaceFormat;
-	colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-	colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-	colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;	
-	colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-	colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-	colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-
-	VkAttachmentReference colorAttachmentRef{};
-	colorAttachmentRef.attachment = 0;
-	colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-	VkSubpassDescription subpass{};
-	subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-	subpass.colorAttachmentCount = 1;
-	subpass.pColorAttachments = &colorAttachmentRef;
-
-	// These dependencies ensure proper synchronization
-	std::array<VkSubpassDependency, 2> dependencies;
-
-	dependencies[0] = {
-		.srcSubpass = VK_SUBPASS_EXTERNAL,
-		.dstSubpass = 0,
-		.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-		.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-		.srcAccessMask = 0,
-		.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-		.dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT
-	};
-
-	dependencies[1] = {
-		.srcSubpass = 0,
-		.dstSubpass = VK_SUBPASS_EXTERNAL,
-		.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-		.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-		.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-		.dstAccessMask = 0,
-		.dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT
-	};
-
-	renderPassInfo.attachmentCount = 1;
-	renderPassInfo.pAttachments = &colorAttachment;
-	renderPassInfo.subpassCount = 1;
-	renderPassInfo.pSubpasses = &subpass;
-	renderPassInfo.dependencyCount = static_cast<u32>(dependencies.size());
-	renderPassInfo.pDependencies = dependencies.data();
-
-	vkCreateRenderPass(gVKDevice, &renderPassInfo, nullptr, &gVKRenderPass);
 
 	gFramesInFlight.resize(imageCount);
 	for (int i = 0; i < gNumberOfFrames; ++i)
@@ -158,7 +92,7 @@ void createSwapchain()
 		imageViewInfo.subresourceRange.layerCount = 1;
 
 		vkCreateImageView(gVKDevice, &imageViewInfo, nullptr, &gFramesInFlight[i].imageView);
-				
+
 		VkSemaphoreCreateInfo semaphoreInfo{ VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO };
 		vkCreateSemaphore(gVKDevice, &semaphoreInfo, nullptr, &gFramesInFlight[i].imageAvailableSemaphore);
 		vkCreateSemaphore(gVKDevice, &semaphoreInfo, nullptr, &gFramesInFlight[i].renderFinishedSemaphore);
@@ -172,11 +106,48 @@ void createSwapchain()
 		framebufferInfo.layers = 1;
 
 		vkCreateFramebuffer(gVKDevice, &framebufferInfo, nullptr, &gFramesInFlight[i].framebuffer);
-
-		//VkFenceCreateInfo fenceInfo{ VK_STRUCTURE_TYPE_FENCE_CREATE_INFO };
-		//fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-		//VK_CALL(vkCreateFence(gVKDevice, &fenceInfo, nullptr, &gFramesInFlight[i].inFlightFence));
 	}
+}
+
+void swapchain::ShutdownSwapchainResources()
+{
+	for (auto& frame : gFramesInFlight)
+	{
+		vkDestroySemaphore(gVKDevice, frame.imageAvailableSemaphore, nullptr);
+		vkDestroySemaphore(gVKDevice, frame.renderFinishedSemaphore, nullptr);
+		vkDestroyFramebuffer(gVKDevice, frame.framebuffer, nullptr);
+		vkDestroyImageView(gVKDevice, frame.imageView, nullptr);
+	}
+
+}
+
+void swapchain::InitSwapchain()
+{
+	gVKOldSwapchain = gVKSwapchain;
+	VkSwapchainCreateInfoKHR createInfo{ VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR };
+	createInfo.clipped = VK_TRUE;
+	createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+	createInfo.imageArrayLayers = 1;
+	createInfo.imageColorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
+	createInfo.imageExtent = gVKSurfaceCaps.currentExtent;
+	createInfo.imageFormat = gVKSurfaceFormat;
+	createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+	createInfo.minImageCount = gNumberOfFrames;
+	createInfo.presentMode = VK_PRESENT_MODE_MAILBOX_KHR;
+	createInfo.surface = gVKSurface;
+	createInfo.preTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
+	createInfo.oldSwapchain = gVKOldSwapchain;
+	vkCreateSwapchainKHR(gVKDevice, &createInfo, nullptr, &gVKSwapchain);
+}
+
+void swapchain::ShutdownSwapchain()
+{
+	vkDestroySwapchainKHR(gVKDevice, gVKSwapchain, nullptr);
+}
+void swapchain::ShutdownOldSwapchain()
+{
+	vkDestroySwapchainKHR(gVKDevice, gVKOldSwapchain, nullptr);
 }
 
 void swapchain::RequestInstanceExtensions(VKInstanceExtender& instanceExtender)
@@ -306,12 +277,87 @@ void swapchain::Initialize()
 	vkGetPhysicalDeviceSurfaceCapabilities2KHR(gVKPhysicalDevice, &surfaceInfo2, &capabilities2);
 
 	gNumberOfFrames = std::max(3u, capabilities2.surfaceCapabilities.minImageCount);
-	createSwapchain();	
+
+	VkRenderPassCreateInfo renderPassInfo{ VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO };
+	VkAttachmentDescription colorAttachment{};
+	colorAttachment.format = gVKSurfaceFormat;
+	colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+	colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+	colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+	colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+	colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+	colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+	colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+	VkAttachmentReference colorAttachmentRef{};
+	colorAttachmentRef.attachment = 0;
+	colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+	VkSubpassDescription subpass{};
+	subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+	subpass.colorAttachmentCount = 1;
+	subpass.pColorAttachments = &colorAttachmentRef;
+
+	// These dependencies ensure proper synchronization
+	std::array<VkSubpassDependency, 2> dependencies;
+
+	dependencies[0] = {
+		.srcSubpass = VK_SUBPASS_EXTERNAL,
+		.dstSubpass = 0,
+		.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+		.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+		.srcAccessMask = 0,
+		.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+		.dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT
+	};
+
+	dependencies[1] = {
+		.srcSubpass = 0,
+		.dstSubpass = VK_SUBPASS_EXTERNAL,
+		.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+		.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+		.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+		.dstAccessMask = 0,
+		.dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT
+	};
+
+	renderPassInfo.attachmentCount = 1;
+	renderPassInfo.pAttachments = &colorAttachment;
+	renderPassInfo.subpassCount = 1;
+	renderPassInfo.pSubpasses = &subpass;
+	renderPassInfo.dependencyCount = static_cast<u32>(dependencies.size());
+	renderPassInfo.pDependencies = dependencies.data();
+
+	vkCreateRenderPass(gVKDevice, &renderPassInfo, nullptr, &gVKRenderPass);
+
+	InitSwapchain();
+	InitSwapchainResources();
+}
+
+bool swapchain::ReInitIfNeeded()
+{
+	if (gSwapchainNeedRebuild)
+	{
+		vkQueueWaitIdle(gVKMainQueue);
+		VK_CALL(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(gVKPhysicalDevice, gVKSurface, &gVKSurfaceCaps));
+
+		ShutdownSwapchainResources();		
+		InitSwapchain();
+		ShutdownOldSwapchain();
+		InitSwapchainResources();
+
+		gSwapchainNeedRebuild = false;
+		return true;
+	}
+	
+	return false;
 }
 
 void swapchain::Shutdown()
 {
-
+	ShutdownSwapchainResources();
+	ShutdownSwapchain();
+	ShutdownOldSwapchain();
 }
 
 void swapchain::Process()
@@ -323,11 +369,13 @@ void swapchain::AcquireNextImage()
 {
 	auto& frame = gFramesInFlight[gSwapchainCurrentFrame];
 
-	//vkWaitForFences(gVKDevice, 1, &frame.inFlightFence, VK_TRUE, UINT64_MAX);
-	//vkResetFences(gVKDevice, 1, &frame.inFlightFence);
+	auto result = vkAcquireNextImageKHR(gVKDevice, gVKSwapchain, UINT64_MAX, frame.imageAvailableSemaphore, VK_NULL_HANDLE, &gAcquiredNextImageIndex);
 
-	//frame.inFlightFence
-	vkAcquireNextImageKHR(gVKDevice, gVKSwapchain, UINT64_MAX, frame.imageAvailableSemaphore, VK_NULL_HANDLE, &gAcquiredNextImageIndex);
+	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
+	{
+		gSwapchainNeedRebuild = true;
+		return;
+	}
 }
 
 void swapchain::Present()
@@ -344,8 +392,13 @@ void swapchain::Present()
 		.pImageIndices = &gAcquiredNextImageIndex,               // Index of the image to present
 	};
 
-	//vkQueueWaitIdle(gVKMainQueue);
-	vkQueuePresentKHR(gVKMainQueue, &presentInfo);
+	const VkResult result = vkQueuePresentKHR(gVKMainQueue, &presentInfo);
+	// If the swapchain is out of date (e.g., window resized), it needs to be rebuilt
+	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
+	{
+		gSwapchainNeedRebuild = true;
+		return;
+	}
 
 	gSwapchainCurrentFrame = (gSwapchainCurrentFrame + 1) % GetNumFrames();
 }
