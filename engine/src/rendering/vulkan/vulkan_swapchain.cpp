@@ -133,7 +133,7 @@ void swapchain::InitSwapchain()
 	createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
 	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 	createInfo.minImageCount = gNumberOfFrames;
-	createInfo.presentMode = VK_PRESENT_MODE_MAILBOX_KHR;
+	createInfo.presentMode = VK_PRESENT_MODE_FIFO_KHR;
 	createInfo.surface = gVKSurface;
 	createInfo.preTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
 	createInfo.oldSwapchain = gVKOldSwapchain;

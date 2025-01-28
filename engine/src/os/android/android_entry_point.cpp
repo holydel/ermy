@@ -33,7 +33,27 @@ void onStart(ANativeActivity* activity)
 		ErmyApplicationStart();
 		while (ErmyApplicationStep())
 		{
-			std::this_thread::sleep_for(1ms);
+			if (gMainInputQueue != nullptr)
+			{
+				while (AInputQueue_hasEvents(gMainInputQueue) > 0)
+				{
+					AInputEvent* event = nullptr;
+					AInputQueue_getEvent(gMainInputQueue, &event);
+
+					if (AInputQueue_preDispatchEvent(gMainInputQueue, event)) {
+						continue;
+					}
+
+					int32_t handled = 0;
+
+					ImGui_ImplAndroid_HandleInputEvent(event);
+					//pass to input system
+
+					AInputQueue_finishEvent(gMainInputQueue, event, handled);
+				}
+			}
+
+			//std::this_thread::sleep_for(1ms);
 		}
 		ErmyApplicationShutdown();
 	});
@@ -164,7 +184,7 @@ void onNativeWindowDestroyed(ANativeActivity* activity, ANativeWindow* window)
 void onInputQueueCreated(ANativeActivity* activity, AInputQueue* queue)
 {
 	ERMY_LOG("onInputQueueCreated");
-	//gMainInputQueue = queue;
+	gMainInputQueue = queue;
 }
 
 /**
@@ -174,7 +194,7 @@ void onInputQueueCreated(ANativeActivity* activity, AInputQueue* queue)
  */
 void onInputQueueDestroyed(ANativeActivity* activity, AInputQueue* queue)
 {
-	//gMainInputQueue = nullptr;
+	gMainInputQueue = nullptr;
 	ERMY_LOG("onInputQueueDestroyed");
 }
 
