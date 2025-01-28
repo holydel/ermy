@@ -1,6 +1,8 @@
 #include "vulkan_swapchain.h"
 #include "../../os/os_utils.h"
 #include "vulkan_interface.h"
+#include <array>
+
 using namespace ermy;
 
 VkSwapchainKHR gVKSwapchain = VK_NULL_HANDLE;
@@ -11,11 +13,13 @@ u32 gAcquiredNextImageIndex = 0;
 VkSemaphore gSwapchainSemaphore = VK_NULL_HANDLE;
 VkRenderPass gVKRenderPass = VK_NULL_HANDLE;
 int gSwapchainCurrentFrame = 0;
+int gNumberOfFrames = 3;
 
 struct FrameInFlight
 {
 	VkSemaphore imageAvailableSemaphore;
 	VkSemaphore renderFinishedSemaphore;
+	VkFence inFlightFence;
 	VkFramebuffer framebuffer;
 	VkImage image;
 	VkImageView imageView;
@@ -45,7 +49,7 @@ struct SwapchainExt
 	bool hasDisplay : 1 = false;
 	bool hasDisplay2Props : 1 = false;
 	bool hasDirectModeDisplay : 1 = false;
-
+	bool hasProtectedCapabilities : 1 = false;
 	//device extensions
 	bool hasMaintenance1 : 1 = false;
 	bool hasPresentId : 1 = false;
@@ -70,8 +74,8 @@ void createSwapchain()
 	createInfo.imageFormat = gVKSurfaceFormat;
 	createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
 	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-	createInfo.minImageCount = 3;
-	createInfo.presentMode = VK_PRESENT_MODE_FIFO_KHR;
+	createInfo.minImageCount = gNumberOfFrames;
+	createInfo.presentMode = VK_PRESENT_MODE_MAILBOX_KHR;
 	createInfo.surface = gVKSurface;
 	createInfo.preTransform = gVKSurfaceCaps.currentTransform;
 
@@ -87,7 +91,7 @@ void createSwapchain()
 	colorAttachment.format = gVKSurfaceFormat;
 	colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
 	colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-	colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+	colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;	
 	colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 	colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 	colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
@@ -102,15 +106,40 @@ void createSwapchain()
 	subpass.colorAttachmentCount = 1;
 	subpass.pColorAttachments = &colorAttachmentRef;
 
+	// These dependencies ensure proper synchronization
+	std::array<VkSubpassDependency, 2> dependencies;
+
+	dependencies[0] = {
+		.srcSubpass = VK_SUBPASS_EXTERNAL,
+		.dstSubpass = 0,
+		.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+		.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+		.srcAccessMask = 0,
+		.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+		.dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT
+	};
+
+	dependencies[1] = {
+		.srcSubpass = 0,
+		.dstSubpass = VK_SUBPASS_EXTERNAL,
+		.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+		.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+		.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+		.dstAccessMask = 0,
+		.dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT
+	};
+
 	renderPassInfo.attachmentCount = 1;
 	renderPassInfo.pAttachments = &colorAttachment;
 	renderPassInfo.subpassCount = 1;
 	renderPassInfo.pSubpasses = &subpass;
+	renderPassInfo.dependencyCount = static_cast<u32>(dependencies.size());
+	renderPassInfo.pDependencies = dependencies.data();
 
 	vkCreateRenderPass(gVKDevice, &renderPassInfo, nullptr, &gVKRenderPass);
 
 	gFramesInFlight.resize(imageCount);
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < gNumberOfFrames; ++i)
 	{
 		gFramesInFlight[i].image = images[i];
 
@@ -130,9 +159,6 @@ void createSwapchain()
 		vkCreateSemaphore(gVKDevice, &semaphoreInfo, nullptr, &gFramesInFlight[i].imageAvailableSemaphore);
 		vkCreateSemaphore(gVKDevice, &semaphoreInfo, nullptr, &gFramesInFlight[i].renderFinishedSemaphore);
 
-		VkFenceCreateInfo fenceInfo{ VK_STRUCTURE_TYPE_FENCE_CREATE_INFO };
-		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-
 		VkFramebufferCreateInfo framebufferInfo{ VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO };
 		framebufferInfo.renderPass = gVKRenderPass;
 		framebufferInfo.attachmentCount = 1;
@@ -142,6 +168,10 @@ void createSwapchain()
 		framebufferInfo.layers = 1;
 
 		vkCreateFramebuffer(gVKDevice, &framebufferInfo, nullptr, &gFramesInFlight[i].framebuffer);
+
+		VkFenceCreateInfo fenceInfo{ VK_STRUCTURE_TYPE_FENCE_CREATE_INFO };
+		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+		VK_CALL(vkCreateFence(gVKDevice, &fenceInfo, nullptr, &gFramesInFlight[i].inFlightFence));
 	}
 }
 
@@ -161,6 +191,8 @@ void swapchain::RequestInstanceExtensions(VKInstanceExtender& instanceExtender)
 	#ifdef ERMY_OS_MACOS
 		instanceExtender.TryAddExtension(VK_EXT_METAL_SURFACE_EXTENSION_NAME);
 	#endif
+
+	gSwapchainEXT.hasProtectedCapabilities = instanceExtender.TryAddExtension(VK_KHR_SURFACE_PROTECTED_CAPABILITIES_EXTENSION_NAME);
 
 	gSwapchainEXT.hasSurfaceCapabilities2 = instanceExtender.TryAddExtension(VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME);
 	gSwapchainEXT.hasSwapchainColorspace = instanceExtender.TryAddExtension(VK_EXT_SWAPCHAIN_COLOR_SPACE_EXTENSION_NAME);
@@ -210,8 +242,8 @@ void swapchain::Initialize()
 #ifdef ERMY_OS_WINDOWS
 	VkWin32SurfaceCreateInfoKHR createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
-	createInfo.hwnd = static_cast<HWND>(os::getNativeWindowHandle());
-	createInfo.hinstance = static_cast<HINSTANCE>(os::getAppInstanceHandle());
+	createInfo.hwnd = static_cast<HWND>(os::GetNativeWindowHandle());
+	createInfo.hinstance = static_cast<HINSTANCE>(os::GetAppInstanceHandle());
 
 	VK_CALL(vkCreateWin32SurfaceKHR(gVKInstance, &createInfo, nullptr, &gVKSurface));
 #endif
@@ -220,7 +252,7 @@ void swapchain::Initialize()
 	VkAndroidSurfaceCreateInfoKHR createInfo{ VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR,nullptr };
 
 	createInfo.flags = 0;
-	createInfo.window = static_cast<ANativeWindow*>(os::getNativeWindowHandle());
+	createInfo.window = static_cast<ANativeWindow*>(os::GetNativeWindowHandle());
 
 	vkCreateAndroidSurfaceKHR(gVKInstance, &createInfo, nullptr, &gVKSurface);
 #endif
@@ -269,6 +301,7 @@ void swapchain::Initialize()
 	VkSurfaceCapabilities2KHR             capabilities2{ .sType = VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_2_KHR };
 	vkGetPhysicalDeviceSurfaceCapabilities2KHR(gVKPhysicalDevice, &surfaceInfo2, &capabilities2);
 
+	gNumberOfFrames = std::max(3u, capabilities2.surfaceCapabilities.minImageCount);
 	createSwapchain();	
 }
 
@@ -284,10 +317,13 @@ void swapchain::Process()
 
 void swapchain::AcquireNextImage()
 {
-	//vkAcquireNextImageKHR(gVKDevice, gVKSwapchain, UINT64_MAX, , VK_NULL_HANDLE, &gAcquiredImageIndex);
-	//vkAcquireNextImageKHR(gVKDevice, gVKSwapchain, UINT64_MAX, gSwapchainSemaphore, VK_NULL_HANDLE, &gAcquiredImageIndex);
 	auto& frame = gFramesInFlight[gSwapchainCurrentFrame];
-	vkAcquireNextImageKHR(gVKDevice, gVKSwapchain, UINT64_MAX, frame.imageAvailableSemaphore, VK_NULL_HANDLE, &gAcquiredNextImageIndex);
+
+	vkWaitForFences(gVKDevice, 1, &frame.inFlightFence, VK_TRUE, UINT64_MAX);
+	vkResetFences(gVKDevice, 1, &frame.inFlightFence);
+
+
+	vkAcquireNextImageKHR(gVKDevice, gVKSwapchain, UINT64_MAX, frame.imageAvailableSemaphore, frame.inFlightFence, &gAcquiredNextImageIndex);
 }
 
 void swapchain::Present()
@@ -304,6 +340,7 @@ void swapchain::Present()
 		.pImageIndices = &gAcquiredNextImageIndex,               // Index of the image to present
 	};
 
+	//vkQueueWaitIdle(gVKMainQueue);
 	vkQueuePresentKHR(gVKMainQueue, &presentInfo);
 
 	gSwapchainCurrentFrame = (gSwapchainCurrentFrame + 1) % GetNumFrames();
@@ -311,5 +348,5 @@ void swapchain::Present()
 
 int swapchain::GetNumFrames()
 {
-	return 3;
+	return gNumberOfFrames;
 }

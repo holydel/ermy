@@ -1,14 +1,42 @@
 #include "../os_entry_point.h"
 #include "android_utils.h"
 #include "../../logger.h"
+#include <thread>
+#include <chrono>
+#include "../../application.h"
+
+extern ANativeWindow* gMainWindow;
+
+extern int32_t ImGui_ImplAndroid_HandleInputEvent(const AInputEvent* input_event);
+static AInputQueue* gMainInputQueue = nullptr;
+
+std::thread* mainThread = nullptr;
+
+using namespace std::chrono_literals;
+using namespace ermy;
+
 /**
 	 * NativeActivity has started.  See Java documentation for Activity.onStart()
 	 * for more information.
 	 */
+
 void onStart(ANativeActivity* activity)
 {
 	ERMY_LOG("onStart");
+	mainThread = new std::thread([]()
+	{
+		while (gMainWindow == nullptr)
+		{
+			std::this_thread::sleep_for(1ms);
+		}
 
+		ErmyApplicationStart();
+		while (ErmyApplicationStep())
+		{
+			std::this_thread::sleep_for(1ms);
+		}
+		ErmyApplicationShutdown();
+	});
 }
 
 /**
@@ -92,7 +120,7 @@ void onWindowFocusChanged(ANativeActivity* activity, int hasFocus)
 void onNativeWindowCreated(ANativeActivity* activity, ANativeWindow* window)
 {
 	ERMY_LOG("onNativeWindowCreated");
-	//gMainWindow = window;
+	gMainWindow = window;
 }
 
 /**
@@ -127,7 +155,7 @@ void onNativeWindowRedrawNeeded(ANativeActivity* activity, ANativeWindow* window
 void onNativeWindowDestroyed(ANativeActivity* activity, ANativeWindow* window)
 {
 	ERMY_LOG("onNativeWindowDestroyed");
-	//gMainWindow = nullptr;
+	gMainWindow = nullptr;
 }
 /**
  * The input queue for this native activity's window has been created.

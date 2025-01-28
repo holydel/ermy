@@ -5,6 +5,7 @@
 #include <thread>
 #include "../os_utils.h"
 #include "application.h"
+#include <timeapi.h>
 
 #pragma comment(lib,"Winmm.lib")
 #pragma comment(lib, "Shell32.lib")

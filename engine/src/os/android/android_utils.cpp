@@ -1,6 +1,19 @@
 
 #include "android_utils.h"
+#include <stdio.h>
+#include <android/native_activity.h>
+#include <android/native_window.h>
+#include <android/log.h>
+#include <android/input.h>
 
+#include <android/ndk-version.h>
+
+#include <string>
+#include <thread>
+#include <atomic>
+
+#include <dlfcn.h>
+#include <unordered_map>
 
 
 
@@ -37,6 +50,42 @@ void os::WriteDebugLogMessageIDE(const char* utf8Message)
 	//TODO: research output debug string for Android Studio
 	//OutputDebugStringA(utf8Message);
 }
+
+void* os::LoadSharedLibrary(const char* utf8libname)
+{
+	return dlopen(utf8libname, RTLD_NOW);
+}
+
+bool os::UnloadSharedLibrary(void* library)
+{
+	dlclose(library);
+	return true;
+}
+
+std::unordered_map<void*, void*> ptrToLibHandleMap;
+
+void* os::GetFuncPtrImpl(void* library, const char* funcName)
+{
+	auto result = dlsym(library, funcName);
+
+	ptrToLibHandleMap[library] = result;
+	return result;
+}
+
+void os::FatalFail(const char* reason)
+{
+	//mercury::write_log_message("%s\n", reason);
+	//DebugBreak();
+}
+
+const char* os::GetSharedLibraryFullFilename(void* libHandle)
+{
+	static Dl_info dl_info = {};
+	dladdr(ptrToLibHandleMap[libHandle], &dl_info);
+
+	return dl_info.dli_fname;
+}
+
 #ifdef EMRY_GAPI_VULKAN
 const char* os::GetVulkanRuntimeLibraryName()
 {

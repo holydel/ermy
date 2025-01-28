@@ -151,11 +151,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-void* os::getNativeWindowHandle()
+void* os::GetNativeWindowHandle()
 {
 	return gMainWindow;
 }
-void* os::getAppInstanceHandle()
+void* os::GetAppInstanceHandle()
 {
 	return gWinSystemInstance;
 }

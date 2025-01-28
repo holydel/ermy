@@ -47,6 +47,66 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 	return VK_FALSE;
 }
 
+struct ValidationSettings
+{
+	VkBool32 fine_grained_locking{ VK_TRUE };
+	VkBool32 validate_core{ VK_TRUE };
+	VkBool32 check_image_layout{ VK_TRUE };
+	VkBool32 check_command_buffer{ VK_TRUE };
+	VkBool32 check_object_in_use{ VK_TRUE };
+	VkBool32 check_query{ VK_TRUE };
+	VkBool32 check_shaders{ VK_TRUE };
+	VkBool32 check_shaders_caching{ VK_TRUE };
+	VkBool32 unique_handles{ VK_TRUE };
+	VkBool32 object_lifetime{ VK_TRUE };
+	VkBool32 stateless_param{ VK_TRUE };
+	VkBool32 setting_validate_sync = { VK_TRUE };
+	VkBool32 setting_thread_safety = { VK_TRUE };
+
+	std::vector<const char*> debug_action{ "VK_DBG_LAYER_ACTION_LOG_MSG", "VK_DBG_LAYER_ACTION_DEBUG_OUTPUT" };  // "VK_DBG_LAYER_ACTION_DEBUG_OUTPUT", "VK_DBG_LAYER_ACTION_BREAK"
+	std::vector<const char*> report_flags{ "warn", "perf", "error" }; //"info", "warn", "perf", "error", "debug"
+
+	VkBool32 setting_enable_message_limit = VK_TRUE;
+	uint32_t setting_duplicate_message_limit = 32;
+
+	VkBaseInStructure* buildPNextChain()
+	{
+		layerSettings = std::vector<VkLayerSettingEXT>{
+			{layerName, "fine_grained_locking", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &fine_grained_locking},
+			{layerName, "validate_core", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &validate_core},
+			{layerName, "validate_sync", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &setting_validate_sync},
+			{layerName, "thread_safety", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &setting_thread_safety},
+			{layerName, "check_image_layout", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &check_image_layout},
+			{layerName, "check_command_buffer", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &check_command_buffer},
+			{layerName, "check_object_in_use", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &check_object_in_use},
+			{layerName, "check_query", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &check_query},
+			{layerName, "check_shaders", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &check_shaders},
+			{layerName, "check_shaders_caching", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &check_shaders_caching},
+			{layerName, "unique_handles", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &unique_handles},
+			{layerName, "object_lifetime", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &object_lifetime},
+			{layerName, "stateless_param", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &stateless_param},
+			{layerName, "enable_message_limit", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &setting_enable_message_limit},
+			{layerName, "duplicate_message_limit", VK_LAYER_SETTING_TYPE_UINT32_EXT, 1, &setting_duplicate_message_limit},
+			{layerName, "debug_action", VK_LAYER_SETTING_TYPE_STRING_EXT, uint32_t(debug_action.size()), debug_action.data()},
+			{layerName, "report_flags", VK_LAYER_SETTING_TYPE_STRING_EXT, uint32_t(report_flags.size()), report_flags.data()},
+
+		};
+		layerSettingsCreateInfo = {
+			.sType = VK_STRUCTURE_TYPE_LAYER_SETTINGS_CREATE_INFO_EXT,
+			.settingCount = uint32_t(layerSettings.size()),
+			.pSettings = layerSettings.data(),
+		};
+
+		return reinterpret_cast<VkBaseInStructure*>(&layerSettingsCreateInfo);
+	}
+
+	static constexpr const char* layerName{ "VK_LAYER_KHRONOS_validation" };
+	std::vector<VkLayerSettingEXT> layerSettings{};
+	VkLayerSettingsCreateInfoEXT   layerSettingsCreateInfo{};
+};
+
+static ValidationSettings validationSettings = {};
+
 void InitializeInstance()
 {
 	const auto& renderCfg = GetApplication().staticConfig.render;
@@ -121,6 +181,8 @@ void InitializeInstance()
 	if (isDebugLayers)
 	{
 		createInfo.pNext = &debugCreateInfo;
+		debugCreateInfo.pNext = validationSettings.buildPNextChain();
+		//NextChainPushFront(&createInfo, validationSettings.buildPNextChain());
 	}
 
 	createInfo.pApplicationInfo = &vkAppInfo;
@@ -161,14 +223,14 @@ static void ChoosePhysicalDevice()
 
 		std::string deviceType = "DISCRETE";
 
-		if(props.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU)
+		if (props.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU)
 			deviceType = "INTEGRATED";
 		if (props.deviceType == VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU)
 			deviceType = "VIRTUAL";
 		if (props.deviceType == VK_PHYSICAL_DEVICE_TYPE_CPU)
 			deviceType = "CPU";
 
-		ERMY_LOG("Found VK device (%d): %s - (%s)", i, props.deviceName,deviceType.c_str());
+		ERMY_LOG("Found VK device (%d): %s - (%s)", i, props.deviceName, deviceType.c_str());
 	}
 
 	auto selectedAdapterID = renderCfg.adapterID == -1 ? ChoosePhysicalDeviceByHeuristics(phys_devices) : renderCfg.adapterID;
@@ -338,7 +400,7 @@ void CreateDevice()
 	VkPhysicalDeviceVulkan12Features features12 = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES, nullptr };
 	VkPhysicalDeviceVulkan13Features features13 = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES, nullptr };
 	VkPhysicalDeviceVulkan14Features features14 = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_4_FEATURES, nullptr };
-	
+
 	features11.pNext = &features12;
 
 	features12.timelineSemaphore = true;
@@ -434,24 +496,24 @@ void CreateDevice()
 
 void rendering_interface::Initialize()
 {
-   ERMY_LOG("VULKAN Initialize");
-  
-   LoadVK_Library();
+	ERMY_LOG("VULKAN Initialize");
 
-   InitializeInstance();
-   ChoosePhysicalDevice();
-   CreateDevice();
-   //printf("RENDERING","WEBGPU Initialize/n");
+	LoadVK_Library();
+
+	InitializeInstance();
+	ChoosePhysicalDevice();
+	CreateDevice();
+	//printf("RENDERING","WEBGPU Initialize/n");
 }
 
 void rendering_interface::Shutdown()
 {
-    ERMY_LOG("VULKAN Shutdown");
+	ERMY_LOG("VULKAN Shutdown");
 
-    //printf("RENDERING","WEBGPU Shutdown/n");
+	//printf("RENDERING","WEBGPU Shutdown/n");
 }
 
 void rendering_interface::Process()
 {
-  
+
 }
