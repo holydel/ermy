@@ -2,10 +2,10 @@
 
 #include <ermy_api.h>
 
-namespace imgui
+namespace imgui_interface
 {
 	void Initialize();
 	void Shutdown();
-	void NewFrame();
+	void NewFrame(void* cmdList);
 	void Render();
 }

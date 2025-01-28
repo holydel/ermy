@@ -57,7 +57,7 @@ const char* os::GetSharedLibraryFullFilename(void* libHandle)
 	return buffer;
 }
 
-#ifdef EMRY_GAPI_VULKAN
+#ifdef ERMY_GAPI_VULKAN
 const char* os::GetVulkanRuntimeLibraryName()
 {
 	return "vulkan-1.dll";

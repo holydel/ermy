@@ -39,7 +39,7 @@ namespace os
 
 	void FatalFail(const char* reason);
 
-#ifdef EMRY_GAPI_VULKAN
+#ifdef ERMY_GAPI_VULKAN
 	const char* GetVulkanRuntimeLibraryName();
 #endif
 }

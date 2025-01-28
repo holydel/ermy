@@ -73,7 +73,7 @@ namespace framegraph_interface
 		gFrames.clear();
 	}
 
-	void Process()
+	void BeginFrame()
 	{
 		swapchain::ReInitIfNeeded();
 
@@ -89,14 +89,21 @@ namespace framegraph_interface
 		vkWaitSemaphores(gVKDevice, &waitInfo, std::numeric_limits<uint64_t>::max());
 
 		VK_CALL(vkResetCommandPool(gVKDevice, frame.cmdPool, 0));
-		VkCommandBuffer cmd = frame.cmdBuffer;
+		
+		swapchain::AcquireNextImage();
 
+		VkCommandBuffer cmd = frame.cmdBuffer;
 		// Begin the command buffer recording for the frame
 		const VkCommandBufferBeginInfo beginInfo{ .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
 												 .flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT };
 		VK_CALL(vkBeginCommandBuffer(cmd, &beginInfo));
+	}
 
-		swapchain::AcquireNextImage();
+	void* BeginFinalRenderPass()
+	{
+		auto& frame = gFrames[gFrameRingCurrent];
+		VkCommandBuffer cmd = frame.cmdBuffer;
+
 		static float a = 0.0f;
 		a += 0.01f;
 
@@ -113,10 +120,30 @@ namespace framegraph_interface
 
 
 		vkCmdBeginRenderPass(frame.cmdBuffer, &rpass, VK_SUBPASS_CONTENTS_INLINE);
+		return cmd;
+	}
+
+	void EndFinalRenderPass()
+	{
+		auto& frame = gFrames[gFrameRingCurrent];
+		VkCommandBuffer cmd = frame.cmdBuffer;
+
 		vkCmdEndRenderPass(frame.cmdBuffer);
 
-		VK_CALL(vkEndCommandBuffer(cmd));
+		
+	}
 
+	void EndFrame()
+	{
+		auto& frame = gFrames[gFrameRingCurrent];
+		VkCommandBuffer cmd = frame.cmdBuffer;
+		VK_CALL(vkEndCommandBuffer(cmd));
+	}
+
+	void Submit()
+	{
+		auto& frame = gFrames[gFrameRingCurrent];
+		VkCommandBuffer cmd = frame.cmdBuffer;
 		/*--
 		 * Prepare to submit the current frame for rendering
 		 * First add the swapchain semaphore to wait for the image to be available.
@@ -174,7 +201,12 @@ namespace framegraph_interface
 
 		// Submit the command buffer to the GPU and signal when it's done
 		VK_CALL(vkQueueSubmit2KHR(gVKMainQueue, uint32_t(submitInfo.size()), submitInfo.data(), nullptr));
+	}
 
+	void Present()
+	{
+		auto& frame = gFrames[gFrameRingCurrent];
+		VkCommandBuffer cmd = frame.cmdBuffer;
 		// Present the image
 		swapchain::Present();
 

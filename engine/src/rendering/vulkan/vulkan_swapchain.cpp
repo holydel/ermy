@@ -12,7 +12,6 @@ VkSurfaceCapabilitiesKHR gVKSurfaceCaps;
 VkFormat gVKSurfaceFormat;
 u32 gAcquiredNextImageIndex = 0;
 VkSemaphore gSwapchainSemaphore = VK_NULL_HANDLE;
-VkRenderPass gVKRenderPass = VK_NULL_HANDLE;
 int gSwapchainCurrentFrame = 0;
 int gNumberOfFrames = 3;
 bool gSwapchainNeedRebuild = false;

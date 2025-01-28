@@ -1,6 +1,6 @@
 #include <ermy_api.h>
 
-#ifdef EMRY_GAPI_VULKAN
+#ifdef ERMY_GAPI_VULKAN
 
 #define VMA_IMPLEMENTATION
 

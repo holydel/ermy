@@ -16,6 +16,7 @@ VmaAllocator gVMA_Allocator = nullptr;
 VkQueue gVKMainQueue = VK_NULL_HANDLE;
 VkQueue gVKComputeAsyncQueue = VK_NULL_HANDLE;
 VkQueue gVKTransferAsyncQueue = VK_NULL_HANDLE;
+VkRenderPass gVKRenderPass = VK_NULL_HANDLE;
 
 using namespace ermy;
 

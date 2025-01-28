@@ -1,10 +1,10 @@
 #include "ermy_imgui.h"
 
-#ifdef ERMY_PLATFORM_WINDOWS
+#ifdef ERMY_OS_WINDOWS
 #include <backends/imgui_impl_win32.cpp>
 #endif
 
-#ifdef ERMY_PLATFOR_ANDROID
+#ifdef ERMY_OS_ANDROID
 #include <backends/imgui_impl_android.cpp>
 #endif
 

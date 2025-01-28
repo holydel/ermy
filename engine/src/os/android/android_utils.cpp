@@ -86,7 +86,7 @@ const char* os::GetSharedLibraryFullFilename(void* libHandle)
 	return dl_info.dli_fname;
 }
 
-#ifdef EMRY_GAPI_VULKAN
+#ifdef ERMY_GAPI_VULKAN
 const char* os::GetVulkanRuntimeLibraryName()
 {
 	return "libvulkan.so";

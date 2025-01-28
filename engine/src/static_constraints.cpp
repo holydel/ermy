@@ -18,20 +18,20 @@
 #endif
 #endif
 
-#if defined(EMRY_GAPI_VULKAN)
+#if defined(ERMY_GAPI_VULKAN)
 #if defined(ERMY_OS_MACOS)
 #error "VULKAN IS NOT SUPPORTED ON MACOS"
 #endif
 #endif
 
-#if defined(EMRY_GAPI_METAL)
+#if defined(ERMY_GAPI_METAL)
 #if !defined(ERMY_OS_MACOS)
 #error "METAL IS ONLY SUPPORTED ON MACOS"
 #endif
 #endif
 
 #if defined(ERMY_OS_EMSCRIPTEN)
-#if !defined(EMRY_GAPI_WEBGPU)
+#if !defined(ERMY_GAPI_VULKAN)
 #error "EMSCRIPTEN OS REQUIRES WEBGPU GRAPHICS API"
 #endif
 #endif

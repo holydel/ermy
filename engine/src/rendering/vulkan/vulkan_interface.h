@@ -12,3 +12,4 @@ extern VmaAllocator gVMA_Allocator;
 extern VkQueue gVKMainQueue;
 extern VkQueue gVKComputeAsyncQueue;
 extern VkQueue gVKTransferAsyncQueue;
+extern VkRenderPass gVKRenderPass;
