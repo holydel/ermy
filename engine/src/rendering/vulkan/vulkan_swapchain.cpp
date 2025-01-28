@@ -28,12 +28,16 @@ struct FrameInFlight
 std::vector<FrameInFlight> gFramesInFlight;
 
 VkSemaphore swapchain::GetWaitSemaphores()
-{ return gFramesInFlight[gSwapchainCurrentFrame].imageAvailableSemaphore; }
+{ 
+	return gFramesInFlight[gSwapchainCurrentFrame].imageAvailableSemaphore;
+}
 VkSemaphore swapchain::GetSignalSemaphores()
-{ return gFramesInFlight[gSwapchainCurrentFrame].renderFinishedSemaphore; }
+{ 
+	return gFramesInFlight[gSwapchainCurrentFrame].renderFinishedSemaphore;
+}
 VkFramebuffer swapchain::GetFramebuffer()
 {
-	return gFramesInFlight[gSwapchainCurrentFrame].framebuffer;
+	return gFramesInFlight[gAcquiredNextImageIndex].framebuffer;
 }
 VkRenderPass swapchain::GetRenderPass()
 {
@@ -169,9 +173,9 @@ void createSwapchain()
 
 		vkCreateFramebuffer(gVKDevice, &framebufferInfo, nullptr, &gFramesInFlight[i].framebuffer);
 
-		VkFenceCreateInfo fenceInfo{ VK_STRUCTURE_TYPE_FENCE_CREATE_INFO };
-		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-		VK_CALL(vkCreateFence(gVKDevice, &fenceInfo, nullptr, &gFramesInFlight[i].inFlightFence));
+		//VkFenceCreateInfo fenceInfo{ VK_STRUCTURE_TYPE_FENCE_CREATE_INFO };
+		//fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+		//VK_CALL(vkCreateFence(gVKDevice, &fenceInfo, nullptr, &gFramesInFlight[i].inFlightFence));
 	}
 }
 
@@ -319,11 +323,11 @@ void swapchain::AcquireNextImage()
 {
 	auto& frame = gFramesInFlight[gSwapchainCurrentFrame];
 
-	vkWaitForFences(gVKDevice, 1, &frame.inFlightFence, VK_TRUE, UINT64_MAX);
-	vkResetFences(gVKDevice, 1, &frame.inFlightFence);
+	//vkWaitForFences(gVKDevice, 1, &frame.inFlightFence, VK_TRUE, UINT64_MAX);
+	//vkResetFences(gVKDevice, 1, &frame.inFlightFence);
 
-
-	vkAcquireNextImageKHR(gVKDevice, gVKSwapchain, UINT64_MAX, frame.imageAvailableSemaphore, frame.inFlightFence, &gAcquiredNextImageIndex);
+	//frame.inFlightFence
+	vkAcquireNextImageKHR(gVKDevice, gVKSwapchain, UINT64_MAX, frame.imageAvailableSemaphore, VK_NULL_HANDLE, &gAcquiredNextImageIndex);
 }
 
 void swapchain::Present()
