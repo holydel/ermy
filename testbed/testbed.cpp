@@ -14,7 +14,7 @@ public:
 
 		staticConfig.appName = "TestBed";
 
-		staticConfig.render.adapterID = 1;
+		staticConfig.render.adapterID = 0;
 	}
 
 	void OnInitialization() override;
