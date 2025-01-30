@@ -93,7 +93,15 @@ namespace framegraph_interface
 
 	void* BeginFrame()
 	{
-		swapchain::ReInitIfNeeded();
+		if (swapchain::ReInitIfNeeded())
+		{
+			//TODO: think about synchronization for resize swapchain buffers
+			for (uint32_t i = 0; i < gFrames.size(); ++i)
+			{
+				Flush(gD3DCommandQueue, gFrames[i].fence, gFrames[i].fenceValue, gFrames[i].fenceEvent);
+				gFrames[i].fenceValue = gFrames[gFrameRingCurrent].fenceValue;
+			}
+		}
 
 		auto& frame = gFrames[gFrameRingCurrent];
 

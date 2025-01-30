@@ -109,6 +109,51 @@ int swapchain::GetNumFrames()
 
 bool swapchain::ReInitIfNeeded()
 {
+	RECT clientRect = {};
+	HWND hwnd = static_cast<HWND>(os::GetNativeWindowHandle());
+	GetClientRect(hwnd, (LPRECT)&clientRect);
+
+	gNewWidth = clientRect.right - clientRect.left;
+	gNewHeight = clientRect.bottom - clientRect.top;
+
+	if (gNewWidth != gCurWidth || gCurHeight != gNewHeight)
+	{		
+		gCurWidth = gNewWidth;
+		gCurHeight = gNewHeight;
+
+		for (uint32_t i = 0; i < gNumFrames; ++i)
+		{
+			gBBFrames[i].bbResource->Release();
+		}
+
+		DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
+		D3D_CALL(gSwapChain->GetDesc(&swapChainDesc));
+
+		D3D_CALL(gSwapChain->ResizeBuffers(swapChainDesc.BufferCount, gCurWidth, gCurHeight, swapChainDesc.BufferDesc.Format, swapChainDesc.Flags));
+
+
+		auto rtvDescriptorSize = gD3DDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+		CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(gDescriptorsHeapRTV->GetCPUDescriptorHandleForHeapStart());
+
+		for (uint32_t i = 0; i < gNumFrames; ++i)
+		{
+			BackbufferResourceInfo& fo = gBBFrames[i];
+			gSwapChain->GetBuffer(i, IID_PPV_ARGS(&fo.bbResource));
+			//gDevice->CreateRenderTargetView(fo.bbResource, nullptr, rtvHandle);
+
+			D3D12_RENDER_TARGET_VIEW_DESC rtvDesc = {};
+			rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+			rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D; // Multisampled view
+			// Other RTV settings...
+
+			// Create the RTV using textureResource and rtvDesc
+			gD3DDevice->CreateRenderTargetView(fo.bbResource, &rtvDesc, rtvHandle);
+
+			fo.bbRTV = rtvHandle;
+			rtvHandle.Offset(rtvDescriptorSize);
+		}
+	}
+
 	return false;
 }
 #endif
