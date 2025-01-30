@@ -1,4 +1,6 @@
 #include "vulkan_swapchain.h"
+#ifdef ERMY_GAPI_VULKAN
+
 #include "../../os/os_utils.h"
 #include "vulkan_interface.h"
 #include <array>
@@ -406,3 +408,4 @@ int swapchain::GetNumFrames()
 {
 	return gNumberOfFrames;
 }
+#endif

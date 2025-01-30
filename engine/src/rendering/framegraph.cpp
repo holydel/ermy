@@ -16,9 +16,9 @@ void framegraph::Shutdown()
 
 void framegraph::Process()
 {
-	framegraph_interface::BeginFrame();
+	void* finalCmdList = framegraph_interface::BeginFrame();
 
-	void* finalCmdList = framegraph_interface::BeginFinalRenderPass();
+	framegraph_interface::BeginFinalRenderPass();
 
 
 	imgui_interface::NewFrame(finalCmdList);

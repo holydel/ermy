@@ -40,6 +40,9 @@
     <Filter Include="Source Files\imgui">
       <UniqueIdentifier>{3f57ca13-51db-4126-922b-0734f847c73b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\rendering\d3d12">
+      <UniqueIdentifier>{5f3d7585-866b-4200-9bac-dc0638166fc8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\engine\src\ermy.cpp">
@@ -117,6 +120,18 @@
     <ClCompile Include="..\..\engine\src\rendering\rendering.cpp">
       <Filter>Source Files\rendering</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\engine\src\rendering\d3d12\d3d12_interface.cpp">
+      <Filter>Source Files\rendering\d3d12</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\D3D12MemoryAllocator\src\D3D12MemAlloc.cpp">
+      <Filter>Source Files\rendering\d3d12</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\src\rendering\d3d12\d3d12_framegraph_interface.cpp">
+      <Filter>Source Files\rendering\d3d12</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\src\rendering\d3d12\d3d12_swapchain.cpp">
+      <Filter>Source Files\rendering\d3d12</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\engine\include\ermy.h">
@@ -187,6 +202,12 @@
     </ClInclude>
     <ClInclude Include="..\..\engine\src\rendering\rendering.h">
       <Filter>Source Files\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\rendering\d3d12\d3d12_interface.h">
+      <Filter>Source Files\rendering\d3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\rendering\d3d12\d3d12_swapchain.h">
+      <Filter>Source Files\rendering\d3d12</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

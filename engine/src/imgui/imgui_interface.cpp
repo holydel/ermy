@@ -1,15 +1,22 @@
+#include <ermy_api.h>
+
+#ifdef ERMY_GAPI_VULKAN
+#include "../rendering/vulkan/vulkan_interface.h"
+static void mercury_check_vk_result(VkResult err)
+{
+}
+#endif
+
+#ifdef ERMY_GAPI_D3D12
+#include "../rendering/d3d12/d3d12_interface.h"
+static ID3D12DescriptorHeap* gImgui_pd3dSrvDescHeap = nullptr;
+#endif
+
 #include "ermy_imgui.h"
 #include "imgui_interface.h"
 #include "../os/os.h"
 #include "application.h"
 #include "../os/os.h"
-#ifdef ERMY_GAPI_VULKAN
-#include "../rendering/vulkan/vulkan_interface.h"
-
-static void mercury_check_vk_result(VkResult err)
-{
-}
-#endif
 
 void imgui_interface::Initialize()
 {
@@ -70,22 +77,28 @@ void imgui_interface::Initialize()
 	ImGui_ImplVulkan_CreateFontsTexture();
 #endif
 
-#ifdef MERCURY_GRAPHICS_API_D3D12
-	D3D12_DESCRIPTOR_HEAP_DESC desc = {};
-	desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	desc.NumDescriptors = 20;
-	desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	gDevice->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&gImgui_pd3dSrvDescHeap));
+#ifdef ERMY_GAPI_D3D12
+	//D3D12_DESCRIPTOR_HEAP_DESC desc = {};
+	//desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	//desc.NumDescriptors = 20;
+	//desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	//gD3DDevice->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&gImgui_pd3dSrvDescHeap));
 
-	ImGui_ImplDX12_Init(gDevice, 3, gSwapChainFormat, gImgui_pd3dSrvDescHeap
-		, gImgui_pd3dSrvDescHeap->GetCPUDescriptorHandleForHeapStart()
-		, gImgui_pd3dSrvDescHeap->GetGPUDescriptorHandleForHeapStart(), 8);
+	//ImGui_ImplDX12_InitInfo init_info = {};
+	//init_info.CommandQueue = gD3DCommandQueue;
+	//init_info.Device = gD3DDevice;	
+	//init_info.SrvDescriptorHeap = gImgui_pd3dSrvDescHeap;
+	//init_info.NumFramesInFlight = 3;
+	//init_info.RTVFormat = gD3DSwapChainFormat;
+	//init_info.SrvDescriptorHeap = gImgui_pd3dSrvDescHeap;
 
-	ImGui_ImplDX12_CreateDeviceObjects();
-	ImGui_ImplDX12_CreateFontsTexture();
+	//ImGui_ImplDX12_Init(&init_info);
+
+	//ImGui_ImplDX12_CreateDeviceObjects();
+	//ImGui_ImplDX12_CreateFontsTexture();
 #endif
 
-#ifdef MERCURY_GRAPHICS_API_WEBGPU
+#ifdef ERMY_GAPI_WEBGPU
 	ImGui_ImplWGPU_InitInfo initInfo = {};
 	initInfo.Device = gDevice;
 	initInfo.RenderTargetFormat = gPrefferedBackbufferFormat;
@@ -148,7 +161,7 @@ void imgui_interface::NewFrame(void* cmdList)
 	ImGui_ImplVulkan_NewFrame();
 #endif
 #ifdef ERMY_GAPI_D3D12
-	ImGui_ImplDX12_NewFrame();
+	//ImGui_ImplDX12_NewFrame();
 #endif
 #ifdef ERMY_GAPI_WEBGPU
 	ImGui_ImplWGPU_NewFrame();
@@ -171,20 +184,20 @@ void imgui_interface::NewFrame(void* cmdList)
 	ImGui_ImplEmscripten_Event();
 	ImGui_ImplEmscripten_NewFrame();
 #endif
-	ImGui::NewFrame();
+	//ImGui::NewFrame();
 
-	ImGui::ShowDemoWindow(); // Show demo window! :)
-	ImGui::Render();
+	//ImGui::ShowDemoWindow(); // Show demo window! :)
+	//ImGui::Render();
 
 #ifdef ERMY_GAPI_VULKAN
 	ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), static_cast<VkCommandBuffer>(cmdList));
 #endif
 
 #ifdef ERMY_GAPI_D3D12
-	auto cmdList = static_cast<ID3D12GraphicsCommandList*>(ctx.impl);
+	//auto cmdListD3D12 = static_cast<ID3D12GraphicsCommandList*>(cmdList);
 
-	cmdList->SetDescriptorHeaps(1, &gImgui_pd3dSrvDescHeap);
-	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), cmdList);
+	//cmdListD3D12->SetDescriptorHeaps(1, &gImgui_pd3dSrvDescHeap);
+	//ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), cmdListD3D12);
 #endif
 #ifdef ERMY_GAPI_WEBGPU
 	auto cmdList = static_cast<WGPURenderPassEncoder>(ctx.impl);

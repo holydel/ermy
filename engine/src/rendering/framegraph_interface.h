@@ -5,8 +5,8 @@ namespace framegraph_interface
 {
 	void Initialize(ermy::u8 numFrames);
 	void Shutdown();
-	void BeginFrame();
-	void* BeginFinalRenderPass();
+	void* BeginFrame();
+	void BeginFinalRenderPass();
 	void EndFinalRenderPass();
 	void EndFrame();
 	void Submit();

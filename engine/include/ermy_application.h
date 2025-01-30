@@ -35,6 +35,29 @@ namespace ermy
 
 			};
 
+			struct SwapchainConfig
+			{
+				enum ColorWidth
+				{
+					Prefer16bit,
+					Prefer32bit,
+					PreferHDR
+				};
+
+				ColorWidth colorWidth = ColorWidth::Prefer32bit;
+
+				enum VSyncMode
+				{
+					NoVSync,
+					AdaptiveVSync,
+					AlwaysVSync
+				};
+
+				VSyncMode vsync = VSyncMode::AlwaysVSync;
+
+				bool useAlpha = false;
+			};
+
 			struct ImguiConfig
 			{
 				bool enable  = true;
@@ -68,6 +91,7 @@ namespace ermy
 			EngineConfig engine;
 			RendererConfig render;
 			ImguiConfig imgui;
+			SwapchainConfig swapchain;
 
 			struct Version
 			{

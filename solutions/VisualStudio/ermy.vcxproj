@@ -70,6 +70,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dev|Android-arm64-v8a'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\engine\src\rendering\d3d12\d3d12_framegraph_interface.cpp" />
+    <ClCompile Include="..\..\engine\src\rendering\d3d12\d3d12_interface.cpp" />
+    <ClCompile Include="..\..\engine\src\rendering\d3d12\d3d12_swapchain.cpp" />
     <ClCompile Include="..\..\engine\src\rendering\framegraph.cpp" />
     <ClCompile Include="..\..\engine\src\rendering\rendering.cpp" />
     <ClCompile Include="..\..\engine\src\rendering\swapchain_interface.cpp" />
@@ -84,6 +87,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dev|Android-arm64-v8a'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\D3D12MemoryAllocator\src\D3D12MemAlloc.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Android-arm64-v8a'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dev|Android-arm64-v8a'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\third_party\imgui\imgui.cpp" />
     <ClCompile Include="..\..\third_party\imgui\imgui_demo.cpp" />
@@ -107,6 +115,8 @@
     <ClInclude Include="..\..\engine\src\os\os_entry_point.h" />
     <ClInclude Include="..\..\engine\src\os\os_utils.h" />
     <ClInclude Include="..\..\engine\src\os\windows\win_utils.h" />
+    <ClInclude Include="..\..\engine\src\rendering\d3d12\d3d12_interface.h" />
+    <ClInclude Include="..\..\engine\src\rendering\d3d12\d3d12_swapchain.h" />
     <ClInclude Include="..\..\engine\src\rendering\framegraph.h" />
     <ClInclude Include="..\..\engine\src\rendering\framegraph_interface.h" />
     <ClInclude Include="..\..\engine\src\rendering\rendering.h" />
@@ -209,7 +219,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -250,7 +260,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -277,7 +287,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp20</LanguageStandard>

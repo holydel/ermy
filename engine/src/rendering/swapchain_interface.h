@@ -9,6 +9,8 @@ namespace swapchain
         bool useDisplay : 1 = false;
 		bool resizable : 1 = false;
         bool needExclusiveFullscreen : 1 = false;
+
+        ermy::Application::StaticConfig::SwapchainConfig swapchainConfig = {};
     };
 
     extern Config gConfig;

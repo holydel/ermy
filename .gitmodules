@@ -8,3 +8,9 @@
 	path = third_party/imgui
 	url = https://github.com/holydel/imgui
 	branch = ermy
+[submodule "third_party/DirectX-Headers"]
+	path = third_party/DirectX-Headers
+	url = https://github.com/microsoft/DirectX-Headers
+[submodule "third_party/D3D12MemoryAllocator"]
+	path = third_party/D3D12MemoryAllocator
+	url = https://github.com/GPUOpen-LibrariesAndSDKs/D3D12MemoryAllocator

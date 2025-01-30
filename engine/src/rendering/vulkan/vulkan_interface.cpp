@@ -1,4 +1,6 @@
 #include "vulkan_interface.h"
+#ifdef ERMY_GAPI_VULKAN
+
 #include <ermy_log.h>
 
 #include "../../graphics/canvas.h"
@@ -518,3 +520,4 @@ void rendering_interface::Process()
 {
 
 }
+#endif

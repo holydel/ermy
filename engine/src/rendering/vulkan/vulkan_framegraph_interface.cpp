@@ -1,4 +1,6 @@
 #include "../framegraph_interface.h"
+#ifdef ERMY_GAPI_VULKAN
+
 #include "vulkan_interface.h"
 #include <vector>
 #include <cassert>
@@ -214,3 +216,4 @@ namespace framegraph_interface
 		gFrameRingCurrent = (gFrameRingCurrent + 1) % swapchain::GetNumFrames();
 	}
 };
+#endif

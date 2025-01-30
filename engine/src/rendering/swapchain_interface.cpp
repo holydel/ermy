@@ -10,4 +10,6 @@ void swapchain::Configure(const ermy::Application::StaticConfig& appConfig)
 	gConfig.useDisplay = appConfig.outputMode == ermy::Application::StaticConfig::OutputMode::Display;
 	gConfig.resizable = appConfig.window.mode == ermy::Application::StaticConfig::WindowConfig::WindowMode::Windowed;
 	gConfig.needExclusiveFullscreen = appConfig.window.mode == ermy::Application::StaticConfig::WindowConfig::WindowMode::ExclusiveFullscreen; 	
+
+	gConfig.swapchainConfig = appConfig.swapchain;
 }
