@@ -44,11 +44,21 @@ void os::Sleep(int ms)
 	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 }
 
-void os::WriteDebugLogMessageIDE(const char* utf8Message)
+void os::WriteDebugLogMessageIDE(ermy::LogSeverity severity, const char* utf8Message)
 {
 	__android_log_print(ANDROID_LOG_DEBUG, "TAG", "%s", utf8Message);
 	//TODO: research output debug string for Android Studio
 	//OutputDebugStringA(utf8Message);
+}
+
+void WriteDebugLogMessageConsole(ermy::LogSeverity severity, const char* utf8Message)
+{
+
+}
+
+void WriteDebugLogMessageFile(ermy::LogSeverity severity, const char* utf8Message)
+{
+
 }
 
 void* os::LoadSharedLibrary(const char* utf8libname)

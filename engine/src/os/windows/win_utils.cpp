@@ -1,5 +1,6 @@
 #include "../os_utils.h"
 #include "win_utils.h"
+#include <iostream>
 
 void os::SetNativeThreadName(void* nativeThreadHandle, const char* utf8threadName)
 {
@@ -24,9 +25,44 @@ void os::Sleep(int ms)
 	::Sleep(ms);
 }
 
-void os::WriteDebugLogMessageIDE(const char* utf8Message)
+void os::WriteDebugLogMessageIDE(ermy::LogSeverity severity, const char* utf8Message)
 {
 	OutputDebugStringA(utf8Message);
+}
+
+void os::WriteDebugLogMessageConsole(ermy::LogSeverity severity, const char* utf8Message)
+{
+	//change console color
+	switch (severity)
+	{
+	case ermy::LogSeverity::Verbose:
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED);
+		break;
+	case ermy::LogSeverity::Debug:
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY);
+		break;
+	case ermy::LogSeverity::Warning:
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_RED);
+		break;
+	case ermy::LogSeverity::Error:
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED);
+		break;
+	case ermy::LogSeverity::Fatal:
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_INTENSITY);
+		break;
+	default:
+		break;
+	}
+
+	std::cout << utf8Message;
+
+	//restore previous console color
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED);
+}
+
+void os::WriteDebugLogMessageFile(ermy::LogSeverity severity, const char* utf8Message)
+{
+
 }
 
 void* os::LoadSharedLibrary(const char* utf8libname)

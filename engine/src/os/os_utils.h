@@ -22,7 +22,9 @@ namespace os
 	}
 
 	void Sleep(int ms);
-	void WriteDebugLogMessageIDE(const char* utf8Message);
+	void WriteDebugLogMessageIDE(ermy::LogSeverity severity, const char* utf8Message);
+	void WriteDebugLogMessageConsole(ermy::LogSeverity severity, const char* utf8Message);
+	void WriteDebugLogMessageFile(ermy::LogSeverity severity, const char* utf8Message);
 
 	void* LoadSharedLibrary(const char* utf8libname);
 	const char* GetSharedLibraryFullFilename(void* libHandle);

@@ -49,11 +49,15 @@ void ermy::logger::EnqueueLogMessageRAWTagged(LogSeverity severity, const char *
 
 	if (gUsedLoggerConfig.ConsoleMirroring)
 	{
-		std::cout << data;
+		os::WriteDebugLogMessageConsole(severity, data);
 	}
 	if (gUsedLoggerConfig.IDEMirroring)
 	{
-		os::WriteDebugLogMessageIDE(data);
+		os::WriteDebugLogMessageIDE(severity, data);
+	}
+	if (gUsedLoggerConfig.FileMirroring.enabled)
+	{		
+		os::WriteDebugLogMessageFile(severity, data);
 	}
 	va_end(args);
 }

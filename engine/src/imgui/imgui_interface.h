@@ -6,6 +6,7 @@ namespace imgui_interface
 {
 	void Initialize();
 	void Shutdown();
-	void NewFrame(void* cmdList);
+	void BeginFrame(void* cmdList);
+	void EndFrame(void* cmdList);
 	void Render();
 }

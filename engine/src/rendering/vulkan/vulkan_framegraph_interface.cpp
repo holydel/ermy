@@ -75,7 +75,7 @@ namespace framegraph_interface
 		gFrames.clear();
 	}
 
-	void BeginFrame()
+	void* BeginFrame()
 	{
 		swapchain::ReInitIfNeeded();
 
@@ -99,9 +99,10 @@ namespace framegraph_interface
 		const VkCommandBufferBeginInfo beginInfo{ .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
 												 .flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT };
 		VK_CALL(vkBeginCommandBuffer(cmd, &beginInfo));
+		return cmd;
 	}
 
-	void* BeginFinalRenderPass()
+	void BeginFinalRenderPass()
 	{
 		auto& frame = gFrames[gFrameRingCurrent];
 		VkCommandBuffer cmd = frame.cmdBuffer;
@@ -122,7 +123,6 @@ namespace framegraph_interface
 
 
 		vkCmdBeginRenderPass(frame.cmdBuffer, &rpass, VK_SUBPASS_CONTENTS_INLINE);
-		return cmd;
 	}
 
 	void EndFinalRenderPass()

@@ -157,5 +157,7 @@ namespace ermy
 		/// just before engine deinitialization
 		/// </summary>
 		virtual void OnShutdown() {}
+
+		virtual void OnIMGUI() {}
 	};
 }

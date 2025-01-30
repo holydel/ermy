@@ -1,6 +1,7 @@
 #include "framegraph.h"
 #include "framegraph_interface.h"
 #include "imgui/imgui_interface.h"
+#include "application.h"
 
 void framegraph::Initialize(ermy::u8 numFrames)
 {
@@ -16,12 +17,17 @@ void framegraph::Shutdown()
 
 void framegraph::Process()
 {
+	auto& app = GetApplication();
+
 	void* finalCmdList = framegraph_interface::BeginFrame();
 
 	framegraph_interface::BeginFinalRenderPass();
 
 
-	imgui_interface::NewFrame(finalCmdList);
+	imgui_interface::BeginFrame(finalCmdList);
+	app.OnIMGUI();
+	imgui_interface::EndFrame(finalCmdList);
+
 	framegraph_interface::EndFinalRenderPass();
 
 	framegraph_interface::EndFrame();

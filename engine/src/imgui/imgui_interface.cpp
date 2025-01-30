@@ -155,7 +155,7 @@ void imgui_interface::Shutdown()
 	ImGui::DestroyContext();
 }
 
-void imgui_interface::NewFrame(void* cmdList)
+void imgui_interface::BeginFrame(void* cmdList)
 {
 #ifdef ERMY_GAPI_VULKAN
 	ImGui_ImplVulkan_NewFrame();
@@ -185,7 +185,10 @@ void imgui_interface::NewFrame(void* cmdList)
 	ImGui_ImplEmscripten_NewFrame();
 #endif
 	ImGui::NewFrame();
+}
 
+void imgui_interface::EndFrame(void* cmdList)
+{
 	ImGui::ShowDemoWindow(); // Show demo window! :)
 	ImGui::Render();
 
