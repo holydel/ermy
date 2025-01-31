@@ -65,11 +65,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../../engine/include;../../third_party/imgui;../../editor/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../third_party/imgui;../../editor/include;$(VULKAN_SDK)/Include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(VULKAN_SDK)/Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>slang.lib;slang-rt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">
@@ -80,13 +83,16 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../../engine/include;../../third_party/imgui;../../editor/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../third_party/imgui;../../editor/include;$(VULKAN_SDK)/Include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(VULKAN_SDK)/Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>slang.lib;slang-rt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">
@@ -97,13 +103,16 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../../engine/include;../../third_party/imgui;../../editor/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../third_party/imgui;../../editor/include;$(VULKAN_SDK)/Include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(VULKAN_SDK)/Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>slang.lib;slang-rt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -114,10 +123,15 @@
   <ItemGroup>
     <ClCompile Include="..\..\editor\src\editor_main.cpp" />
     <ClCompile Include="..\..\editor\src\main_window.cpp" />
+    <ClCompile Include="..\..\editor\src\project\eproject.cpp" />
+    <ClCompile Include="..\..\editor\src\shader_compiler\shader_compiler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\editor\include\editor_main.h" />
     <ClInclude Include="..\..\editor\include\main_window.h" />
+    <ClInclude Include="..\..\editor\include\project\eproject.h" />
+    <ClInclude Include="..\..\editor\include\project\shader_info.h" />
+    <ClInclude Include="..\..\editor\include\shader_compiler\shader_compiler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

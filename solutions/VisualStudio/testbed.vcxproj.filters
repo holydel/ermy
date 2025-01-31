@@ -55,6 +55,9 @@
     <Filter Include="AndroidPackaging\app\src\main\res\values">
       <UniqueIdentifier>{a25041dd-791c-4f55-8b6f-2a7dc6cb3109}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{f4867bc2-641c-40b8-9740-788c1de88915}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="AndroidPackaging\gradle\wrapper\gradle-wrapper.jar">
@@ -140,6 +143,9 @@
     </None>
     <None Include="AndroidPackaging\app\proguard-rules.pro">
       <Filter>AndroidPackaging\app</Filter>
+    </None>
+    <None Include="..\..\eproj_template\shaders\internal.slang">
+      <Filter>shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

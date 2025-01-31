@@ -1,6 +1,9 @@
 #include "main_window.h"
 #include <imgui.h>
 
+#include "project/eproject.h"
+#include "shader_compiler/shader_compiler.h"
+
 void main_window::Draw()
 {
 	//Imgui draw main menu bar
@@ -42,6 +45,15 @@ void main_window::Draw()
 			}
 			ImGui::EndMenu();
 		}
+		if (ImGui::BeginMenu("Tools"))
+		{
+			if (ImGui::MenuItem("Recompile Shaders"))
+			{
+				ErmyProject::Instance().RecompileAllShaders();
+			}
+			ImGui::EndMenu();
+		}
+
 		ImGui::EndMainMenuBar();
 	}
 }
