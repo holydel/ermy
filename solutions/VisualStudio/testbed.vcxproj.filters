@@ -144,8 +144,5 @@
     <None Include="AndroidPackaging\app\proguard-rules.pro">
       <Filter>AndroidPackaging\app</Filter>
     </None>
-    <None Include="..\..\eproj_template\shaders\internal.slang">
-      <Filter>shaders</Filter>
-    </None>
   </ItemGroup>
 </Project>

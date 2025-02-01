@@ -43,6 +43,9 @@
     <Filter Include="Source Files\rendering\d3d12">
       <UniqueIdentifier>{5f3d7585-866b-4200-9bac-dc0638166fc8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\rendering\internal_shaders">
+      <UniqueIdentifier>{49830a33-f1c3-45ea-b0a4-47d4982f04d4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\engine\src\ermy.cpp">
@@ -132,6 +135,12 @@
     <ClCompile Include="..\..\engine\src\rendering\d3d12\d3d12_swapchain.cpp">
       <Filter>Source Files\rendering\d3d12</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\engine\src\rendering\internal_shaders\dxil.cpp">
+      <Filter>Source Files\rendering\internal_shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\src\rendering\internal_shaders\spirv.cpp">
+      <Filter>Source Files\rendering\internal_shaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\engine\include\ermy.h">
@@ -209,5 +218,16 @@
     <ClInclude Include="..\..\engine\src\rendering\d3d12\d3d12_swapchain.h">
       <Filter>Source Files\rendering\d3d12</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\engine\include\ermy_shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\include\ermy_shader_internal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\engine\src\rendering\internal_shaders\internal.slang">
+      <Filter>Source Files\rendering\internal_shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

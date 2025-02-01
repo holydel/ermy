@@ -41,7 +41,7 @@ VOut testTriangleVS(uint id: SV_VertexID)
 }
 
 [shader("fragment")]
-float4 testTriangleFragment(VOut input) : SV_Target
+float4 testTriangleFS(VOut input) : SV_Target
 {
     return float4(input.color,1.0f);
 }

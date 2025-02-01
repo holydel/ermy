@@ -69,9 +69,11 @@ ErmyProject& ErmyProject::Instance()
 
 bool ErmyProject::RecompileAllShaders()
 {
-    for (auto& s : shaders)
-    {
-        ShaderCompiler::Instance().CompileShaderFile(s.filePath);        
-    }
+    ShaderCompiler::Instance().CompileAllInternalShaders();
+
+    //for (auto& s : shaders)
+    //{
+    //    ShaderCompiler::Instance().CompileAllInternalShaders(s.filePath);        
+    //}
     return true;
 }

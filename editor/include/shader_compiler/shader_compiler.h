@@ -15,5 +15,7 @@ public:
 	void CompileShader(const char* shaderPath, const char* shaderName);
 	void CompileAllShaders();
 
+	void CompileAllInternalShaders();
+
 	static ShaderCompiler& Instance();
 };

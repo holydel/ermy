@@ -74,6 +74,8 @@
     <ClCompile Include="..\..\engine\src\rendering\d3d12\d3d12_interface.cpp" />
     <ClCompile Include="..\..\engine\src\rendering\d3d12\d3d12_swapchain.cpp" />
     <ClCompile Include="..\..\engine\src\rendering\framegraph.cpp" />
+    <ClCompile Include="..\..\engine\src\rendering\internal_shaders\dxil.cpp" />
+    <ClCompile Include="..\..\engine\src\rendering\internal_shaders\spirv.cpp" />
     <ClCompile Include="..\..\engine\src\rendering\rendering.cpp" />
     <ClCompile Include="..\..\engine\src\rendering\swapchain_interface.cpp" />
     <ClCompile Include="..\..\engine\src\rendering\vulkan\ermy_vulkan.cpp" />
@@ -105,6 +107,8 @@
     <ClInclude Include="..\..\engine\include\ermy_application.h" />
     <ClInclude Include="..\..\engine\include\ermy_entry_point.h" />
     <ClInclude Include="..\..\engine\include\ermy_log.h" />
+    <ClInclude Include="..\..\engine\include\ermy_shader.h" />
+    <ClInclude Include="..\..\engine\include\ermy_shader_internal.h" />
     <ClInclude Include="..\..\engine\src\application.h" />
     <ClInclude Include="..\..\engine\src\graphics\canvas.h" />
     <ClInclude Include="..\..\engine\src\imgui\ermy_imgui.h" />
@@ -125,6 +129,9 @@
     <ClInclude Include="..\..\engine\src\rendering\vulkan\ermy_vulkan.h" />
     <ClInclude Include="..\..\engine\src\rendering\vulkan\vulkan_interface.h" />
     <ClInclude Include="..\..\engine\src\rendering\vulkan\vulkan_swapchain.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\engine\src\rendering\internal_shaders\internal.slang" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
