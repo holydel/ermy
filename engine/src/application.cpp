@@ -48,11 +48,11 @@ void ErmyApplicationStart()
 bool ErmyApplicationStep()
 {
 	rendering::BeginFrame();
-	gApplication->OnBeginFrame();
+	//gApplication->OnBeginFrame();
 
 	rendering::Process();
 
-	gApplication->OnEndFrame();
+	//gApplication->OnEndFrame();
 
 	rendering::EndFrame();
 	

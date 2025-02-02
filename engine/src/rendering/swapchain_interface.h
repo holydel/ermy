@@ -28,4 +28,7 @@ namespace swapchain
     int GetNumFrames();
 
     bool ReInitIfNeeded();
+
+    int GetWidth();
+    int GetHeight();
 }

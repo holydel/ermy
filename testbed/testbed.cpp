@@ -6,6 +6,7 @@ using namespace ermy;
 
 class TestBedApplication : public ermy::Application
 {
+	rendering::PSOID testTrianglePSO;
 public:
 	void OnConfigure() override
 	{
@@ -14,11 +15,12 @@ public:
 
 		staticConfig.appName = "TestBed";
 
-		staticConfig.render.adapterID = 0;
+		staticConfig.render.adapterID = 1;
 	}
 
 	void OnInitialization() override;
-
+	void OnLoad() override;
+	void OnBeginFrame(rendering::CommandList& finalCL) override;
 	void OnEndFrame() override;
 };
 
@@ -43,4 +45,19 @@ void TestBedApplication::OnEndFrame()
 	float b = (sin(a * 3.5f) + cos(a * 0.5f)) * 0.25 + 0.5f;
 	canvas::SetClearColor(r,g,b,1.0f);
 	
+}
+
+void TestBedApplication::OnLoad()
+{
+	rendering::PSODesc desc;
+	desc.shaders.push_back(shader_internal::testTriangleVS());
+	desc.shaders.push_back(shader_internal::testTriangleFS());
+
+	testTrianglePSO = rendering::CreatePSO(desc);
+}
+
+void TestBedApplication::OnBeginFrame(rendering::CommandList& finalCL)
+{
+	finalCL.SetPSO(testTrianglePSO);
+	finalCL.Draw(3);
 }

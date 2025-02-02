@@ -107,6 +107,16 @@ int swapchain::GetNumFrames()
 	return 3;
 }
 
+int swapchain::GetWidth()
+{
+	return gCurWidth;
+}
+
+int swapchain::GetHeight()
+{
+	return gCurHeight;
+}
+
 bool swapchain::ReInitIfNeeded()
 {
 	RECT clientRect = {};

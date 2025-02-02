@@ -46,6 +46,9 @@
     <Filter Include="Source Files\rendering\internal_shaders">
       <UniqueIdentifier>{49830a33-f1c3-45ea-b0a4-47d4982f04d4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\NewFilter1">
+      <UniqueIdentifier>{999a8968-23a6-4df5-b160-9a0faf956956}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\engine\src\ermy.cpp">
@@ -141,6 +144,24 @@
     <ClCompile Include="..\..\engine\src\rendering\internal_shaders\spirv.cpp">
       <Filter>Source Files\rendering\internal_shaders</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\engine\src\rendering\vulkan\vulkan_rendering.cpp">
+      <Filter>Source Files\rendering\vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\src\rendering\d3d12\d3d12_rendering.cpp">
+      <Filter>Source Files\rendering\d3d12</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\src\rendering\vulkan\vulkan_commandlist.cpp">
+      <Filter>Source Files\rendering\vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\src\rendering\d3d12\d3d12_commandlist.cpp">
+      <Filter>Source Files\rendering\d3d12</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\src\rendering\vulkan\vk_utils.cpp">
+      <Filter>Source Files\rendering\vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\src\rendering\d3d12\d3d12_utils.cpp">
+      <Filter>Source Files\rendering\d3d12</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\engine\include\ermy.h">
@@ -223,6 +244,27 @@
     </ClInclude>
     <ClInclude Include="..\..\engine\include\ermy_shader_internal.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\include\ermy_rendering.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\include\ermy_commandlist.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\include\ermy_rendergraph.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\rendering\vulkan\vulkan_rendering.h">
+      <Filter>Source Files\rendering\vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\rendering\vulkan\vk_utils.h">
+      <Filter>Source Files\rendering\vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\rendering\d3d12\d3d12_rendering.h">
+      <Filter>Source Files\rendering\d3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\rendering\d3d12\d3d12_utils.h">
+      <Filter>Source Files\rendering\d3d12</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

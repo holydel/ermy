@@ -70,17 +70,23 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dev|Android-arm64-v8a'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\engine\src\rendering\d3d12\d3d12_commandlist.cpp" />
     <ClCompile Include="..\..\engine\src\rendering\d3d12\d3d12_framegraph_interface.cpp" />
     <ClCompile Include="..\..\engine\src\rendering\d3d12\d3d12_interface.cpp" />
+    <ClCompile Include="..\..\engine\src\rendering\d3d12\d3d12_rendering.cpp" />
     <ClCompile Include="..\..\engine\src\rendering\d3d12\d3d12_swapchain.cpp" />
+    <ClCompile Include="..\..\engine\src\rendering\d3d12\d3d12_utils.cpp" />
     <ClCompile Include="..\..\engine\src\rendering\framegraph.cpp" />
     <ClCompile Include="..\..\engine\src\rendering\internal_shaders\dxil.cpp" />
     <ClCompile Include="..\..\engine\src\rendering\internal_shaders\spirv.cpp" />
     <ClCompile Include="..\..\engine\src\rendering\rendering.cpp" />
     <ClCompile Include="..\..\engine\src\rendering\swapchain_interface.cpp" />
     <ClCompile Include="..\..\engine\src\rendering\vulkan\ermy_vulkan.cpp" />
+    <ClCompile Include="..\..\engine\src\rendering\vulkan\vk_utils.cpp" />
+    <ClCompile Include="..\..\engine\src\rendering\vulkan\vulkan_commandlist.cpp" />
     <ClCompile Include="..\..\engine\src\rendering\vulkan\vulkan_framegraph_interface.cpp" />
     <ClCompile Include="..\..\engine\src\rendering\vulkan\vulkan_interface.cpp" />
+    <ClCompile Include="..\..\engine\src\rendering\vulkan\vulkan_rendering.cpp" />
     <ClCompile Include="..\..\engine\src\rendering\vulkan\vulkan_swapchain.cpp" />
     <ClCompile Include="..\..\engine\src\static_constraints.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
@@ -105,8 +111,11 @@
     <ClInclude Include="..\..\engine\include\ermy.h" />
     <ClInclude Include="..\..\engine\include\ermy_api.h" />
     <ClInclude Include="..\..\engine\include\ermy_application.h" />
+    <ClInclude Include="..\..\engine\include\ermy_commandlist.h" />
     <ClInclude Include="..\..\engine\include\ermy_entry_point.h" />
     <ClInclude Include="..\..\engine\include\ermy_log.h" />
+    <ClInclude Include="..\..\engine\include\ermy_rendergraph.h" />
+    <ClInclude Include="..\..\engine\include\ermy_rendering.h" />
     <ClInclude Include="..\..\engine\include\ermy_shader.h" />
     <ClInclude Include="..\..\engine\include\ermy_shader_internal.h" />
     <ClInclude Include="..\..\engine\src\application.h" />
@@ -120,14 +129,18 @@
     <ClInclude Include="..\..\engine\src\os\os_utils.h" />
     <ClInclude Include="..\..\engine\src\os\windows\win_utils.h" />
     <ClInclude Include="..\..\engine\src\rendering\d3d12\d3d12_interface.h" />
+    <ClInclude Include="..\..\engine\src\rendering\d3d12\d3d12_rendering.h" />
     <ClInclude Include="..\..\engine\src\rendering\d3d12\d3d12_swapchain.h" />
+    <ClInclude Include="..\..\engine\src\rendering\d3d12\d3d12_utils.h" />
     <ClInclude Include="..\..\engine\src\rendering\framegraph.h" />
     <ClInclude Include="..\..\engine\src\rendering\framegraph_interface.h" />
     <ClInclude Include="..\..\engine\src\rendering\rendering.h" />
     <ClInclude Include="..\..\engine\src\rendering\rendering_interface.h" />
     <ClInclude Include="..\..\engine\src\rendering\swapchain_interface.h" />
     <ClInclude Include="..\..\engine\src\rendering\vulkan\ermy_vulkan.h" />
+    <ClInclude Include="..\..\engine\src\rendering\vulkan\vk_utils.h" />
     <ClInclude Include="..\..\engine\src\rendering\vulkan\vulkan_interface.h" />
+    <ClInclude Include="..\..\engine\src\rendering\vulkan\vulkan_rendering.h" />
     <ClInclude Include="..\..\engine\src\rendering\vulkan\vulkan_swapchain.h" />
   </ItemGroup>
   <ItemGroup>

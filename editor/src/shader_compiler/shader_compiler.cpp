@@ -181,7 +181,7 @@ void AppendShader(std::ostringstream& stream, const char* name, SlangStage stage
 {
 	stream << "	ShaderBytecode " << name << "()\n";
 	stream << "	{\n"
-		"		u8 data[] = {";
+		"		static u8 data[] = {";
 
 	int numBytes = shaderBlob->getBufferSize();
 	const ermy::u8* data = static_cast<const ermy::u8*>(shaderBlob->getBufferPointer());
@@ -196,7 +196,7 @@ void AppendShader(std::ostringstream& stream, const char* name, SlangStage stage
 				stream << std::endl;
 		}
 		
-		stream << static_cast<int>(data[i]);
+		stream << static_cast<uint32_t>(data[i]);
 	}
 
 	stream << "};\n\n";

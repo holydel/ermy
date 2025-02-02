@@ -16,5 +16,6 @@ namespace ermy
 		u32 size;
 		ShaderStage stage;
 		bool isInternal;
+		mutable Handle16 cachedDeviceObjectID;
 	};
 }

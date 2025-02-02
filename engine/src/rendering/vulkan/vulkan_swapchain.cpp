@@ -354,6 +354,16 @@ bool swapchain::ReInitIfNeeded()
 	return false;
 }
 
+int swapchain::GetWidth()
+{
+	return gVKSurfaceCaps.currentExtent.width;
+}
+
+int swapchain::GetHeight()
+{
+	return gVKSurfaceCaps.currentExtent.height;
+}
+
 void swapchain::Shutdown()
 {
 	ShutdownSwapchainResources();

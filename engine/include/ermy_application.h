@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "ermy_api.h"
+#include "ermy_commandlist.h"
 
 namespace ermy
 {
@@ -141,7 +142,7 @@ namespace ermy
 		/// <summary>
 		/// Begin Frame (after acquire frame from swapchain)
 		/// </summary>
-		virtual void OnBeginFrame() {}
+		virtual void OnBeginFrame(rendering::CommandList& finalCL) {}
 
 		/// <summary>
 		/// End frame (after submission to swapchain)
