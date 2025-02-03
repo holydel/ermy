@@ -5,4 +5,5 @@
 
 
 extern std::vector<VkPipeline> gAllPipelines;
+extern std::vector<VkPipelineLayout> gAllPipelineLayouts;
 #endif

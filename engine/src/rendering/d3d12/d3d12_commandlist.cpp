@@ -30,7 +30,7 @@ void CommandList::DrawIndexed(int numIndices, int numInstanced)
 void CommandList::SetViewport(int x, int y, int width, int height)
 {
 	ID3D12GraphicsCommandList* cbuff = static_cast<ID3D12GraphicsCommandList*>(nativeHandle);
-	D3D12_VIEWPORT viewport{x,y,width,height,0,1};
+	D3D12_VIEWPORT viewport{x,y + height,width,-height,0,1};
 	cbuff->RSSetViewports(1, &viewport);
 }
 
@@ -41,4 +41,11 @@ void CommandList::SetScissor(int x, int y, int width, int height)
 	cbuff->RSSetScissorRects(1, &sissor);
 }
 
+void CommandList::SetRootConstants(void* data, int size)
+{
+	ID3D12GraphicsCommandList* cbuff = static_cast<ID3D12GraphicsCommandList*>(nativeHandle);
+	cbuff->SetGraphicsRoot32BitConstants(0, size / 4, data, 0);
+	//VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
+	//vkCmdPushConstants(cbuff, gAllPipelineLayouts[gCurrentPSOID.handle], VK_SHADER_STAGE_VERTEX_BIT, 0, size, data);
+}
 #endif

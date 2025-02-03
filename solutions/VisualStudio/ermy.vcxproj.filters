@@ -81,9 +81,6 @@
     <ClCompile Include="..\..\engine\src\rendering\vulkan\vulkan_interface.cpp">
       <Filter>Source Files\rendering\vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\engine\src\graphics\canvas.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\engine\src\os\android\android_window.cpp">
       <Filter>Source Files\os\android</Filter>
     </ClCompile>
@@ -162,6 +159,9 @@
     <ClCompile Include="..\..\engine\src\rendering\d3d12\d3d12_utils.cpp">
       <Filter>Source Files\rendering\d3d12</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\engine\src\graphics\canvas_interface.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\engine\include\ermy.h">
@@ -202,9 +202,6 @@
     </ClInclude>
     <ClInclude Include="..\..\engine\src\rendering\vulkan\vulkan_interface.h">
       <Filter>Source Files\rendering\vulkan</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\engine\src\graphics\canvas.h">
-      <Filter>Source Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\engine\src\rendering\vulkan\ermy_vulkan.h">
       <Filter>Source Files\rendering\vulkan</Filter>
@@ -265,6 +262,15 @@
     </ClInclude>
     <ClInclude Include="..\..\engine\src\rendering\d3d12\d3d12_utils.h">
       <Filter>Source Files\rendering\d3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\graphics\canvas_interface.h">
+      <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\include\ermy_canvas.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\include\ermy_input.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

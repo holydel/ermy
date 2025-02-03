@@ -24,6 +24,8 @@ namespace ermy
 
 			void SetViewport(int x, int y, int width, int height);
 			void SetScissor(int x, int y, int width, int height);
+
+			void SetRootConstants(void* data, int size);
 		};
 	}
 }

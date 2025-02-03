@@ -36,7 +36,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\..\engine\src\application.cpp" />
-    <ClCompile Include="..\..\engine\src\graphics\canvas.cpp" />
+    <ClCompile Include="..\..\engine\src\graphics\canvas_interface.cpp" />
     <ClCompile Include="..\..\engine\src\imgui\ermy_imgui.cpp" />
     <ClCompile Include="..\..\engine\src\imgui\imgui_interface.cpp" />
     <ClCompile Include="..\..\engine\src\logger.cpp" />
@@ -111,15 +111,17 @@
     <ClInclude Include="..\..\engine\include\ermy.h" />
     <ClInclude Include="..\..\engine\include\ermy_api.h" />
     <ClInclude Include="..\..\engine\include\ermy_application.h" />
+    <ClInclude Include="..\..\engine\include\ermy_canvas.h" />
     <ClInclude Include="..\..\engine\include\ermy_commandlist.h" />
     <ClInclude Include="..\..\engine\include\ermy_entry_point.h" />
+    <ClInclude Include="..\..\engine\include\ermy_input.h" />
     <ClInclude Include="..\..\engine\include\ermy_log.h" />
     <ClInclude Include="..\..\engine\include\ermy_rendergraph.h" />
     <ClInclude Include="..\..\engine\include\ermy_rendering.h" />
     <ClInclude Include="..\..\engine\include\ermy_shader.h" />
     <ClInclude Include="..\..\engine\include\ermy_shader_internal.h" />
     <ClInclude Include="..\..\engine\src\application.h" />
-    <ClInclude Include="..\..\engine\src\graphics\canvas.h" />
+    <ClInclude Include="..\..\engine\src\graphics\canvas_interface.h" />
     <ClInclude Include="..\..\engine\src\imgui\ermy_imgui.h" />
     <ClInclude Include="..\..\engine\src\imgui\imgui_interface.h" />
     <ClInclude Include="..\..\engine\src\logger.h" />
@@ -239,7 +241,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include;../../third_party/glm</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -262,7 +264,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;;../../third_party/glm</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -280,7 +282,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include;../../third_party/glm</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -307,7 +309,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include;../../third_party/glm</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -332,7 +334,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;;../../third_party/glm</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -352,7 +354,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;;../../third_party/glm</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>

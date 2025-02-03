@@ -15,7 +15,7 @@ VkFormat gVKSurfaceFormat;
 u32 gAcquiredNextImageIndex = 0;
 VkSemaphore gSwapchainSemaphore = VK_NULL_HANDLE;
 int gSwapchainCurrentFrame = 0;
-int gNumberOfFrames = 3;
+int gNumberOfFrames = 2;
 bool gSwapchainNeedRebuild = false;
 
 struct FrameInFlight

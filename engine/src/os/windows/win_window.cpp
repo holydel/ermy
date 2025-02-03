@@ -1,6 +1,8 @@
 #pragma once
 #include "win_utils.h"
 #include "application.h"
+#include <windowsx.h>
+#include <ermy_input.h>
 
 HWND gMainWindow = nullptr;
 HINSTANCE gWinSystemInstance = nullptr;
@@ -96,8 +98,15 @@ bool os::Update()
 		::DispatchMessage(&msg);
 	}
 
-	os::Sleep(1);
 	return true;
+}
+
+int gMouseGlobalX = 0;
+int gMouseGlobalY = 0;
+
+glm::ivec2 ermy::input::mouse::GetCurrentPosition()
+{
+	return { gMouseGlobalX ,gMouseGlobalY };
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -108,6 +117,15 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	switch (message)
 	{
+	case WM_MOUSEMOVE:
+	case WM_LBUTTONDOWN:
+	case WM_RBUTTONDOWN:
+	{
+		// Extract the mouse position from LPARAM
+		gMouseGlobalX = GET_X_LPARAM(lParam);
+		gMouseGlobalY = GET_Y_LPARAM(lParam);
+		break;
+	}
 	case WM_PAINT:
 		break;
 	case WM_SYSKEYDOWN:

@@ -7,11 +7,21 @@ namespace ermy
 {
 	namespace rendering
 	{
+		enum class PrimitiveTopology
+		{
+			TriangleList,
+			TriangleStrip,
+			Points,
+			LineList,
+			LineStrip
+		};
+
 		typedef Handle32 PSOID;
 
 		struct PSODesc
 		{
 			std::vector<ShaderBytecode> shaders;
+			PrimitiveTopology topology = PrimitiveTopology::TriangleList;
 		};
 
 		PSOID CreatePSO(const PSODesc &desc);

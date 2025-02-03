@@ -7,12 +7,15 @@ using namespace ermy;
 using namespace ermy::rendering;
 
 
+PSOID gCurrentPSOID;
+
 void CommandList::SetPSO(PSOID pso)
 {
 	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
 	assert(pso.handle >= 0 && pso.handle < gAllPipelines.size());
 
 	vkCmdBindPipeline(cbuff, VkPipelineBindPoint::VK_PIPELINE_BIND_POINT_GRAPHICS, gAllPipelines[pso.handle]);
+	gCurrentPSOID = pso;
 }
 
 void CommandList::Draw(int numVertices, int numInstances)
@@ -45,4 +48,9 @@ void CommandList::SetScissor(int x, int y, int width, int height)
 	vkCmdSetScissor(cbuff, 0, 1, &scissor);
 }
 
+void CommandList::SetRootConstants(void* data, int size)
+{
+	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
+	vkCmdPushConstants(cbuff, gAllPipelineLayouts[gCurrentPSOID.handle], VK_SHADER_STAGE_VERTEX_BIT, 0, size, data);
+}
 #endif

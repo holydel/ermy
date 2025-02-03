@@ -77,7 +77,7 @@ VkPipeline _createPipeline(const PSODesc& desc)
 		VkPushConstantRange range;
 		range.size = 128;
 		range.offset = 0;
-		range.stageFlags = VK_SHADER_STAGE_ALL;
+		range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
 		cinfo.pushConstantRangeCount = 1;
 		cinfo.pPushConstantRanges = &range;
@@ -115,7 +115,7 @@ VkPipeline _createPipeline(const PSODesc& desc)
 	bstate.srcAlphaBlendFactor = VkBlendFactor::VK_BLEND_FACTOR_ONE;
 	bstate.dstAlphaBlendFactor = VkBlendFactor::VK_BLEND_FACTOR_ONE;
 
-	pipInputAssemblyState.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+	pipInputAssemblyState.topology = vk_utils::VkPrimitiveTopologyFromErmy(desc.topology);
 
 	pipColorBlendState.attachmentCount = 1;
 	pipColorBlendState.pAttachments = &bstate;

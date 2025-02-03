@@ -18,6 +18,19 @@ PSOID ermy::rendering::CreatePSO(const PSODesc& desc)
 	D3D12_ROOT_PARAMETER rootParameters[32] = {};
 	int numRootParameters = 0;
 
+	if (32 > 0)
+	{
+		auto& p = rootParameters[numRootParameters];
+
+		p.ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;
+		p.Constants.Num32BitValues = 32;
+		p.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+		p.Constants.RegisterSpace = 0;
+		p.Constants.ShaderRegister = 0;
+
+		numRootParameters++;
+	}
+
 	auto IAstate = CD3DX12_INPUT_LAYOUT_SUBOBJECT();
 	u16 vertexStride = 0;
 
@@ -67,7 +80,7 @@ PSOID ermy::rendering::CreatePSO(const PSODesc& desc)
 	psoDesc.SampleDesc.Count = 1;
 	D3D_CALL(gD3DDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&gAllPSOs[curSignatureID])));
 
-	meta.topology = D3D12_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST;//d3d12_utils::GetD3D12TopologyFromErmy(desc.topology);
+	meta.topology = D3D12_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;//d3d12_utils::GetD3D12TopologyFromErmy(desc.topology);
 	meta.stride = vertexStride;
 
 	return PSOID{ (u32)(gAllPSOs.size() - 1)};

@@ -6,7 +6,7 @@ using namespace ermy;
 
 #ifdef ERMY_GAPI_D3D12
 
-int gNumFrames = 3;
+int gNumFrames = 2;
 std::vector<BackbufferResourceInfo> gBBFrames;
 IDXGISwapChain3* gSwapChain = nullptr;
 u64 gCurrentBBResourceIndex = 0;
@@ -94,7 +94,7 @@ void swapchain::Process()
 
 void swapchain::Present()
 {
-	gSwapChain->Present(0, DXGI_SWAP_EFFECT_DISCARD);
+	gSwapChain->Present(1, DXGI_SWAP_EFFECT_DISCARD);
 }
 
 void swapchain::Shutdown()

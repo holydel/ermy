@@ -3,7 +3,6 @@
 
 #include <ermy_log.h>
 
-#include "../../graphics/canvas.h"
 #include "../../application.h"
 #include "../../os/os_utils.h"
 #include "vulkan_swapchain.h"

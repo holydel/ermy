@@ -2,6 +2,8 @@
 #include "ermy.h"
 
 #include "ermy_entry_point.h"
+#include <ermy_input.h>
+
 using namespace ermy;
 
 class TestBedApplication : public ermy::Application
@@ -15,7 +17,7 @@ public:
 
 		staticConfig.appName = "TestBed";
 
-		staticConfig.render.adapterID = 1;
+		staticConfig.render.adapterID = 0;
 	}
 
 	void OnInitialization() override;
@@ -60,4 +62,10 @@ void TestBedApplication::OnBeginFrame(rendering::CommandList& finalCL)
 {
 	finalCL.SetPSO(testTrianglePSO);
 	finalCL.Draw(3);
+	auto mpos = ermy::input::mouse::GetCurrentPosition();
+
+	static float a = 0.0f;
+	a += 0.1f;
+
+	canvas::DrawDedicatedSprite(mpos.x, mpos.y, 80, 10, a);
 }
