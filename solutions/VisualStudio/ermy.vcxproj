@@ -116,6 +116,7 @@
     <ClInclude Include="..\..\engine\include\ermy_entry_point.h" />
     <ClInclude Include="..\..\engine\include\ermy_input.h" />
     <ClInclude Include="..\..\engine\include\ermy_log.h" />
+    <ClInclude Include="..\..\engine\include\ermy_profiler.h" />
     <ClInclude Include="..\..\engine\include\ermy_rendergraph.h" />
     <ClInclude Include="..\..\engine\include\ermy_rendering.h" />
     <ClInclude Include="..\..\engine\include\ermy_shader.h" />
