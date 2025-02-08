@@ -30,10 +30,12 @@ void ermy::canvas::DrawDedicatedSprite(float x, float y, float w, float h, float
 
     struct SpriteInfo
     {
-        float x, y, w, h, angle;
+        float x, y, w, h, u0, v0, u1, v1;
+        float angle;
+        u32 packedColor;
     };
 
-    SpriteInfo sinfo = { x,y,w,h,a };
+    SpriteInfo sinfo = { x,y,w,h,0.0f,0.0f,1.0f,1.0f,a,0xFFFFFFFFu };
 
     gCanvasCL->SetRootConstants(&sinfo, sizeof(sinfo));
     gCanvasCL->Draw(4);
@@ -45,6 +47,7 @@ void canvas_interface::Initialize()
     desc.shaders.push_back(shader_internal::dedicatedSpriteVS());
     desc.shaders.push_back(shader_internal::dedicatedSpriteFS());
     desc.topology = PrimitiveTopology::TriangleStrip;
+    desc.numRootConstants = 10; //float2 pos, float2 size, float2 uv0, float2 uv1, uint packedColor, float angle
 
     gDedicatedSpritePSO = CreatePSO(desc);
 }

@@ -177,3 +177,11 @@ void* os::GetAppInstanceHandle()
 {
 	return gWinSystemInstance;
 }
+
+ermy::i64 os::GetCurrentTimestamp()
+{
+	LARGE_INTEGER timestamp;
+	QueryPerformanceCounter(&timestamp);
+
+	return timestamp.QuadPart;
+}

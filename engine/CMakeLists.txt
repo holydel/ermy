@@ -22,6 +22,7 @@ elseif(ANDROID)
     set(PLATFORM_DEPENDENT_SRC
         src/os/android/android_entry_point.cpp
         src/os/android/android_utils.cpp
+        src/os/android/android_window.cpp
     )
 elseif(EMSCRIPTEN)
     set(PLATFORM_DEPENDENT_SRC
@@ -36,10 +37,18 @@ endif()
 set(VULKAN_BACKEND_SRC
 src/rendering/vulkan/ermy_vulkan.cpp
 src/rendering/vulkan/vulkan_swapchain.cpp
+src/rendering/vulkan/vulkan_commandlist.cpp
+src/rendering/vulkan/vk_utils.cpp
+src/rendering/vulkan/vulkan_rendering.cpp
 src/rendering/vulkan/vulkan_interface.cpp
 src/rendering/vulkan/vulkan_framegraph_interface.cpp
+src/rendering/internal_shaders/spirv.cpp
     )
 
+    set(MINIAUDIO_BACKEND_SRC
+src/sound/sound_interface_miniaudio.cpp
+    )
+    
 target_sources(engine
     PRIVATE
     src/ermy.cpp
@@ -50,9 +59,17 @@ target_sources(engine
     src/rendering/framegraph.cpp
     src/rendering/rendering.cpp
     src/rendering/swapchain_interface.cpp
-    src/graphics/canvas.cpp
+    src/graphics/canvas_interface.cpp
+    src/imgui/ermy_imgui.cpp
+    src/imgui/imgui_interface.cpp
     ${PLATFORM_DEPENDENT_SRC}
     ${VULKAN_BACKEND_SRC}
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/imgui/imgui.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/imgui/imgui_demo.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/imgui/imgui_draw.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/imgui/imgui_tables.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/imgui/imgui_widgets.cpp
         # Add source files here as they are created
 )
 

@@ -60,7 +60,7 @@ VK_DEFINE_FUNCTION(vkEnumeratePhysicalDeviceGroups);
 VK_DEFINE_FUNCTION(vkDestroyDescriptorSetLayout);
 VK_DEFINE_FUNCTION(vkFreeDescriptorSets);
 VK_DEFINE_FUNCTION(vkWaitSemaphores);
-VK_DEFINE_FUNCTION(vkQueueSubmit2KHR);
+VK_DEFINE_FUNCTION(vkQueueSubmit2);
 
 #ifdef ERMY_OS_WINDOWS
 VK_DEFINE_FUNCTION(vkCreateWin32SurfaceKHR);
@@ -181,7 +181,9 @@ VK_DEFINE_FUNCTION(vkBindImageMemory2);
 VK_DEFINE_FUNCTION(vkGetBufferMemoryRequirements2);
 VK_DEFINE_FUNCTION(vkGetImageMemoryRequirements2);
 VK_DEFINE_FUNCTION(vkCmdDecompressMemoryNV);
-
+VK_DEFINE_FUNCTION(vkCmdBeginRendering);
+VK_DEFINE_FUNCTION(vkCmdEndRendering);
+VK_DEFINE_FUNCTION(vkCmdPipelineBarrier2);
 
 #ifdef ERMY_OS_WINDOWS
 VK_DEFINE_FUNCTION(vkGetWinrtDisplayNV);
@@ -190,9 +192,30 @@ VK_DEFINE_FUNCTION(vkAcquireWinrtDisplayNV);
 
 static void* gLibHandle = nullptr;
 
+void* LoadDeviceFunction(VkDevice device, const char* funcName)
+{
+	void* fptr = vkGetDeviceProcAddr(device, funcName);
+
+	if (fptr == nullptr)
+	{
+		std::string fname = funcName;
+		fname += "KHR";;
+		fptr = vkGetDeviceProcAddr(device, fname.c_str());
+	}
+
+	if (fptr == nullptr)
+	{
+		std::string fname = funcName;
+		fname += "EXT";;
+		fptr = vkGetDeviceProcAddr(device, fname.c_str());
+	}
+
+	return fptr;
+}
+
 #define VK_LOAD_GLOBAL_FUNC(func) func = (PFN_##func)vkGetInstanceProcAddr( nullptr, #func)
 #define VK_LOAD_INSTANCE_FUNC(func) func = (PFN_##func)vkGetInstanceProcAddr(instance, #func)
-#define VK_LOAD_DEVICE_FUNC(func) func = (PFN_##func)vkGetDeviceProcAddr(device,#func)
+#define VK_LOAD_DEVICE_FUNC(func) func = (PFN_##func)LoadDeviceFunction(device,#func)
 
 void LoadVK_Library()
 {
@@ -366,7 +389,10 @@ void LoadVkDeviceLevelFuncs(VkDevice device)
 	VK_LOAD_DEVICE_FUNC(vkGetImageMemoryRequirements2);
 	VK_LOAD_DEVICE_FUNC(vkCmdDecompressMemoryNV);
 	VK_LOAD_DEVICE_FUNC(vkWaitSemaphores);
-	VK_LOAD_DEVICE_FUNC(vkQueueSubmit2KHR);
+	VK_LOAD_DEVICE_FUNC(vkQueueSubmit2);
+	VK_LOAD_DEVICE_FUNC(vkCmdBeginRendering);
+	VK_LOAD_DEVICE_FUNC(vkCmdEndRendering);
+	VK_LOAD_DEVICE_FUNC(vkCmdPipelineBarrier2);
 }
 
 const char* VkResultToString(VkResult res)

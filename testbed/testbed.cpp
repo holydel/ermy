@@ -18,6 +18,7 @@ public:
 		staticConfig.appName = "TestBed";
 
 		staticConfig.render.adapterID = 0;
+		staticConfig.render.vkConfig.useDynamicRendering = true;
 	}
 
 	void OnInitialization() override;
@@ -54,6 +55,7 @@ void TestBedApplication::OnLoad()
 	rendering::PSODesc desc;
 	desc.shaders.push_back(shader_internal::testTriangleVS());
 	desc.shaders.push_back(shader_internal::testTriangleFS());
+	desc.numRootConstants = 0;
 
 	testTrianglePSO = rendering::CreatePSO(desc);
 }
@@ -62,6 +64,8 @@ void TestBedApplication::OnBeginFrame(rendering::CommandList& finalCL)
 {
 	finalCL.SetPSO(testTrianglePSO);
 	finalCL.Draw(3);
+
+	
 	auto mpos = ermy::input::mouse::GetCurrentPosition();
 
 	static float a = 0.0f;

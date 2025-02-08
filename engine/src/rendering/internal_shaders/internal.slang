@@ -27,7 +27,10 @@ struct DedicatedSpriteConstats
 {
     float2 spritePos;
     float2 spriteSize;
+    float2 uv0;
+    float2 uv1;
     float spriteAngle;
+    uint packedColor;
 };
 
 [vk::push_constant]

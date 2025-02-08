@@ -44,6 +44,8 @@ namespace os
 #ifdef ERMY_GAPI_VULKAN
 	const char* GetVulkanRuntimeLibraryName();
 #endif
+
+	ermy::i64 GetCurrentTimestamp();
 }
 
 #define LOAD_FUNC_BY_NAME(libHandle,funcPtrOut,funcName) funcPtrOut = os::GetFuncPtr<decltype(funcPtrOut)>(libHandle,funcName);

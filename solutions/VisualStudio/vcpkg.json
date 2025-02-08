@@ -1,9 +1,12 @@
 {
   "dependencies": [
-    "assimp",
-    "ffmpeg",
-    "openimageio",
-    "usd",
-    "ktx"
+    {
+      "name": "openimageio",
+      "features": [ "webp", "gif", "jpegxl", "libheif", "libraw","openjpeg" ]
+    },
+      "assimp",
+      "ffmpeg",
+      "usd",
+      "ktx"
   ]
 }

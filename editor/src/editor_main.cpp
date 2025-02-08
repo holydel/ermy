@@ -5,6 +5,7 @@
 #include "main_window.h"
 #include "project/eproject.h"
 #include "shader_compiler/shader_compiler.h"
+#include <assets/assets_importer.h>
 
 class Editor : public ermy::Application
 {
@@ -26,6 +27,10 @@ public:
 		ErmyProject::Instance().MountToLocalDirectory("../../eproj_template");
 
 		ErmyProject::Instance().RecompileAllShaders();
+		assets_importer::Initialize();
+
+		assets_importer::Import("C:\\Users\\holyd\\Pictures\\m92pjmfggseb1.webp", AssetType::Texture);
+		assets_importer::Import("C:\\Users\\holyd\\Downloads\\glTF-Sample-Models-master\\sourceModels\\BarramundiFish\\BarramundiFish.fbx", AssetType::Geometry);
 	}
 	void OnIMGUI() override
 	{

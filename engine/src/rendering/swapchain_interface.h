@@ -13,7 +13,7 @@ namespace swapchain
         ermy::Application::StaticConfig::SwapchainConfig swapchainConfig = {};
     };
 
-    extern Config gConfig;
+    extern Config gSwapchainConfig;
 
     void Configure(const ermy::Application::StaticConfig& appConfig);
 

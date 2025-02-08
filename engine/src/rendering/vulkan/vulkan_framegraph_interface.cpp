@@ -6,6 +6,7 @@
 #include <cassert>
 #include "vulkan_swapchain.h"
 #include <array>
+#include "vk_utils.h"
 
 using namespace ermy;
 
@@ -88,11 +89,12 @@ namespace framegraph_interface
 			 .pSemaphores = &gFrameGraphSemaphore,
 			 .pValues = &waitValue,
 		};
+
 		vkWaitSemaphores(gVKDevice, &waitInfo, std::numeric_limits<uint64_t>::max());
+		swapchain::AcquireNextImage();
 
 		VK_CALL(vkResetCommandPool(gVKDevice, frame.cmdPool, 0));
-		
-		swapchain::AcquireNextImage();
+
 
 		VkCommandBuffer cmd = frame.cmdBuffer;
 		// Begin the command buffer recording for the frame
@@ -110,19 +112,46 @@ namespace framegraph_interface
 		static float a = 0.0f;
 		a += 0.01f;
 
-		float clearColors[4] = { 0.3f, sin(a) * 0.5f + 0.5f, 0.7f, 1.0f };
-		VkClearValue clearValue;
+		float clearColors[4] = { 0.3f, (float)sin(a) * 0.5f + 0.5f, 0.7f, 1.0f };
+
+VkClearValue clearValue;
 		clearValue.color = { clearColors[0], clearColors[1], clearColors[2], clearColors[3] };
 
-		VkRenderPassBeginInfo rpass{ VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO };
-		rpass.clearValueCount = 1;
-		rpass.pClearValues = &clearValue;
-		rpass.framebuffer = swapchain::GetFramebuffer();
-		rpass.renderArea = { 0,0, gVKSurfaceCaps.currentExtent.width, gVKSurfaceCaps.currentExtent.height };
-		rpass.renderPass = swapchain::GetRenderPass();
+		if(gVKConfig.useDynamicRendering)
+		{
 
+			vk_utils::ImageTransition(frame.cmdBuffer, swapchain::GetCurrentImage(), swapchain::GetCurrentImageLayout(), VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+			
+			
+			VkRenderingAttachmentInfo colorAttachment{VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO};
+			colorAttachment.imageView = swapchain::GetCurrentImageView();
+			colorAttachment.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+			colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+			colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+			colorAttachment.clearValue = clearValue;
 
-		vkCmdBeginRenderPass(frame.cmdBuffer, &rpass, VK_SUBPASS_CONTENTS_INLINE);
+			VkRenderingInfo renderInfo{VK_STRUCTURE_TYPE_RENDERING_INFO};
+			renderInfo.renderArea = {{0, 0}, {gVKSurfaceCaps.currentExtent.width, gVKSurfaceCaps.currentExtent.height}};
+			renderInfo.layerCount = 1;
+			renderInfo.colorAttachmentCount = 1;
+			renderInfo.pColorAttachments = &colorAttachment;
+
+			vkCmdBeginRendering(frame.cmdBuffer, &renderInfo);
+
+		}
+		else
+		{
+		
+
+			VkRenderPassBeginInfo rpass{ VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO };
+			rpass.clearValueCount = 1;
+			rpass.pClearValues = &clearValue;
+			rpass.framebuffer = swapchain::GetFramebuffer();
+			rpass.renderArea = { 0,0, gVKSurfaceCaps.currentExtent.width, gVKSurfaceCaps.currentExtent.height };
+			rpass.renderPass = swapchain::GetRenderPass();
+
+			vkCmdBeginRenderPass(frame.cmdBuffer, &rpass, VK_SUBPASS_CONTENTS_INLINE);
+		}
 	}
 
 	void EndFinalRenderPass()
@@ -130,8 +159,16 @@ namespace framegraph_interface
 		auto& frame = gFrames[gFrameRingCurrent];
 		VkCommandBuffer cmd = frame.cmdBuffer;
 
+		
+		if(gVKConfig.useDynamicRendering)
+		{
+			vkCmdEndRendering(frame.cmdBuffer);
+			vk_utils::ImageTransition(frame.cmdBuffer, swapchain::GetCurrentImage(), VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+		}
+		else
+		{
 		vkCmdEndRenderPass(frame.cmdBuffer);
-
+		}
 		
 	}
 
@@ -181,7 +218,7 @@ namespace framegraph_interface
 			.sType = VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO,
 			.semaphore = gFrameGraphSemaphore,
 			.value = signalFrameValue,
-			.stageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT,
+			.stageMask = VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT,
 			});
 
 		// Note : in this sample, we only have one command buffer per frame.
@@ -202,7 +239,7 @@ namespace framegraph_interface
 		}} };
 
 		// Submit the command buffer to the GPU and signal when it's done
-		VK_CALL(vkQueueSubmit2KHR(gVKMainQueue, uint32_t(submitInfo.size()), submitInfo.data(), nullptr));
+		VK_CALL(vkQueueSubmit2(gVKMainQueue, uint32_t(submitInfo.size()), submitInfo.data(), nullptr));
 	}
 
 	void Present()

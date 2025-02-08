@@ -6,6 +6,7 @@
 #include "../../application.h"
 #include "../../os/os_utils.h"
 #include "vulkan_swapchain.h"
+#include <sstream>
 
 VkInstance gVKInstance = VK_NULL_HANDLE;
 VkAllocationCallbacks* gVKGlobalAllocationsCallbacks = nullptr;
@@ -19,7 +20,17 @@ VkQueue gVKComputeAsyncQueue = VK_NULL_HANDLE;
 VkQueue gVKTransferAsyncQueue = VK_NULL_HANDLE;
 VkRenderPass gVKRenderPass = VK_NULL_HANDLE;
 
+
+
 using namespace ermy;
+Application::StaticConfig::VKConfig gVKConfig;
+
+constexpr u32 Ver11 = VK_MAKE_VERSION(1, 1, 0);
+constexpr u32 Ver12 = VK_MAKE_VERSION(1, 2, 0);
+constexpr u32 Ver13 = VK_MAKE_VERSION(1, 3, 0);
+constexpr u32 Ver14 = VK_MAKE_VERSION(1, 4, 0);
+
+u32 gPhysicalDeviceAPIVersion = VK_MAKE_VERSION(1, 0, 0);
 
 static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 	VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -46,53 +57,95 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 
 	logger::EnqueueLogMessageRAWTagged(severity, "VULKAN", pCallbackData->pMessage);
 
+	if (strcmp(pCallbackData->pMessageIdName, "Loader Message"))
+	{
+		int a = 42;
+	}
+
 	return VK_FALSE;
 }
 
 struct ValidationSettings
 {
-	VkBool32 fine_grained_locking{ VK_TRUE };
-	VkBool32 validate_core{ VK_TRUE };
-	VkBool32 check_image_layout{ VK_TRUE };
-	VkBool32 check_command_buffer{ VK_TRUE };
-	VkBool32 check_object_in_use{ VK_TRUE };
-	VkBool32 check_query{ VK_TRUE };
-	VkBool32 check_shaders{ VK_TRUE };
-	VkBool32 check_shaders_caching{ VK_TRUE };
-	VkBool32 unique_handles{ VK_TRUE };
-	VkBool32 object_lifetime{ VK_TRUE };
-	VkBool32 stateless_param{ VK_TRUE };
-	VkBool32 setting_validate_sync = { VK_TRUE };
-	VkBool32 setting_thread_safety = { VK_TRUE };
+	VkBool32 truePtr{ VK_TRUE };
+	VkBool32 falsePtr{ VK_FALSE };
 
-	std::vector<const char*> debug_action{ "VK_DBG_LAYER_ACTION_LOG_MSG", "VK_DBG_LAYER_ACTION_DEBUG_OUTPUT" };  // "VK_DBG_LAYER_ACTION_DEBUG_OUTPUT", "VK_DBG_LAYER_ACTION_BREAK"
+	std::vector<const char*> debug_action{ "VK_DBG_LAYER_ACTION_DEBUG_OUTPUT" };  // "VK_DBG_LAYER_ACTION_DEBUG_OUTPUT", "VK_DBG_LAYER_ACTION_BREAK"
 	std::vector<const char*> report_flags{ "warn", "perf", "error" }; //"info", "warn", "perf", "error", "debug"
 
-	VkBool32 setting_enable_message_limit = VK_TRUE;
 	uint32_t setting_duplicate_message_limit = 32;
+
+	std::vector<unsigned int> muteVUIds = {
+		0x916108d1, //perf BestPractices-NVIDIA-ClearColor-NotCompressed
+		0x675dc32e, //perf BestPractices-specialuse-extension vkCreateInstance(): Attempting to enable extension VK_EXT_debug_utils, but this ext
+		0xa96ad8,  //perf  BestPractices-NVIDIA-BindMemory-NoPriorityUse vkSetDeviceMemoryPriorityEXT to provide the OS with information on which allocations should stay in memory and which should be demoted first when video memory is limited. The highest priority should be given to GPU-written resources like color attachments, depth attachments, storage images, and buffers written from the GPU. Validation Performance Warning : [BestPractices - NVIDIA - BindMemory - NoPriority] | MessageID = 0xa96ad8 | vkBindImageMemory() : [NVIDIA] Use vkSetDeviceMemoryPriorityEXT to provide the OS with information on which allocations should stay in memory and which should be demoted first when video memory is limited.The highest priority should be given to GPU - written resources like color attachments, depth attachments, storage images, and buffers written from the GPU.
+		0xc91ae640, //perf  BestPractices-vkEndCommandBuffer-VtxIndexOutOfBounds vkEndCommandBuffer(): Vertex buffers was bound to VkCommandBuffer 0x123e73703d50[] but no draws had a pipeline that used the vertex buffer.
+		0xc714b932, // perf [ BestPractices-NVIDIA-AllocateMemory-ReuseAllocations ] vkAllocateMemory(): [NVIDIA] Reuse memory allocations instead of releasing and reallocating. A memory allocation has been released 0.011 seconds ago, and it could have been reused in place of this allocation.
+		0x7f1922d7, //perf Both GPU Assisted Validation and Normal Core Check Validation are enabled, this is not recommend as it  will be very slow. Once all errors in Core Check are solved, please disable, then only use GPU-AV for best performance.
+	};
+	std::stringstream disabledMessages;
+
+	void createMuteVUIDs()
+	{
+		disabledMessages << std::hex << std::showbase;
+#ifdef _WIN32
+		const char separator = ',';
+#else
+		const char separator = ':';
+#endif
+		for (int i = 0; i < muteVUIds.size(); ++i)
+		{
+			if (i != 0)
+				disabledMessages << separator;
+
+			disabledMessages << muteVUIds[i];
+		}
+	}
+
+	std::string vuidsStr = "";
+	const char* vuidsCStr = nullptr;
 
 	VkBaseInStructure* buildPNextChain()
 	{
+		createMuteVUIDs();
+
+		vuidsStr = disabledMessages.str();
+		vuidsCStr = vuidsStr.c_str();
+
 		layerSettings = std::vector<VkLayerSettingEXT>{
-			{layerName, "fine_grained_locking", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &fine_grained_locking},
-			{layerName, "validate_core", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &validate_core},
-			{layerName, "validate_sync", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &setting_validate_sync},
-			{layerName, "thread_safety", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &setting_thread_safety},
-			{layerName, "check_image_layout", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &check_image_layout},
-			{layerName, "check_command_buffer", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &check_command_buffer},
-			{layerName, "check_object_in_use", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &check_object_in_use},
-			{layerName, "check_query", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &check_query},
-			{layerName, "check_shaders", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &check_shaders},
-			{layerName, "check_shaders_caching", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &check_shaders_caching},
-			{layerName, "unique_handles", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &unique_handles},
-			{layerName, "object_lifetime", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &object_lifetime},
-			{layerName, "stateless_param", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &stateless_param},
-			{layerName, "enable_message_limit", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &setting_enable_message_limit},
+			{layerName, "fine_grained_locking", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
+			{layerName, "validate_core", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
+			{layerName, "validate_sync", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
+			{layerName, "thread_safety", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
+			{layerName, "check_image_layout", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
+			{layerName, "check_command_buffer", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
+			{layerName, "check_object_in_use", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
+			{layerName, "check_query", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
+			{layerName, "check_shaders", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
+			{layerName, "check_shaders_caching", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
+			{layerName, "unique_handles", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
+			{layerName, "object_lifetime", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
+			{layerName, "stateless_param", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
+			{layerName, "syncval_shader_accesses_heuristic", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
+			{layerName, "syncval_message_extra_properties", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
+			{layerName, "syncval_message_extra_properties_pretty_print", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
+			{layerName, "printf_enable", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &falsePtr},
+			{layerName, "printf_verbose", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &falsePtr},
+			{layerName, "gpuav_enable", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
+			{layerName, "gpuav_image_layout", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
+			{layerName, "gpuav_shader_instrumentation", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
+			{layerName, "validate_best_practices", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
+			{layerName, "validate_best_practices_arm", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
+			{layerName, "validate_best_practices_amd", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
+			{layerName, "validate_best_practices_img", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
+			{layerName, "validate_best_practices_nvidia", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
+			{layerName, "enable_message_limit", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
+			{layerName, "message_id_filter", VK_LAYER_SETTING_TYPE_STRING_EXT,1, &vuidsCStr},
 			{layerName, "duplicate_message_limit", VK_LAYER_SETTING_TYPE_UINT32_EXT, 1, &setting_duplicate_message_limit},
 			{layerName, "debug_action", VK_LAYER_SETTING_TYPE_STRING_EXT, uint32_t(debug_action.size()), debug_action.data()},
 			{layerName, "report_flags", VK_LAYER_SETTING_TYPE_STRING_EXT, uint32_t(report_flags.size()), report_flags.data()},
-
 		};
+
 		layerSettingsCreateInfo = {
 			.sType = VK_STRUCTURE_TYPE_LAYER_SETTINGS_CREATE_INFO_EXT,
 			.settingCount = uint32_t(layerSettings.size()),
@@ -112,7 +165,7 @@ static ValidationSettings validationSettings = {};
 void InitializeInstance()
 {
 	const auto& renderCfg = GetApplication().staticConfig.render;
-
+	gVKConfig = renderCfg.vkConfig;
 	u32 installedVersion = 0;
 
 	if (vkEnumerateInstanceVersion != nullptr)
@@ -126,7 +179,7 @@ void InitializeInstance()
 		ERMY_LOG("Found vulkan instance: %d.%d.%d", major, minor, patch);
 	}
 
-	VKInstanceExtender instance_extender;
+	VKInstanceExtender instance_extender(installedVersion);
 
 	bool isDebugLayers = renderCfg.enableDebugLayers;
 
@@ -147,9 +200,7 @@ void InitializeInstance()
 	//test debug reporter instance level
 	//instance_extender.enabledExtensions.push_back("grtehg54rhg45h");
 
-	instance_extender.TryAddExtension(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
-	instance_extender.TryAddExtension(VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME);
-	instance_extender.TryAddExtension(VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME);
+	instance_extender.TryAddExtension(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME, Ver11);
 
 #ifdef ERMY_OS_MACOS
 	//Found drivers that contain devices which support the portability subset, but the instance does not enumerate portability drivers!
@@ -249,7 +300,7 @@ static void ChoosePhysicalDevice()
 		props.pNext = &driverProps;
 
 		vkGetPhysicalDeviceProperties2(gVKPhysicalDevice, &props);
-
+		gPhysicalDeviceAPIVersion = props.properties.apiVersion;
 		auto major = VK_API_VERSION_MAJOR(props.properties.apiVersion);
 		auto minor = VK_API_VERSION_MINOR(props.properties.apiVersion);
 		auto patch = VK_API_VERSION_PATCH(props.properties.apiVersion);
@@ -270,22 +321,26 @@ static void ChoosePhysicalDevice()
 
 		ERMY_LOG("Selected Physical Device: %s", props.deviceName);
 		ERMY_LOG("Vulkan API: %d.%d.%d", major, minor, patch);
+
+		gPhysicalDeviceAPIVersion = props.apiVersion;
 	}
 
 }
 
 void CreateDevice()
 {
-	VKDeviceExtender device_extender(gVKPhysicalDevice);
+	VKDeviceExtender device_extender(gVKPhysicalDevice, gPhysicalDeviceAPIVersion);
 
-	std::vector<VkQueueFamilyProperties> queueFamilies(32);
+	auto queueFamilies = EnumerateVulkanObjects(gVKPhysicalDevice, vkGetPhysicalDeviceQueueFamilyProperties);
 
-
-	u32 familiesCount = 32;
-	vkGetPhysicalDeviceQueueFamilyProperties(gVKPhysicalDevice, &familiesCount, queueFamilies.data());
+	//std::vector<VkQueueFamilyProperties> queueFamilies(32);
 
 
-	for (u32 i = 0; i < familiesCount; ++i)
+	//u32 familiesCount = 32;
+	//vkGetPhysicalDeviceQueueFamilyProperties(gVKPhysicalDevice, &familiesCount, queueFamilies.data());
+
+
+	for (u32 i = 0; i < queueFamilies.size(); ++i)
 	{
 		VkQueueFamilyProperties queueFamily = queueFamilies[i];
 		bool isGraphicsQueue = queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT;
@@ -393,23 +448,40 @@ void CreateDevice()
 	swapchain::RequestDeviceExtensions(device_extender);
 
 	device_extender.TryAddExtension(VK_NV_MEMORY_DECOMPRESSION_EXTENSION_NAME);
-	device_extender.TryAddExtension(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME);
-	device_extender.TryAddExtension(VK_KHR_DEDICATED_ALLOCATION_EXTENSION_NAME);
-	device_extender.TryAddExtension(VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME);
-	device_extender.TryAddExtension(VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME);
+	device_extender.TryAddExtension(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME,Ver12);
+	device_extender.TryAddExtension(VK_KHR_DEDICATED_ALLOCATION_EXTENSION_NAME,Ver11);
+	device_extender.TryAddExtension(VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME,Ver13);
+	device_extender.TryAddExtension(VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME, Ver12);
 
+	device_extender.TryAddExtension(VK_EXT_MEMORY_PRIORITY_EXTENSION_NAME);
+	device_extender.TryAddExtension(VK_EXT_PAGEABLE_DEVICE_LOCAL_MEMORY_EXTENSION_NAME);
+
+	if (gVKConfig.useDynamicRendering)
+	{
+		device_extender.TryAddExtension(VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME, Ver13);
+		device_extender.TryAddExtension(VK_KHR_DYNAMIC_RENDERING_LOCAL_READ_EXTENSION_NAME, Ver14);
+	}
+	
 	VkPhysicalDeviceVulkan11Features features11 = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES, nullptr };
 	VkPhysicalDeviceVulkan12Features features12 = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES, nullptr };
 	VkPhysicalDeviceVulkan13Features features13 = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES, nullptr };
 	VkPhysicalDeviceVulkan14Features features14 = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_4_FEATURES, nullptr };
 
+	features13.pNext = &features14;
+	features12.pNext = &features13;
 	features11.pNext = &features12;
 
 	features12.timelineSemaphore = true;
-
+	
+	if (gVKConfig.useDynamicRendering)
+	{
+		features13.dynamicRendering = true;
+		features14.dynamicRenderingLocalRead = true;
+	}
+	
 	VkPhysicalDeviceSynchronization2Features sync2Features = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES, nullptr };
 	sync2Features.synchronization2 = true;
-	features12.pNext = &sync2Features;
+	features14.pNext = &sync2Features;
 
 #ifdef ERMY_OS_MACOS
 	device_extender.TryAddExtension(VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME);

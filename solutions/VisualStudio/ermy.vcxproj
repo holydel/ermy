@@ -70,6 +70,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dev|Android-arm64-v8a'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\engine\src\profiler.cpp" />
     <ClCompile Include="..\..\engine\src\rendering\d3d12\d3d12_commandlist.cpp" />
     <ClCompile Include="..\..\engine\src\rendering\d3d12\d3d12_framegraph_interface.cpp" />
     <ClCompile Include="..\..\engine\src\rendering\d3d12\d3d12_interface.cpp" />
@@ -88,6 +89,8 @@
     <ClCompile Include="..\..\engine\src\rendering\vulkan\vulkan_interface.cpp" />
     <ClCompile Include="..\..\engine\src\rendering\vulkan\vulkan_rendering.cpp" />
     <ClCompile Include="..\..\engine\src\rendering\vulkan\vulkan_swapchain.cpp" />
+    <ClCompile Include="..\..\engine\src\sound\sound_interface.cpp" />
+    <ClCompile Include="..\..\engine\src\sound\sound_interface_miniaudio.cpp" />
     <ClCompile Include="..\..\engine\src\static_constraints.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Android-arm64-v8a'">NotUsing</PrecompiledHeader>
@@ -131,6 +134,7 @@
     <ClInclude Include="..\..\engine\src\os\os_entry_point.h" />
     <ClInclude Include="..\..\engine\src\os\os_utils.h" />
     <ClInclude Include="..\..\engine\src\os\windows\win_utils.h" />
+    <ClInclude Include="..\..\engine\src\profiler.h" />
     <ClInclude Include="..\..\engine\src\rendering\d3d12\d3d12_interface.h" />
     <ClInclude Include="..\..\engine\src\rendering\d3d12\d3d12_rendering.h" />
     <ClInclude Include="..\..\engine\src\rendering\d3d12\d3d12_swapchain.h" />
@@ -145,6 +149,8 @@
     <ClInclude Include="..\..\engine\src\rendering\vulkan\vulkan_interface.h" />
     <ClInclude Include="..\..\engine\src\rendering\vulkan\vulkan_rendering.h" />
     <ClInclude Include="..\..\engine\src\rendering\vulkan\vulkan_swapchain.h" />
+    <ClInclude Include="..\..\engine\src\sound\sound_interface.h" />
+    <ClInclude Include="..\..\third_party\VulkanMemoryAllocator\include\vk_mem_alloc.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\engine\src\rendering\internal_shaders\internal.slang" />

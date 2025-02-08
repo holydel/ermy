@@ -76,8 +76,27 @@ namespace ermy
 				bool XRValidation  = false;				
 			};
 
+			struct D3D12Config
+			{
+				bool useWorkGraphs = false;
+			};
+
+			struct VKConfig
+			{
+				bool useDynamicRendering = false;
+			};
+
 			struct RendererConfig
 			{
+#ifdef ERMY_GAPI_VULKAN
+				VKConfig vkConfig;
+#endif
+#ifdef ERMY_GAPI_D3D12
+				D3D12Config d3d12Config;
+#endif
+				
+				
+
 				i8 adapterID = -1;
 
 #ifdef NDEBUG

@@ -68,13 +68,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../../engine/include;../../third_party/imgui;../../editor/include;$(VULKAN_SDK)/Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../third_party/imgui;../../editor/include;$(VULKAN_SDK)/Include;C:\Compressonator_4.5.52\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(VULKAN_SDK)/Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(VULKAN_SDK)/Lib;C:\Compressonator_4.5.52\lib\bin\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>slang.lib;slang-rt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -86,15 +87,16 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../../engine/include;../../third_party/imgui;../../editor/include;$(VULKAN_SDK)/Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../third_party/imgui;../../editor/include;$(VULKAN_SDK)/Include;C:\Compressonator_4.5.52\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(VULKAN_SDK)/Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(VULKAN_SDK)/Lib;C:\Compressonator_4.5.52\lib\bin\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>slang.lib;slang-rt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -106,15 +108,16 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../../engine/include;../../third_party/imgui;../../editor/include;$(VULKAN_SDK)/Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../third_party/imgui;../../editor/include;$(VULKAN_SDK)/Include;C:\Compressonator_4.5.52\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(VULKAN_SDK)/Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(VULKAN_SDK)/Lib;C:\Compressonator_4.5.52\lib\bin\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>slang.lib;slang-rt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -124,12 +127,24 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\editor\src\assets\asset.cpp" />
+    <ClCompile Include="..\..\editor\src\assets\assets_importer.cpp" />
+    <ClCompile Include="..\..\editor\src\assets\geometry_asset.cpp" />
+    <ClCompile Include="..\..\editor\src\assets\sound_asset.cpp" />
+    <ClCompile Include="..\..\editor\src\assets\texture_asset.cpp" />
+    <ClCompile Include="..\..\editor\src\assets\video_asset.cpp" />
     <ClCompile Include="..\..\editor\src\editor_main.cpp" />
     <ClCompile Include="..\..\editor\src\main_window.cpp" />
     <ClCompile Include="..\..\editor\src\project\eproject.cpp" />
     <ClCompile Include="..\..\editor\src\shader_compiler\shader_compiler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\editor\include\assets\asset.h" />
+    <ClInclude Include="..\..\editor\include\assets\assets_importer.h" />
+    <ClInclude Include="..\..\editor\include\assets\geometry_asset.h" />
+    <ClInclude Include="..\..\editor\include\assets\sound_asset.h" />
+    <ClInclude Include="..\..\editor\include\assets\texture_asset.h" />
+    <ClInclude Include="..\..\editor\include\assets\video_asset.h" />
     <ClInclude Include="..\..\editor\include\editor_main.h" />
     <ClInclude Include="..\..\editor\include\main_window.h" />
     <ClInclude Include="..\..\editor\include\project\eproject.h" />

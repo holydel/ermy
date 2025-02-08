@@ -13,6 +13,24 @@
     <ClCompile Include="..\..\editor\src\project\eproject.cpp">
       <Filter>src\project</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\editor\src\assets\asset.cpp">
+      <Filter>src\assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editor\src\assets\texture_asset.cpp">
+      <Filter>src\assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editor\src\assets\video_asset.cpp">
+      <Filter>src\assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editor\src\assets\geometry_asset.cpp">
+      <Filter>src\assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editor\src\assets\sound_asset.cpp">
+      <Filter>src\assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editor\src\assets\assets_importer.cpp">
+      <Filter>src\assets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\editor\include\editor_main.h">
@@ -29,6 +47,24 @@
     </ClInclude>
     <ClInclude Include="..\..\editor\include\project\shader_info.h">
       <Filter>include\project</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editor\include\assets\asset.h">
+      <Filter>include\assets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editor\include\assets\geometry_asset.h">
+      <Filter>include\assets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editor\include\assets\sound_asset.h">
+      <Filter>include\assets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editor\include\assets\texture_asset.h">
+      <Filter>include\assets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editor\include\assets\video_asset.h">
+      <Filter>include\assets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editor\include\assets\assets_importer.h">
+      <Filter>include\assets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -49,6 +85,12 @@
     </Filter>
     <Filter Include="include\project">
       <UniqueIdentifier>{9eddb7cb-479a-4ce7-90ef-8168729e0f89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\assets">
+      <UniqueIdentifier>{a3e58c55-93fe-40d8-9554-8b0a74cad6bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\assets">
+      <UniqueIdentifier>{22e4954b-7fc7-4a2b-a83c-55e592cc8b0e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -31,8 +31,8 @@
 //#define ERMY_PLATFORM_HORIZON
 //#define ERMY_PLATFORM_WEB
 
-//#define ERMY_GAPI_VULKAN
-#define ERMY_GAPI_D3D12
+#define ERMY_GAPI_VULKAN
+//#define ERMY_GAPI_D3D12
 //#define ERMY_GAPI_METAL
 //#define ERMY_GAPI_WEBGPU
 

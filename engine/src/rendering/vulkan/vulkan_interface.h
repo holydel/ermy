@@ -1,6 +1,7 @@
 #pragma once
 #include "../rendering_interface.h"
 #include "ermy_vulkan.h"
+#include <ermy_application.h>
 
 extern VkInstance gVKInstance;
 extern VkAllocationCallbacks* gVKGlobalAllocationsCallbacks;
@@ -13,3 +14,5 @@ extern VkQueue gVKMainQueue;
 extern VkQueue gVKComputeAsyncQueue;
 extern VkQueue gVKTransferAsyncQueue;
 extern VkRenderPass gVKRenderPass;
+
+extern ermy::Application::StaticConfig::VKConfig gVKConfig;

@@ -1,4 +1,5 @@
 #include "vulkan_rendering.h"
+#include "vulkan_swapchain.h"
 #ifdef ERMY_GAPI_VULKAN
 #include "vk_utils.h"
 
@@ -51,7 +52,7 @@ void _addShader(const ermy::ShaderBytecode& bc, std::vector<VkPipelineShaderStag
 		cinfo.codeSize = bc.size;
 
 		VkShaderModule& shaderModule = gAllShaderModules.emplace_back();
-		VK_CALL(vkCreateShaderModule(gVKDevice, &cinfo, gVKGlobalAllocationsCallbacks, &shaderModule));	
+		VK_CALL(vkCreateShaderModule(gVKDevice, &cinfo, gVKGlobalAllocationsCallbacks, &shaderModule));
 
 		//auto entryPoint = _extractEntryPointName((const uint32_t*)bc.data, bc.size / 4);
 		//gAllShaderModulesEntryPoints.push_back(entryPoint);
@@ -66,6 +67,7 @@ void _addShader(const ermy::ShaderBytecode& bc, std::vector<VkPipelineShaderStag
 
 VkPipeline _createPipeline(const PSODesc& desc)
 {
+
 	VkPipeline result = VK_NULL_HANDLE;
 
 	VkGraphicsPipelineCreateInfo cinfo = { VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO };
@@ -73,14 +75,17 @@ VkPipeline _createPipeline(const PSODesc& desc)
 	{
 		VkPipelineLayoutCreateInfo cinfo{};
 		cinfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-
 		VkPushConstantRange range;
-		range.size = 128;
-		range.offset = 0;
-		range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
-		cinfo.pushConstantRangeCount = 1;
-		cinfo.pPushConstantRanges = &range;
+		if (desc.numRootConstants > 0)
+		{
+
+			range.size = desc.numRootConstants * sizeof(u32);
+			range.offset = 0;
+			range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+			cinfo.pushConstantRangeCount = 1;
+			cinfo.pPushConstantRanges = &range;
+		}
 
 		vkCreatePipelineLayout(gVKDevice, &cinfo, gVKGlobalAllocationsCallbacks, &layout);
 	}
@@ -180,7 +185,19 @@ VkPipeline _createPipeline(const PSODesc& desc)
 	cinfo.pInputAssemblyState = &pipInputAssemblyState;
 	cinfo.pDynamicState = &pipDynamicState;
 
-	cinfo.renderPass = gVKRenderPass; //final pass. TODO:// framegraph passes
+	VkPipelineRenderingCreateInfoKHR pipeline_rendering_create_info{ VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO_KHR };
+
+	if (gVKConfig.useDynamicRendering)
+	{
+		pipeline_rendering_create_info.colorAttachmentCount = 1;
+		pipeline_rendering_create_info.pColorAttachmentFormats = &gVKSurfaceFormat;
+		cinfo.pNext = &pipeline_rendering_create_info;
+	}
+	else
+	{
+		cinfo.renderPass = gVKRenderPass; //final pass. TODO:// framegraph passes
+	}
+
 
 	VkPipeline pipeline = nullptr;
 	VK_CALL(vkCreateGraphicsPipelines(gVKDevice, nullptr /*TODO: PipelineCache*/, 1, &cinfo, gVKGlobalAllocationsCallbacks, &pipeline));
@@ -189,7 +206,7 @@ VkPipeline _createPipeline(const PSODesc& desc)
 
 PSOID ermy::rendering::CreatePSO(const PSODesc& desc)
 {
-	PSOID id { gAllPipelines.size() };
+	PSOID id{ gAllPipelines.size() };
 
 	gAllPipelines.push_back(_createPipeline(desc));
 	return id;

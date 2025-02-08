@@ -20,6 +20,7 @@ namespace ermy
 
 		struct PSODesc
 		{
+			int numRootConstants = 0;
 			std::vector<ShaderBytecode> shaders;
 			PrimitiveTopology topology = PrimitiveTopology::TriangleList;
 		};

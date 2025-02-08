@@ -2,6 +2,7 @@
 
 #ifdef ERMY_GAPI_VULKAN
 #include "../rendering/vulkan/vulkan_interface.h"
+#include "../rendering/vulkan/vulkan_swapchain.h"
 static void mercury_check_vk_result(VkResult err)
 {
 }
@@ -49,7 +50,16 @@ void imgui_interface::Initialize()
 	init_info.CheckVkResultFn = mercury_check_vk_result;
 	init_info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
 	init_info.RenderPass = gVKRenderPass;
+	init_info.MinAllocationSize = 1024 * 1024;
 
+	init_info.UseDynamicRendering = gVKConfig.useDynamicRendering;
+	if (gVKConfig.useDynamicRendering)
+	{
+		VkPipelineRenderingCreateInfoKHR pipeline_rendering_create_info{ VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO_KHR };
+		pipeline_rendering_create_info.colorAttachmentCount = 1;
+		pipeline_rendering_create_info.pColorAttachmentFormats = &gVKSurfaceFormat;
+		init_info.PipelineRenderingCreateInfo = pipeline_rendering_create_info;
+	}
 	VkDescriptorPoolSize pool_sizes[] =
 	{
 		{ VK_DESCRIPTOR_TYPE_SAMPLER, 1000 },

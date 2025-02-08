@@ -15,7 +15,7 @@ VkFormat gVKSurfaceFormat;
 u32 gAcquiredNextImageIndex = 0;
 VkSemaphore gSwapchainSemaphore = VK_NULL_HANDLE;
 int gSwapchainCurrentFrame = 0;
-int gNumberOfFrames = 2;
+int gNumberOfFrames = 3;
 bool gSwapchainNeedRebuild = false;
 
 struct FrameInFlight
@@ -26,16 +26,17 @@ struct FrameInFlight
 	VkFramebuffer framebuffer;
 	VkImage image;
 	VkImageView imageView;
+	VkImageLayout imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 };
 
 std::vector<FrameInFlight> gFramesInFlight;
 
 VkSemaphore swapchain::GetWaitSemaphores()
-{ 
+{
 	return gFramesInFlight[gSwapchainCurrentFrame].imageAvailableSemaphore;
 }
 VkSemaphore swapchain::GetSignalSemaphores()
-{ 
+{
 	return gFramesInFlight[gSwapchainCurrentFrame].renderFinishedSemaphore;
 }
 VkFramebuffer swapchain::GetFramebuffer()
@@ -47,11 +48,25 @@ VkRenderPass swapchain::GetRenderPass()
 	return gVKRenderPass;
 }
 
+VkImage swapchain::GetCurrentImage()
+{
+	return gFramesInFlight[gSwapchainCurrentFrame].image;
+}
+
+VkImageView swapchain::GetCurrentImageView()
+{
+	return gFramesInFlight[gSwapchainCurrentFrame].imageView;
+}
+VkImageLayout swapchain::GetCurrentImageLayout()
+{
+	return gFramesInFlight[gSwapchainCurrentFrame].imageLayout;
+}
+
 struct SwapchainExt
 {
 	//instance extensions
 	bool hasSurfaceCapabilities2 : 1 = false;
-	bool hasSurfaceMaintenance1 : 1 = false;	
+	bool hasSurfaceMaintenance1 : 1 = false;
 	bool hasSwapchainColorspace : 1 = false;
 	bool hasDisplay : 1 = false;
 	bool hasDisplay2Props : 1 = false;
@@ -97,16 +112,18 @@ void swapchain::InitSwapchainResources()
 		VkSemaphoreCreateInfo semaphoreInfo{ VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO };
 		vkCreateSemaphore(gVKDevice, &semaphoreInfo, nullptr, &gFramesInFlight[i].imageAvailableSemaphore);
 		vkCreateSemaphore(gVKDevice, &semaphoreInfo, nullptr, &gFramesInFlight[i].renderFinishedSemaphore);
+		if (!gVKConfig.useDynamicRendering)
+		{
+			VkFramebufferCreateInfo framebufferInfo{ VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO };
+			framebufferInfo.renderPass = gVKRenderPass;
+			framebufferInfo.attachmentCount = 1;
+			framebufferInfo.pAttachments = &gFramesInFlight[i].imageView;
+			framebufferInfo.width = gVKSurfaceCaps.currentExtent.width;
+			framebufferInfo.height = gVKSurfaceCaps.currentExtent.height;
+			framebufferInfo.layers = 1;
 
-		VkFramebufferCreateInfo framebufferInfo{ VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO };
-		framebufferInfo.renderPass = gVKRenderPass;
-		framebufferInfo.attachmentCount = 1;
-		framebufferInfo.pAttachments = &gFramesInFlight[i].imageView;
-		framebufferInfo.width = gVKSurfaceCaps.currentExtent.width;
-		framebufferInfo.height = gVKSurfaceCaps.currentExtent.height;
-		framebufferInfo.layers = 1;
-
-		vkCreateFramebuffer(gVKDevice, &framebufferInfo, nullptr, &gFramesInFlight[i].framebuffer);
+			vkCreateFramebuffer(gVKDevice, &framebufferInfo, nullptr, &gFramesInFlight[i].framebuffer);
+		}
 	}
 }
 
@@ -137,8 +154,21 @@ void swapchain::InitSwapchain()
 	createInfo.minImageCount = gNumberOfFrames;
 	createInfo.presentMode = VK_PRESENT_MODE_FIFO_KHR;
 	createInfo.surface = gVKSurface;
-	createInfo.preTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
+	createInfo.preTransform = gVKSurfaceCaps.currentTransform;
 	createInfo.oldSwapchain = gVKOldSwapchain;
+	createInfo.clipped = VK_TRUE;
+	createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+
+	VkPresentModeKHR presentMode = VK_PRESENT_MODE_FIFO_KHR;
+	VkSwapchainPresentModesCreateInfoEXT presentationModesEnabled = { VK_STRUCTURE_TYPE_SWAPCHAIN_PRESENT_MODES_CREATE_INFO_EXT };
+	presentationModesEnabled.presentModeCount = 1;
+	presentationModesEnabled.pPresentModes = &presentMode;
+
+	if (gSwapchainEXT.hasMaintenance1)
+	{
+		createInfo.pNext = &presentationModesEnabled;
+	}
+
 	vkCreateSwapchainKHR(gVKDevice, &createInfo, nullptr, &gVKSwapchain);
 }
 
@@ -154,26 +184,26 @@ void swapchain::ShutdownOldSwapchain()
 void swapchain::RequestInstanceExtensions(VKInstanceExtender& instanceExtender)
 {
 
-	#ifdef ERMY_OS_WINDOWS
-		instanceExtender.TryAddExtension(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
-	#endif
-	#ifdef ERMY_OS_ANDROID
-		instanceExtender.TryAddExtension(VK_KHR_ANDROID_SURFACE_EXTENSION_NAME);
-	#endif
-	#ifdef ERMY_OS_LINUX
-		//VK_KHR_xcb_surface
-		instanceExtender.TryAddExtension("VK_KHR_xcb_surface");
-	#endif
-	#ifdef ERMY_OS_MACOS
-		instanceExtender.TryAddExtension(VK_EXT_METAL_SURFACE_EXTENSION_NAME);
-	#endif
+#ifdef ERMY_OS_WINDOWS
+	instanceExtender.TryAddExtension(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
+#endif
+#ifdef ERMY_OS_ANDROID
+	instanceExtender.TryAddExtension(VK_KHR_ANDROID_SURFACE_EXTENSION_NAME);
+#endif
+#ifdef ERMY_OS_LINUX
+	//VK_KHR_xcb_surface
+	instanceExtender.TryAddExtension("VK_KHR_xcb_surface");
+#endif
+#ifdef ERMY_OS_MACOS
+	instanceExtender.TryAddExtension(VK_EXT_METAL_SURFACE_EXTENSION_NAME);
+#endif
 
 	gSwapchainEXT.hasProtectedCapabilities = instanceExtender.TryAddExtension(VK_KHR_SURFACE_PROTECTED_CAPABILITIES_EXTENSION_NAME);
 
 	gSwapchainEXT.hasSurfaceCapabilities2 = instanceExtender.TryAddExtension(VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME);
 	gSwapchainEXT.hasSwapchainColorspace = instanceExtender.TryAddExtension(VK_EXT_SWAPCHAIN_COLOR_SPACE_EXTENSION_NAME);
 
-	if (gConfig.useDisplay)
+	if (gSwapchainConfig.useDisplay)
 	{
 		gSwapchainEXT.hasDisplay = instanceExtender.TryAddExtension(VK_KHR_DISPLAY_EXTENSION_NAME);
 		gSwapchainEXT.hasDisplay2Props = instanceExtender.TryAddExtension(VK_KHR_GET_DISPLAY_PROPERTIES_2_EXTENSION_NAME);
@@ -194,19 +224,19 @@ void swapchain::RequestDeviceExtensions(VKDeviceExtender& device_extender)
 	{
 		gSwapchainEXT.hasMaintenance1 = device_extender.TryAddExtension(VK_EXT_SWAPCHAIN_MAINTENANCE_1_EXTENSION_NAME);
 	}
-	
+
 	gSwapchainEXT.hasPresentId = device_extender.TryAddExtension(VK_KHR_PRESENT_ID_EXTENSION_NAME);
 	gSwapchainEXT.hasPresentWait = device_extender.TryAddExtension(VK_KHR_PRESENT_WAIT_EXTENSION_NAME);
 	gSwapchainEXT.hasGoogleTiming = device_extender.TryAddExtension(VK_GOOGLE_DISPLAY_TIMING_EXTENSION_NAME);
 	gSwapchainEXT.hasHDRMetadata = device_extender.TryAddExtension(VK_EXT_HDR_METADATA_EXTENSION_NAME);
 
 #ifdef ERMY_OS_WINDOWS
-	if (gConfig.needExclusiveFullscreen)
+	if (gSwapchainConfig.needExclusiveFullscreen)
 	{
 		gSwapchainEXT.hasExclusiveFullscreen = device_extender.TryAddExtension(VK_EXT_FULL_SCREEN_EXCLUSIVE_EXTENSION_NAME);
 	}
 
-	if (gConfig.useDisplay)
+	if (gSwapchainConfig.useDisplay)
 	{
 		gSwapchainEXT.hasNVAcquireDisplay = device_extender.TryAddExtension(VK_NV_ACQUIRE_WINRT_DISPLAY_EXTENSION_NAME);
 	}
@@ -261,16 +291,16 @@ void swapchain::Initialize()
 	auto support_formats = EnumerateVulkanObjects(gVKPhysicalDevice, gVKSurface, vkGetPhysicalDeviceSurfaceFormatsKHR);
 	auto support_present_modes = EnumerateVulkanObjects(gVKPhysicalDevice, gVKSurface, vkGetPhysicalDeviceSurfacePresentModesKHR);
 	gVKSurfaceFormat = support_formats[0].format; //TODO: selection heuristics
-
+	gVKSurfaceFormat = VK_FORMAT_A2B10G10R10_UNORM_PACK32;
 	VK_CALL(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(gVKPhysicalDevice, gVKSurface, &gVKSurfaceCaps));
-
+	//support_formats[4].format
 	//gNativeExtent = gSurfaceCaps.currentExtent;
 	ERMY_LOG("Supported surface alpha modes: %s %s %s %s"
 		, (gVKSurfaceCaps.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR) ? " Opaque |" : ""
 		, (gVKSurfaceCaps.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR) ? " Inherit |" : ""
-		, (gVKSurfaceCaps.supportedCompositeAlpha &	VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR ) ? " Post Multiplied |" : ""
+		, (gVKSurfaceCaps.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR) ? " Post Multiplied |" : ""
 		, (gVKSurfaceCaps.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR) ? " Pre Multiplied |" : "");
-		
+
 
 	const VkPhysicalDeviceSurfaceInfo2KHR surfaceInfo2{ .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SURFACE_INFO_2_KHR,
 												   .surface = gVKSurface };
@@ -279,58 +309,61 @@ void swapchain::Initialize()
 
 	gNumberOfFrames = std::max(3u, capabilities2.surfaceCapabilities.minImageCount);
 
-	VkRenderPassCreateInfo renderPassInfo{ VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO };
-	VkAttachmentDescription colorAttachment{};
-	colorAttachment.format = gVKSurfaceFormat;
-	colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-	colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-	colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-	colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-	colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-	colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+	if (!gVKConfig.useDynamicRendering)
+	{
+		VkRenderPassCreateInfo renderPassInfo{ VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO };
+		VkAttachmentDescription colorAttachment{};
+		colorAttachment.format = gVKSurfaceFormat;
+		colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+		colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+		colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+		colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+		colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
-	VkAttachmentReference colorAttachmentRef{};
-	colorAttachmentRef.attachment = 0;
-	colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		VkAttachmentReference colorAttachmentRef{};
+		colorAttachmentRef.attachment = 0;
+		colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
-	VkSubpassDescription subpass{};
-	subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-	subpass.colorAttachmentCount = 1;
-	subpass.pColorAttachments = &colorAttachmentRef;
+		VkSubpassDescription subpass{};
+		subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+		subpass.colorAttachmentCount = 1;
+		subpass.pColorAttachments = &colorAttachmentRef;
 
-	// These dependencies ensure proper synchronization
-	std::array<VkSubpassDependency, 2> dependencies;
+		// These dependencies ensure proper synchronization
+		std::array<VkSubpassDependency, 2> dependencies;
+		//
 
-	dependencies[0] = {
-		.srcSubpass = VK_SUBPASS_EXTERNAL,
-		.dstSubpass = 0,
-		.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-		.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-		.srcAccessMask = 0,
-		.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-		.dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT
-	};
+		dependencies[0] = {
+			.srcSubpass = VK_SUBPASS_EXTERNAL,
+			.dstSubpass = 0,
+			.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+			.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+			.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT,
+			.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+			.dependencyFlags = 0
+		};
 
-	dependencies[1] = {
-		.srcSubpass = 0,
-		.dstSubpass = VK_SUBPASS_EXTERNAL,
-		.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-		.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-		.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-		.dstAccessMask = 0,
-		.dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT
-	};
+		dependencies[1] = {
+			.srcSubpass = 0,
+			.dstSubpass = VK_SUBPASS_EXTERNAL,
+			.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT ,
+			.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+			.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+			.dstAccessMask = VK_ACCESS_MEMORY_WRITE_BIT,
+			.dependencyFlags = 0
+		};
 
-	renderPassInfo.attachmentCount = 1;
-	renderPassInfo.pAttachments = &colorAttachment;
-	renderPassInfo.subpassCount = 1;
-	renderPassInfo.pSubpasses = &subpass;
-	renderPassInfo.dependencyCount = static_cast<u32>(dependencies.size());
-	renderPassInfo.pDependencies = dependencies.data();
+		renderPassInfo.attachmentCount = 1;
+		renderPassInfo.pAttachments = &colorAttachment;
+		renderPassInfo.subpassCount = 1;
+		renderPassInfo.pSubpasses = &subpass;
+		renderPassInfo.dependencyCount = static_cast<u32>(dependencies.size());
+		renderPassInfo.pDependencies = dependencies.data();
 
-	vkCreateRenderPass(gVKDevice, &renderPassInfo, nullptr, &gVKRenderPass);
-
+		vkCreateRenderPass(gVKDevice, &renderPassInfo, nullptr, &gVKRenderPass);
+	}
 	InitSwapchain();
 	InitSwapchainResources();
 }
@@ -342,7 +375,7 @@ bool swapchain::ReInitIfNeeded()
 		vkQueueWaitIdle(gVKMainQueue);
 		VK_CALL(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(gVKPhysicalDevice, gVKSurface, &gVKSurfaceCaps));
 
-		ShutdownSwapchainResources();		
+		ShutdownSwapchainResources();
 		InitSwapchain();
 		ShutdownOldSwapchain();
 		InitSwapchainResources();
@@ -350,7 +383,7 @@ bool swapchain::ReInitIfNeeded()
 		gSwapchainNeedRebuild = false;
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -403,6 +436,7 @@ void swapchain::Present()
 		.pImageIndices = &gAcquiredNextImageIndex,               // Index of the image to present
 	};
 
+	//vkQueueWaitIdle(gVKMainQueue);
 	const VkResult result = vkQueuePresentKHR(gVKMainQueue, &presentInfo);
 	// If the swapchain is out of date (e.g., window resized), it needs to be rebuilt
 	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
@@ -411,6 +445,7 @@ void swapchain::Present()
 		return;
 	}
 
+	gFramesInFlight[gAcquiredNextImageIndex].imageLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 	gSwapchainCurrentFrame = (gSwapchainCurrentFrame + 1) % GetNumFrames();
 }
 

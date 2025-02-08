@@ -197,7 +197,11 @@ VK_DECLARE_FUNCTION(vkGetBufferMemoryRequirements2);
 VK_DECLARE_FUNCTION(vkGetImageMemoryRequirements2);
 VK_DECLARE_FUNCTION(vkCmdDecompressMemoryNV);
 VK_DECLARE_FUNCTION(vkWaitSemaphores);
-VK_DECLARE_FUNCTION(vkQueueSubmit2KHR);
+VK_DECLARE_FUNCTION(vkQueueSubmit2);
+VK_DECLARE_FUNCTION(vkCmdBeginRendering);
+VK_DECLARE_FUNCTION(vkCmdEndRendering);
+VK_DECLARE_FUNCTION(vkCmdPipelineBarrier2);
+
 #ifdef ERMY_OS_WINDOWS
 VK_DECLARE_FUNCTION(vkGetWinrtDisplayNV);
 VK_DECLARE_FUNCTION(vkAcquireWinrtDisplayNV);
@@ -261,6 +265,17 @@ std::vector<T> EnumerateVulkanObjects(HostObj host, VkResult(VKAPI_CALL* pfunc) 
 	return std::vector<T>(0);
 }
 
+template <typename HostObj, typename T>
+std::vector<T> EnumerateVulkanObjects(HostObj host, void(VKAPI_CALL* pfunc) (HostObj host, uint32_t* cnt, T* objs))
+{
+	uint32_t count = 0;
+	pfunc(host, &count, nullptr);
+	std::vector<T> result(count);
+	pfunc(host, &count, result.data());
+
+	return result;
+}
+
 template <typename T>
 std::vector<T> EnumerateVulkanObjects(VkResult(VKAPI_CALL* pfunc) (const char* layerName, uint32_t* cnt, T* objs))
 {
@@ -289,6 +304,7 @@ std::vector<T> EnumerateVulkanObjects(VkResult(VKAPI_CALL* pfunc) (const char* l
 
 	return std::vector<T>(0);
 }
+
 
 template <typename T>
 std::vector<T> EnumerateVulkanObjects(VkResult(VKAPI_CALL* pfunc) (uint32_t* cnt, T* objs))
@@ -326,9 +342,12 @@ struct VKInstanceExtender
 
 	std::vector<VkLayerProperties> all_layers;
 	std::vector<VkExtensionProperties> all_extensions;
+	ermy::u32 installedVersion = VK_VERSION_1_0;
 
-	VKInstanceExtender()
+	VKInstanceExtender(ermy::u32 installedVersion)
 	{
+		this->installedVersion = installedVersion;
+
 		all_layers = EnumerateVulkanObjects(vkEnumerateInstanceLayerProperties);
 		all_extensions = EnumerateVulkanObjects(vkEnumerateInstanceExtensionProperties);
 
@@ -368,8 +387,11 @@ struct VKInstanceExtender
 		return exists;
 	}
 
-	bool TryAddExtension(const char* extension_name)
+	bool TryAddExtension(const char* extension_name, ermy::u32 versionInCore = VK_MAKE_VERSION(9,9,0))
 	{
+		if (versionInCore <= installedVersion)
+			return true;
+
 		bool exists = false;
 
 		for (auto& e : all_extensions)
@@ -415,9 +437,10 @@ struct VKDeviceExtender
 	std::vector<const char*> enabledExtensions;
 	std::vector<VkExtensionProperties> all_extensions;
 	std::string all_extensions_str;
-
-	VKDeviceExtender(VkPhysicalDevice physDevice)
+	ermy::u32 installedVersion = VK_VERSION_1_0;
+	VKDeviceExtender(VkPhysicalDevice physDevice, ermy::u32 installedVersion)
 	{
+		this->installedVersion = installedVersion;
 		all_extensions_str.reserve(65536);
 
 		const char* fakeLayer = nullptr;
@@ -434,8 +457,11 @@ struct VKDeviceExtender
 		}
 	}
 
-	bool TryAddExtension(const char* extension_name)
+	bool TryAddExtension(const char* extension_name, ermy::u32 versionInCore = VK_MAKE_VERSION(9, 9, 0))
 	{
+		if (versionInCore <= installedVersion)
+			return true;
+
 		bool exists = false;
 
 		for (auto& e : all_extensions)
