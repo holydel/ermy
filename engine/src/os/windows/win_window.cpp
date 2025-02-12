@@ -159,7 +159,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	break;
 	case WM_DESTROY:
 		gMainWindow = nullptr;
-		//gApplication->OnApplicationClose();
+		GetApplication().OnApplicationClose();
 		::PostQuitMessage(0);
 		break;
 	default:

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <ermy_api.h>
+using namespace ermy;
 
 static std::filesystem::path gInternalShadersPath = "../../engine/src/rendering/internal_shaders/";
 static std::filesystem::path gInternalShadersHeaderPath = "../../engine/include/ermy_shader_internal.h";
@@ -118,10 +119,10 @@ bool ShaderCompiler::Initialize()
 	optimizeLevel.value.intValue0 = 0;
 
 	TargetDXIL.compilerOptionEntries = sharedCompilerOptions.data();
-	TargetDXIL.compilerOptionEntryCount = sharedCompilerOptions.size();
+	TargetDXIL.compilerOptionEntryCount = (u32)sharedCompilerOptions.size();
 
 	TargetSPIRV.compilerOptionEntries = sharedCompilerOptions.data();
-	TargetSPIRV.compilerOptionEntryCount = sharedCompilerOptions.size();
+	TargetSPIRV.compilerOptionEntryCount = (u32)sharedCompilerOptions.size();
 
 
 	gTargets.push_back(TargetSPIRV);
@@ -183,10 +184,10 @@ void AppendShader(std::ostringstream& stream, const char* name, SlangStage stage
 	stream << "	{\n"
 		"		static u8 data[] = {";
 
-	int numBytes = shaderBlob->getBufferSize();
+	u64 numBytes = shaderBlob->getBufferSize();
 	const ermy::u8* data = static_cast<const ermy::u8*>(shaderBlob->getBufferPointer());
 
-	for (int i = 0; i < numBytes; ++i)
+	for (u64 i = 0; i < numBytes; ++i)
 	{
 		if (i > 0)
 		{
@@ -261,8 +262,8 @@ void ShaderCompiler::CompileAllInternalShaders()
 		AppendHeader(shaderCppEmbded[i], gTargets[i].format);
 	}
 
-	int entryPointCount = spReflection_getEntryPointCount(reflection);
-	for (int i = 0; i < entryPointCount; ++i)
+	u32 entryPointCount = static_cast<u32>(spReflection_getEntryPointCount(reflection));
+	for (u32 i = 0; i < entryPointCount; ++i)
 	{
 		auto entryPointInfo = spReflection_getEntryPointByIndex(reflection, i);
 		const char* eName = spReflectionEntryPoint_getName(entryPointInfo);
@@ -332,8 +333,8 @@ void ShaderCompiler::CompileShaderFile(const std::filesystem::path& shaderPath)
 
 
 	
-	int entryPointCount = spReflection_getEntryPointCount(reflection);
-	for (int i = 0; i < entryPointCount; ++i)
+	u32 entryPointCount = static_cast<u32>(spReflection_getEntryPointCount(reflection));
+	for (u32 i = 0; i < entryPointCount; ++i)
 	{
 		auto entryPointInfo = spReflection_getEntryPointByIndex(reflection, i);
 		const char* eName = spReflectionEntryPoint_getName(entryPointInfo);

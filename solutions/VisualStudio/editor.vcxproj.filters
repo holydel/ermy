@@ -92,6 +92,9 @@
     <Filter Include="src\assets">
       <UniqueIdentifier>{22e4954b-7fc7-4a2b-a83c-55e592cc8b0e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\third_party">
+      <UniqueIdentifier>{104a02e6-8f42-43c8-9b0a-99786508327c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />

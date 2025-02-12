@@ -17,8 +17,8 @@ public:
 
 		staticConfig.appName = "TestBed";
 
-		staticConfig.render.adapterID = 0;
-		staticConfig.render.vkConfig.useDynamicRendering = true;
+		staticConfig.render.adapterID = 1;
+		//staticConfig.render.vkConfig.useDynamicRendering = false;
 	}
 
 	void OnInitialization() override;

@@ -4,6 +4,8 @@
 #include "project/eproject.h"
 #include "shader_compiler/shader_compiler.h"
 
+extern bool gIsEditorRunning;
+
 void main_window::Draw()
 {
 	//Imgui draw main menu bar
@@ -21,10 +23,12 @@ void main_window::Draw()
 			}
 			if (ImGui::MenuItem("Save"))
 			{
+				ErmyProject::Instance().Save();
 				//Save file
 			}
 			if (ImGui::MenuItem("Exit"))
 			{
+				gIsEditorRunning = false;
 				//Exit
 			}
 			ImGui::EndMenu();
@@ -49,11 +53,13 @@ void main_window::Draw()
 		{
 			if (ImGui::MenuItem("Recompile Shaders"))
 			{
-				ErmyProject::Instance().RecompileAllShaders();
+				ErmyProject::Instance().RecompileAllInternalShaders();
 			}
 			ImGui::EndMenu();
 		}
 
 		ImGui::EndMainMenuBar();
 	}
+
+	ErmyProject::Instance().DrawProjectSettings();
 }

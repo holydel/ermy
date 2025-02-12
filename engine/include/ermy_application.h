@@ -179,5 +179,11 @@ namespace ermy
 		virtual void OnShutdown() {}
 
 		virtual void OnIMGUI() {}
+
+		virtual void OnApplicationClose() {}
+
+		virtual bool IsRunning() {
+			return true;
+		}
 	};
 }

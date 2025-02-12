@@ -26,3 +26,6 @@
 [submodule "third_party/miniaudio"]
 	path = third_party/miniaudio
 	url = https://github.com/mackron/miniaudio
+[submodule "eproj_template/assets/Vulkan-Assets"]
+	path = eproj_template/assets/Vulkan-Assets
+	url = https://github.com/SaschaWillems/Vulkan-Assets

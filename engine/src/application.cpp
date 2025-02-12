@@ -41,8 +41,6 @@ void ErmyApplicationStart()
 	// initialize engine built-in data
 
 	gApplication->OnLoad();
-
-
 }
 
 bool ErmyApplicationStep()
@@ -59,7 +57,7 @@ bool ErmyApplicationStep()
 	rendering::EndFrame();
 	
 	
-	return true;
+	return GetApplication().IsRunning();
 }
 
 void ErmyApplicationShutdown()

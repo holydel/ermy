@@ -20,7 +20,7 @@ GeometryAsset::GeometryAsset(const char* filepath)
 	}
 
 	// Process the first mesh (assuming the model has at least one mesh)
-	for (int m=0;m<scene->mNumMeshes;++m)
+	for (u32 m=0;m<scene->mNumMeshes;++m)
 	{
 		aiMesh* mesh = scene->mMeshes[m];
 		bool hasTangents = mesh->HasTangentsAndBitangents();
