@@ -31,6 +31,15 @@
     <ClCompile Include="..\..\editor\src\assets\assets_importer.cpp">
       <Filter>src\assets</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\editor\src\assets_packed_cache.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editor\src\assets_packer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editor\src\assets_preview_manager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\editor\include\editor_main.h">
@@ -66,6 +75,15 @@
     <ClInclude Include="..\..\editor\include\assets\assets_importer.h">
       <Filter>include\assets</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\editor\include\assets_packed_cache.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editor\include\assets_packer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editor\include\assets_preview_manager.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -95,9 +113,18 @@
     <Filter Include="src\third_party">
       <UniqueIdentifier>{104a02e6-8f42-43c8-9b0a-99786508327c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\shaders">
+      <UniqueIdentifier>{5b7d3a0a-e99e-4f76-8012-879805db8d1f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />
     <None Include="vcpkg-configuration.json" />
+    <None Include="..\..\editor\src\editor.slang">
+      <Filter>src\shaders</Filter>
+    </None>
+    <None Include="..\..\eproj_template\shaders\ermy_engine.slang">
+      <Filter>src\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
