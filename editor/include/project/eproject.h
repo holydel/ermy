@@ -5,16 +5,21 @@
 #include "shader_info.h"
 #include <vector>
 #include "pugixml.hpp"
+#include "assets/asset.h"
 
 class ErmyProject
 {
-	std::vector<ShaderInfo> shaders;
 	pugi::xml_document xdoc;
 	bool wasModified = false;
 	std::filesystem::path rootPath;
 	std::filesystem::path projPath;
 
-	char projName[64] = {'U','n','n','a','m','e','d',' ','E','r','m','y',' ','P','r','o','j','e','c','t'};
+	char projName[64] = { 'U','n','n','a','m','e','d',' ','E','r','m','y',' ','P','r','o','j','e','c','t' };
+
+	AssetFolder* rootAssets = nullptr;
+	AssetFolder* rootShaders = nullptr;
+
+	AssetFolder* RescanAssets(const std::filesystem::path& pathTo);
 public:
 	ErmyProject();
 	~ErmyProject();
@@ -28,4 +33,12 @@ public:
 	void Save();
 
 	void DrawProjectSettings();
+
+	AssetFolder* GetRootAssets() {
+		return rootAssets;
+	}
+
+	AssetFolder* GetRootShaders() {
+		return rootShaders;
+	}
 };

@@ -10,9 +10,6 @@ public:
 
 	};
 
-	TextureAsset(const char* filepath);
+	TextureAsset();
 	virtual ~TextureAsset();
-
-	static std::vector<std::string> Initialize();
-	static void Shutdown();
 };

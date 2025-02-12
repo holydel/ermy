@@ -9,9 +9,7 @@ public:
 
 	};
 
-	VideoTextureAsset(const char* filepath);
+	VideoTextureAsset();
 	virtual ~VideoTextureAsset();
 
-	static std::vector<FormatExtensionInfo> Initialize();
-	static void Shutdown();
 };

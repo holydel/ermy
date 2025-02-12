@@ -5,7 +5,7 @@
 #include "main_window.h"
 #include "project/eproject.h"
 #include "shader_compiler/shader_compiler.h"
-#include <assets/assets_importer.h>
+#include <assets/assets_loader.h>
 
 bool gIsEditorRunning = true;
 
@@ -26,12 +26,15 @@ public:
 
 	void OnLoad() override
 	{
-		ShaderCompiler::Instance().Initialize();
+		//ShaderCompiler::Instance().Initialize();
 		ErmyProject::Instance().MountToLocalDirectory("../../eproj_template");
 
-		ErmyProject::Instance().RecompileAllInternalShaders();
-		assets_importer::Initialize();
+		//ErmyProject::Instance().RecompileAllInternalShaders();
+		editor::asset::loader::AssetsLoader::Initialize();
 
+		editor::screen::AssetsBrowserScreen::Instance()->Show();
+		editor::screen::HierarchyScreen::Instance()->Show();
+		editor::screen::PropertyEditorScreen::Instance()->Show();
 		//assets_importer::Import("C:\\Users\\holyd\\Pictures\\m92pjmfggseb1.webp", AssetType::Texture);
 		//assets_importer::Import("C:\\Users\\holyd\\Downloads\\glTF-Sample-Models-master\\sourceModels\\BarramundiFish\\BarramundiFish.fbx", AssetType::Geometry);
 	}
@@ -43,7 +46,7 @@ public:
 
 	void OnApplicationClose() override
 	{
-
+		editor::asset::loader::AssetsLoader::Shotdown();
 	}
 
 	bool IsRunning() override
@@ -52,4 +55,4 @@ public:
 	}
 };
 
-static Editor editor;
+static Editor gEditor;

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -71,6 +71,7 @@
       <AdditionalIncludeDirectories>../../engine/include;../../third_party/imgui;../../editor/include;$(VULKAN_SDK)/Include;C:\Compressonator_4.5.52\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -90,6 +91,7 @@
       <AdditionalIncludeDirectories>../../engine/include;../../third_party/imgui;../../editor/include;$(VULKAN_SDK)/Include;C:\Compressonator_4.5.52\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -111,6 +113,7 @@
       <AdditionalIncludeDirectories>../../engine/include;../../third_party/imgui;../../editor/include;$(VULKAN_SDK)/Include;C:\Compressonator_4.5.52\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -127,28 +130,46 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\editor\include\screens\hierarchy_screen.cpp" />
     <ClCompile Include="..\..\editor\src\assets\asset.cpp" />
-    <ClCompile Include="..\..\editor\src\assets\assets_importer.cpp" />
+    <ClCompile Include="..\..\editor\src\assets\assets_loader.cpp" />
     <ClCompile Include="..\..\editor\src\assets\geometry_asset.cpp" />
     <ClCompile Include="..\..\editor\src\assets\sound_asset.cpp" />
     <ClCompile Include="..\..\editor\src\assets\texture_asset.cpp" />
     <ClCompile Include="..\..\editor\src\assets\video_asset.cpp" />
+    <ClCompile Include="..\..\editor\src\assets_packed_cache.cpp" />
+    <ClCompile Include="..\..\editor\src\assets_packer.cpp" />
+    <ClCompile Include="..\..\editor\src\assets_preview_manager.cpp" />
     <ClCompile Include="..\..\editor\src\editor_main.cpp" />
     <ClCompile Include="..\..\editor\src\main_window.cpp" />
     <ClCompile Include="..\..\editor\src\project\eproject.cpp" />
+    <ClCompile Include="..\..\editor\src\screens\assets_browser_screen.cpp" />
+    <ClCompile Include="..\..\editor\src\screens\editor_screen.cpp" />
+    <ClCompile Include="..\..\editor\src\screens\property_editor_screen.cpp" />
     <ClCompile Include="..\..\editor\src\shader_compiler\shader_compiler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\editor\include\assets\assets_loader.h" />
+    <ClInclude Include="..\..\editor\include\assets\AssimpLoader.h" />
+    <ClInclude Include="..\..\editor\include\assets\FFMPEGLoader.h" />
+    <ClInclude Include="..\..\editor\include\assets\KTXLoader.h" />
+    <ClInclude Include="..\..\editor\include\assets\OpenImageLoader.h" />
+    <ClInclude Include="..\..\editor\include\assets_packed_cache.h" />
+    <ClInclude Include="..\..\editor\include\assets_packer.h" />
     <ClInclude Include="..\..\editor\include\assets\asset.h" />
-    <ClInclude Include="..\..\editor\include\assets\assets_importer.h" />
     <ClInclude Include="..\..\editor\include\assets\geometry_asset.h" />
     <ClInclude Include="..\..\editor\include\assets\sound_asset.h" />
     <ClInclude Include="..\..\editor\include\assets\texture_asset.h" />
     <ClInclude Include="..\..\editor\include\assets\video_asset.h" />
+    <ClInclude Include="..\..\editor\include\assets_preview_manager.h" />
     <ClInclude Include="..\..\editor\include\editor_main.h" />
     <ClInclude Include="..\..\editor\include\main_window.h" />
     <ClInclude Include="..\..\editor\include\project\eproject.h" />
     <ClInclude Include="..\..\editor\include\project\shader_info.h" />
+    <ClInclude Include="..\..\editor\include\screens\assets_browser_screen.h" />
+    <ClInclude Include="..\..\editor\include\screens\editor_screen.h" />
+    <ClInclude Include="..\..\editor\include\screens\hierarchy_screen.h" />
+    <ClInclude Include="..\..\editor\include\screens\property_editor_screen.h" />
     <ClInclude Include="..\..\editor\include\shader_compiler\shader_compiler.h" />
   </ItemGroup>
   <ItemGroup>

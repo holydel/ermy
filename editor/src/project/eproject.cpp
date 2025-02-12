@@ -48,6 +48,13 @@ std::string ReadAllFile(const fs::path& path)
     return fileContent;
 }
 
+AssetFolder* ErmyProject::RescanAssets(const std::filesystem::path& pathTo)
+{
+    AssetFolder* root = new AssetFolder();
+    root->Scan(pathTo);
+    return root;
+}
+
 void ErmyProject::MountToLocalDirectory(const std::string& filePath)
 {
     rootPath = fs::path(filePath);
@@ -64,17 +71,9 @@ void ErmyProject::MountToLocalDirectory(const std::string& filePath)
         }
     }
 
-    std::vector<fs::path> allShaders;
-    allShaders.reserve(64);
+    rootShaders = RescanAssets(rootPath / fs::path("shaders"));
+    rootAssets = RescanAssets(rootPath / fs::path("assets"));
 
-    auto shadersPath = rootPath / fs::path("shaders");
-
-    ReadAllFilesFromDirectory(shadersPath, allShaders);
-    shaders.reserve(allShaders.size());
-    for (auto& s : allShaders)
-    {
-        shaders.push_back({ s,ReadAllFile(s) });
-    }
     int a = 42;
 }
 

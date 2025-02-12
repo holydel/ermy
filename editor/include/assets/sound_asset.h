@@ -10,9 +10,6 @@ public:
 
 	};
 
-	SoundAsset(const char* filepath);
+	SoundAsset();
 	virtual ~SoundAsset();
-
-	static std::vector<std::string> Initialize();
-	static void Shutdown();
 };

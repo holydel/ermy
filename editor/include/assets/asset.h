@@ -3,6 +3,28 @@
 #include <ermy_api.h>
 #include <string>
 #include <filesystem>
+#include <vector>
+
+enum class AssetType
+{
+	UNKNOWN,
+	AUTO,
+	Folder,
+	Texture,
+	Geometry,
+	Sound,
+	VideoTexture
+};
+
+enum class AssetLoaderType
+{
+	UNKNOWN,
+	FFMPEG,
+	OpenImage,
+	Assimp,
+	KTX,
+	Miniaudio
+};
 
 class Asset
 {
@@ -18,23 +40,26 @@ protected:
 	std::filesystem::path intermediate = "";
 
 	MetaData* metaData = nullptr;
+	AssetLoaderType importerToLoad = AssetLoaderType::UNKNOWN;
 public:
 	void Import() {};
 
 	Asset() = default;
 	~Asset() = default;
+
+	virtual AssetType GetType() { return AssetType::Folder; }
+
+	static Asset* CreateFromPath(const std::filesystem::path path);
 };
 
-enum class AssetType
+class AssetFolder : public Asset
 {
-	AUTO,
+public:
+	std::vector<Asset*> content;
+	AssetType GetType() override { return AssetType::UNKNOWN; }
 
-	Texture,
-	Geometry,
-	Sound,
-	VideoTexture
+	void Scan(const std::filesystem::path& path);
 };
-
 
 struct FormatExtensionInfo
 {

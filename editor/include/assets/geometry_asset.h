@@ -10,9 +10,6 @@ public:
 
 	};
 
-	GeometryAsset(const char* filepath);
+	GeometryAsset();
 	virtual ~GeometryAsset();
-
-	static std::vector<std::string> Initialize();
-	static void Shutdown();
 };

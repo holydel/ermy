@@ -28,9 +28,6 @@
     <ClCompile Include="..\..\editor\src\assets\sound_asset.cpp">
       <Filter>src\assets</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\editor\src\assets\assets_importer.cpp">
-      <Filter>src\assets</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\editor\src\assets_packed_cache.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -39,6 +36,21 @@
     </ClCompile>
     <ClCompile Include="..\..\editor\src\assets_preview_manager.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editor\src\screens\assets_browser_screen.cpp">
+      <Filter>src\screens</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editor\src\screens\editor_screen.cpp">
+      <Filter>src\screens</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editor\src\screens\property_editor_screen.cpp">
+      <Filter>src\screens</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editor\include\screens\hierarchy_screen.cpp">
+      <Filter>src\screens</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editor\src\assets\assets_loader.cpp">
+      <Filter>src\assets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -72,9 +84,6 @@
     <ClInclude Include="..\..\editor\include\assets\video_asset.h">
       <Filter>include\assets</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\editor\include\assets\assets_importer.h">
-      <Filter>include\assets</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\editor\include\assets_packed_cache.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -83,6 +92,33 @@
     </ClInclude>
     <ClInclude Include="..\..\editor\include\assets_preview_manager.h">
       <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editor\include\screens\editor_screen.h">
+      <Filter>include\screens</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editor\include\screens\property_editor_screen.h">
+      <Filter>include\screens</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editor\include\screens\assets_browser_screen.h">
+      <Filter>include\screens</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editor\include\screens\hierarchy_screen.h">
+      <Filter>include\screens</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editor\include\assets\OpenImageLoader.h">
+      <Filter>include\assets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editor\include\assets\FFMPEGLoader.h">
+      <Filter>include\assets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editor\include\assets\AssimpLoader.h">
+      <Filter>include\assets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editor\include\assets\KTXLoader.h">
+      <Filter>include\assets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editor\include\assets\assets_loader.h">
+      <Filter>include\assets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -116,15 +152,15 @@
     <Filter Include="src\shaders">
       <UniqueIdentifier>{5b7d3a0a-e99e-4f76-8012-879805db8d1f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\screens">
+      <UniqueIdentifier>{85d8debd-d941-4274-9bd9-a2ba918f4d8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\screens">
+      <UniqueIdentifier>{c8123b25-1095-455e-80be-1a6ae2135665}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />
     <None Include="vcpkg-configuration.json" />
-    <None Include="..\..\editor\src\editor.slang">
-      <Filter>src\shaders</Filter>
-    </None>
-    <None Include="..\..\eproj_template\shaders\ermy_engine.slang">
-      <Filter>src\shaders</Filter>
-    </None>
   </ItemGroup>
 </Project>
