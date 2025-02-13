@@ -381,13 +381,13 @@ void CreateDevice()
 	VkPhysicalDeviceMemoryProperties memProps = {};
 	vkGetPhysicalDeviceMemoryProperties(gVKPhysicalDevice, &memProps);
 
-	for (int i = 0; i < memProps.memoryHeapCount; ++i)
+	for (u32 i = 0; i < memProps.memoryHeapCount; ++i)
 	{
 		ERMY_LOG("HEAP(%d) SIZE: %d MB %s", i, (memProps.memoryHeaps[i].size / (1024 * 1024)),
 			memProps.memoryHeaps[i].flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT ? "DEVICE" : "HOST");
 	}
 
-	for (int i = 0; i < memProps.memoryTypeCount; ++i)
+	for (u32 i = 0; i < memProps.memoryTypeCount; ++i)
 	{
 		std::string desc = "MEM TYPE (" + std::to_string(i) + ") HEAP: " + std::to_string(memProps.memoryTypes[i].heapIndex);
 

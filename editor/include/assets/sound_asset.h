@@ -2,10 +2,10 @@
 
 #include <assets/asset.h>
 
-class SoundAsset : public Asset
+class SoundAsset : public AssetData
 {
 public:
-	struct SoundAssetMeta : public Asset::MetaData
+	struct SoundAssetMeta : public AssetData::MetaData
 	{
 
 	};

@@ -11,6 +11,8 @@ namespace fs = std::filesystem;
 void AssetFolder::Scan(const std::filesystem::path& path)
 {
 	source = path;
+	name = path.filename().string();
+
 	for (const auto& entry : fs::directory_iterator(path)) {
 		if (fs::is_directory(entry.status()))
 		{
@@ -18,12 +20,11 @@ void AssetFolder::Scan(const std::filesystem::path& path)
 			folder->Scan(entry.path());
 
 			content.push_back(folder);
+			subdirectories.push_back(folder);
 		}
 		else
 		{
 			Asset* asset = Asset::CreateFromPath(entry.path());
-			//asset->source = entry.path();
-
 			content.push_back(asset);
 		}
 	}
@@ -31,39 +32,8 @@ void AssetFolder::Scan(const std::filesystem::path& path)
 
 Asset* Asset::CreateFromPath(const std::filesystem::path path)
 {
-	AssetType atype = AssetType::UNKNOWN;
-	AssetLoaderType ltype = AssetLoaderType::UNKNOWN;
-
-	editor::asset::loader::AssetsLoader::DescribeAssetLoaderByPath(path, atype, ltype);
-
-	Asset* result = nullptr;
-
-	switch (atype)
-	{
-	case AssetType::UNKNOWN: //fall		
-	case AssetType::Folder: //fall		
-	case AssetType::AUTO:
-		return nullptr;
-		break;
-	case AssetType::Texture:
-		result = new TextureAsset();
-		break;
-	case AssetType::Geometry:
-		result = new GeometryAsset();
-		break;
-	case AssetType::Sound:
-		result = new SoundAsset();
-		break;
-	case AssetType::VideoTexture:
-		result = new VideoTextureAsset();
-		break;
-	default:
-		break;
-	}
-	if(!result)
-		return nullptr;
-
-	result->importerToLoad = ltype;
-
+	Asset* result = new Asset();
+	result->source = path;
+	result->name = path.filename().string();
 	return result;
 }

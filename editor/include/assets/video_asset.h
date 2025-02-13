@@ -1,10 +1,10 @@
 #pragma once
 #include <assets/asset.h>
 
-class VideoTextureAsset : public Asset
+class VideoTextureAsset : public AssetData
 {
 public:
-	struct VideoTextureAssetMeta : public Asset::MetaData
+	struct VideoTextureAssetMeta : public AssetData::MetaData
 	{
 
 	};

@@ -4,6 +4,7 @@
 #include <string>
 #include <filesystem>
 #include <vector>
+#include "props.h"
 
 enum class AssetType
 {
@@ -26,7 +27,7 @@ enum class AssetLoaderType
 	Miniaudio
 };
 
-class Asset
+class AssetData : public Props
 {
 public:
 	struct MetaData
@@ -35,34 +36,46 @@ public:
 		MetaData() = default;
 		virtual ~MetaData() = default;
 	};
+
+	AssetData() = default;
+	~AssetData() = default;
+protected:
+	MetaData* metaData = nullptr;
+};
+
+class Asset
+{
 protected:
 	std::filesystem::path source = "";
 	std::filesystem::path intermediate = "";
-
-	MetaData* metaData = nullptr;
-	AssetLoaderType importerToLoad = AssetLoaderType::UNKNOWN;
+	std::string name = "";
+	AssetData* data = nullptr;
 public:
-	void Import() {};
+	AssetData* GetData()
+	{
+		return data;
+	}
+
+	void Import();
 
 	Asset() = default;
 	~Asset() = default;
 
-	virtual AssetType GetType() { return AssetType::Folder; }
+	virtual AssetType GetType() { return AssetType::UNKNOWN; }
 
 	static Asset* CreateFromPath(const std::filesystem::path path);
+	const char* NameCStr() const
+	{
+		return name.c_str();
+	}
 };
 
 class AssetFolder : public Asset
 {
 public:
 	std::vector<Asset*> content;
-	AssetType GetType() override { return AssetType::UNKNOWN; }
+	std::vector<AssetFolder*> subdirectories;
+	AssetType GetType() override { return AssetType::Folder; }
 
 	void Scan(const std::filesystem::path& path);
-};
-
-struct FormatExtensionInfo
-{
-	std::string ext;
-	AssetType atype;
 };

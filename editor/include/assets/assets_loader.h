@@ -17,10 +17,9 @@ namespace editor
 				virtual ~AssetsLoader() = default;
 
 				virtual Asset* Load(const std::filesystem::path& path) = 0;
-				
-				static bool DescribeAssetLoaderByPath(const std::filesystem::path path, AssetType& atype, AssetLoaderType& ltype);
+				virtual const std::vector<std::string>& SupportedExtensions() = 0;
 				static bool Initialize();
-				static bool Shotdown();
+				static bool Shutdown();
 			};
 		}
 	}

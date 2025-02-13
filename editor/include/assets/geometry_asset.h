@@ -2,10 +2,10 @@
 
 #include <assets/asset.h>
 
-class GeometryAsset : public Asset
+class GeometryAsset : public AssetData
 {
 public:
-	struct GeometryAssetMeta : public Asset::MetaData
+	struct GeometryAssetMeta : public AssetData::MetaData
 	{
 
 	};

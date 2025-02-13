@@ -34,6 +34,8 @@ VkPrimitiveTopology vk_utils::VkPrimitiveTopologyFromErmy(PrimitiveTopology topo
 	case PrimitiveTopology::Points:
 		return VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 	}
+
+	return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 }
 
 static std::tuple<VkPipelineStageFlags2, VkAccessFlags2> makePipelineStageAccessTuple(VkImageLayout state)

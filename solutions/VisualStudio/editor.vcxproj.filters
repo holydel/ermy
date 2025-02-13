@@ -46,10 +46,22 @@
     <ClCompile Include="..\..\editor\src\screens\property_editor_screen.cpp">
       <Filter>src\screens</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\editor\include\screens\hierarchy_screen.cpp">
+    <ClCompile Include="..\..\editor\src\assets\assets_loader.cpp">
+      <Filter>src\assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editor\src\screens\hierarchy_screen.cpp">
       <Filter>src\screens</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\editor\src\assets\assets_loader.cpp">
+    <ClCompile Include="..\..\editor\src\assets\AssimpLoader.cpp">
+      <Filter>src\assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editor\src\assets\FFMPEGLoader.cpp">
+      <Filter>src\assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editor\src\assets\KTXLoader.cpp">
+      <Filter>src\assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editor\src\assets\OpenImageLoader.cpp">
       <Filter>src\assets</Filter>
     </ClCompile>
   </ItemGroup>
@@ -119,6 +131,9 @@
     </ClInclude>
     <ClInclude Include="..\..\editor\include\assets\assets_loader.h">
       <Filter>include\assets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editor\include\props.h">
+      <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

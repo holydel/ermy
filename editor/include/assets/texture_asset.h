@@ -2,14 +2,16 @@
 
 #include <assets/asset.h>
 
-class TextureAsset : public Asset
+class TextureAsset : public AssetData
 {
 public:
-	struct TextureAssetMeta : public Asset::MetaData
+	struct TextureAssetMeta : public AssetData::MetaData
 	{
 
 	};
 
 	TextureAsset();
 	virtual ~TextureAsset();
+
+	void DrawProps() override;
 };

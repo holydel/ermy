@@ -46,7 +46,7 @@ public:
 
 	void OnApplicationClose() override
 	{
-		editor::asset::loader::AssetsLoader::Shotdown();
+		editor::asset::loader::AssetsLoader::Shutdown();
 	}
 
 	bool IsRunning() override

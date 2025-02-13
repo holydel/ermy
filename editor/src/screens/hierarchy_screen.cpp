@@ -1,16 +1,18 @@
-#include "property_editor_screen.h"
+#include "screens/hierarchy_screen.h"
+#include <imgui.h>
 
-void editor::screen::PropertyEditorScreen::Draw()
+using namespace editor::screen;
+
+void HierarchyScreen::Draw()
 {
-	if (ImGui::Begin("Property", &isShowed))
+	if (ImGui::Begin("Heirarchy", &isShowed))
 	{
-
 		ImGui::End();
 	}
 }
 
-PropertyEditorScreen* editor::screen::PropertyEditorScreen::Instance()
+HierarchyScreen* HierarchyScreen::Instance()
 {
-	static AssetsBrowserScreen gAssetsBrowserScreen;
-	return &gAssetsBrowserScreen;
+	static HierarchyScreen gHierarchyScreen;
+	return &gHierarchyScreen;
 }

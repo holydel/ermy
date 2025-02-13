@@ -36,7 +36,8 @@ void CommandList::SetViewport(int x, int y, int width, int height)
 {
 	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
 
-	VkViewport viewport = {x,y,width,height,0,1};
+	VkViewport viewport = {static_cast<float>(x),static_cast<float>(y)
+		,static_cast<float>(width),static_cast<float>(height),0,1};
 	vkCmdSetViewport(cbuff, 0, 1, &viewport);
 	
 }
@@ -44,7 +45,7 @@ void CommandList::SetViewport(int x, int y, int width, int height)
 void CommandList::SetScissor(int x, int y, int width, int height)
 {
 	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
-	VkRect2D scissor = { {x,y},{width,height} };
+	VkRect2D scissor = { {x,y},{static_cast<u32>(width),static_cast<u32>(height)} };
 	vkCmdSetScissor(cbuff, 0, 1, &scissor);
 }
 

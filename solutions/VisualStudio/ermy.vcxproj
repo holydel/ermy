@@ -36,6 +36,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\..\engine\src\application.cpp" />
+    <ClCompile Include="..\..\engine\src\ermy_string_utils.cpp" />
     <ClCompile Include="..\..\engine\src\graphics\canvas_interface.cpp" />
     <ClCompile Include="..\..\engine\src\imgui\ermy_imgui.cpp" />
     <ClCompile Include="..\..\engine\src\imgui\imgui_interface.cpp" />
@@ -124,6 +125,7 @@
     <ClInclude Include="..\..\engine\include\ermy_rendering.h" />
     <ClInclude Include="..\..\engine\include\ermy_shader.h" />
     <ClInclude Include="..\..\engine\include\ermy_shader_internal.h" />
+    <ClInclude Include="..\..\engine\include\ermy_utils.h" />
     <ClInclude Include="..\..\engine\src\application.h" />
     <ClInclude Include="..\..\engine\src\graphics\canvas_interface.h" />
     <ClInclude Include="..\..\engine\src\imgui\ermy_imgui.h" />

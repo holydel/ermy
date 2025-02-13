@@ -45,7 +45,7 @@ void _addShader(const ermy::ShaderBytecode& bc, std::vector<VkPipelineShaderStag
 {
 	if (!bc.cachedDeviceObjectID.isValid())
 	{
-		bc.cachedDeviceObjectID.handle = gAllShaderModules.size();
+		bc.cachedDeviceObjectID.handle = static_cast<u16>(gAllShaderModules.size());
 
 		VkShaderModuleCreateInfo cinfo = { VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO };
 		cinfo.pCode = (const uint32_t*)bc.data;
@@ -206,7 +206,7 @@ VkPipeline _createPipeline(const PSODesc& desc)
 
 PSOID ermy::rendering::CreatePSO(const PSODesc& desc)
 {
-	PSOID id{ gAllPipelines.size() };
+	PSOID id{ static_cast<u32>(gAllPipelines.size()) };
 
 	gAllPipelines.push_back(_createPipeline(desc));
 	return id;

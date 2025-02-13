@@ -130,10 +130,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\editor\include\screens\hierarchy_screen.cpp" />
     <ClCompile Include="..\..\editor\src\assets\asset.cpp" />
     <ClCompile Include="..\..\editor\src\assets\assets_loader.cpp" />
+    <ClCompile Include="..\..\editor\src\assets\AssimpLoader.cpp" />
+    <ClCompile Include="..\..\editor\src\assets\FFMPEGLoader.cpp" />
     <ClCompile Include="..\..\editor\src\assets\geometry_asset.cpp" />
+    <ClCompile Include="..\..\editor\src\assets\KTXLoader.cpp" />
+    <ClCompile Include="..\..\editor\src\assets\OpenImageLoader.cpp" />
     <ClCompile Include="..\..\editor\src\assets\sound_asset.cpp" />
     <ClCompile Include="..\..\editor\src\assets\texture_asset.cpp" />
     <ClCompile Include="..\..\editor\src\assets\video_asset.cpp" />
@@ -145,6 +148,7 @@
     <ClCompile Include="..\..\editor\src\project\eproject.cpp" />
     <ClCompile Include="..\..\editor\src\screens\assets_browser_screen.cpp" />
     <ClCompile Include="..\..\editor\src\screens\editor_screen.cpp" />
+    <ClCompile Include="..\..\editor\src\screens\hierarchy_screen.cpp" />
     <ClCompile Include="..\..\editor\src\screens\property_editor_screen.cpp" />
     <ClCompile Include="..\..\editor\src\shader_compiler\shader_compiler.cpp" />
   </ItemGroup>
@@ -166,6 +170,7 @@
     <ClInclude Include="..\..\editor\include\main_window.h" />
     <ClInclude Include="..\..\editor\include\project\eproject.h" />
     <ClInclude Include="..\..\editor\include\project\shader_info.h" />
+    <ClInclude Include="..\..\editor\include\props.h" />
     <ClInclude Include="..\..\editor\include\screens\assets_browser_screen.h" />
     <ClInclude Include="..\..\editor\include\screens\editor_screen.h" />
     <ClInclude Include="..\..\editor\include\screens\hierarchy_screen.h" />
