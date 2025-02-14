@@ -19,7 +19,7 @@ VkQueue gVKMainQueue = VK_NULL_HANDLE;
 VkQueue gVKComputeAsyncQueue = VK_NULL_HANDLE;
 VkQueue gVKTransferAsyncQueue = VK_NULL_HANDLE;
 VkRenderPass gVKRenderPass = VK_NULL_HANDLE;
-
+DeviceEnabledExtensions gDeviceEnabledExtensions;
 
 
 using namespace ermy;
@@ -447,21 +447,22 @@ void CreateDevice()
 
 	swapchain::RequestDeviceExtensions(device_extender);
 
-	device_extender.TryAddExtension(VK_NV_MEMORY_DECOMPRESSION_EXTENSION_NAME);
-	device_extender.TryAddExtension(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME,Ver12);
-	device_extender.TryAddExtension(VK_KHR_DEDICATED_ALLOCATION_EXTENSION_NAME,Ver11);
-	device_extender.TryAddExtension(VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME,Ver13);
-	device_extender.TryAddExtension(VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME, Ver12);
 
-	device_extender.TryAddExtension(VK_EXT_MEMORY_PRIORITY_EXTENSION_NAME);
-	device_extender.TryAddExtension(VK_EXT_PAGEABLE_DEVICE_LOCAL_MEMORY_EXTENSION_NAME);
+
+	gDeviceEnabledExtensions.NvDecompressMemory = device_extender.TryAddExtension(VK_NV_MEMORY_DECOMPRESSION_EXTENSION_NAME);
+	gDeviceEnabledExtensions.KhrBufferDeviceAddress = device_extender.TryAddExtension(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME, Ver12);
+	gDeviceEnabledExtensions.KhrDedicatedAllocation = device_extender.TryAddExtension(VK_KHR_DEDICATED_ALLOCATION_EXTENSION_NAME, Ver11);
+	gDeviceEnabledExtensions.KhrSynchronization2 = device_extender.TryAddExtension(VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME, Ver13);
+	gDeviceEnabledExtensions.KhrTimelineSemaphore = device_extender.TryAddExtension(VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME, Ver12);
+	gDeviceEnabledExtensions.ExtMemoryPriority = device_extender.TryAddExtension(VK_EXT_MEMORY_PRIORITY_EXTENSION_NAME);
+	gDeviceEnabledExtensions.ExtPageableDeviceLocalMemory = device_extender.TryAddExtension(VK_EXT_PAGEABLE_DEVICE_LOCAL_MEMORY_EXTENSION_NAME);
 
 	if (gVKConfig.useDynamicRendering)
 	{
-		device_extender.TryAddExtension(VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME, Ver13);
-		device_extender.TryAddExtension(VK_KHR_DYNAMIC_RENDERING_LOCAL_READ_EXTENSION_NAME, Ver14);
+		gDeviceEnabledExtensions.KhrDynamicRendering = device_extender.TryAddExtension(VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME, Ver13);
+		gDeviceEnabledExtensions.KhrDynamicRenderingLocalRead = device_extender.TryAddExtension(VK_KHR_DYNAMIC_RENDERING_LOCAL_READ_EXTENSION_NAME, Ver14);
 	}
-	
+
 	VkPhysicalDeviceVulkan11Features features11 = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES, nullptr };
 	VkPhysicalDeviceVulkan12Features features12 = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES, nullptr };
 	VkPhysicalDeviceVulkan13Features features13 = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES, nullptr };
@@ -472,13 +473,13 @@ void CreateDevice()
 	features11.pNext = &features12;
 
 	features12.timelineSemaphore = true;
-	
+
 	if (gVKConfig.useDynamicRendering)
 	{
 		features13.dynamicRendering = true;
 		features14.dynamicRenderingLocalRead = true;
 	}
-	
+
 	VkPhysicalDeviceSynchronization2Features sync2Features = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES, nullptr };
 	sync2Features.synchronization2 = true;
 	features14.pNext = &sync2Features;
@@ -517,7 +518,25 @@ void CreateDevice()
 	allocatorInfo.physicalDevice = gVKPhysicalDevice;
 	allocatorInfo.device = gVKDevice;
 	allocatorInfo.instance = gVKInstance;
-	allocatorInfo.flags = VMA_ALLOCATOR_CREATE_BUFFER_DEVICE_ADDRESS_BIT;
+
+	if (gDeviceEnabledExtensions.KhrBufferDeviceAddress)
+		allocatorInfo.flags |= VMA_ALLOCATOR_CREATE_BUFFER_DEVICE_ADDRESS_BIT;
+
+	if (gDeviceEnabledExtensions.KhrDedicatedAllocation)
+		allocatorInfo.flags |= VMA_ALLOCATOR_CREATE_KHR_DEDICATED_ALLOCATION_BIT;
+
+	if (gDeviceEnabledExtensions.ExtMemoryPriority)
+		allocatorInfo.flags |= VMA_ALLOCATOR_CREATE_EXT_MEMORY_PRIORITY_BIT;
+
+
+	//VMA_ALLOCATOR_CREATE_KHR_BIND_MEMORY2_BIT
+	//VMA_ALLOCATOR_CREATE_EXT_MEMORY_BUDGET_BIT
+	//VMA_ALLOCATOR_CREATE_AMD_DEVICE_COHERENT_MEMORY_BIT
+	//
+	//VMA_ALLOCATOR_CREATE_KHR_MAINTENANCE4_BIT
+	//VMA_ALLOCATOR_CREATE_KHR_MAINTENANCE5_BIT
+	//VMA_ALLOCATOR_CREATE_KHR_EXTERNAL_MEMORY_WIN32_BIT
+	allocatorInfo.vulkanApiVersion = gPhysicalDeviceAPIVersion;
 
 	VmaVulkanFunctions functions;
 

@@ -120,7 +120,7 @@ AssetData* OpenImageLoader::Load(const std::filesystem::path& path)
        free(temp);
    }
 
-   
+   result->RegeneratePreview();
 
 
    in->close();

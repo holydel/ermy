@@ -70,6 +70,48 @@ void _addShader(const ermy::ShaderBytecode& bc, std::vector<VkPipelineShaderStag
 
 VkImage _createTexture(const TextureDesc& desc)
 {
+	VkDeviceSize imageSize = desc.width * desc.height * 4; // 4 channels (RGBA) TODO: from format
+	VkBuffer stagingBuffer;
+	VmaAllocation stagingBufferAllocation;
+
+	VkBufferCreateInfo bufferInfo{};
+	bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+	bufferInfo.size = imageSize;
+	bufferInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+
+	VmaAllocationCreateInfo allocCreateInfo{};
+	allocCreateInfo.usage = VMA_MEMORY_USAGE_CPU_ONLY;
+	VmaAllocationInfo bufferAllocationInfo;
+	VK_CALL(vmaCreateBuffer(gVMA_Allocator, &bufferInfo, &allocCreateInfo, &stagingBuffer, &stagingBufferAllocation, &bufferAllocationInfo));
+
+	void* data;
+	vmaMapMemory(gVMA_Allocator, stagingBufferAllocation, &data);
+	memcpy(data, desc.pixelsData, static_cast<size_t>(imageSize));
+	vmaUnmapMemory(gVMA_Allocator, stagingBufferAllocation);
+
+	// Create a Vulkan image using VMA
+	VkImageCreateInfo imageInfo{};
+	imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+	imageInfo.imageType = VK_IMAGE_TYPE_2D;
+	imageInfo.extent.width = static_cast<uint32_t>(desc.width);
+	imageInfo.extent.height = static_cast<uint32_t>(desc.height);
+	imageInfo.extent.depth = 1;
+	imageInfo.mipLevels = 1;
+	imageInfo.arrayLayers = 1;
+	imageInfo.format = VK_FORMAT_R8G8B8A8_UNORM; // 4-channel format
+	imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+	imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+	imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+	imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+
+	VmaAllocationCreateInfo imageAllocCreateInfo{};
+	imageAllocCreateInfo.usage = VMA_MEMORY_USAGE_GPU_ONLY;
+	VkImage textureImage = VK_NULL_HANDLE;
+	VmaAllocation textureImageAllocation = VK_NULL_HANDLE;
+	VmaAllocationInfo textureImageAllocationInfo;
+	VK_CALL(vmaCreateImage(gVMA_Allocator, &imageInfo, &imageAllocCreateInfo, &textureImage, &textureImageAllocation, &textureImageAllocationInfo));
+
 	return VK_NULL_HANDLE;
 }
 

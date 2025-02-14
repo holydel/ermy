@@ -74,6 +74,10 @@ namespace main_window
 				{
 					editor::screen::PropertyEditorScreen::Instance()->Show();
 				}
+				if (ImGui::MenuItem("Project Settings"))
+				{
+					ErmyProject::Instance().ShowSettings();
+				}
 				ImGui::EndMenu();
 			}
 			ImGui::EndMainMenuBar();

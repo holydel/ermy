@@ -104,7 +104,14 @@ void ErmyProject::Save()
 
 void ErmyProject::DrawProjectSettings()
 {
-    ImGui::Begin("Ermy Project Settings");
-    ImGui::InputText("Project Name:", projName, sizeof(projName), ImGuiInputTextFlags_NoHorizontalScroll);
-    ImGui::End();
+    if (showSettings)
+    {
+        if (ImGui::Begin("Ermy Project Settings", &showSettings))
+        {
+            ImGui::InputText("Project Name:", projName, sizeof(projName), ImGuiInputTextFlags_NoHorizontalScroll);
+            
+        }
+        ImGui::End();
+    }
+
 }

@@ -21,4 +21,6 @@ public:
 	virtual ~TextureAsset();
 
 	void DrawPreview() override;
+
+	void RegeneratePreview() override;
 };

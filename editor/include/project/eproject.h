@@ -20,6 +20,7 @@ class ErmyProject
 	AssetFolder* rootShaders = nullptr;
 
 	AssetFolder* RescanAssets(const std::filesystem::path& pathTo);
+	bool showSettings = false;
 public:
 	ErmyProject();
 	~ErmyProject();
@@ -33,6 +34,11 @@ public:
 	void Save();
 
 	void DrawProjectSettings();
+
+	void ShowSettings()
+	{
+		showSettings = true;
+	}
 
 	AssetFolder* GetRootAssets() {
 		return rootAssets;

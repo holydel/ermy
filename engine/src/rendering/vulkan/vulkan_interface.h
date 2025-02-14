@@ -16,3 +16,18 @@ extern VkQueue gVKTransferAsyncQueue;
 extern VkRenderPass gVKRenderPass;
 
 extern ermy::Application::StaticConfig::VKConfig gVKConfig;
+
+struct DeviceEnabledExtensions
+{
+	bool NvDecompressMemory : 1 = false;
+	bool KhrBufferDeviceAddress : 1 = false;
+	bool KhrDedicatedAllocation : 1 = false;
+	bool KhrSynchronization2 : 1 = false;
+	bool KhrTimelineSemaphore : 1 = false;
+	bool ExtMemoryPriority : 1 = false;
+	bool ExtPageableDeviceLocalMemory : 1 = false;
+	bool KhrDynamicRendering : 1 = false;
+	bool KhrDynamicRenderingLocalRead : 1 = false;
+};
+
+extern DeviceEnabledExtensions gDeviceEnabledExtensions;

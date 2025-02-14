@@ -5,8 +5,12 @@ using namespace editor::screen;
 
 void HierarchyScreen::Draw()
 {
-	if (ImGui::Begin("Heirarchy", &isShowed))
+	if (isShowed)
 	{
+		if (ImGui::Begin("Heirarchy", &isShowed))
+		{
+			
+		}
 		ImGui::End();
 	}
 }

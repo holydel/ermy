@@ -6,6 +6,7 @@
 #include <vector>
 #include "props.h"
 #include <imgui.h>
+#include <ermy_rendering.h>
 
 enum class AssetType
 {
@@ -30,6 +31,8 @@ enum class AssetLoaderType
 
 class AssetData
 {
+protected:
+	ermy::rendering::TextureID previewTexture;
 public:
 	struct MetaData
 	{
@@ -42,6 +45,12 @@ public:
 	~AssetData() = default;
 
 	virtual void DrawPreview() {};
+	ermy::rendering::TextureID GetPreviewTexture()
+	{
+		return previewTexture;
+	}
+
+	virtual void RegeneratePreview() {}
 protected:
 	MetaData* metaData = nullptr;
 };

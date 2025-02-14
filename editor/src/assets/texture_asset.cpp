@@ -20,6 +20,21 @@ void TextureAsset::DrawPreview()
 	ImGui::Text("Datasize: %s",ermy_utils::string::humanReadableFileSize(dataSize).c_str());
 }
 
+void TextureAsset::RegeneratePreview()
+{
+	ermy::rendering::TextureDesc desc;
+	desc.width = width;
+	desc.height = height;
+	desc.depth = depth;
+	desc.isCubemap = isCubemap;
+	desc.numLayers = numLayers;
+	desc.numMips = numMips;
+	desc.pixelsData = data;
+	desc.isSparse = false;
+
+	previewTexture = ermy::rendering::CreateDedicatedTexture(desc);
+}
+
 //std::vector<std::string>  TextureAsset::Initialize()
 //{
 //    std::string supported_formats;
