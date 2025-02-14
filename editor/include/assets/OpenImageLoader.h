@@ -13,7 +13,7 @@ namespace editor
 				OpenImageLoader();
 				virtual ~OpenImageLoader();
 
-				Asset* Load(const std::filesystem::path& path) override;
+				AssetData* Load(const std::filesystem::path& path) override;
 				const std::vector<std::string>& SupportedExtensions() override;
 			};
 		}

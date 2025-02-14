@@ -10,6 +10,9 @@ std::vector<VkPipeline> gAllPipelines;
 std::vector<VkPipelineLayout> gAllPipelineLayouts;
 std::vector<VkShaderModule> gAllShaderModules;
 
+std::vector<VkBuffer> gAllBuffers;
+std::vector<VkImage> gAllTextures;
+
 constexpr uint32_t OpEntryPoint = 15;
 
 std::string _extractEntryPointName(const uint32_t* spirv, int numOpCodes) {
@@ -63,6 +66,16 @@ void _addShader(const ermy::ShaderBytecode& bc, std::vector<VkPipelineShaderStag
 	newStage.stage = vk_utils::VkShaderStageFromErmy(bc.stage);
 	newStage.pName = "main";
 	newStage.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+}
+
+VkImage _createTexture(const TextureDesc& desc)
+{
+	return VK_NULL_HANDLE;
+}
+
+VkBuffer _createBuffer(const BufferDesc& desc)
+{
+	return VK_NULL_HANDLE;
 }
 
 VkPipeline _createPipeline(const PSODesc& desc)
@@ -209,6 +222,20 @@ PSOID ermy::rendering::CreatePSO(const PSODesc& desc)
 	PSOID id{ static_cast<u32>(gAllPipelines.size()) };
 
 	gAllPipelines.push_back(_createPipeline(desc));
+	return id;
+}
+
+TextureID ermy::rendering::CreateDedicatedTexture(const TextureDesc& desc)
+{
+	TextureID id{ static_cast<u32>(gAllTextures.size()) };
+	gAllTextures.push_back(_createTexture(desc));
+	return id;
+}
+
+BufferID ermy::rendering::CreateDedicatedBuffer(const BufferDesc& desc)
+{
+	BufferID id{ static_cast<u32>(gAllBuffers.size()) };
+	gAllBuffers.push_back(_createBuffer(desc));
 	return id;
 }
 

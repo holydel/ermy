@@ -8,5 +8,8 @@ namespace ermy_utils
 	namespace string
 	{
 		std::vector<std::string> split(const std::string& input, char delimiter);
+		std::string toLower(const std::string& input);
+		std::string toUpper(const std::string& input);
+		std::string humanReadableFileSize(ermy::u64 bytes);
 	}
 }

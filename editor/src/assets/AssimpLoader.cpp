@@ -49,7 +49,7 @@ AssimpLoader::~AssimpLoader()
 	delete gAssetImporter;
 }
 
-Asset* AssimpLoader::Load(const std::filesystem::path& path)
+AssetData* AssimpLoader::Load(const std::filesystem::path& path)
 {
 	//const aiScene* scene = gAssetImporter->ReadFile(filepath,
 //	aiProcess_Triangulate | aiProcess_SplitLargeMeshes | aiProcess_ImproveCacheLocality | aiProcess_CalcTangentSpace |

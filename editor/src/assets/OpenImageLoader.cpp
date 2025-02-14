@@ -10,7 +10,7 @@
 
 #include <ermy_log.h>
 #include <ermy_utils.h>
-
+#include <assets/texture_asset.h>
 
 using namespace OIIO;
 using namespace editor::asset::loader;
@@ -58,31 +58,72 @@ OpenImageLoader::~OpenImageLoader()
 
 }
 
-Asset* OpenImageLoader::Load(const std::filesystem::path& path)
+template <typename T>
+void ConvertRGBtoRGBA(T* rgbDataOut, const T* rgbDataIn, int width, int height)
 {
-    // Create an ImageInput object to read the image
-  // auto in = ImageInput::open(filepath);
+    for (int row = 0; row < height; ++row)
+    {
+        for (int x = 0; x < width; ++x)
+        {
+            int indexIn = (row * width + x) * 3;
+            int indexOut = (row * width + x) * 4;
 
-  // // Get the image specifications
-  // const ImageSpec& spec = in->spec();
-  // int width = spec.width;
-  // int height = spec.height;
-  // int channels = spec.nchannels;
-  // int channelBytes = spec.channel_bytes();
+            rgbDataOut[indexOut + 0] = rgbDataIn[indexIn + 0];
+            rgbDataOut[indexOut + 1] = rgbDataIn[indexIn + 1];
+            rgbDataOut[indexOut + 2] = rgbDataIn[indexIn + 2];
+            rgbDataOut[indexOut + 3] = static_cast<T>(0xFFFFFFFFu);
+        }
+    }
+}
 
-  // std::cout << "Image dimensions: " << width << "x" << height << std::endl;
-  // std::cout << "Number of channels: " << channels << std::endl;
+AssetData* OpenImageLoader::Load(const std::filesystem::path& path)
+{
+  //   Create an ImageInput object to read the image
+   auto in = ImageInput::open(path.c_str());
 
-  // // Allocate a buffer to hold the image data
-  // std::vector<unsigned char> pixels(width * height * channels);
+   // Get the image specifications
+   const ImageSpec& spec = in->spec();
+
+   TextureAsset* result = new TextureAsset();
+
+   result->width = spec.width;
+   result->height = spec.height;
+   result->numChannels = spec.nchannels;
+   result->channelBytes = spec.channel_bytes();
+
+   if (result->numChannels == 3)
+       result->numChannels = 4;
+
+   result->dataSize = result->width * result->height * result->numChannels * result->channelBytes;
+   result->data = malloc(result->dataSize);
+   
+   //direct loading for 1,2,4 channels
+   if (result->numChannels == spec.nchannels)
+   {
+       in->read_image(0, 0, 0, result->numChannels, spec.format, result->data);
+   }
+   else
+   {
+       int tempDataSize = result->width * result->height * result->channelBytes * spec.nchannels;
+       void* temp = malloc(result->dataSize);
+       in->read_image(0, 0, 0, spec.nchannels, spec.format, temp);
+       
+       if (result->channelBytes == 1)
+           ConvertRGBtoRGBA(static_cast<ermy::u8*>(result->data), static_cast<ermy::u8*>(temp), result->width, result->height);
+
+       if (result->channelBytes == 2)
+           ConvertRGBtoRGBA(static_cast<ermy::u16*>(result->data), static_cast<ermy::u16*>(temp), result->width, result->height);
+
+       if (result->channelBytes == 4)
+           ConvertRGBtoRGBA(static_cast<ermy::u32*>(result->data), static_cast<ermy::u32*>(temp), result->width, result->height);
+
+       free(temp);
+   }
+
+   
 
 
-  // // Read the image data into the buffer
-  //// in->read_image(TypeDesc::UINT8, &pixels[0]);
-  // in->read_image(0, 0, 0, channels, spec.format, &pixels[0]);
+   in->close();
 
-  // // Close the image file
-  // in->close();
-
-	return nullptr;
+   return result;
 }

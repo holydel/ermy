@@ -5,11 +5,10 @@
 class SoundAsset : public AssetData
 {
 public:
-	struct SoundAssetMeta : public AssetData::MetaData
-	{
-
-	};
+	double duration = 0.0;
 
 	SoundAsset();
 	virtual ~SoundAsset();
+
+	void DrawPreview() override;
 };

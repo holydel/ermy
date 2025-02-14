@@ -16,7 +16,7 @@ namespace editor
 				AssetsLoader() = default;
 				virtual ~AssetsLoader() = default;
 
-				virtual Asset* Load(const std::filesystem::path& path) = 0;
+				virtual AssetData* Load(const std::filesystem::path& path) = 0;
 				virtual const std::vector<std::string>& SupportedExtensions() = 0;
 				static bool Initialize();
 				static bool Shutdown();

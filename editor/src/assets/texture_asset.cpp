@@ -2,6 +2,7 @@
 #include <ermy_log.h>
 #include <compressonator.h>
 #include <imgui.h>
+#include <ermy_utils.h>
 
 TextureAsset::TextureAsset()
 {
@@ -13,9 +14,10 @@ TextureAsset::~TextureAsset()
 
 }
 
-void TextureAsset::DrawProps()
+void TextureAsset::DrawPreview()
 {
-	ImGui::Text("Some texture");
+	ImGui::Text("Width: %d Height: %d",width,height);
+	ImGui::Text("Datasize: %s",ermy_utils::string::humanReadableFileSize(dataSize).c_str());
 }
 
 //std::vector<std::string>  TextureAsset::Initialize()

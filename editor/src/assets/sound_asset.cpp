@@ -1,4 +1,5 @@
 #include <assets/sound_asset.h>
+#include <imgui.h>
 
 SoundAsset::SoundAsset()
 {
@@ -8,6 +9,12 @@ SoundAsset::SoundAsset()
 SoundAsset::~SoundAsset()
 {
 
+}
+
+void SoundAsset::DrawPreview()
+{
+	ImGui::Text("Sound duration: %lf", duration);
+	ImGui::Button("Play");
 }
 
 //std::vector<std::string> SoundAsset::Initialize()

@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <vector>
 #include "props.h"
+#include <imgui.h>
 
 enum class AssetType
 {
@@ -27,7 +28,7 @@ enum class AssetLoaderType
 	Miniaudio
 };
 
-class AssetData : public Props
+class AssetData
 {
 public:
 	struct MetaData
@@ -39,18 +40,25 @@ public:
 
 	AssetData() = default;
 	~AssetData() = default;
+
+	virtual void DrawPreview() {};
 protected:
 	MetaData* metaData = nullptr;
 };
 
-class Asset
+class Asset : public Props
 {
 protected:
 	std::filesystem::path source = "";
 	std::filesystem::path intermediate = "";
 	std::string name = "";
 	AssetData* data = nullptr;
+	ermy::u64 fileSize = 0;
+
+	std::string assetName = "";
+	ermy::u8 assetNameRows = 0;
 public:
+	ermy::u64 ID = 0;
 	AssetData* GetData()
 	{
 		return data;
@@ -58,7 +66,7 @@ public:
 
 	void Import();
 
-	Asset() = default;
+	Asset();
 	~Asset() = default;
 
 	virtual AssetType GetType() { return AssetType::UNKNOWN; }
@@ -68,14 +76,52 @@ public:
 	{
 		return name.c_str();
 	}
+	const char* AssetNameCStr() const
+	{
+		return assetName.c_str();
+	}
+
+	ermy::u8 GetAssetNameRows() const
+	{
+		return assetNameRows;
+	}	 
+
+	void DrawProps();
+
+	ermy::u64 FileSize()
+	{
+		return fileSize;
+	}
 };
 
 class AssetFolder : public Asset
 {
+	class FolderData : public AssetData
+	{
+		friend AssetFolder;
+
+		ermy::u32 numFiles = 0;
+		ermy::u64 totalSize = 0;
+
+		void DrawPreview() override;
+	} folderData;
 public:
+	AssetFolder()
+	{
+		data = &folderData;
+	}
+	virtual ~AssetFolder() = default;
 	std::vector<Asset*> content;
 	std::vector<AssetFolder*> subdirectories;
 	AssetType GetType() override { return AssetType::Folder; }
 
 	void Scan(const std::filesystem::path& path);
+};
+
+class BinaryAssetData : public AssetData
+{
+	void* binaryBlob = nullptr;
+	ermy::u64 blobSize = 0;
+public:
+	void DrawPreview() override;
 };

@@ -19,7 +19,7 @@ KTXLoader::~KTXLoader()
 
 }
 
-Asset* KTXLoader::Load(const std::filesystem::path& path)
+AssetData* KTXLoader::Load(const std::filesystem::path& path)
 {
 	return nullptr;
 }

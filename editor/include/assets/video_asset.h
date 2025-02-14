@@ -4,10 +4,6 @@
 class VideoTextureAsset : public AssetData
 {
 public:
-	struct VideoTextureAssetMeta : public AssetData::MetaData
-	{
-
-	};
 
 	VideoTextureAsset();
 	virtual ~VideoTextureAsset();
