@@ -7,6 +7,8 @@ namespace editor::screen
 	class PropertyEditorScreen : public EditorScreen
 	{
 		Props* props = nullptr;
+		PropertyEditorScreen();
+		~PropertyEditorScreen();
 	public:
 		void Draw() override;
 		static PropertyEditorScreen* Instance();

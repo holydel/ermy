@@ -2,6 +2,7 @@
 #ifdef ERMY_GAPI_VULKAN
 #include <cassert>
 #include "vulkan_rendering.h"
+#include "vk_utils.h"
 
 using namespace ermy;
 using namespace ermy::rendering;
@@ -57,33 +58,78 @@ void CommandList::SetRootConstants(void* data, int size)
 
 void CommandList::InsertDebugMark(const char* u8mark)
 {
+	if (!vkCmdInsertDebugUtilsLabelEXT)
+		return;
+
 	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
-	VkDebugMarkerMarkerInfoEXT info = { VK_STRUCTURE_TYPE_DEBUG_MARKER_MARKER_INFO_EXT };
-	info.pMarkerName = u8mark;
+	VkDebugUtilsLabelEXT info = { VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT };
+	info.pLabelName = u8mark;
 	info.color[0] = 1.0f;
 	info.color[1] = 1.0f;
 	info.color[2] = 1.0f;
 	info.color[3] = 1.0f;
-	vkCmdDebugMarkerInsertEXT(cbuff, &info);
+	vkCmdInsertDebugUtilsLabelEXT(cbuff, &info);
 }
 
 void CommandList::BeginDebugScope(const char* u8mark)
 {
+	if (!vkCmdBeginDebugUtilsLabelEXT)
+		return;
+
 	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
-	VkDebugMarkerMarkerInfoEXT info = { VK_STRUCTURE_TYPE_DEBUG_MARKER_MARKER_INFO_EXT };
-	info.pMarkerName = u8mark;
+	VkDebugUtilsLabelEXT info = { VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT };
+	info.pLabelName = u8mark;
 	info.color[0] = 1.0f;
 	info.color[1] = 1.0f;
 	info.color[2] = 1.0f;
 	info.color[3] = 1.0f;
-	vkCmdDebugMarkerBeginEXT(cbuff, &info);
+	vkCmdBeginDebugUtilsLabelEXT(cbuff, &info);
 }
 
 void CommandList::EndDebugScope()
 {
+	if (!vkCmdEndDebugUtilsLabelEXT)
+		return;
+
 	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
-	vkCmdDebugMarkerEndEXT(cbuff);
+	vkCmdEndDebugUtilsLabelEXT(cbuff);	
+}
+
+static RenderpassInfo currentRPass;
+
+void CommandList::BeginRenderPass(RenderPassID rtt, glm::vec4 clearColor)
+{
+	//TODO: second pass for dynamic rendering
+
+	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
+	currentRPass = gAllRenderPasses[rtt.handle];
 	
+	VkClearValue clearValue;
+	clearValue.color.float32[0] = clearColor.x;
+	clearValue.color.float32[1] = clearColor.y;
+	clearValue.color.float32[2] = clearColor.z;
+	clearValue.color.float32[3] = clearColor.w;
+
+	VkRenderPassBeginInfo info = { VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO };
+	info.framebuffer = currentRPass.framebuffer;
+	info.renderPass = currentRPass.renderpass;
+
+	info.renderArea.extent.width = currentRPass.defaultWidth;
+	info.renderArea.extent.height = currentRPass.defaultHeight;
+
+	info.clearValueCount = 1;
+	info.pClearValues = &clearValue;
+	vkCmdBeginRenderPass(cbuff, &info, VK_SUBPASS_CONTENTS_INLINE);
+}
+
+void CommandList::EndRenderPass()
+{
+	//TODO: second pass for dynamic rendering
+
+	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
+	vkCmdEndRenderPass(cbuff);
+
+	vk_utils::ImageTransition(cbuff, currentRPass.targetImage, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 }
 
 #endif

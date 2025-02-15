@@ -74,6 +74,11 @@ VK_DECLARE_FUNCTION(vkGetPhysicalDeviceImageFormatProperties);
 VK_DECLARE_FUNCTION(vkEnumeratePhysicalDeviceGroups);
 VK_DECLARE_FUNCTION(vkSetDebugUtilsObjectNameEXT);
 VK_DECLARE_FUNCTION(vkSetDebugUtilsObjectTagEXT);
+VK_DECLARE_FUNCTION(vkGetFenceStatus);
+VK_DECLARE_FUNCTION(vkResetCommandBuffer);
+VK_DECLARE_FUNCTION(vkCmdBeginDebugUtilsLabelEXT);
+VK_DECLARE_FUNCTION(vkCmdEndDebugUtilsLabelEXT);
+VK_DECLARE_FUNCTION(vkCmdInsertDebugUtilsLabelEXT);
 #ifdef ERMY_OS_WINDOWS
 VK_DECLARE_FUNCTION(vkCreateWin32SurfaceKHR);
 VK_DECLARE_FUNCTION(vkGetPhysicalDeviceWin32PresentationSupportKHR);
@@ -181,11 +186,6 @@ VK_DECLARE_FUNCTION(vkCreateComputePipelines);
 VK_DECLARE_FUNCTION(vkCmdDispatch);
 VK_DECLARE_FUNCTION(vkDestroyDescriptorSetLayout);
 VK_DECLARE_FUNCTION(vkFreeDescriptorSets);
-VK_DECLARE_FUNCTION(vkDebugMarkerSetObjectTagEXT);
-VK_DECLARE_FUNCTION(vkDebugMarkerSetObjectNameEXT);
-VK_DECLARE_FUNCTION(vkCmdDebugMarkerBeginEXT);
-VK_DECLARE_FUNCTION(vkCmdDebugMarkerEndEXT);
-VK_DECLARE_FUNCTION(vkCmdDebugMarkerInsertEXT);
 VK_DECLARE_FUNCTION(vkCmdBeginQuery);
 VK_DECLARE_FUNCTION(vkCmdEndQuery);
 VK_DECLARE_FUNCTION(vkGetQueryPoolResults);
@@ -203,6 +203,14 @@ VK_DECLARE_FUNCTION(vkCmdBeginRendering);
 VK_DECLARE_FUNCTION(vkCmdEndRendering);
 VK_DECLARE_FUNCTION(vkCmdPipelineBarrier2);
 
+VK_DECLARE_FUNCTION(vkCmdBeginDebugUtilsLabelEXT);
+VK_DECLARE_FUNCTION(vkCmdEndDebugUtilsLabelEXT);
+VK_DECLARE_FUNCTION(vkCmdInsertDebugUtilsLabelEXT);
+VK_DECLARE_FUNCTION(vkQueueBeginDebugUtilsLabelEXT);
+VK_DECLARE_FUNCTION(vkQueueEndDebugUtilsLabelEXT);
+VK_DECLARE_FUNCTION(vkQueueInsertDebugUtilsLabelEXT);
+VK_DECLARE_FUNCTION(vkSetDebugUtilsObjectNameEXT);
+VK_DECLARE_FUNCTION(vkSetDebugUtilsObjectTagEXT);
 #ifdef ERMY_OS_WINDOWS
 VK_DECLARE_FUNCTION(vkGetWinrtDisplayNV);
 VK_DECLARE_FUNCTION(vkAcquireWinrtDisplayNV);
@@ -388,7 +396,7 @@ struct VKInstanceExtender
 		return exists;
 	}
 
-	bool TryAddExtension(const char* extension_name, ermy::u32 versionInCore = VK_MAKE_VERSION(9,9,0))
+	bool TryAddExtension(const char* extension_name, ermy::u32 versionInCore = VK_MAKE_VERSION(9, 9, 0))
 	{
 		if (versionInCore <= installedVersion)
 			return true;
@@ -503,7 +511,7 @@ static void NextChainPushFront(MainT* mainStruct, NewT* newStruct)
 }
 
 template <typename NewT>
-static void NextPChain(void* &mainStruct, NewT* newStruct)
+static void NextPChain(void*& mainStruct, NewT* newStruct)
 {
 	newStruct->pNext = mainStruct;
 	mainStruct = newStruct;

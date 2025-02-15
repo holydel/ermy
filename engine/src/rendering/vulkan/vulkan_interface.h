@@ -17,6 +17,10 @@ extern VkRenderPass gVKRenderPass;
 
 extern ermy::Application::StaticConfig::VKConfig gVKConfig;
 
+extern VkDescriptorSetLayout gImguiPreviewLayout;
+extern VkDescriptorPool gStaticDescriptorsPool;
+extern VkSampler gLinearSampler;
+
 struct DeviceEnabledExtensions
 {
 	bool NvDecompressMemory : 1 = false;
@@ -30,4 +34,14 @@ struct DeviceEnabledExtensions
 	bool KhrDynamicRenderingLocalRead : 1 = false;
 };
 
+struct SingleTimeCommandBuffer
+{
+	VkCommandBuffer cbuff = VK_NULL_HANDLE;
+	VkFence fence = VK_NULL_HANDLE;
+
+	void Sumbit();
+};
+
 extern DeviceEnabledExtensions gVKDeviceEnabledExtensions;
+
+extern SingleTimeCommandBuffer AllocateSingleTimeCommandBuffer();

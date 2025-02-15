@@ -23,7 +23,7 @@ public:
 
 	void OnInitialization() override;
 	void OnLoad() override;
-	void OnBeginFrame(rendering::CommandList& finalCL) override;
+	void OnBeginFinalPass(rendering::CommandList& finalCL) override;
 	void OnEndFrame() override;
 };
 
@@ -60,7 +60,7 @@ void TestBedApplication::OnLoad()
 	testTrianglePSO = rendering::CreatePSO(desc);
 }
 
-void TestBedApplication::OnBeginFrame(rendering::CommandList& finalCL)
+void TestBedApplication::OnBeginFinalPass(rendering::CommandList& finalCL)
 {
 	finalCL.SetPSO(testTrianglePSO);
 	finalCL.Draw(3);

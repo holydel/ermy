@@ -164,6 +164,11 @@ namespace ermy
 		virtual void OnBeginFrame(rendering::CommandList& finalCL) {}
 
 		/// <summary>
+		/// Begin Final Pass (after finall pass begin)
+		/// </summary>
+		virtual void OnBeginFinalPass(rendering::CommandList& finalCL) {}
+
+		/// <summary>
 		/// End frame (after submission to swapchain)
 		/// </summary>
 		virtual void OnEndFrame() {}

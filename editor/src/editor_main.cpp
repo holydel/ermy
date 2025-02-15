@@ -6,6 +6,7 @@
 #include "project/eproject.h"
 #include "shader_compiler/shader_compiler.h"
 #include <assets/assets_loader.h>
+#include "preview_renderer.h"
 
 bool gIsEditorRunning = true;
 
@@ -39,6 +40,11 @@ public:
 		editor::screen::PropertyEditorScreen::Instance()->Show();
 		//assets_importer::Import("C:\\Users\\holyd\\Pictures\\m92pjmfggseb1.webp", AssetType::Texture);
 		//assets_importer::Import("C:\\Users\\holyd\\Downloads\\glTF-Sample-Models-master\\sourceModels\\BarramundiFish\\BarramundiFish.fbx", AssetType::Geometry);
+	}
+
+	void OnBeginFrame(ermy::rendering::CommandList& finalCL) override
+	{
+		PreviewRenderer::Instance().RenderPreview(finalCL);
 	}
 
 	void OnIMGUI() override

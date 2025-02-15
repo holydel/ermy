@@ -33,6 +33,7 @@ class AssetData
 {
 protected:
 	ermy::rendering::TextureID previewTexture;
+	ImTextureID assetPreviewTex = 0;
 public:
 	struct MetaData
 	{
@@ -49,7 +50,10 @@ public:
 	{
 		return previewTexture;
 	}
-
+	ImTextureID GetAssetPreview()
+	{
+		return assetPreviewTex;
+	}
 	virtual void RegeneratePreview() {}
 protected:
 	MetaData* metaData = nullptr;

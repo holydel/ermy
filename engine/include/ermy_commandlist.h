@@ -1,5 +1,6 @@
 #pragma once
 #include "ermy_rendering.h"
+#include <glm/glm.hpp>
 
 namespace ermy
 {
@@ -30,6 +31,9 @@ namespace ermy
 			void InsertDebugMark(const char* u8mark);
 			void BeginDebugScope(const char* u8mark);
 			void EndDebugScope();
+
+			void BeginRenderPass(RenderPassID rtt, glm::vec4 clearColor = glm::vec4(0,0,0,0));
+			void EndRenderPass();
 		};
 	}
 }

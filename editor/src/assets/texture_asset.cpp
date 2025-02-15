@@ -33,6 +33,7 @@ void TextureAsset::RegeneratePreview()
 	desc.isSparse = false;
 
 	previewTexture = ermy::rendering::CreateDedicatedTexture(desc);
+	assetPreviewTex = ermy::rendering::GetTextureDescriptor(previewTexture);
 }
 
 //std::vector<std::string>  TextureAsset::Initialize()

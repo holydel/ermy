@@ -145,6 +145,7 @@
     <ClCompile Include="..\..\editor\src\assets_preview_manager.cpp" />
     <ClCompile Include="..\..\editor\src\editor_main.cpp" />
     <ClCompile Include="..\..\editor\src\main_window.cpp" />
+    <ClCompile Include="..\..\editor\src\preview_renderer.cpp" />
     <ClCompile Include="..\..\editor\src\project\eproject.cpp" />
     <ClCompile Include="..\..\editor\src\screens\assets_browser_screen.cpp" />
     <ClCompile Include="..\..\editor\src\screens\editor_screen.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="..\..\editor\include\assets_preview_manager.h" />
     <ClInclude Include="..\..\editor\include\editor_main.h" />
     <ClInclude Include="..\..\editor\include\main_window.h" />
+    <ClInclude Include="..\..\editor\include\preview_renderer.h" />
     <ClInclude Include="..\..\editor\include\project\eproject.h" />
     <ClInclude Include="..\..\editor\include\project\shader_info.h" />
     <ClInclude Include="..\..\editor\include\props.h" />

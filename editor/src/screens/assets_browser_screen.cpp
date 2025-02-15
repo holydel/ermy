@@ -306,6 +306,16 @@ void DrawFolderContents(AssetFolder* folder)
                     ImVec2 box_min(pos.x - 1, pos.y - 1);
                     ImVec2 box_max(box_min.x + LayoutItemSize.x + 2, box_min.y + LayoutItemSize.y + 2); // Dubious
                     draw_list->AddRectFilled(box_min, box_max, icon_bg_color); // Background color
+                    
+                    if (item_data->GetData())
+                    {
+                        ImTextureID previewID = item_data->GetData()->GetAssetPreview();
+                        if (previewID)
+                        {
+                            draw_list->AddImage(previewID, box_min, box_max);
+                        }
+                    }
+
                     //if (ShowTypeOverlay && item_data->Type != 0)
                     //{
                     //    ImU32 type_col = icon_type_overlay_colors[item_data->Type % IM_ARRAYSIZE(icon_type_overlay_colors)];

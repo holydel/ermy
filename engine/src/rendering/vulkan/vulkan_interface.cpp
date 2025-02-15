@@ -22,6 +22,14 @@ VkQueue gVKTransferAsyncQueue = VK_NULL_HANDLE;
 VkRenderPass gVKRenderPass = VK_NULL_HANDLE;
 DeviceEnabledExtensions gVKDeviceEnabledExtensions;
 
+VkDescriptorSetLayout gImguiPreviewLayout = VK_NULL_HANDLE;
+VkDescriptorPool gStaticDescriptorsPool = VK_NULL_HANDLE;
+VkSampler gLinearSampler = VK_NULL_HANDLE;
+
+constexpr int MAX_SINGLE_TIME_COMMAND_BUFFERS = 4;
+VkCommandPool gSingleTimeCommandBuffersPool = VK_NULL_HANDLE;
+std::vector<VkCommandBuffer> gAllSingleTimeCommandBuffers(MAX_SINGLE_TIME_COMMAND_BUFFERS);
+std::vector<VkFence> gSingleTimeCommandBuffersInUse(MAX_SINGLE_TIME_COMMAND_BUFFERS);
 
 using namespace ermy;
 Application::StaticConfig::VKConfig gVKConfig;
@@ -645,6 +653,94 @@ void CreateDevice()
 
 	vmaCreateAllocator(&allocatorInfo, &gVMA_Allocator);
 
+	const VkCommandPoolCreateInfo cmdPoolCreateInfo{
+	.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
+	.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
+	.queueFamilyIndex = 0, //TODO: get from device
+	};
+
+	VK_CALL(vkCreateCommandPool(gVKDevice, &cmdPoolCreateInfo, gVKGlobalAllocationsCallbacks, &gSingleTimeCommandBuffersPool));
+	vk_utils::debug::SetName(gSingleTimeCommandBuffersPool, "Single Time Command Pool");
+
+
+	VkCommandBufferAllocateInfo commandBufferAllocateInfo = {
+			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+			.commandPool = gSingleTimeCommandBuffersPool,
+			.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,			 
+			.commandBufferCount = (uint32_t)gAllSingleTimeCommandBuffers.size(),
+	};
+
+	VkFenceCreateInfo fenceCreateInfo = {
+		.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
+		.flags = VK_FENCE_CREATE_SIGNALED_BIT
+	};
+
+	VK_CALL(vkAllocateCommandBuffers(gVKDevice, &commandBufferAllocateInfo, gAllSingleTimeCommandBuffers.data()));
+	for (int i = 0; i < MAX_SINGLE_TIME_COMMAND_BUFFERS; ++i)
+	{
+		vkCreateFence(gVKDevice, &fenceCreateInfo, gVKGlobalAllocationsCallbacks, &gSingleTimeCommandBuffersInUse[i]);
+
+		vk_utils::debug::SetName(gAllSingleTimeCommandBuffers[i], "Single Time command buffer (%d)", i);
+		vk_utils::debug::SetName(gSingleTimeCommandBuffersInUse[i], "Single Time fence (%d)", i);
+	}
+	
+	VkDescriptorSetLayoutBinding samplerBinding{};
+	samplerBinding.binding = 0;
+	samplerBinding.descriptorCount = 1;
+	samplerBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	samplerBinding.pImmutableSamplers = nullptr;
+	samplerBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+	VkDescriptorSetLayoutCreateInfo layoutInfo{};
+	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+	layoutInfo.bindingCount = 1;
+	layoutInfo.pBindings = &samplerBinding;
+
+	VkDescriptorSetLayout descriptorSetLayout;
+	VK_CALL(vkCreateDescriptorSetLayout(gVKDevice, &layoutInfo, nullptr, &gImguiPreviewLayout));
+
+	VkDescriptorPoolSize poolSize{};
+	poolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	poolSize.descriptorCount = 1024;
+
+	VkDescriptorPoolCreateInfo poolInfo{};
+	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+	poolInfo.poolSizeCount = 1;
+	poolInfo.pPoolSizes = &poolSize;
+	poolInfo.maxSets = 1024;
+
+	VK_CALL(vkCreateDescriptorPool(gVKDevice, &poolInfo, nullptr, &gStaticDescriptorsPool));
+
+
+	VkSamplerCreateInfo samplerInfo{};
+	samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+
+	// Linear filtering
+	samplerInfo.magFilter = VK_FILTER_LINEAR; // Magnification filter
+	samplerInfo.minFilter = VK_FILTER_LINEAR; // Minification filter
+
+	// Addressing modes
+	samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT; // Wrap texture coordinates
+	samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+	samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+
+	// Anisotropy (optional)
+	samplerInfo.anisotropyEnable = VK_FALSE; // Enable anisotropy
+	samplerInfo.maxAnisotropy = 0.0f; // Maximum anisotropy level
+
+	// Other settings
+	samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK; // Border color for clamped textures
+	samplerInfo.unnormalizedCoordinates = VK_FALSE; // Use normalized texture coordinates
+	samplerInfo.compareEnable = VK_FALSE; // Disable comparison operations
+	samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS; // Comparison operation (if enabled)
+	samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR; // Linear mipmap filtering
+	samplerInfo.mipLodBias = 0.0f; // Mipmap level-of-detail bias
+	samplerInfo.minLod = 0.0f; // Minimum mipmap level
+	samplerInfo.maxLod = VK_LOD_CLAMP_NONE; // Maximum mipmap level (no limit)
+
+	VkSampler sampler;
+	VK_CALL(vkCreateSampler(gVKDevice, &samplerInfo, nullptr, &gLinearSampler));
+	vk_utils::debug::SetName(gLinearSampler, "Linear Sampler");
 	//TODO: need to be pooled
 	// 
 	//VkCommandPoolCreateInfo poolInfo;
@@ -680,3 +776,45 @@ void rendering_interface::Process()
 
 }
 #endif
+
+void SingleTimeCommandBuffer::Sumbit()
+{
+	vkEndCommandBuffer(cbuff);
+
+	VkSubmitInfo submitInfo{};
+	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	submitInfo.commandBufferCount = 1;
+	submitInfo.pCommandBuffers = &cbuff;
+	
+	vkQueueSubmit(gVKMainQueue, 1, &submitInfo, fence);
+}
+
+SingleTimeCommandBuffer AllocateSingleTimeCommandBuffer()
+{
+	while (true)
+	{
+		for (int i = 0; i < MAX_SINGLE_TIME_COMMAND_BUFFERS; ++i)
+		{
+			auto bufferReady = vkGetFenceStatus(gVKDevice, gSingleTimeCommandBuffersInUse[i]);
+			if (bufferReady == VK_SUCCESS)
+			{
+				vkResetFences(gVKDevice, 1, &gSingleTimeCommandBuffersInUse[i]);
+				auto result = SingleTimeCommandBuffer();
+				result.cbuff = gAllSingleTimeCommandBuffers[i];
+				result.fence = gSingleTimeCommandBuffersInUse[i];
+
+				VkCommandBufferBeginInfo beginInfo{};
+				beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+				beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+				vkResetCommandBuffer(result.cbuff, 0);
+				vkBeginCommandBuffer(result.cbuff, &beginInfo);
+
+				return result;
+			}
+		}
+
+		os::Sleep(1);
+	}
+
+	return SingleTimeCommandBuffer();
+}

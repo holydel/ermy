@@ -26,9 +26,9 @@ void framegraph::Process()
 
 	ermy::rendering::CommandList clist(finalCmdList);
 	
+	app.OnBeginFrame(clist);
 
 	framegraph_interface::BeginFinalRenderPass();
-
 	int finalPassWidth = swapchain::GetWidth();
 	int finalPassHeight = swapchain::GetHeight();
 	clist.SetViewport(0, 0, finalPassWidth, finalPassHeight);
@@ -36,7 +36,7 @@ void framegraph::Process()
 
 	imgui_interface::BeginFrame(finalCmdList);
 	canvas_interface::SetCommandList(&clist);
-	app.OnBeginFrame(clist);
+	app.OnBeginFinalPass(clist);
 	app.OnIMGUI();
 	imgui_interface::EndFrame(finalCmdList);
 

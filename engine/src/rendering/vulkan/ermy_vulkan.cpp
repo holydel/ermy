@@ -57,10 +57,7 @@ VK_DEFINE_FUNCTION(vkGetPhysicalDeviceMemoryProperties2);
 VK_DEFINE_FUNCTION(vkGetPhysicalDeviceSparseImageFormatProperties);
 VK_DEFINE_FUNCTION(vkGetPhysicalDeviceImageFormatProperties);
 VK_DEFINE_FUNCTION(vkEnumeratePhysicalDeviceGroups);
-VK_DEFINE_FUNCTION(vkDestroyDescriptorSetLayout);
-VK_DEFINE_FUNCTION(vkFreeDescriptorSets);
-VK_DEFINE_FUNCTION(vkWaitSemaphores);
-VK_DEFINE_FUNCTION(vkQueueSubmit2);
+
 
 #ifdef ERMY_OS_WINDOWS
 VK_DEFINE_FUNCTION(vkCreateWin32SurfaceKHR);
@@ -166,11 +163,6 @@ VK_DEFINE_FUNCTION(vkCreateQueryPool);
 VK_DEFINE_FUNCTION(vkDestroyQueryPool);
 VK_DEFINE_FUNCTION(vkCreateComputePipelines);
 VK_DEFINE_FUNCTION(vkCmdDispatch);
-VK_DEFINE_FUNCTION(vkDebugMarkerSetObjectTagEXT);
-VK_DEFINE_FUNCTION(vkDebugMarkerSetObjectNameEXT);
-VK_DEFINE_FUNCTION(vkCmdDebugMarkerBeginEXT);
-VK_DEFINE_FUNCTION(vkCmdDebugMarkerEndEXT);
-VK_DEFINE_FUNCTION(vkCmdDebugMarkerInsertEXT);
 VK_DEFINE_FUNCTION(vkCmdBeginQuery);
 VK_DEFINE_FUNCTION(vkCmdEndQuery);
 VK_DEFINE_FUNCTION(vkGetQueryPoolResults);
@@ -184,9 +176,20 @@ VK_DEFINE_FUNCTION(vkCmdDecompressMemoryNV);
 VK_DEFINE_FUNCTION(vkCmdBeginRendering);
 VK_DEFINE_FUNCTION(vkCmdEndRendering);
 VK_DEFINE_FUNCTION(vkCmdPipelineBarrier2);
+VK_DEFINE_FUNCTION(vkDestroyDescriptorSetLayout);
+VK_DEFINE_FUNCTION(vkFreeDescriptorSets);
+VK_DEFINE_FUNCTION(vkWaitSemaphores);
+VK_DEFINE_FUNCTION(vkQueueSubmit2);
+VK_DEFINE_FUNCTION(vkGetFenceStatus);
+VK_DEFINE_FUNCTION(vkResetCommandBuffer);
+VK_DEFINE_FUNCTION(vkCmdBeginDebugUtilsLabelEXT);
+VK_DEFINE_FUNCTION(vkCmdEndDebugUtilsLabelEXT);
+VK_DEFINE_FUNCTION(vkCmdInsertDebugUtilsLabelEXT);
+VK_DEFINE_FUNCTION(vkQueueBeginDebugUtilsLabelEXT);
+VK_DEFINE_FUNCTION(vkQueueEndDebugUtilsLabelEXT);
+VK_DEFINE_FUNCTION(vkQueueInsertDebugUtilsLabelEXT);
 VK_DEFINE_FUNCTION(vkSetDebugUtilsObjectNameEXT);
 VK_DEFINE_FUNCTION(vkSetDebugUtilsObjectTagEXT);
-
 #ifdef ERMY_OS_WINDOWS
 VK_DEFINE_FUNCTION(vkGetWinrtDisplayNV);
 VK_DEFINE_FUNCTION(vkAcquireWinrtDisplayNV);
@@ -375,11 +378,6 @@ void LoadVkDeviceLevelFuncs(VkDevice device)
 	VK_LOAD_DEVICE_FUNC(vkCmdDispatch);
 	VK_LOAD_DEVICE_FUNC(vkDestroyDescriptorSetLayout);
 	VK_LOAD_DEVICE_FUNC(vkFreeDescriptorSets);
-	VK_LOAD_DEVICE_FUNC(vkDebugMarkerSetObjectTagEXT);
-	VK_LOAD_DEVICE_FUNC(vkDebugMarkerSetObjectNameEXT);
-	VK_LOAD_DEVICE_FUNC(vkCmdDebugMarkerBeginEXT);
-	VK_LOAD_DEVICE_FUNC(vkCmdDebugMarkerEndEXT);
-	VK_LOAD_DEVICE_FUNC(vkCmdDebugMarkerInsertEXT);
 	VK_LOAD_DEVICE_FUNC(vkCmdBeginQuery);
 	VK_LOAD_DEVICE_FUNC(vkCmdEndQuery);
 	VK_LOAD_DEVICE_FUNC(vkGetQueryPoolResults);
@@ -395,6 +393,14 @@ void LoadVkDeviceLevelFuncs(VkDevice device)
 	VK_LOAD_DEVICE_FUNC(vkCmdBeginRendering);
 	VK_LOAD_DEVICE_FUNC(vkCmdEndRendering);
 	VK_LOAD_DEVICE_FUNC(vkCmdPipelineBarrier2);
+	VK_LOAD_DEVICE_FUNC(vkGetFenceStatus);
+	VK_LOAD_DEVICE_FUNC(vkResetCommandBuffer);
+	VK_LOAD_DEVICE_FUNC(vkCmdBeginDebugUtilsLabelEXT);
+	VK_LOAD_DEVICE_FUNC(vkCmdEndDebugUtilsLabelEXT);
+	VK_LOAD_DEVICE_FUNC(vkCmdInsertDebugUtilsLabelEXT);
+	VK_LOAD_DEVICE_FUNC(vkQueueBeginDebugUtilsLabelEXT);
+	VK_LOAD_DEVICE_FUNC(vkQueueEndDebugUtilsLabelEXT);
+	VK_LOAD_DEVICE_FUNC(vkQueueInsertDebugUtilsLabelEXT);
 	VK_LOAD_DEVICE_FUNC(vkSetDebugUtilsObjectNameEXT);
 	VK_LOAD_DEVICE_FUNC(vkSetDebugUtilsObjectTagEXT);
 }

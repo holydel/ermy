@@ -64,6 +64,9 @@
     <ClCompile Include="..\..\editor\src\assets\OpenImageLoader.cpp">
       <Filter>src\assets</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\editor\src\preview_renderer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\editor\include\editor_main.h">
@@ -133,6 +136,9 @@
       <Filter>include\assets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\editor\include\props.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editor\include\preview_renderer.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
