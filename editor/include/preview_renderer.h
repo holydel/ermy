@@ -2,6 +2,7 @@
 #include <ermy_rendering.h>
 #include <ermy_commandlist.h>
 #include <imgui.h>
+#include "preview_props.h"
 
 class PreviewRenderer
 {	
@@ -14,6 +15,8 @@ class PreviewRenderer
 
 	ImTextureID previewTextureID;
 	bool needUpdatePreview = true;
+
+	PreviewProps* currentProps = nullptr;
 public:
 	static PreviewRenderer& Instance();
 
@@ -22,5 +25,15 @@ public:
 	{
 		needUpdatePreview = true;
 		return previewTextureID;
+	}
+
+	void SetPreviewProps(PreviewProps* props)
+	{
+		currentProps = props;
+	}
+
+	ermy::rendering::RenderPassID GetRTT()
+	{
+		return RTT;
 	}
 };

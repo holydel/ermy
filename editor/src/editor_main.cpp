@@ -29,10 +29,9 @@ public:
 
 	void OnLoad() override
 	{
-		//ShaderCompiler::Instance().Initialize();
+		ShaderCompiler::Instance().Initialize();
 		ErmyProject::Instance().MountToLocalDirectory("../../eproj_template");
 
-		//ErmyProject::Instance().RecompileAllInternalShaders();
 		editor::asset::loader::AssetsLoader::Initialize();
 
 		editor::screen::AssetsBrowserScreen::Instance()->Show();

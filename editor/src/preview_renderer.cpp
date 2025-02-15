@@ -13,8 +13,15 @@ void PreviewRenderer::RenderPreview(ermy::rendering::CommandList& finalCL)
 {
 	if (needUpdatePreview)
 	{
+		static float a = 0.0f;
+		a += 0.01f;
+
 		finalCL.BeginDebugScope("Render Preview");
-		finalCL.BeginRenderPass(RTT, glm::vec4(0.2f, 0.3f, 0.8f, 1.0f));
+		finalCL.BeginRenderPass(RTT, glm::vec4(0.2f, sin(a) * 0.5f + 0.5f, 0.8f, 1.0f));
+
+		if (currentProps)
+			currentProps->RenderPreview(finalCL);
+
 		finalCL.EndRenderPass();
 		finalCL.EndDebugScope();
 
@@ -26,8 +33,8 @@ void PreviewRenderer::RenderPreview(ermy::rendering::CommandList& finalCL)
 PreviewRenderer::PreviewRenderer()
 {
 	rendering::TextureDesc tdesc;
-	tdesc.width = 256;
-	tdesc.height = 256;
+	tdesc.width = 512;
+	tdesc.height = 512;
 
 	RTT_Color = rendering::CreateDedicatedTexture(tdesc);
 	

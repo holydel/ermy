@@ -1,6 +1,7 @@
 #include "screens/property_editor_screen.h"
 #include <imgui.h>
 #include "preview_renderer.h"
+#include <algorithm>
 
 using namespace editor::screen;
 
@@ -21,8 +22,9 @@ void PropertyEditorScreen::Draw()
 		if (props)
 		{
 			props->DrawProps();
+			int size = std::min(512.0f,ImGui::GetContentRegionAvail().x);
 
-			ImGui::Image(PreviewRenderer::Instance().GetPreviewTexture(), ImVec2(256, 256));
+			ImGui::Image(PreviewRenderer::Instance().GetPreviewTexture(), ImVec2(size, size));
 		}
 
 		ImGui::End();

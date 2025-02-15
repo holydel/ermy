@@ -151,6 +151,8 @@
     <ClCompile Include="..\..\editor\src\screens\editor_screen.cpp" />
     <ClCompile Include="..\..\editor\src\screens\hierarchy_screen.cpp" />
     <ClCompile Include="..\..\editor\src\screens\property_editor_screen.cpp" />
+    <ClCompile Include="..\..\editor\src\shaders\dxil.cpp" />
+    <ClCompile Include="..\..\editor\src\shaders\spirv.cpp" />
     <ClCompile Include="..\..\editor\src\shader_compiler\shader_compiler.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -168,7 +170,9 @@
     <ClInclude Include="..\..\editor\include\assets\video_asset.h" />
     <ClInclude Include="..\..\editor\include\assets_preview_manager.h" />
     <ClInclude Include="..\..\editor\include\editor_main.h" />
+    <ClInclude Include="..\..\editor\include\editor_shader_internal.h" />
     <ClInclude Include="..\..\editor\include\main_window.h" />
+    <ClInclude Include="..\..\editor\include\preview_props.h" />
     <ClInclude Include="..\..\editor\include\preview_renderer.h" />
     <ClInclude Include="..\..\editor\include\project\eproject.h" />
     <ClInclude Include="..\..\editor\include\project\shader_info.h" />
@@ -180,6 +184,7 @@
     <ClInclude Include="..\..\editor\include\shader_compiler\shader_compiler.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\editor\src\shaders\editor.slang" />
     <None Include="vcpkg-configuration.json" />
     <None Include="vcpkg.json" />
   </ItemGroup>

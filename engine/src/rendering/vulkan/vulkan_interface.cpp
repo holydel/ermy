@@ -103,6 +103,11 @@ struct ValidationSettings
 		0x7f1922d7, //perf Both GPU Assisted Validation and Normal Core Check Validation are enabled, this is not recommend as it  will be very slow. Once all errors in Core Check are solved, please disable, then only use GPU-AV for best performance.
 		0x24b5c69f, //Internal Warning: Ray Query validation option was enabled, but the rayQuery feature is not enabled. [Disabling gpuav_validate_ray_query]
 		//0x53c1342f, //OBS layer Validation Warning: [ BestPractices-Error-Result ] Object 0: handle = 0x1218c4eb6900, type = VK_OBJECT_TYPE_INSTANCE; | MessageID = 0x53c1342f | vkGetPhysicalDeviceImageFormatProperties2(): Returned error VK_ERROR_FORMAT_NOT_SUPPORTED.
+		0x58a102d7,
+		//	[0]  0x2cadaeb1900, type: 6, name : Frame Command Buffer(2)
+//Validation Performance Warning : [BestPractices - vkCmdEndRenderPass - redundant - attachment - on - tile] Object 0 : handle = 0x2cadaeb1900, name = Frame Command Buffer(2), type = VK_OBJECT_TYPE_COMMAND_BUFFER; | MessageID = 0x58a102d7 | vkCmdEndRenderPass() : [Arm] [IMG] : Render pass was ended, but attachment #0 (format: VK_FORMAT_R8G8B8A8_UNORM, untouched aspects VK_IMAGE_ASPECT_COLOR_BIT) was never accessed by a pipeline or clear command.On tile - based architectures, LOAD_OP_LOAD and STORE_OP_STORE consume bandwidth and should not be part of the render pass if the attachments are not intended to be accessed.
+//BestPractices - vkCmdEndRenderPass - redundant - attachment - on - tile(WARN / PERF) : msgNum: 1486947031 - Validation Performance Warning : [BestPractices - vkCmdEndRenderPass - redundant - attachment - on - tile] Object 0 : handle = 0x2cadaea6700, name = Frame Command Buffer(0), type = VK_OBJECT_TYPE_COMMAND_BUFFER; | MessageID = 0x58a102d7 | vkCmdEndRenderPass() : [Arm] [IMG] : Render pass was ended, but attachment #0 (format: VK_FORMAT_R8G8B8A8_UNORM, untouched aspects VK_IMAGE_ASPECT_COLOR_BIT) was never accessed by a pipeline or clear command.On tile - based architectures, LOAD_OP_LOAD and STORE_OP_STORE consume bandwidth and should not be part of the render pass if the attachments are not intended to be accessed.
+
 	};
 	//ATION - SETTINGS ] | MessageID = 0x7f1922d7 | Both GPU Assisted Validation and Normal Core Check Validation are enabled, this is not recommend as it  will be very slow.Once all errors in Core Check are solved, please disable, then only use GPU - AV for best performance.
 	std::stringstream disabledMessages;
@@ -684,34 +689,6 @@ void CreateDevice()
 		vk_utils::debug::SetName(gSingleTimeCommandBuffersInUse[i], "Single Time fence (%d)", i);
 	}
 	
-	VkDescriptorSetLayoutBinding samplerBinding{};
-	samplerBinding.binding = 0;
-	samplerBinding.descriptorCount = 1;
-	samplerBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	samplerBinding.pImmutableSamplers = nullptr;
-	samplerBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-
-	VkDescriptorSetLayoutCreateInfo layoutInfo{};
-	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-	layoutInfo.bindingCount = 1;
-	layoutInfo.pBindings = &samplerBinding;
-
-	VkDescriptorSetLayout descriptorSetLayout;
-	VK_CALL(vkCreateDescriptorSetLayout(gVKDevice, &layoutInfo, nullptr, &gImguiPreviewLayout));
-
-	VkDescriptorPoolSize poolSize{};
-	poolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	poolSize.descriptorCount = 1024;
-
-	VkDescriptorPoolCreateInfo poolInfo{};
-	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-	poolInfo.poolSizeCount = 1;
-	poolInfo.pPoolSizes = &poolSize;
-	poolInfo.maxSets = 1024;
-
-	VK_CALL(vkCreateDescriptorPool(gVKDevice, &poolInfo, nullptr, &gStaticDescriptorsPool));
-
-
 	VkSamplerCreateInfo samplerInfo{};
 	samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
 
@@ -741,6 +718,33 @@ void CreateDevice()
 	VkSampler sampler;
 	VK_CALL(vkCreateSampler(gVKDevice, &samplerInfo, nullptr, &gLinearSampler));
 	vk_utils::debug::SetName(gLinearSampler, "Linear Sampler");
+
+	VkDescriptorSetLayoutBinding samplerBinding{};
+	samplerBinding.binding = 0;
+	samplerBinding.descriptorCount = 1;
+	samplerBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	samplerBinding.pImmutableSamplers = nullptr;// &gLinearSampler;
+	samplerBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+	VkDescriptorSetLayoutCreateInfo layoutInfo{};
+	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+	layoutInfo.bindingCount = 1;
+	layoutInfo.pBindings = &samplerBinding;
+
+	VK_CALL(vkCreateDescriptorSetLayout(gVKDevice, &layoutInfo, nullptr, &gImguiPreviewLayout));
+
+	VkDescriptorPoolSize poolSize{};
+	poolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	poolSize.descriptorCount = 1024;
+
+	VkDescriptorPoolCreateInfo poolInfo{};
+	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+	poolInfo.poolSizeCount = 1;
+	poolInfo.pPoolSizes = &poolSize;
+	poolInfo.maxSets = 1024;
+
+	VK_CALL(vkCreateDescriptorPool(gVKDevice, &poolInfo, nullptr, &gStaticDescriptorsPool));
+
 	//TODO: need to be pooled
 	// 
 	//VkCommandPoolCreateInfo poolInfo;

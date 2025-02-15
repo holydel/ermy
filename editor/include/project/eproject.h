@@ -30,6 +30,8 @@ public:
 	static ErmyProject& Instance();
 
 	bool RecompileAllInternalShaders();
+	bool RecompileAllShaders();
+	bool RecompileAllEditorShaders();
 
 	void Save();
 

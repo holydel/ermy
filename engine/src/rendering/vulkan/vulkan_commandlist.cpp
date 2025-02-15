@@ -56,6 +56,13 @@ void CommandList::SetRootConstants(void* data, int size)
 	vkCmdPushConstants(cbuff, gAllPipelineLayouts[gCurrentPSOID.handle], VK_SHADER_STAGE_VERTEX_BIT, 0, size, data);
 }
 
+void CommandList::SetDescriptorSet(int set, u64 handle)
+{
+	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
+	auto ds = reinterpret_cast<const VkDescriptorSet>(handle);
+	vkCmdBindDescriptorSets(cbuff, VK_PIPELINE_BIND_POINT_GRAPHICS, gAllPipelineLayouts[gCurrentPSOID.handle], set, 1, &ds, 0, nullptr);
+}
+
 void CommandList::InsertDebugMark(const char* u8mark)
 {
 	if (!vkCmdInsertDebugUtilsLabelEXT)
@@ -120,6 +127,9 @@ void CommandList::BeginRenderPass(RenderPassID rtt, glm::vec4 clearColor)
 	info.clearValueCount = 1;
 	info.pClearValues = &clearValue;
 	vkCmdBeginRenderPass(cbuff, &info, VK_SUBPASS_CONTENTS_INLINE);
+
+	SetViewport(0, 0, currentRPass.defaultWidth, currentRPass.defaultHeight);
+	SetScissor(0, 0, currentRPass.defaultWidth, currentRPass.defaultHeight);
 }
 
 void CommandList::EndRenderPass()

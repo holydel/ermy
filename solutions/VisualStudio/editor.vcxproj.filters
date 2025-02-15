@@ -67,6 +67,12 @@
     <ClCompile Include="..\..\editor\src\preview_renderer.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\editor\src\shaders\dxil.cpp">
+      <Filter>src\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editor\src\shaders\spirv.cpp">
+      <Filter>src\shaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\editor\include\editor_main.h">
@@ -141,6 +147,12 @@
     <ClInclude Include="..\..\editor\include\preview_renderer.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\editor\include\editor_shader_internal.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editor\include\preview_props.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -183,5 +195,8 @@
   <ItemGroup>
     <None Include="vcpkg.json" />
     <None Include="vcpkg-configuration.json" />
+    <None Include="..\..\editor\src\shaders\editor.slang">
+      <Filter>src\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

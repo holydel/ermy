@@ -22,7 +22,7 @@ namespace ermy
 			void SetPSO(PSOID pso);
 			void Draw(int numVertices, int numInstances = 1);
 			void DrawIndexed(int numIndices, int numInstances = 1);
-
+			void SetDescriptorSet(int set, u64 handle);
 			void SetViewport(int x, int y, int width, int height);
 			void SetScissor(int x, int y, int width, int height);
 

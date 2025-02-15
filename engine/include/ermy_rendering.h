@@ -7,6 +7,14 @@ namespace ermy
 {
 	namespace rendering
 	{
+		enum class ShaderUniformType
+		{
+			Texture2D,
+			Texture2DArray,
+			TextureCube,
+			TextureVolume,
+		};
+
 		enum class PrimitiveTopology
 		{
 			TriangleList,
@@ -27,7 +35,10 @@ namespace ermy
 			std::vector<ShaderBytecode> shaders;
 			PrimitiveTopology topology = PrimitiveTopology::TriangleList;
 
+			std::vector<ShaderUniformType> uniforms;
 			const char* debugName = nullptr;
+
+			RenderPassID specificRenderPass;
 		};
 
 		struct TextureDesc

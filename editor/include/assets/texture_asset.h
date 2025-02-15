@@ -23,4 +23,5 @@ public:
 	void DrawPreview() override;
 
 	void RegeneratePreview() override;
+	void RenderPreview(ermy::rendering::CommandList& cl) override;
 };

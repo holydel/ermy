@@ -6,9 +6,6 @@
 #include <ermy_api.h>
 using namespace ermy;
 
-static std::filesystem::path gInternalShadersPath = "../../engine/src/rendering/internal_shaders/";
-static std::filesystem::path gInternalShadersHeaderPath = "../../engine/include/ermy_shader_internal.h";
-
 ShaderCompiler gShaderCompiler;
 
 ShaderCompiler::ShaderCompiler()
@@ -211,10 +208,10 @@ void AppendShader(std::ostringstream& stream, const char* name, SlangStage stage
 	"	}\n\n";
 }
 
-void AddInternalTranslationUnit(const std::string& shaderName)
+void AddInternalTranslationUnit(const std::filesystem::path& shadersFolder, const std::string& shaderName)
 {
 	gSlangRequest->addTranslationUnit(SLANG_SOURCE_LANGUAGE_SLANG, shaderName.c_str());
-	auto fullShaderPath = (gInternalShadersPath / (shaderName + ".slang"));
+	auto fullShaderPath = (shadersFolder / (shaderName + ".slang"));
 	gSlangRequest->addTranslationUnitSourceFile(0, fullShaderPath.string().c_str());
 }
 
@@ -225,9 +222,9 @@ void WriteStringStreamToFile(const std::ostringstream& stream, const std::string
 	outFile.close();
 }
 
-void ShaderCompiler::CompileAllInternalShaders()
+void ShaderCompiler::CompileAllInternalShaders(const std::string& moduleName, const std::filesystem::path& shadersFolder, const std::filesystem::path& outputHeader)
 {
-	AddInternalTranslationUnit("internal");
+	AddInternalTranslationUnit(shadersFolder, moduleName);
 
 	auto res1 = gSlangRequest->compile();
 	if (res1 != SLANG_OK)
@@ -257,7 +254,7 @@ void ShaderCompiler::CompileAllInternalShaders()
 	std::vector<std::ostringstream> shaderCppEmbded(gTargets.size());
 
 	//SlangReflection* reflection = spGetReflection(gSlangRequest);
-	for(int i=0;i< gTargets.size();++i)
+	for (int i = 0; i < gTargets.size(); ++i)
 	{
 		AppendHeader(shaderCppEmbded[i], gTargets[i].format);
 	}
@@ -291,20 +288,36 @@ void ShaderCompiler::CompileAllInternalShaders()
 		int a = 52;
 	}
 
-	
+
 
 	internalShadersEngineHeader << "	}\n"
 		"}";
 
-	WriteStringStreamToFile(internalShadersEngineHeader, gInternalShadersHeaderPath.string());
+	WriteStringStreamToFile(internalShadersEngineHeader, outputHeader.string());
 
 	for (int i = 0; i < gTargets.size(); ++i)
 	{
 		AppendFooter(shaderCppEmbded[i]);
-		auto fullPathCPP = gInternalShadersPath / (CompileTargetName(gTargets[i].format) + ".cpp");
+		auto fullPathCPP = shadersFolder / (CompileTargetName(gTargets[i].format) + ".cpp");
 		WriteStringStreamToFile(shaderCppEmbded[i], fullPathCPP.string());
 	}
 	int a = 42;
+}
+
+void ShaderCompiler::CompileAllEditorShaders()
+{
+	std::filesystem::path shadersPath = "../../editor/src/shaders/";
+	std::filesystem::path shadersHeaderPath = "../../editor/include/editor_shader_internal.h";
+
+	CompileAllInternalShaders("editor", shadersPath, shadersHeaderPath);
+}
+
+void ShaderCompiler::CompileAllEngineShaders()
+{
+	std::filesystem::path shadersPath = "../../engine/src/rendering/internal_shaders/";
+	std::filesystem::path shadersHeaderPath = "../../engine/include/ermy_shader_internal.h";
+
+	CompileAllInternalShaders("internal",shadersPath, shadersHeaderPath);
 }
 
 void ShaderCompiler::CompileShaderFile(const std::filesystem::path& shaderPath)

@@ -8,6 +8,7 @@ using namespace ermy::rendering;
 
 std::vector<VkPipeline> gAllPipelines;
 std::vector<VkPipelineLayout> gAllPipelineLayouts;
+std::vector<VkDescriptorSetLayout> gAllPipelineDSLayouts;
 std::vector<VkShaderModule> gAllShaderModules;
 
 std::vector<VkBuffer> gAllBuffers;
@@ -306,14 +307,15 @@ VkPipeline _createPipeline(const PSODesc& desc)
 
 	VkGraphicsPipelineCreateInfo cinfo = { VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO };
 	VkPipelineLayout layout = VK_NULL_HANDLE;
+	VkDescriptorSetLayout dsLayout = VK_NULL_HANDLE;
+
 	{
 		VkPipelineLayoutCreateInfo cinfo{};
 		cinfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		VkPushConstantRange range;
-
+		
 		if (desc.numRootConstants > 0)
 		{
-
 			range.size = desc.numRootConstants * sizeof(u32);
 			range.offset = 0;
 			range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
@@ -321,11 +323,44 @@ VkPipeline _createPipeline(const PSODesc& desc)
 			cinfo.pPushConstantRanges = &range;
 		}
 
+		//VkDescriptorSetLayoutBinding samplerBinding{};
+		//samplerBinding.binding = 0;
+		//samplerBinding.descriptorCount = 1;
+		//samplerBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		//samplerBinding.pImmutableSamplers = nullptr;// &gLinearSampler;
+		//samplerBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+		//VkDescriptorSetLayoutCreateInfo layoutInfo{};
+		//layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+		//layoutInfo.bindingCount = 1;
+		//layoutInfo.pBindings = &samplerBinding;
+
+		if (!desc.uniforms.empty())
+		{
+			VkDescriptorSetLayoutBinding samplerLayoutBinding = {};
+			samplerLayoutBinding.binding = 0;
+			samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			samplerLayoutBinding.descriptorCount = 1;
+			samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+			samplerLayoutBinding.pImmutableSamplers = nullptr; // Bind sampler here
+
+			VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+			layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+			layoutInfo.bindingCount = 1;
+			layoutInfo.pBindings = &samplerLayoutBinding;
+
+			vkCreateDescriptorSetLayout(gVKDevice, &layoutInfo, gVKGlobalAllocationsCallbacks, &dsLayout);
+
+			cinfo.pSetLayouts = &dsLayout;
+			cinfo.setLayoutCount = 1;
+		}
+
 		vkCreatePipelineLayout(gVKDevice, &cinfo, gVKGlobalAllocationsCallbacks, &layout);
 	}
 
 	cinfo.layout = layout;
 	gAllPipelineLayouts.push_back(layout);
+	gAllPipelineDSLayouts.push_back(dsLayout);
 
 	VkPipelineVertexInputStateCreateInfo pipVertexInputState = { VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO };
 	VkPipelineInputAssemblyStateCreateInfo pipInputAssemblyState = { VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO };
@@ -429,7 +464,14 @@ VkPipeline _createPipeline(const PSODesc& desc)
 	}
 	else
 	{
-		cinfo.renderPass = gVKRenderPass; //final pass. TODO:// framegraph passes
+		if (desc.specificRenderPass.isValid())
+		{
+			cinfo.renderPass = gAllRenderPasses[desc.specificRenderPass.handle].renderpass;
+		}
+		else
+		{
+			cinfo.renderPass = gVKRenderPass; //final pass. TODO:// framegraph passes
+		}		
 	}
 
 

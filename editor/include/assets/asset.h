@@ -7,6 +7,7 @@
 #include "props.h"
 #include <imgui.h>
 #include <ermy_rendering.h>
+#include "preview_props.h"
 
 enum class AssetType
 {
@@ -29,7 +30,7 @@ enum class AssetLoaderType
 	Miniaudio
 };
 
-class AssetData
+class AssetData : public PreviewProps
 {
 protected:
 	ermy::rendering::TextureID previewTexture;

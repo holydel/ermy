@@ -82,9 +82,20 @@ ErmyProject& ErmyProject::Instance()
 	return gCurrentProject;
 }
 
+bool ErmyProject::RecompileAllShaders()
+{
+    return true;
+}
+
+bool ErmyProject::RecompileAllEditorShaders()
+{
+    ShaderCompiler::Instance().CompileAllEditorShaders();
+    return true;
+}
+
 bool ErmyProject::RecompileAllInternalShaders()
 {
-    ShaderCompiler::Instance().CompileAllInternalShaders();
+    ShaderCompiler::Instance().CompileAllEngineShaders();
 
     //for (auto& s : shaders)
     //{

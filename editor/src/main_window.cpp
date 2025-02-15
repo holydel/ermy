@@ -56,7 +56,15 @@ namespace main_window
 			{
 				if (ImGui::MenuItem("Recompile Shaders"))
 				{
+					ErmyProject::Instance().RecompileAllShaders();
+				}
+				if (ImGui::MenuItem("Recompile Internal"))
+				{
 					ErmyProject::Instance().RecompileAllInternalShaders();
+				}
+				if (ImGui::MenuItem("Recompile Editor"))
+				{
+					ErmyProject::Instance().RecompileAllEditorShaders();
 				}
 				ImGui::EndMenu();
 			}

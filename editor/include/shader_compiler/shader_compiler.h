@@ -15,7 +15,10 @@ public:
 	void CompileShader(const char* shaderPath, const char* shaderName);
 	void CompileAllShaders();
 
-	void CompileAllInternalShaders();
+
+	void CompileAllInternalShaders(const std::string& moduleName, const std::filesystem::path& shadersFolder, const std::filesystem::path& outputHeader);
+	void CompileAllEngineShaders();
+	void CompileAllEditorShaders();
 
 	static ShaderCompiler& Instance();
 };

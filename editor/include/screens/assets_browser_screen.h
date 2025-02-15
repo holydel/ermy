@@ -7,6 +7,7 @@ namespace editor::screen
 {
 	class AssetsBrowserScreen : public EditorScreen
 	{
+		bool firstFrame = true;
 	public:
 		void Draw() override;
 		static AssetsBrowserScreen* Instance();

@@ -20,6 +20,7 @@ std::unordered_map<std::string, std::vector<AssetsLoader*>> gAllLoaders;
 FFMpegLoader* gFfmpegLoader = nullptr;
 OpenImageLoader* gOpenImageLoader = nullptr;
 AssimpLoader* gAssimpLoader = nullptr;
+KTXLoader* gKTXLoader = nullptr;
 
 void PopulateLoaderExtensions(AssetsLoader* loader)
 {
@@ -35,8 +36,10 @@ bool AssetsLoader::Initialize()
     gOpenImageLoader = new OpenImageLoader();
     gFfmpegLoader = new FFMpegLoader();
     gAssimpLoader = new AssimpLoader();
+    gKTXLoader = new KTXLoader();
 
     //It's important to populate specific loaders first. The order matters.
+    PopulateLoaderExtensions(gKTXLoader);
     PopulateLoaderExtensions(gOpenImageLoader);
     PopulateLoaderExtensions(gAssimpLoader);
     PopulateLoaderExtensions(gFfmpegLoader);
