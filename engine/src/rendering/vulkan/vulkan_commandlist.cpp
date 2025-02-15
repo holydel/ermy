@@ -54,4 +54,36 @@ void CommandList::SetRootConstants(void* data, int size)
 	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
 	vkCmdPushConstants(cbuff, gAllPipelineLayouts[gCurrentPSOID.handle], VK_SHADER_STAGE_VERTEX_BIT, 0, size, data);
 }
+
+void CommandList::InsertDebugMark(const char* u8mark)
+{
+	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
+	VkDebugMarkerMarkerInfoEXT info = { VK_STRUCTURE_TYPE_DEBUG_MARKER_MARKER_INFO_EXT };
+	info.pMarkerName = u8mark;
+	info.color[0] = 1.0f;
+	info.color[1] = 1.0f;
+	info.color[2] = 1.0f;
+	info.color[3] = 1.0f;
+	vkCmdDebugMarkerInsertEXT(cbuff, &info);
+}
+
+void CommandList::BeginDebugScope(const char* u8mark)
+{
+	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
+	VkDebugMarkerMarkerInfoEXT info = { VK_STRUCTURE_TYPE_DEBUG_MARKER_MARKER_INFO_EXT };
+	info.pMarkerName = u8mark;
+	info.color[0] = 1.0f;
+	info.color[1] = 1.0f;
+	info.color[2] = 1.0f;
+	info.color[3] = 1.0f;
+	vkCmdDebugMarkerBeginEXT(cbuff, &info);
+}
+
+void CommandList::EndDebugScope()
+{
+	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
+	vkCmdDebugMarkerEndEXT(cbuff);
+	
+}
+
 #endif

@@ -72,7 +72,8 @@ VK_DECLARE_FUNCTION(vkGetPhysicalDeviceMemoryProperties2);
 VK_DECLARE_FUNCTION(vkGetPhysicalDeviceSparseImageFormatProperties);
 VK_DECLARE_FUNCTION(vkGetPhysicalDeviceImageFormatProperties);
 VK_DECLARE_FUNCTION(vkEnumeratePhysicalDeviceGroups);
-
+VK_DECLARE_FUNCTION(vkSetDebugUtilsObjectNameEXT);
+VK_DECLARE_FUNCTION(vkSetDebugUtilsObjectTagEXT);
 #ifdef ERMY_OS_WINDOWS
 VK_DECLARE_FUNCTION(vkCreateWin32SurfaceKHR);
 VK_DECLARE_FUNCTION(vkGetPhysicalDeviceWin32PresentationSupportKHR);

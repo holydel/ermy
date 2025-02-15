@@ -40,6 +40,8 @@ namespace framegraph_interface
 		const VkSemaphoreCreateInfo semaphoreCreateInfo{ .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO, .pNext = &timelineCreateInfo };
 		VK_CALL(vkCreateSemaphore(gVKDevice, &semaphoreCreateInfo, nullptr, &gFrameGraphSemaphore));
 
+		vk_utils::debug::SetName(gFrameGraphSemaphore, "FrameGraph semaphore");
+
 		gFrames.resize(numFrames);
 
 		const VkCommandPoolCreateInfo cmdPoolCreateInfo{
@@ -53,6 +55,8 @@ namespace framegraph_interface
 			f.frameIndex = i;  // Track frame index for synchronization
 			VK_CALL(vkCreateCommandPool(gVKDevice, &cmdPoolCreateInfo, nullptr, &f.cmdPool));
 
+			vk_utils::debug::SetName(f.cmdPool, "Frame Command Pool (%d)",i);
+
 			const VkCommandBufferAllocateInfo commandBufferAllocateInfo = {
 				 .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
 				 .commandPool = f.cmdPool,
@@ -60,6 +64,8 @@ namespace framegraph_interface
 				 .commandBufferCount = 1,
 			};
 			VK_CALL(vkAllocateCommandBuffers(gVKDevice, &commandBufferAllocateInfo, &f.cmdBuffer));
+
+			vk_utils::debug::SetName(f.cmdBuffer, "Frame Command Buffer (%d)", i);
 		}
 	}
 

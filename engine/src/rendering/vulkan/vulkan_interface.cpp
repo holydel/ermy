@@ -7,6 +7,7 @@
 #include "../../os/os_utils.h"
 #include "vulkan_swapchain.h"
 #include <sstream>
+#include "vk_utils.h"
 
 VkInstance gVKInstance = VK_NULL_HANDLE;
 VkAllocationCallbacks* gVKGlobalAllocationsCallbacks = nullptr;
@@ -571,10 +572,16 @@ void CreateDevice()
 	//deviceCreateInfo.pNext = &enabledFeatures;
 	VK_CALL(vkCreateDevice(gVKPhysicalDevice, &deviceCreateInfo, gVKGlobalAllocationsCallbacks, &gVKDevice));
 
-
 	LoadVkDeviceLevelFuncs(gVKDevice);
 
+	vk_utils::debug::SetName(gVKDevice, "Main Device");
+	vk_utils::debug::SetName(gVKPhysicalDevice, "Main Physical Device");
+	vk_utils::debug::SetName(gVKInstance, "Ermy Instance");
+
+
 	vkGetDeviceQueue(gVKDevice, 0, 0, &gVKMainQueue);
+
+	vk_utils::debug::SetName(gVKMainQueue, "Main Queue");
 
 	VmaAllocatorCreateInfo allocatorInfo = {};
 	allocatorInfo.physicalDevice = gVKPhysicalDevice;

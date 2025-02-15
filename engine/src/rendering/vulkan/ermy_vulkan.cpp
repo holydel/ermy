@@ -184,6 +184,8 @@ VK_DEFINE_FUNCTION(vkCmdDecompressMemoryNV);
 VK_DEFINE_FUNCTION(vkCmdBeginRendering);
 VK_DEFINE_FUNCTION(vkCmdEndRendering);
 VK_DEFINE_FUNCTION(vkCmdPipelineBarrier2);
+VK_DEFINE_FUNCTION(vkSetDebugUtilsObjectNameEXT);
+VK_DEFINE_FUNCTION(vkSetDebugUtilsObjectTagEXT);
 
 #ifdef ERMY_OS_WINDOWS
 VK_DEFINE_FUNCTION(vkGetWinrtDisplayNV);
@@ -393,6 +395,8 @@ void LoadVkDeviceLevelFuncs(VkDevice device)
 	VK_LOAD_DEVICE_FUNC(vkCmdBeginRendering);
 	VK_LOAD_DEVICE_FUNC(vkCmdEndRendering);
 	VK_LOAD_DEVICE_FUNC(vkCmdPipelineBarrier2);
+	VK_LOAD_DEVICE_FUNC(vkSetDebugUtilsObjectNameEXT);
+	VK_LOAD_DEVICE_FUNC(vkSetDebugUtilsObjectTagEXT);
 }
 
 const char* VkResultToString(VkResult res)

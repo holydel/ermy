@@ -3,6 +3,7 @@
 
 #include "../../os/os_utils.h"
 #include "vulkan_interface.h"
+#include "vk_utils.h"
 #include <array>
 
 using namespace ermy;
@@ -96,6 +97,7 @@ void swapchain::InitSwapchainResources()
 	for (int i = 0; i < gNumberOfFrames; ++i)
 	{
 		gFramesInFlight[i].image = images[i];
+		vk_utils::debug::SetName(gFramesInFlight[i].image, "Swapchain Target (%d)", i);
 
 		VkImageViewCreateInfo imageViewInfo{ VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO };
 		imageViewInfo.image = images[i];
@@ -108,6 +110,7 @@ void swapchain::InitSwapchainResources()
 		imageViewInfo.subresourceRange.layerCount = 1;
 
 		vkCreateImageView(gVKDevice, &imageViewInfo, nullptr, &gFramesInFlight[i].imageView);
+		vk_utils::debug::SetName(gFramesInFlight[i].imageView, "Swapchain Target View (%d)", i);
 
 		VkSemaphoreCreateInfo semaphoreInfo{ VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO };
 		vkCreateSemaphore(gVKDevice, &semaphoreInfo, nullptr, &gFramesInFlight[i].imageAvailableSemaphore);
@@ -123,6 +126,8 @@ void swapchain::InitSwapchainResources()
 			framebufferInfo.layers = 1;
 
 			vkCreateFramebuffer(gVKDevice, &framebufferInfo, nullptr, &gFramesInFlight[i].framebuffer);
+
+			vk_utils::debug::SetName(gFramesInFlight[i].framebuffer, "Swapchain Target Framebuffer (%d)", i);
 		}
 	}
 }
@@ -170,6 +175,7 @@ void swapchain::InitSwapchain()
 	}
 
 	vkCreateSwapchainKHR(gVKDevice, &createInfo, nullptr, &gVKSwapchain);
+	vk_utils::debug::SetName(gVKSwapchain, "Main Window Swapchain");
 }
 
 void swapchain::ShutdownSwapchain()
@@ -363,6 +369,8 @@ void swapchain::Initialize()
 		renderPassInfo.pDependencies = dependencies.data();
 
 		vkCreateRenderPass(gVKDevice, &renderPassInfo, nullptr, &gVKRenderPass);
+
+		vk_utils::debug::SetName(gVKRenderPass, "Final RenderPass");
 	}
 	InitSwapchain();
 	InitSwapchainResources();

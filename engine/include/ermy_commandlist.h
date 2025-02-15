@@ -26,6 +26,10 @@ namespace ermy
 			void SetScissor(int x, int y, int width, int height);
 
 			void SetRootConstants(void* data, int size);
+
+			void InsertDebugMark(const char* u8mark);
+			void BeginDebugScope(const char* u8mark);
+			void EndDebugScope();
 		};
 	}
 }
