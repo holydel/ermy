@@ -30,4 +30,4 @@ struct DeviceEnabledExtensions
 	bool KhrDynamicRenderingLocalRead : 1 = false;
 };
 
-extern DeviceEnabledExtensions gDeviceEnabledExtensions;
+extern DeviceEnabledExtensions gVKDeviceEnabledExtensions;

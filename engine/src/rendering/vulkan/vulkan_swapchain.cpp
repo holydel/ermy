@@ -291,7 +291,7 @@ void swapchain::Initialize()
 	auto support_formats = EnumerateVulkanObjects(gVKPhysicalDevice, gVKSurface, vkGetPhysicalDeviceSurfaceFormatsKHR);
 	auto support_present_modes = EnumerateVulkanObjects(gVKPhysicalDevice, gVKSurface, vkGetPhysicalDeviceSurfacePresentModesKHR);
 	gVKSurfaceFormat = support_formats[0].format; //TODO: selection heuristics
-	gVKSurfaceFormat = VK_FORMAT_A2B10G10R10_UNORM_PACK32;
+	//gVKSurfaceFormat = VK_FORMAT_A2B10G10R10_UNORM_PACK32;
 	VK_CALL(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(gVKPhysicalDevice, gVKSurface, &gVKSurfaceCaps));
 	//support_formats[4].format
 	//gNativeExtent = gSurfaceCaps.currentExtent;

@@ -19,7 +19,7 @@ VkQueue gVKMainQueue = VK_NULL_HANDLE;
 VkQueue gVKComputeAsyncQueue = VK_NULL_HANDLE;
 VkQueue gVKTransferAsyncQueue = VK_NULL_HANDLE;
 VkRenderPass gVKRenderPass = VK_NULL_HANDLE;
-DeviceEnabledExtensions gDeviceEnabledExtensions;
+DeviceEnabledExtensions gVKDeviceEnabledExtensions;
 
 
 using namespace ermy;
@@ -38,12 +38,27 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 	const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
 	void* pUserData) {
 
+	if (pCallbackData->messageIdNumber == 0)
+	{
+		if (strcmp(pCallbackData->pMessageIdName, "Loader Message") == 0)
+		{
+			logger::EnqueueLogMessageRAWTagged(LogSeverity::Verbose, "VULKAN_LOADER", pCallbackData->pMessage);
+			return VK_FALSE;
+		}
+	}
+	else
+	{
+		if (pCallbackData->messageIdNumber == 0x7f1922d7)
+		{
+			logger::EnqueueLogMessageRAWTagged(LogSeverity::Verbose, "VULKAN", pCallbackData->pMessage);
+			return VK_FALSE;
+		}
+	}
+
 	LogSeverity severity = ermy::LogSeverity::Verbose;
 	switch (messageSeverity)
 	{
 	case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
-		severity = LogSeverity::Verbose;
-		break;
 	case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
 		severity = LogSeverity::Verbose;
 		break;
@@ -56,11 +71,6 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 	}
 
 	logger::EnqueueLogMessageRAWTagged(severity, "VULKAN", pCallbackData->pMessage);
-
-	if (strcmp(pCallbackData->pMessageIdName, "Loader Message"))
-	{
-		int a = 42;
-	}
 
 	return VK_FALSE;
 }
@@ -82,7 +92,10 @@ struct ValidationSettings
 		0xc91ae640, //perf  BestPractices-vkEndCommandBuffer-VtxIndexOutOfBounds vkEndCommandBuffer(): Vertex buffers was bound to VkCommandBuffer 0x123e73703d50[] but no draws had a pipeline that used the vertex buffer.
 		0xc714b932, // perf [ BestPractices-NVIDIA-AllocateMemory-ReuseAllocations ] vkAllocateMemory(): [NVIDIA] Reuse memory allocations instead of releasing and reallocating. A memory allocation has been released 0.011 seconds ago, and it could have been reused in place of this allocation.
 		0x7f1922d7, //perf Both GPU Assisted Validation and Normal Core Check Validation are enabled, this is not recommend as it  will be very slow. Once all errors in Core Check are solved, please disable, then only use GPU-AV for best performance.
+		0x24b5c69f, //Internal Warning: Ray Query validation option was enabled, but the rayQuery feature is not enabled. [Disabling gpuav_validate_ray_query]
+		//0x53c1342f, //OBS layer Validation Warning: [ BestPractices-Error-Result ] Object 0: handle = 0x1218c4eb6900, type = VK_OBJECT_TYPE_INSTANCE; | MessageID = 0x53c1342f | vkGetPhysicalDeviceImageFormatProperties2(): Returned error VK_ERROR_FORMAT_NOT_SUPPORTED.
 	};
+	//ATION - SETTINGS ] | MessageID = 0x7f1922d7 | Both GPU Assisted Validation and Normal Core Check Validation are enabled, this is not recommend as it  will be very slow.Once all errors in Core Check are solved, please disable, then only use GPU - AV for best performance.
 	std::stringstream disabledMessages;
 
 	void createMuteVUIDs()
@@ -327,6 +340,78 @@ static void ChoosePhysicalDevice()
 
 }
 
+struct EnabledVKFeatures
+{
+	VkPhysicalDeviceVulkan11Features features11 = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES, nullptr };
+	VkPhysicalDeviceVulkan12Features features12 = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES, nullptr };
+	VkPhysicalDeviceVulkan13Features features13 = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES, nullptr };
+	VkPhysicalDeviceVulkan14Features features14 = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_4_FEATURES, nullptr };
+
+	VkPhysicalDeviceSynchronization2Features sync2Features = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES, nullptr };
+	VkPhysicalDeviceTimelineSemaphoreFeaturesKHR timelineSemaphoreFeatures = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES_KHR, nullptr };
+	VkPhysicalDeviceDynamicRenderingFeaturesKHR dynamicRenderingFeatures = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR, nullptr };
+	VkPhysicalDeviceDynamicRenderingLocalReadFeaturesKHR dynamicRenderingFeaturesLocalRead = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_LOCAL_READ_FEATURES_KHR, nullptr };
+	void* BuildPChains();
+	void* pchain = nullptr;
+
+} gEnabledFeatures;
+
+void* EnabledVKFeatures::BuildPChains()
+{
+	features12.timelineSemaphore = true;
+	timelineSemaphoreFeatures.timelineSemaphore = true;
+	sync2Features.synchronization2 = true;
+	features13.synchronization2 = true;
+	
+	features12.vulkanMemoryModel = true;
+	features12.vulkanMemoryModelDeviceScope = true;
+	features12.bufferDeviceAddress = true;
+	features12.uniformAndStorageBuffer8BitAccess = true;
+
+	if (gVKConfig.useDynamicRendering)
+	{
+		features13.dynamicRendering = true;
+		features14.dynamicRenderingLocalRead = true;
+
+		dynamicRenderingFeatures.dynamicRendering = true;
+		dynamicRenderingFeaturesLocalRead.dynamicRenderingLocalRead = true;
+	}
+
+	if (gPhysicalDeviceAPIVersion >= Ver11)
+	{
+		NextPChain(pchain, &features11);
+	}
+	if (gPhysicalDeviceAPIVersion >= Ver12)
+	{
+		NextPChain(pchain, &features12);
+	}
+	if (gPhysicalDeviceAPIVersion >= Ver13)
+	{
+		NextPChain(pchain, &features13);
+	}
+	else
+	{
+		if (gVKDeviceEnabledExtensions.KhrSynchronization2)
+			NextPChain(pchain, &dynamicRenderingFeaturesLocalRead);
+
+		if (gVKDeviceEnabledExtensions.KhrSynchronization2)
+			NextPChain(pchain, &sync2Features);
+
+	}
+
+	if (gPhysicalDeviceAPIVersion >= Ver14)
+	{
+		NextPChain(pchain, &features14);
+	}
+	else
+	{
+		if (gVKDeviceEnabledExtensions.KhrDynamicRenderingLocalRead)
+			NextPChain(pchain, &dynamicRenderingFeaturesLocalRead);
+	}
+
+	return pchain;
+}
+
 void CreateDevice()
 {
 	VKDeviceExtender device_extender(gVKPhysicalDevice, gPhysicalDeviceAPIVersion);
@@ -447,49 +532,26 @@ void CreateDevice()
 
 	swapchain::RequestDeviceExtensions(device_extender);
 
-
-
-	gDeviceEnabledExtensions.NvDecompressMemory = device_extender.TryAddExtension(VK_NV_MEMORY_DECOMPRESSION_EXTENSION_NAME);
-	gDeviceEnabledExtensions.KhrBufferDeviceAddress = device_extender.TryAddExtension(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME, Ver12);
-	gDeviceEnabledExtensions.KhrDedicatedAllocation = device_extender.TryAddExtension(VK_KHR_DEDICATED_ALLOCATION_EXTENSION_NAME, Ver11);
-	gDeviceEnabledExtensions.KhrSynchronization2 = device_extender.TryAddExtension(VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME, Ver13);
-	gDeviceEnabledExtensions.KhrTimelineSemaphore = device_extender.TryAddExtension(VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME, Ver12);
-	gDeviceEnabledExtensions.ExtMemoryPriority = device_extender.TryAddExtension(VK_EXT_MEMORY_PRIORITY_EXTENSION_NAME);
-	gDeviceEnabledExtensions.ExtPageableDeviceLocalMemory = device_extender.TryAddExtension(VK_EXT_PAGEABLE_DEVICE_LOCAL_MEMORY_EXTENSION_NAME);
+	gVKDeviceEnabledExtensions.NvDecompressMemory = device_extender.TryAddExtension(VK_NV_MEMORY_DECOMPRESSION_EXTENSION_NAME);
+	gVKDeviceEnabledExtensions.KhrBufferDeviceAddress = device_extender.TryAddExtension(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME, Ver12);
+	gVKDeviceEnabledExtensions.KhrDedicatedAllocation = device_extender.TryAddExtension(VK_KHR_DEDICATED_ALLOCATION_EXTENSION_NAME, Ver11);
+	gVKDeviceEnabledExtensions.KhrSynchronization2 = device_extender.TryAddExtension(VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME, Ver13);
+	gVKDeviceEnabledExtensions.KhrTimelineSemaphore = device_extender.TryAddExtension(VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME, Ver12);
+	gVKDeviceEnabledExtensions.ExtMemoryPriority = device_extender.TryAddExtension(VK_EXT_MEMORY_PRIORITY_EXTENSION_NAME);
+	gVKDeviceEnabledExtensions.ExtPageableDeviceLocalMemory = device_extender.TryAddExtension(VK_EXT_PAGEABLE_DEVICE_LOCAL_MEMORY_EXTENSION_NAME);
 
 	if (gVKConfig.useDynamicRendering)
 	{
-		gDeviceEnabledExtensions.KhrDynamicRendering = device_extender.TryAddExtension(VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME, Ver13);
-		gDeviceEnabledExtensions.KhrDynamicRenderingLocalRead = device_extender.TryAddExtension(VK_KHR_DYNAMIC_RENDERING_LOCAL_READ_EXTENSION_NAME, Ver14);
+		gVKDeviceEnabledExtensions.KhrDynamicRendering = device_extender.TryAddExtension(VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME, Ver13);
+		gVKDeviceEnabledExtensions.KhrDynamicRenderingLocalRead = device_extender.TryAddExtension(VK_KHR_DYNAMIC_RENDERING_LOCAL_READ_EXTENSION_NAME, Ver14);
 	}
-
-	VkPhysicalDeviceVulkan11Features features11 = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES, nullptr };
-	VkPhysicalDeviceVulkan12Features features12 = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES, nullptr };
-	VkPhysicalDeviceVulkan13Features features13 = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES, nullptr };
-	VkPhysicalDeviceVulkan14Features features14 = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_4_FEATURES, nullptr };
-
-	features13.pNext = &features14;
-	features12.pNext = &features13;
-	features11.pNext = &features12;
-
-	features12.timelineSemaphore = true;
-
-	if (gVKConfig.useDynamicRendering)
-	{
-		features13.dynamicRendering = true;
-		features14.dynamicRenderingLocalRead = true;
-	}
-
-	VkPhysicalDeviceSynchronization2Features sync2Features = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES, nullptr };
-	sync2Features.synchronization2 = true;
-	features14.pNext = &sync2Features;
 
 #ifdef ERMY_OS_MACOS
 	device_extender.TryAddExtension(VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME);
 #endif
 	VkDeviceCreateInfo deviceCreateInfo;
 	deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-	deviceCreateInfo.pNext = &features11;
+	deviceCreateInfo.pNext = gEnabledFeatures.BuildPChains();
 	deviceCreateInfo.flags = 0;
 	deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(requestedQueues.size());
 	deviceCreateInfo.pQueueCreateInfos = requestedQueues.data();
@@ -519,13 +581,13 @@ void CreateDevice()
 	allocatorInfo.device = gVKDevice;
 	allocatorInfo.instance = gVKInstance;
 
-	if (gDeviceEnabledExtensions.KhrBufferDeviceAddress)
+	if (gVKDeviceEnabledExtensions.KhrBufferDeviceAddress)
 		allocatorInfo.flags |= VMA_ALLOCATOR_CREATE_BUFFER_DEVICE_ADDRESS_BIT;
 
-	if (gDeviceEnabledExtensions.KhrDedicatedAllocation)
+	if (gVKDeviceEnabledExtensions.KhrDedicatedAllocation)
 		allocatorInfo.flags |= VMA_ALLOCATOR_CREATE_KHR_DEDICATED_ALLOCATION_BIT;
 
-	if (gDeviceEnabledExtensions.ExtMemoryPriority)
+	if (gVKDeviceEnabledExtensions.ExtMemoryPriority)
 		allocatorInfo.flags |= VMA_ALLOCATOR_CREATE_EXT_MEMORY_PRIORITY_BIT;
 
 

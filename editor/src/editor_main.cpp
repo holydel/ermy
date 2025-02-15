@@ -19,6 +19,7 @@ public:
 		logConfig.FileMirroring.enabled = true;
 
 		staticConfig.appName = "Ermy Editor";
+		staticConfig.render.adapterID = 1;
 
 		staticConfig.imgui.enable = true;
 		staticConfig.imgui.enableDocking = true;

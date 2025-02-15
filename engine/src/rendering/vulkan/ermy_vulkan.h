@@ -500,3 +500,10 @@ static void NextChainPushFront(MainT* mainStruct, NewT* newStruct)
 	newStruct->pNext = mainStruct->pNext;
 	mainStruct->pNext = newStruct;
 }
+
+template <typename NewT>
+static void NextPChain(void* &mainStruct, NewT* newStruct)
+{
+	newStruct->pNext = mainStruct;
+	mainStruct = newStruct;
+}
