@@ -36,7 +36,7 @@ VOutFS fullscreenVS(uint id: SV_VertexID)
         float2(0.0f, -1.0f) // Top-left (extended beyond the screen)
     };
 
-    output.uv = uvs[id];
+    output.uv = float2(uvs[id].x, 1.0 - uvs[id].y);
     return output;
 }
 

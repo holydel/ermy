@@ -265,6 +265,12 @@ void DrawFolderContents(AssetFolder* folder)
 					{
 						PreviewRenderer::Instance().SetPreviewProps(item_data->GetData());
 					}
+
+					if (item_data->GetType() == AssetType::Folder && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+					{
+						gSelectedFolder = static_cast<AssetFolder*>(item_data);
+
+					}
 				}
 				// Update our selection state immediately (without waiting for EndMultiSelect() requests)
 				// because we use this to alter the color of our text/icon.

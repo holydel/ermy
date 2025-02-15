@@ -71,6 +71,7 @@ protected:
 
 	std::string assetName = "";
 	ermy::u8 assetNameRows = 0;
+	void CalculateAssetName();
 public:
 	ermy::u64 ID = 0;
 	AssetData* GetData()

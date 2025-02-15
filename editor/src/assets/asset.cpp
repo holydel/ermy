@@ -17,6 +17,7 @@ void AssetFolder::Scan(const std::filesystem::path& path)
 {
 	source = path;
 	name = path.filename().string();
+	CalculateAssetName();
 
 	for (const auto& entry : fs::directory_iterator(path)) {
 		if (fs::is_directory(entry.status()))
@@ -48,25 +49,29 @@ Asset* Asset::CreateFromPath(const std::filesystem::path path)
 	result->name = path.filename().string();
 	result->fileSize = fs::file_size(path);
 
+	result->CalculateAssetName();
+	return result;
+}
+
+void Asset::CalculateAssetName()
+{
 	//calculate asset name to fit into 128x128 preview
 	int chN = 18;// only 18 chars fits to row
-	result->assetNameRows = result->name.size() / (chN + 1);
+	assetNameRows = name.size() / (chN + 1);
 
-	if (result->assetNameRows > 0)
+	if (assetNameRows > 0)
 	{
-		result->assetName = result->name.substr(0, chN);
-		for (int i = 0; i < result->assetNameRows; ++i)
+		assetName = name.substr(0, chN);
+		for (int i = 0; i < assetNameRows; ++i)
 		{
-			result->assetName += "\n";
-			result->assetName += result->name.substr((i+1) * chN, chN);
+			assetName += "\n";
+			assetName += name.substr((i + 1) * chN, chN);
 		}
 	}
 	else
 	{
-		result->assetName = result->name;
+		assetName = name;
 	}
-	
-	return result;
 }
 
 void Asset::DrawProps()
