@@ -1,8 +1,8 @@
-//struct PreviewTextureConstants
-//{
-//    float2 uv0;
-//    float2 uv1;
-//};
+struct PreviewTextureConstants
+{
+    float2 uv0;
+    float2 uv1;
+};
 
 //[vk::push_constant]
 //ConstantBuffer<PreviewTextureConstants> previewTextureConst : register(b0);
@@ -71,8 +71,14 @@ float4 fullscreenFSEmpty(VOutFS input) : SV_Target
 }
 
 [shader("fragment")]
-float4 fullscreenFS2D(VOutFS input) : SV_Target
+float4 fullscreenFS2D(VOutFS input, uniform PreviewTextureConstants transform) : SV_Target
 {
-    float4 color = preview2D.Sample(input.uv);
-    return float4(lerp(checkerColor(input.uv), color.xyz, color.w), 1.0);
+    float2 uv = lerp(transform.uv0, transform.uv1, input.uv);
+
+    float4 color = preview2D.Sample(uv);
+    if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0)
+        color.w = 0.0f;
+
+    float3 bgColor = checkerColor(input.uv);
+    return float4(lerp(bgColor, color.xyz, color.w), 1.0);
 }

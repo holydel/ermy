@@ -312,17 +312,22 @@ VkPipeline _createPipeline(const PSODesc& desc)
 	{
 		VkPipelineLayoutCreateInfo cinfo{};
 		cinfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-		VkPushConstantRange range;
+		std::vector<VkPushConstantRange> pushConstantRanges;
 		
-		if (desc.numRootConstants > 0)
+		for (int i = 0; i < (int)ShaderStage::MAX; ++i)
 		{
-			range.size = desc.numRootConstants * sizeof(u32);
-			range.offset = 0;
-			range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-			cinfo.pushConstantRangeCount = 1;
-			cinfo.pPushConstantRanges = &range;
+			if (desc.rootConstantRanges[i].second > 0)
+			{
+				VkPushConstantRange& range = pushConstantRanges.emplace_back();
+
+				range.size = desc.rootConstantRanges[i].second;
+				range.offset = desc.rootConstantRanges[i].first;
+				range.stageFlags = vk_utils::VkShaderStageFromErmy((ShaderStage)i);
+			}
 		}
 
+		cinfo.pushConstantRangeCount = pushConstantRanges.size();
+		cinfo.pPushConstantRanges = pushConstantRanges.data();
 		//VkDescriptorSetLayoutBinding samplerBinding{};
 		//samplerBinding.binding = 0;
 		//samplerBinding.descriptorCount = 1;

@@ -50,10 +50,10 @@ void CommandList::SetScissor(int x, int y, int width, int height)
 	vkCmdSetScissor(cbuff, 0, 1, &scissor);
 }
 
-void CommandList::SetRootConstants(void* data, int size)
+void CommandList::SetRootConstants(const void* data, int size, ermy::ShaderStage stage, int offset)
 {
 	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
-	vkCmdPushConstants(cbuff, gAllPipelineLayouts[gCurrentPSOID.handle], VK_SHADER_STAGE_VERTEX_BIT, 0, size, data);
+	vkCmdPushConstants(cbuff, gAllPipelineLayouts[gCurrentPSOID.handle], vk_utils::VkShaderStageFromErmy(stage), offset, size, data);
 }
 
 void CommandList::SetDescriptorSet(int set, u64 handle)

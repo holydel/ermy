@@ -8,6 +8,8 @@ namespace ermy
 		Vertex,
 		Fragment,
 		Compute,
+
+		MAX
 	};
 
 	struct ShaderBytecode

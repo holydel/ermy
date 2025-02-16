@@ -41,7 +41,7 @@ void CommandList::SetScissor(int x, int y, int width, int height)
 	cbuff->RSSetScissorRects(1, &sissor);
 }
 
-void CommandList::SetRootConstants(void* data, int size)
+void CommandList::SetRootConstants(const void* data, int size)
 {
 	ID3D12GraphicsCommandList* cbuff = static_cast<ID3D12GraphicsCommandList*>(nativeHandle);
 	cbuff->SetGraphicsRoot32BitConstants(0, size / 4, data, 0);

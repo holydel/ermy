@@ -26,7 +26,13 @@ namespace ermy
 			void SetViewport(int x, int y, int width, int height);
 			void SetScissor(int x, int y, int width, int height);
 
-			void SetRootConstants(void* data, int size);
+			void SetRootConstants(const void* data, int size, ShaderStage stage = ShaderStage::Vertex, int offset = 0);
+
+			template <typename T>
+			void SetRootConstant(const T& data, ShaderStage stage = ShaderStage::Vertex, int offset = 0)
+			{
+				SetRootConstants(&data, sizeof(T), stage, offset);
+			}
 
 			void InsertDebugMark(const char* u8mark);
 			void BeginDebugScope(const char* u8mark);

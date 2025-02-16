@@ -31,7 +31,8 @@ namespace ermy
 
 		struct PSODesc
 		{
-			int numRootConstants = 0;
+			//int numRootConstants = 0;			
+			std::pair<u8, u8> rootConstantRanges[(int)ShaderStage::MAX];
 			std::vector<ShaderBytecode> shaders;
 			PrimitiveTopology topology = PrimitiveTopology::TriangleList;
 

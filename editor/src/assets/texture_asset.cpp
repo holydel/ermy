@@ -8,6 +8,12 @@
 
 using namespace ermy;
 
+struct TextureLivePreviewParams2D
+{
+	glm::vec2 uv0;
+	glm::vec2 uv1;
+};
+
 class TextureRenderPreview
 {
 	TextureRenderPreview();
@@ -53,6 +59,7 @@ TextureRenderPreview::TextureRenderPreview()
 		desc.shaders.push_back(ermy::shader_internal::fullscreenFS2D());
 		desc.uniforms.push_back(rendering::ShaderUniformType::Texture2D);
 		desc.specificRenderPass = RTT;
+		desc.rootConstantRanges[(int)ShaderStage::Fragment] = { 0,sizeof(TextureLivePreviewParams2D)};
 		fullscreen2D = rendering::CreatePSO(desc);
 	}
 }
@@ -114,8 +121,39 @@ void TextureAsset::RegeneratePreview()
 void TextureAsset::RenderPreview(ermy::rendering::CommandList& cl)
 {
 	TextureRenderPreview::Instance().BindPSO(cl, gUtype);
-	if(gUtype == rendering::ShaderUniformType::Texture2D)
-	cl.SetDescriptorSet(0, assetPreviewTex);
+	{
+		if (gUtype == rendering::ShaderUniformType::Texture2D)
+		{
+			
+			TextureLivePreviewParams2D pass;
+			float aspect = (float)width / (float)height;
+
+			float baseU = 1.0f;
+			float baseV = 1.0f;
+
+			if (aspect < 1.0f)
+			{
+				baseU /= aspect;
+			}
+			else
+			{
+				baseV *= aspect;
+			}
+
+			float baseU0 = 0.5f - 0.5f * baseU;
+			float baseU1 = 0.5f + 0.5f * baseU;
+			float baseV0 = 0.5f - 0.5f * baseV;
+			float baseV1 = 0.5f + 0.5f * baseV;
+
+			pass.uv0 = glm::vec2(baseU0, baseV0);
+			pass.uv1 = glm::vec2(baseU1, baseV1);
+
+			cl.SetRootConstant(pass,ShaderStage::Fragment);
+
+			cl.SetDescriptorSet(0, assetPreviewTex);
+		}
+	}
+	
 	cl.Draw(3);
 }
 

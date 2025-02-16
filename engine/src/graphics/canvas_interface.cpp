@@ -47,7 +47,7 @@ void canvas_interface::Initialize()
     desc.shaders.push_back(shader_internal::dedicatedSpriteVS());
     desc.shaders.push_back(shader_internal::dedicatedSpriteFS());
     desc.topology = PrimitiveTopology::TriangleStrip;
-    desc.numRootConstants = 10; //float2 pos, float2 size, float2 uv0, float2 uv1, uint packedColor, float angle
+    desc.rootConstantRanges[(int)ShaderStage::Vertex] = { 0,10 }; //float2 pos, float2 size, float2 uv0, float2 uv1, uint packedColor, float angle
 
     gDedicatedSpritePSO = CreatePSO(desc);
 }
