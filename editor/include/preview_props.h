@@ -8,5 +8,24 @@ public:
 	virtual void RenderPreview(ermy::rendering::CommandList& cl)
 	{
 	}
+	virtual void MouseZoom(float)
+	{
 
+	}
+	virtual void MouseDown(float normalizedX, float normalizedY)
+	{
+
+	}
+	virtual void MouseUp()
+	{
+
+	}
+	virtual void MouseMove(float normalizedDeltaX, float normalizedDeltaY)
+	{
+
+	}
+	virtual void ResetView()
+	{
+
+	}
 };

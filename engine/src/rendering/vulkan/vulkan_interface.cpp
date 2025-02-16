@@ -563,6 +563,13 @@ void CreateDevice()
 #ifdef ERMY_OS_MACOS
 	device_extender.TryAddExtension(VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME);
 #endif
+
+	VkPhysicalDeviceFeatures enabledFeatures10 = {};
+	VkPhysicalDeviceFeatures supportedFeatures;
+	vkGetPhysicalDeviceFeatures(gVKPhysicalDevice, &supportedFeatures);
+
+	enabledFeatures10.imageCubeArray = supportedFeatures.imageCubeArray;
+
 	VkDeviceCreateInfo deviceCreateInfo;
 	deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 	deviceCreateInfo.pNext = gEnabledFeatures.BuildPChains();
@@ -571,7 +578,7 @@ void CreateDevice()
 	deviceCreateInfo.pQueueCreateInfos = requestedQueues.data();
 	deviceCreateInfo.enabledLayerCount = 0; //deprecated
 	deviceCreateInfo.ppEnabledLayerNames = nullptr;
-	deviceCreateInfo.pEnabledFeatures = nullptr;
+	deviceCreateInfo.pEnabledFeatures = &enabledFeatures10;
 	deviceCreateInfo.ppEnabledExtensionNames = device_extender.EnabledExtensions(); //deprecated
 	deviceCreateInfo.enabledExtensionCount = device_extender.NumEnabledExtension();
 
@@ -715,7 +722,6 @@ void CreateDevice()
 	samplerInfo.minLod = 0.0f; // Minimum mipmap level
 	samplerInfo.maxLod = VK_LOD_CLAMP_NONE; // Maximum mipmap level (no limit)
 
-	VkSampler sampler;
 	VK_CALL(vkCreateSampler(gVKDevice, &samplerInfo, nullptr, &gLinearSampler));
 	vk_utils::debug::SetName(gLinearSampler, "Linear Sampler");
 

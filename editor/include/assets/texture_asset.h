@@ -1,12 +1,19 @@
 #pragma once
 
 #include <assets/asset.h>
+#include <ermy_rendering.h>
 
 class TextureAsset : public AssetData
 {
+	float previewDX = 0.0f;
+	float previewDY = 0.0f;
+	float previewZoom = 1.0f;	
+	bool isPreviewDragging = false;
+	float oldPreviewDX = 0.0f;
+	float oldPreviewDY = 0.0f;
 public:
 	ermy::u32 width = 0;
-	ermy::u32 height = 0; 
+	ermy::u32 height = 0;
 	ermy::u32 depth = 1;
 	ermy::u32 numLayers = 1;
 	ermy::u32 numMips = 1;
@@ -16,6 +23,7 @@ public:
 	bool isCubemap = 0;
 	bool isSparse = 0;
 	void* data = nullptr;
+	ermy::rendering::Format texelFormat;
 
 	TextureAsset();
 	virtual ~TextureAsset();
@@ -24,4 +32,10 @@ public:
 
 	void RegeneratePreview() override;
 	void RenderPreview(ermy::rendering::CommandList& cl) override;
+
+	void MouseZoom(float) override;
+	void MouseDown(float normalizedX, float normalizedY) override;
+	void MouseUp() override;
+	void MouseMove(float normalizedDeltaX, float normalizedDeltaY) override;
+	void ResetView() override;
 };

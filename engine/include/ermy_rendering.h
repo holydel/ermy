@@ -7,6 +7,27 @@ namespace ermy
 {
 	namespace rendering
 	{
+		enum class Format
+		{
+			RGBA8
+			,RGBA16_UNORM
+			,RGBA16_NORM
+			,RGBA16F
+			, RGBA16_UINT
+			, RG16_UINT
+			, R16_UINT
+			, RG16_UNORM
+			, R16_UNORM
+			, RGBA8_UINT
+		};
+
+		struct FormatInfo
+		{
+			int size;
+		};
+
+		FormatInfo GetFormatInfo(Format format);
+
 		enum class ShaderUniformType
 		{
 			Texture2D,
@@ -29,10 +50,16 @@ namespace ermy
 		typedef Handle32 BufferID;
 		typedef Handle16 RenderPassID;
 
+		struct RootConstantRange
+		{
+			u8 offset = 0;
+			u8 size = 0;
+		};
+
 		struct PSODesc
 		{
 			//int numRootConstants = 0;			
-			std::pair<u8, u8> rootConstantRanges[(int)ShaderStage::MAX];
+			RootConstantRange rootConstantRanges[(int)ShaderStage::MAX] = {};
 			std::vector<ShaderBytecode> shaders;
 			PrimitiveTopology topology = PrimitiveTopology::TriangleList;
 
@@ -51,6 +78,8 @@ namespace ermy
 			u8 numMips = 1;
 			bool isCubemap : 1 = false;
 			bool isSparse : 1 = false;
+			Format texelFormat = Format::RGBA8;
+			u32 dataSize = 0;
 
 			void* pixelsData = nullptr;
 			const char* debugName = nullptr;

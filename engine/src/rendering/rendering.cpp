@@ -2,6 +2,7 @@
 #include "rendering_interface.h"
 #include "swapchain_interface.h"
 #include "framegraph.h"
+#include "ermy_rendering.h"
 
 namespace rendering
 {
@@ -36,4 +37,35 @@ namespace rendering
 	{
 		//swapchain::Present();
 	}
+}
+
+using namespace ermy::rendering;
+
+FormatInfo ermy::rendering::GetFormatInfo(Format format)
+{
+	switch (format)
+	{
+	case Format::RGBA8:
+		return FormatInfo{ 4 };
+	case Format::RGBA16_UNORM:
+		return FormatInfo{ 8 };
+	case Format::RGBA16_NORM:
+		return FormatInfo{ 8 };
+	case  Format::RGBA16F:
+		return FormatInfo{ 8 };
+	case  Format::RGBA16_UINT:
+		return FormatInfo{ 8 };
+	case  Format::RG16_UINT:
+		return FormatInfo{ 4 };
+	case  Format::R16_UINT:
+		return FormatInfo{ 2 };
+	case  Format::RG16_UNORM:
+		return FormatInfo{ 4 };
+	case  Format::R16_UNORM:
+		return FormatInfo{ 2 };
+	case  Format::RGBA8_UINT:
+		return FormatInfo{ 4 };
+	}
+
+	return FormatInfo{ 4 };
 }

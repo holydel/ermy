@@ -97,6 +97,10 @@ AssetData* OpenImageLoader::Load(const std::filesystem::path& path)
    result->dataSize = result->width * result->height * result->numChannels * result->channelBytes;
    result->data = malloc(result->dataSize);
    
+   if (spec.channel_bytes() == 2)
+   {
+       result->texelFormat = ermy::rendering::Format::RGBA16F;
+   }
    //direct loading for 1,2,4 channels
    if (result->numChannels == spec.nchannels)
    {

@@ -6,6 +6,35 @@
 using namespace ermy;
 using namespace ermy::rendering;
 
+VkFormat vk_utils::VkFormatFromErmy(ermy::rendering::Format format)
+{
+	switch (format)
+	{
+	case Format::RGBA8:
+		return VK_FORMAT_R8G8B8A8_SRGB;
+	case Format::RGBA16_UNORM:
+		return VK_FORMAT_R16G16B16A16_UNORM;
+	case Format::RGBA16_NORM:
+		return VK_FORMAT_R16G16B16A16_SNORM;
+	case  Format::RGBA16F:
+		return VK_FORMAT_R16G16B16A16_SFLOAT;
+	case  Format::RGBA16_UINT:
+		return VK_FORMAT_R16G16B16A16_UINT;
+	case  Format::RG16_UINT:
+		return VK_FORMAT_R16G16_UINT;
+	case  Format::R16_UINT:
+		return VK_FORMAT_R16_UINT;
+	case  Format::RG16_UNORM:
+		return VK_FORMAT_R16G16_UNORM;
+	case  Format::R16_UNORM:
+		return VK_FORMAT_R16_UNORM;
+	case  Format::RGBA8_UINT:
+		return VK_FORMAT_R8G8B8A8_UINT;
+	}
+
+	return VK_FORMAT_R8G8B8A8_SRGB;
+}
+
 VkShaderStageFlagBits vk_utils::VkShaderStageFromErmy(ermy::ShaderStage stage)
 {
 	switch (stage)
@@ -109,5 +138,5 @@ void vk_utils::debug::_setObjectName(u64 objHandle, VkObjectType objType, const 
 		info.pObjectName = name;
 
 		VK_CALL(vkSetDebugUtilsObjectNameEXT(gVKDevice, &info));
-	}	
+	}
 }

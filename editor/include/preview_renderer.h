@@ -36,4 +36,10 @@ public:
 	{
 		return RTT;
 	}
+
+	void MouseZoom(float);
+	void MouseDown(float normalizedX, float normalizedY);
+	void MouseUp();
+	void MouseMove(float normalizedDeltaX, float normalizedDeltaY);
+	void ResetView();
 };

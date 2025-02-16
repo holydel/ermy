@@ -29,3 +29,6 @@
 [submodule "eproj_template/assets/Vulkan-Assets"]
 	path = eproj_template/assets/Vulkan-Assets
 	url = https://github.com/SaschaWillems/Vulkan-Assets
+[submodule "eproj_template/assets/Vulkan-Samples-Assets"]
+	path = eproj_template/assets/Vulkan-Samples-Assets
+	url = https://github.com/KhronosGroup/Vulkan-Samples-Assets/

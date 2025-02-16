@@ -12,6 +12,7 @@
 #include <ermy_utils.h>
 
 namespace fs = std::filesystem;
+using namespace ermy;
 
 void AssetFolder::Scan(const std::filesystem::path& path)
 {
@@ -57,7 +58,7 @@ void Asset::CalculateAssetName()
 {
 	//calculate asset name to fit into 128x128 preview
 	int chN = 18;// only 18 chars fits to row
-	assetNameRows = name.size() / (chN + 1);
+	assetNameRows = static_cast<u8>(name.size() / (chN + 1));
 
 	if (assetNameRows > 0)
 	{

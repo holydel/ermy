@@ -91,7 +91,7 @@ RenderpassInfo _createRenderPass(const RenderPassDesc& desc)
 	VkImageView imageView = gAllImageViews[desc.colorAttachment.handle];
 
 	VkRenderPassCreateInfo rpass = { VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO };
-	
+
 	VkAttachmentDescription colorAttachment = {};
 	colorAttachment.format = meta.format;
 	colorAttachment.samples = meta.samples;
@@ -155,7 +155,7 @@ RenderpassInfo _createRenderPass(const RenderPassDesc& desc)
 	fbuff.layers = 1; // Single layer
 
 	vkCreateFramebuffer(gVKDevice, &fbuff, gVKGlobalAllocationsCallbacks, &result.framebuffer);
-	
+
 	result.defaultWidth = meta.width;
 	result.defaultHeight = meta.height;
 	result.targetImage = image;
@@ -164,11 +164,12 @@ RenderpassInfo _createRenderPass(const RenderPassDesc& desc)
 
 TextureInfo _createTexture(const TextureDesc& desc)
 {
-	VkDeviceSize imageSize = desc.width * desc.height * 4; // 4 channels (RGBA) TODO: from format
+	//VkDeviceSize imageSize = desc.width * desc.height * 4; // 4 channels (RGBA) TODO: from format
 	VkBuffer stagingBuffer;
 	VmaAllocation stagingBufferAllocation;
-	void* pixelsCPUdata  = nullptr; 
+	void* pixelsCPUdata = nullptr;
 	ImageMeta meta;
+	auto formatInfo = ermy::rendering::GetFormatInfo(desc.texelFormat);
 
 	VkImageUsageFlags textureUsage = VK_IMAGE_USAGE_SAMPLED_BIT;
 
@@ -182,25 +183,37 @@ TextureInfo _createTexture(const TextureDesc& desc)
 	}
 	meta.width = static_cast<uint32_t>(desc.width);
 	meta.height = static_cast<uint32_t>(desc.height);
-	meta.format = VK_FORMAT_R8G8B8A8_UNORM;
+	meta.format = vk_utils::VkFormatFromErmy(desc.texelFormat);
 	meta.samples = VK_SAMPLE_COUNT_1_BIT;
+
+	VkImageType imgType = VK_IMAGE_TYPE_2D;
+	if (desc.height == 1 && desc.width > 1 && desc.depth == 1)
+		imgType = VK_IMAGE_TYPE_1D;
+	if (desc.depth > 1)
+		imgType = VK_IMAGE_TYPE_3D;
+
 
 	// Create a Vulkan image using VMA
 	VkImageCreateInfo imageInfo{};
 	imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+	if (desc.isCubemap)
+		imageInfo.flags |= VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT;
+	//if (desc.numLayers > 1 && !(desc.numLayers && desc.isCubemap))
+	//	imageInfo.flags |= VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT;
+
 	imageInfo.imageType = VK_IMAGE_TYPE_2D;
 	imageInfo.extent.width = static_cast<uint32_t>(desc.width);
 	imageInfo.extent.height = static_cast<uint32_t>(desc.height);
-	imageInfo.extent.depth = 1;
-	imageInfo.mipLevels = 1;
-	imageInfo.arrayLayers = 1;
-	imageInfo.format = VK_FORMAT_R8G8B8A8_UNORM; // 4-channel format
+	imageInfo.extent.depth = static_cast<uint32_t>(desc.depth);
+	imageInfo.mipLevels = static_cast<uint32_t>(desc.numMips);
+	imageInfo.arrayLayers = static_cast<uint32_t>(desc.numLayers);
+	imageInfo.format = meta.format; // 4-channel format
 	imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
 	imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	imageInfo.usage = textureUsage ;
+	imageInfo.usage = textureUsage;
 	imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 	imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-	
+
 	VmaAllocationCreateInfo imageAllocCreateInfo{};
 	imageAllocCreateInfo.usage = VMA_MEMORY_USAGE_GPU_ONLY;
 	VkImage textureImage = VK_NULL_HANDLE;
@@ -212,7 +225,7 @@ TextureInfo _createTexture(const TextureDesc& desc)
 	{
 		VkBufferCreateInfo bufferInfo{};
 		bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-		bufferInfo.size = imageSize;
+		bufferInfo.size = desc.dataSize;
 		bufferInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 
 		VmaAllocationCreateInfo allocCreateInfo{};
@@ -221,41 +234,85 @@ TextureInfo _createTexture(const TextureDesc& desc)
 		VK_CALL(vmaCreateBuffer(gVMA_Allocator, &bufferInfo, &allocCreateInfo, &stagingBuffer, &stagingBufferAllocation, &bufferAllocationInfo));
 
 		vmaMapMemory(gVMA_Allocator, stagingBufferAllocation, &pixelsCPUdata);
-		memcpy(pixelsCPUdata, desc.pixelsData, static_cast<size_t>(imageSize));
+		memcpy(pixelsCPUdata, desc.pixelsData, static_cast<size_t>(desc.dataSize));
 		vmaUnmapMemory(gVMA_Allocator, stagingBufferAllocation);
 
 		auto c = AllocateSingleTimeCommandBuffer();
 		vk_utils::ImageTransition(c.cbuff, textureImage, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
-		VkBufferImageCopy region{};
-		region.bufferOffset = 0;
-		region.bufferRowLength = 0;
-		region.bufferImageHeight = 0;
-		region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-		region.imageSubresource.mipLevel = 0;
-		region.imageSubresource.baseArrayLayer = 0;
-		region.imageSubresource.layerCount = 1;
-		region.imageOffset = { 0, 0, 0 };
-		region.imageExtent = { desc.width, desc.height, 1 };
+		u32 bufferOffset = 0;
+		
+		for (int l = 0; l < desc.numLayers; ++l)
+		{
+			u32 mipWidth = desc.width;
+			u32 mipHeight = desc.height;
 
-		vkCmdCopyBufferToImage(c.cbuff, stagingBuffer, textureImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+			for (int m = 0; m < desc.numMips; ++m)
+			{
+				VkBufferImageCopy region{};
+				region.bufferOffset = bufferOffset;
+				region.bufferRowLength = 0;
+				region.bufferImageHeight = 0;
+				region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+				region.imageSubresource.mipLevel = m;
+				region.imageSubresource.baseArrayLayer = l;
+				region.imageSubresource.layerCount = 1;
+				region.imageOffset = { 0, 0, 0 };
+				region.imageExtent = { mipWidth, mipHeight, 1 };
+				vkCmdCopyBufferToImage(c.cbuff, stagingBuffer, textureImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+
+				int currentMipDataSize = mipWidth * mipHeight * formatInfo.size;
+				bufferOffset += currentMipDataSize;
+				mipWidth /= 2;
+				mipHeight /= 2;
+			}
+		}
+
 
 		vk_utils::ImageTransition(c.cbuff, textureImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
 		c.Sumbit();
 	}
 
+	VkImageViewType imgViewType = VK_IMAGE_VIEW_TYPE_2D;
+
+	if (desc.depth > 1)
+	{
+		imgViewType = VK_IMAGE_VIEW_TYPE_3D;
+	}
+	else if (desc.height == 1 && desc.width > 1 && desc.depth == 1)
+	{
+		imgViewType = VK_IMAGE_VIEW_TYPE_1D;
+		if (desc.numLayers > 1)
+			imgViewType = VK_IMAGE_VIEW_TYPE_1D_ARRAY;
+	}
+	else
+	{
+		if (desc.isCubemap)
+		{
+			if (desc.numLayers > 6)
+				imgViewType = VK_IMAGE_VIEW_TYPE_CUBE_ARRAY;
+			else
+				imgViewType = VK_IMAGE_VIEW_TYPE_CUBE;
+		}
+		else
+		{
+			if (desc.numLayers > 1)
+				imgViewType = VK_IMAGE_VIEW_TYPE_2D_ARRAY;
+		}
+	}
+
 	// Create an image view
 	VkImageViewCreateInfo viewInfo{};
 	viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 	viewInfo.image = textureImage;
-	viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-	viewInfo.format = VK_FORMAT_R8G8B8A8_UNORM;
+	viewInfo.viewType = imgViewType;
+	viewInfo.format = meta.format;
 	viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 	viewInfo.subresourceRange.baseMipLevel = 0;
-	viewInfo.subresourceRange.levelCount = 1;
+	viewInfo.subresourceRange.levelCount = desc.numMips;
 	viewInfo.subresourceRange.baseArrayLayer = 0;
-	viewInfo.subresourceRange.layerCount = 1;
+	viewInfo.subresourceRange.layerCount = desc.numLayers;
 
 	VkImageView textureImageView;
 	VK_CALL(vkCreateImageView(gVKDevice, &viewInfo, nullptr, &textureImageView));
@@ -313,20 +370,20 @@ VkPipeline _createPipeline(const PSODesc& desc)
 		VkPipelineLayoutCreateInfo cinfo{};
 		cinfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		std::vector<VkPushConstantRange> pushConstantRanges;
-		
+
 		for (int i = 0; i < (int)ShaderStage::MAX; ++i)
 		{
-			if (desc.rootConstantRanges[i].second > 0)
+			if (desc.rootConstantRanges[i].size > 0)
 			{
 				VkPushConstantRange& range = pushConstantRanges.emplace_back();
 
-				range.size = desc.rootConstantRanges[i].second;
-				range.offset = desc.rootConstantRanges[i].first;
+				range.size = desc.rootConstantRanges[i].size;
+				range.offset = desc.rootConstantRanges[i].offset;
 				range.stageFlags = vk_utils::VkShaderStageFromErmy((ShaderStage)i);
 			}
 		}
 
-		cinfo.pushConstantRangeCount = pushConstantRanges.size();
+		cinfo.pushConstantRangeCount = static_cast<u32>(pushConstantRanges.size());
 		cinfo.pPushConstantRanges = pushConstantRanges.data();
 		//VkDescriptorSetLayoutBinding samplerBinding{};
 		//samplerBinding.binding = 0;
@@ -476,7 +533,7 @@ VkPipeline _createPipeline(const PSODesc& desc)
 		else
 		{
 			cinfo.renderPass = gVKRenderPass; //final pass. TODO:// framegraph passes
-		}		
+		}
 	}
 
 
@@ -523,7 +580,7 @@ u64 ermy::rendering::GetTextureDescriptor(TextureID tid)
 
 RenderPassID ermy::rendering::CreateRenderPass(const RenderPassDesc& desc)
 {
-	RenderPassID id{ static_cast<u32>(gAllRenderPasses.size()) };
+	RenderPassID id{ static_cast<u16>(gAllRenderPasses.size()) };
 	gAllRenderPasses.push_back(_createRenderPass(desc));
 	return id;
 }

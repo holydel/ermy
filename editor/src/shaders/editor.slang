@@ -1,7 +1,12 @@
-struct PreviewTextureConstants
+struct PreviewTextureConstants2D
 {
     float2 uv0;
     float2 uv1;
+};
+
+struct PreviewTextureConstantsCubemap
+{
+    float4 dir_fov;
 };
 
 //[vk::push_constant]
@@ -40,7 +45,11 @@ VOutFS fullscreenVS(uint id: SV_VertexID)
     return output;
 }
 
+[vk_binding(0,0)]
 Sampler2D preview2D;
+
+[vk_binding(0, 0)]
+SamplerCube previewCube;
 
 float3 checkerColor(float2 uv)
 {
@@ -71,7 +80,7 @@ float4 fullscreenFSEmpty(VOutFS input) : SV_Target
 }
 
 [shader("fragment")]
-float4 fullscreenFS2D(VOutFS input, uniform PreviewTextureConstants transform) : SV_Target
+float4 fullscreenFS2D(VOutFS input, uniform PreviewTextureConstants2D transform) : SV_Target
 {
     float2 uv = lerp(transform.uv0, transform.uv1, input.uv);
 
@@ -81,4 +90,28 @@ float4 fullscreenFS2D(VOutFS input, uniform PreviewTextureConstants transform) :
 
     float3 bgColor = checkerColor(input.uv);
     return float4(lerp(bgColor, color.xyz, color.w), 1.0);
+}
+
+[shader("fragment")]
+float4 fullscreenFSCubemap(VOutFS input, uniform PreviewTextureConstantsCubemap transform) : SV_Target
+{
+    float3 dir = transform.dir_fov.xyz;
+    float fov = transform.dir_fov.w;
+
+    float2 screenUV = input.uv * 2.0 - 1.0;
+
+    float3 rayDir;
+    rayDir.x = screenUV.x * fov;
+    rayDir.y = screenUV.y * fov;
+    rayDir.z = -1.0;
+
+    rayDir = normalize(rayDir);
+
+    float3 forward = normalize(dir);
+    float3 right = normalize(cross(float3(0, 1, 0), forward));
+    float3 up = cross(forward, right);
+
+    float3 worldRayDir = rayDir.x * right + rayDir.y * up + rayDir.z * forward;
+
+    return previewCube.Sample(worldRayDir);
 }

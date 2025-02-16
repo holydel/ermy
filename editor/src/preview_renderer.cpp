@@ -8,6 +8,35 @@ PreviewRenderer& PreviewRenderer::Instance()
 	return lInstance;
 	// TODO: insert return statement here
 }
+void PreviewRenderer::ResetView()
+{
+	if (currentProps)
+		currentProps->ResetView();
+}
+
+void PreviewRenderer::MouseZoom(float value)
+{
+	if (currentProps)
+		currentProps->MouseZoom(value);
+}
+
+void PreviewRenderer::MouseDown(float normalizedX, float normalizedY)
+{
+	if (currentProps)
+		currentProps->MouseDown(normalizedX, normalizedY);
+}
+
+void PreviewRenderer::MouseUp()
+{
+	if (currentProps)
+		currentProps->MouseUp();
+}
+
+void PreviewRenderer::MouseMove(float normalizedDeltaX, float normalizedDeltaY)
+{
+	if (currentProps)
+		currentProps->MouseMove(normalizedDeltaX, normalizedDeltaY);
+}
 
 void PreviewRenderer::RenderPreview(ermy::rendering::CommandList& finalCL)
 {
@@ -17,7 +46,7 @@ void PreviewRenderer::RenderPreview(ermy::rendering::CommandList& finalCL)
 		a += 0.01f;
 
 		finalCL.BeginDebugScope("Render Preview");
-		finalCL.BeginRenderPass(RTT, glm::vec4(0.2f, sin(a) * 0.5f + 0.5f, 0.8f, 1.0f));
+		finalCL.BeginRenderPass(RTT, glm::vec4(0,0,0,0));
 
 		if (currentProps)
 			currentProps->RenderPreview(finalCL);

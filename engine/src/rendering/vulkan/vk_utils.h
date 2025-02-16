@@ -10,7 +10,7 @@ namespace vk_utils
 {
 	VkShaderStageFlagBits VkShaderStageFromErmy(ermy::ShaderStage stage);
 	VkPrimitiveTopology VkPrimitiveTopologyFromErmy(ermy::rendering::PrimitiveTopology topology);
-
+	VkFormat VkFormatFromErmy(ermy::rendering::Format format);
 	void ImageTransition(VkCommandBuffer cbuff, VkImage image, VkImageLayout oldLayout, VkImageLayout newLayout);
 
 	namespace debug

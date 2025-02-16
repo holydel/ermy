@@ -9,6 +9,13 @@ float canvas_interface::BgColor[4] = {1.0f,1.0f,1.0f,1.0f};
 CommandList* gCanvasCL = nullptr;
 PSOID gDedicatedSpritePSO;
 
+struct SpriteInfo
+{
+    float x, y, w, h, u0, v0, u1, v1;
+    float angle;
+    u32 packedColor;
+};
+
 void ermy::canvas::SetClearColor(float r, float g, float b, float a)
 {
     canvas_interface::BgColor[0] = r;
@@ -28,12 +35,7 @@ void ermy::canvas::DrawDedicatedSprite(float x, float y, float w, float h, float
 
     gCanvasCL->SetPSO(gDedicatedSpritePSO);
 
-    struct SpriteInfo
-    {
-        float x, y, w, h, u0, v0, u1, v1;
-        float angle;
-        u32 packedColor;
-    };
+
 
     SpriteInfo sinfo = { x,y,w,h,0.0f,0.0f,1.0f,1.0f,a,0xFFFFFFFFu };
 
@@ -47,7 +49,7 @@ void canvas_interface::Initialize()
     desc.shaders.push_back(shader_internal::dedicatedSpriteVS());
     desc.shaders.push_back(shader_internal::dedicatedSpriteFS());
     desc.topology = PrimitiveTopology::TriangleStrip;
-    desc.rootConstantRanges[(int)ShaderStage::Vertex] = { 0,10 }; //float2 pos, float2 size, float2 uv0, float2 uv1, uint packedColor, float angle
+    desc.rootConstantRanges[(int)ShaderStage::Vertex] = { 0,sizeof(SpriteInfo)}; //float2 pos, float2 size, float2 uv0, float2 uv1, uint packedColor, float angle
 
     gDedicatedSpritePSO = CreatePSO(desc);
 }
