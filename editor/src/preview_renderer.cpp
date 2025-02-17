@@ -56,23 +56,55 @@ void PreviewRenderer::RenderPreview(ermy::rendering::CommandList& finalCL)
 
 		needUpdatePreview = false;
 	}	
+
+	if (!staticPreviewList.empty())
+	{
+		finalCL.BeginDebugScope("Render Static Preview");
+
+		while (!staticPreviewList.empty())
+		{
+			AssetData* toGenPreview = staticPreviewList.front();
+			toGenPreview->RenderStaticPreview(finalCL);
+			staticPreviewList.pop();
+		}
+
+		finalCL.EndDebugScope();
+
+	}
 }
 
 
 PreviewRenderer::PreviewRenderer()
 {
-	rendering::TextureDesc tdesc;
-	tdesc.width = 512;
-	tdesc.height = 512;
+	{
+		rendering::TextureDesc tdesc;
+		tdesc.width = 512;
+		tdesc.height = 512;
 
-	RTT_Color = rendering::CreateDedicatedTexture(tdesc);
-	
-	rendering::RenderPassDesc rdesc;
-	rdesc.colorAttachment = RTT_Color;
+		RTT_Color = rendering::CreateDedicatedTexture(tdesc);
 
-	RTT = rendering::CreateRenderPass(rdesc);
+		rendering::RenderPassDesc rdesc;
+		rdesc.colorAttachment = RTT_Color;
 
-	previewTextureID = rendering::GetTextureDescriptor(RTT_Color);
+		RTT = rendering::CreateRenderPass(rdesc);
+
+		previewTextureID = rendering::GetTextureDescriptor(RTT_Color);
+	}
+
+	{
+		rendering::TextureDesc tdesc;
+		tdesc.width = 256;
+		tdesc.height = 256;
+
+		RTT_ColorStaticDoubleRes = rendering::CreateDedicatedTexture(tdesc);
+
+		rendering::RenderPassDesc rdesc;
+		rdesc.colorAttachment = RTT_ColorStaticDoubleRes;
+
+		RTT_Static = rendering::CreateRenderPass(rdesc);
+
+		previewTextureIDStatic = rendering::GetTextureDescriptor(RTT_ColorStaticDoubleRes);
+	}
 }
 
 PreviewRenderer::~PreviewRenderer()

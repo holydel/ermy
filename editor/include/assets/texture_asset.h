@@ -11,6 +11,8 @@ class TextureAsset : public AssetData
 	bool isPreviewDragging = false;
 	float oldPreviewDX = 0.0f;
 	float oldPreviewDY = 0.0f;
+	bool isStaticPreview = false;
+	ermy::rendering::TextureType texType = ermy::rendering::TextureType::Tex2D;
 public:
 	ermy::u32 width = 0;
 	ermy::u32 height = 0;
@@ -32,7 +34,7 @@ public:
 
 	void RegeneratePreview() override;
 	void RenderPreview(ermy::rendering::CommandList& cl) override;
-
+	void RenderStaticPreview(ermy::rendering::CommandList& cl) override;
 	void MouseZoom(float) override;
 	void MouseDown(float normalizedX, float normalizedY) override;
 	void MouseUp() override;

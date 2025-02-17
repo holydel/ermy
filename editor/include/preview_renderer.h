@@ -3,6 +3,8 @@
 #include <ermy_commandlist.h>
 #include <imgui.h>
 #include "preview_props.h"
+#include "assets/asset.h"
+#include <queue>
 
 class PreviewRenderer
 {	
@@ -14,9 +16,18 @@ class PreviewRenderer
 	~PreviewRenderer();
 
 	ImTextureID previewTextureID;
+	ermy::u64 previewTextureIDStatic;
 	bool needUpdatePreview = true;
 
 	PreviewProps* currentProps = nullptr;
+
+	ermy::rendering::RenderPassID RTT_Static;
+
+	ermy::rendering::TextureID RTT_ColorStaticDoubleRes;
+	ermy::rendering::TextureID RTT_DepthStaticDoubleRes;
+	ermy::rendering::TextureID RTT_ColorStaticFinal;
+
+	std::queue<AssetData*> staticPreviewList;
 public:
 	static PreviewRenderer& Instance();
 
@@ -36,10 +47,28 @@ public:
 	{
 		return RTT;
 	}
+	ermy::rendering::RenderPassID GetStaticRTT()
+	{
+		return RTT_Static;
+	}
+	ermy::rendering::TextureID GetStaticTexture()
+	{
+		return RTT_ColorStaticDoubleRes;
+	}
 
 	void MouseZoom(float);
 	void MouseDown(float normalizedX, float normalizedY);
 	void MouseUp();
 	void MouseMove(float normalizedDeltaX, float normalizedDeltaY);
 	void ResetView();
+
+	void EnqueueStaticPreviewGeneration(AssetData* asset)
+	{
+		staticPreviewList.push(asset);
+	}
+
+	void UpdateStaticPreviews()
+	{
+
+	}
 };

@@ -45,7 +45,7 @@ FormatInfo ermy::rendering::GetFormatInfo(Format format)
 {
 	switch (format)
 	{
-	case Format::RGBA8:
+	case Format::RGBA8_UNORM:
 		return FormatInfo{ 4 };
 	case Format::RGBA16_UNORM:
 		return FormatInfo{ 8 };

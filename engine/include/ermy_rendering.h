@@ -9,7 +9,7 @@ namespace ermy
 	{
 		enum class Format
 		{
-			RGBA8
+			RGBA8_UNORM
 			,RGBA16_UNORM
 			,RGBA16_NORM
 			,RGBA16F
@@ -24,6 +24,15 @@ namespace ermy
 		struct FormatInfo
 		{
 			int size;
+		};
+
+		enum class TextureType
+		{
+			Tex2D
+			,Tex3D
+			,TexCube
+			,TexArray2D
+			,TexArrayCube
 		};
 
 		FormatInfo GetFormatInfo(Format format);
@@ -78,7 +87,7 @@ namespace ermy
 			u8 numMips = 1;
 			bool isCubemap : 1 = false;
 			bool isSparse : 1 = false;
-			Format texelFormat = Format::RGBA8;
+			Format texelFormat = Format::RGBA8_UNORM;
 			u32 dataSize = 0;
 
 			void* pixelsData = nullptr;

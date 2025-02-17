@@ -10,7 +10,7 @@ VkFormat vk_utils::VkFormatFromErmy(ermy::rendering::Format format)
 {
 	switch (format)
 	{
-	case Format::RGBA8:
+	case Format::RGBA8_UNORM:
 		return VK_FORMAT_R8G8B8A8_SRGB;
 	case Format::RGBA16_UNORM:
 		return VK_FORMAT_R16G16B16A16_UNORM;
@@ -118,10 +118,10 @@ static VkImageMemoryBarrier2 createImageMemoryBarrier(VkImage       image,
 	return barrier;
 }
 
-void vk_utils::ImageTransition(VkCommandBuffer cbuff, VkImage image, VkImageLayout oldLayout, VkImageLayout newLayout)
+void vk_utils::ImageTransition(VkCommandBuffer cbuff, VkImage image, VkImageLayout oldLayout, VkImageLayout newLayout, int numMips, int numLayers)
 {
 	VkImageAspectFlags aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-	const VkImageMemoryBarrier2 barrier = createImageMemoryBarrier(image, oldLayout, newLayout, { aspectMask, 0, 1, 0, 1 });
+	const VkImageMemoryBarrier2 barrier = createImageMemoryBarrier(image, oldLayout, newLayout, { aspectMask, 0, (uint32_t)numMips, 0, (uint32_t)numLayers });
 	const VkDependencyInfo depInfo{ .sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO, .imageMemoryBarrierCount = 1, .pImageMemoryBarriers = &barrier };
 
 	vkCmdPipelineBarrier2(cbuff, &depInfo);

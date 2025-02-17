@@ -8,6 +8,10 @@ public:
 	virtual void RenderPreview(ermy::rendering::CommandList& cl)
 	{
 	}
+	virtual void RenderStaticPreview(ermy::rendering::CommandList& cl)
+	{
+	}
+
 	virtual void MouseZoom(float)
 	{
 

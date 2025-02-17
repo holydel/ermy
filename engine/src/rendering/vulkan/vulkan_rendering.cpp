@@ -171,7 +171,7 @@ TextureInfo _createTexture(const TextureDesc& desc)
 	ImageMeta meta;
 	auto formatInfo = ermy::rendering::GetFormatInfo(desc.texelFormat);
 
-	VkImageUsageFlags textureUsage = VK_IMAGE_USAGE_SAMPLED_BIT;
+	VkImageUsageFlags textureUsage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 
 	if (desc.pixelsData)
 	{
@@ -221,6 +221,8 @@ TextureInfo _createTexture(const TextureDesc& desc)
 	VmaAllocationInfo textureImageAllocationInfo;
 	VK_CALL(vmaCreateImage(gVMA_Allocator, &imageInfo, &imageAllocCreateInfo, &textureImage, &textureImageAllocation, &textureImageAllocationInfo));
 
+	auto c = AllocateSingleTimeCommandBuffer();
+
 	if (desc.pixelsData)
 	{
 		VkBufferCreateInfo bufferInfo{};
@@ -237,11 +239,12 @@ TextureInfo _createTexture(const TextureDesc& desc)
 		memcpy(pixelsCPUdata, desc.pixelsData, static_cast<size_t>(desc.dataSize));
 		vmaUnmapMemory(gVMA_Allocator, stagingBufferAllocation);
 
-		auto c = AllocateSingleTimeCommandBuffer();
-		vk_utils::ImageTransition(c.cbuff, textureImage, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+		vk_utils::ImageTransition(c.cbuff, textureImage, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,desc.numMips,desc.numLayers);
 
 		u32 bufferOffset = 0;
-		
+		std::vector<VkBufferImageCopy> allRegions;
+		allRegions.reserve(desc.numLayers * desc.numMips);
+
 		for (int l = 0; l < desc.numLayers; ++l)
 		{
 			u32 mipWidth = desc.width;
@@ -249,7 +252,7 @@ TextureInfo _createTexture(const TextureDesc& desc)
 
 			for (int m = 0; m < desc.numMips; ++m)
 			{
-				VkBufferImageCopy region{};
+				VkBufferImageCopy& region = allRegions.emplace_back();
 				region.bufferOffset = bufferOffset;
 				region.bufferRowLength = 0;
 				region.bufferImageHeight = 0;
@@ -259,7 +262,6 @@ TextureInfo _createTexture(const TextureDesc& desc)
 				region.imageSubresource.layerCount = 1;
 				region.imageOffset = { 0, 0, 0 };
 				region.imageExtent = { mipWidth, mipHeight, 1 };
-				vkCmdCopyBufferToImage(c.cbuff, stagingBuffer, textureImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
 				int currentMipDataSize = mipWidth * mipHeight * formatInfo.size;
 				bufferOffset += currentMipDataSize;
@@ -268,11 +270,17 @@ TextureInfo _createTexture(const TextureDesc& desc)
 			}
 		}
 
+		vkCmdCopyBufferToImage(c.cbuff, stagingBuffer, textureImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, static_cast<uint32_t>(allRegions.size()), allRegions.data());
 
-		vk_utils::ImageTransition(c.cbuff, textureImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
-		c.Sumbit();
+		vk_utils::ImageTransition(c.cbuff, textureImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, desc.numMips, desc.numLayers);
 	}
+	else
+	{
+		vk_utils::ImageTransition(c.cbuff, textureImage, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, desc.numMips, desc.numLayers);
+	}
+
+	c.Sumbit();
 
 	VkImageViewType imgViewType = VK_IMAGE_VIEW_TYPE_2D;
 

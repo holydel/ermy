@@ -9,5 +9,7 @@ namespace ermy
 		ShaderBytecode fullscreenFSEmpty();
 		ShaderBytecode fullscreenFS2D();
 		ShaderBytecode fullscreenFSCubemap();
+		ShaderBytecode fullscreenFS2DStatic();
+		ShaderBytecode fullscreenFSCubemapStatic();
 	}
 }

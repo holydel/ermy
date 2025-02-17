@@ -142,4 +142,35 @@ void CommandList::EndRenderPass()
 	vk_utils::ImageTransition(cbuff, currentRPass.targetImage, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 }
 
+void CommandList::BlitTexture(TextureID src, TextureID dest)
+{
+	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
+
+	auto srcImg = gAllImages[src.handle];
+	auto dstImg = gAllImages[dest.handle];
+
+	vk_utils::ImageTransition(cbuff, srcImg, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
+	vk_utils::ImageTransition(cbuff, dstImg, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+
+	VkImageBlit blitRegion = {};
+	blitRegion.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+	blitRegion.srcSubresource.mipLevel = 0;
+	blitRegion.srcSubresource.baseArrayLayer = 0;
+	blitRegion.srcSubresource.layerCount = 1;	
+	blitRegion.srcOffsets[0] = { 0, 0, 0 };
+	blitRegion.srcOffsets[1] = { gAllImageMetas[src.handle].width, gAllImageMetas[src.handle].height, 1 };
+
+	blitRegion.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+	blitRegion.dstSubresource.mipLevel = 0;
+	blitRegion.dstSubresource.baseArrayLayer = 0;
+	blitRegion.dstSubresource.layerCount = 1;
+	blitRegion.dstOffsets[0] = { 0, 0, 0 };
+	blitRegion.dstOffsets[1] = { gAllImageMetas[dest.handle].width, gAllImageMetas[dest.handle].height, 1 };
+
+	vkCmdBlitImage(cbuff, srcImg, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, dstImg, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &blitRegion, VkFilter::VK_FILTER_LINEAR);
+
+	vk_utils::ImageTransition(cbuff, srcImg, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+	vk_utils::ImageTransition(cbuff, dstImg, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+}
+
 #endif

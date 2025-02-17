@@ -105,7 +105,7 @@ rendering::Format FromGLInternalFormat(u32 glInternalFormat)
 	switch (glInternalFormat)
 	{
 	case RGBA8_EXT:
-		return Format::RGBA8;
+		return Format::RGBA8_UNORM;
 	case RGBA16F_EXT:
 		return Format::RGBA16F;
 	case GL_R16UI:
@@ -117,7 +117,7 @@ rendering::Format FromGLInternalFormat(u32 glInternalFormat)
 		assert(!"Unknown format");
 	}
 
-	return Format::RGBA8;
+	return Format::RGBA8_UNORM;
 	//	case GL_RGBA8_:
 
 }

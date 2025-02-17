@@ -40,6 +40,8 @@ namespace ermy
 
 			void BeginRenderPass(RenderPassID rtt, glm::vec4 clearColor = glm::vec4(0,0,0,0));
 			void EndRenderPass();
+
+			void BlitTexture(TextureID src, TextureID dest);
 		};
 	}
 }

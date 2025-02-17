@@ -33,8 +33,10 @@ enum class AssetLoaderType
 class AssetData : public PreviewProps
 {
 protected:
-	ermy::rendering::TextureID previewTexture;
-	ImTextureID assetPreviewTex = 0;
+	ermy::rendering::TextureID previewTextureLive;
+	ermy::rendering::TextureID previewTextureStatic;
+	ImTextureID assetPreviewTexLive = 0;
+	ImTextureID assetPreviewTexStatic = 0;
 public:
 	struct MetaData
 	{
@@ -49,11 +51,11 @@ public:
 	virtual void DrawPreview() {};
 	ermy::rendering::TextureID GetPreviewTexture()
 	{
-		return previewTexture;
+		return previewTextureLive;
 	}
-	ImTextureID GetAssetPreview()
+	ImTextureID GetAssetPreviewStatic()
 	{
-		return assetPreviewTex;
+		return assetPreviewTexStatic;
 	}
 	virtual void RegeneratePreview() {}
 protected:

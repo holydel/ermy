@@ -318,7 +318,7 @@ void DrawFolderContents(AssetFolder* folder)
 
 					if (item_data->GetData())
 					{
-						ImTextureID previewID = item_data->GetData()->GetAssetPreview();
+						ImTextureID previewID = item_data->GetData()->GetAssetPreviewStatic();
 						if (previewID)
 						{
 							draw_list->AddImage(previewID, box_min, box_max);

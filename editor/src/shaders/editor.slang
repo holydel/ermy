@@ -51,14 +51,11 @@ Sampler2D preview2D;
 [vk_binding(0, 0)]
 SamplerCube previewCube;
 
-float3 checkerColor(float2 uv)
+float3 checkerColor(float2 uv, float cellSize)
 {
     // Estimate the screen resolution using derivatives of UV
     float2 pixelSize = float2(length(ddx(uv)), length(ddy(uv)));
     float2 resolution = 1.0 / pixelSize;
-
-    // Define the checker size in pixels
-    float cellSize = 16.0f;
 
     // Convert UV to approximate pixel coordinates
     float2 pixelCoords = uv * resolution;
@@ -76,7 +73,7 @@ float3 checkerColor(float2 uv)
 [shader("fragment")]
 float4 fullscreenFSEmpty(VOutFS input) : SV_Target
 {
-    return float4(checkerColor(input.uv), 1.0);
+    return float4(checkerColor(input.uv,16.0f), 1.0);
 }
 
 [shader("fragment")]
@@ -88,7 +85,7 @@ float4 fullscreenFS2D(VOutFS input, uniform PreviewTextureConstants2D transform)
     if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0)
         color.w = 0.0f;
 
-    float3 bgColor = checkerColor(input.uv);
+    float3 bgColor = checkerColor(input.uv,16.0f);
     return float4(lerp(bgColor, color.xyz, color.w), 1.0);
 }
 
@@ -114,4 +111,68 @@ float4 fullscreenFSCubemap(VOutFS input, uniform PreviewTextureConstantsCubemap 
     float3 worldRayDir = rayDir.x * right + rayDir.y * up + rayDir.z * forward;
 
     return previewCube.Sample(worldRayDir);
+}
+
+[shader("fragment")]
+float4 fullscreenFS2DStatic(VOutFS input) : SV_Target
+{
+    float4 color = preview2D.Sample(input.uv);
+    float3 bgColor = checkerColor(input.uv,8.0f);
+    return float4(lerp(bgColor, color.xyz, color.w), 1.0);
+}
+
+float3 CubeUVToDir(int faceID, float2 uv)
+{
+    uv.y = 1.0 - uv.y;
+    uv = uv * 2.0 - 1.0; // Remap from [0,1] to [-1,1]
+    
+    float3 dir;
+
+    if (faceID == 0) dir = float3(1, uv.y, -uv.x); // +X
+    if (faceID == 1) dir = float3(-1, uv.y, uv.x); // -X
+    if (faceID == 2) dir = float3(uv.x, 1, -uv.y); // +Y
+    if (faceID == 3) dir = float3(uv.x, -1, uv.y); // -Y
+    if (faceID == 4) dir = float3(uv.x, uv.y, 1); // +Z
+    if (faceID == 5) dir = float3(-uv.x, uv.y, -1); // -Z
+
+    return normalize(dir); // Normalize for correct cubemap sampling
+}
+
+[shader("fragment")]
+float4 fullscreenFSCubemapStatic(VOutFS input) : SV_Target
+{
+    int rowID = (int)(input.uv.y * 3);
+    int columnID = (int)(input.uv.x * 4);
+
+    int faceID = -1;
+
+    float3 color = checkerColor(input.uv, 8.0f);
+    if (columnID == 0)
+    {
+        if (rowID == 1)
+            faceID = 1;
+    }
+    if (columnID == 1)
+    {
+        if (rowID == 0)
+            faceID = 2;
+        if (rowID == 1)
+            faceID = 4;
+        if (rowID == 2)
+            faceID = 3;
+    }
+    if (rowID == 1)
+    {
+        if (columnID == 2)
+            faceID = 0;
+        if (columnID == 3)
+            faceID = 5;
+    }
+    if (faceID >= 0)
+    {
+        float3 dir = CubeUVToDir(faceID, fmod(input.uv * float2(4.0,3.0),float2(1.0f)));
+        color = previewCube.Sample(dir).xyz;
+    }
+
+    return float4(color,1.0);
 }
