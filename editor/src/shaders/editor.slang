@@ -9,15 +9,52 @@ struct PreviewTextureConstantsCubemap
     float4 dir_fov;
 };
 
-//[vk::push_constant]
-//ConstantBuffer<PreviewTextureConstants> previewTextureConst : register(b0);
+struct StaticVertexDedicated
+{
+    float3 pos : POSITION;
+    float3 normal : NORMAL;
+    float3 tangent : TANGENT;
+    float3 bitangent : BITANGENT;
+    float2 uv0 : TEXCOORD0;
+    float2 uv1 : TEXCOORD1;
+    float4 color : COLOR0;
+};
+
+struct OutStaticVertexDedicated
+{
+    float4 position : SV_Position;
+    float2 uv : TEXCOORD0;
+    float4 color : COLOR0;
+};
 
 struct VOutFS
 {
     float4 position : SV_Position;
     float2 uv : TEXCOORD0;
+};
+
+[shader("vertex")]
+OutStaticVertexDedicated dedicatedStaticMeshVS(StaticVertexDedicated vtx, uniform float4x4 MVP)
+{
+    OutStaticVertexDedicated output;
+
+    // Transform the vertex position using the MVP matrix
+    output.position = mul(MVP, float4(vtx.pos, 1.0));
+
+    // Pass through the UV coordinates
+    output.uv = vtx.uv0;
+
+    // Pass through the vertex color
+    output.color = vtx.color;
+
+    return output;
 }
 
+[shader("fragment")]
+float4 dedicatedStaticMeshFS_UV0(OutStaticVertexDedicated input) : SV_Target
+{
+    return float4(input.uv.x,input.uv.y,0.0f,1.0f);
+}
 
 [shader("vertex")]
 VOutFS fullscreenVS(uint id: SV_VertexID)

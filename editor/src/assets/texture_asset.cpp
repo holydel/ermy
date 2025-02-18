@@ -299,19 +299,3 @@ void TextureAsset::RenderPreview(ermy::rendering::CommandList& cl)
 	
 	cl.Draw(3);
 }
-
-//std::vector<std::string>  TextureAsset::Initialize()
-//{
-//    std::string supported_formats;
-//    getattribute("input_format_list", supported_formats);
-//    ERMY_LOG("Supported image formats: %s\n", supported_formats.c_str());
-//    std::cout << "Supported image formats: " << supported_formats << std::endl;
-//
-//    std::vector<std::string> result;
-//    return result;
-//}
-//
-//void TextureAsset::Shutdown()
-//{
-//
-//}

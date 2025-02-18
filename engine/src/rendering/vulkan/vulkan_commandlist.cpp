@@ -173,4 +173,34 @@ void CommandList::BlitTexture(TextureID src, TextureID dest)
 	vk_utils::ImageTransition(cbuff, dstImg, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 }
 
+void CommandList::SetVertexStream(BufferID buf)
+{
+	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
+	
+	VkDeviceSize offset = 0;
+
+	vkCmdBindVertexBuffers(cbuff, 0, 1, &gAllBuffers[buf.handle], &offset);
+}
+
+void CommandList::SetIndexStream(BufferID buf)
+{
+	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
+
+	vkCmdBindIndexBuffer(cbuff, gAllBuffers[buf.handle], 0, VkIndexType::VK_INDEX_TYPE_UINT16);
+}
+
+void CommandList::DrawDedicatedMesh(const DedicatedMesh& mesh, const glm::mat4& MVP)
+{
+	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
+
+	SetRootConstant(MVP);
+	SetIndexStream(mesh.indexBuffer);
+	SetVertexStream(mesh.vertexBuffer);
+
+	for (auto& s : mesh.subMeshes)
+	{
+		vkCmdDrawIndexed(cbuff, s.indexCount, 1, s.indexOffset, s.vertexOffset, 0);
+	}
+}
+
 #endif

@@ -12,7 +12,7 @@ namespace vk_utils
 	VkPrimitiveTopology VkPrimitiveTopologyFromErmy(ermy::rendering::PrimitiveTopology topology);
 	VkFormat VkFormatFromErmy(ermy::rendering::Format format);
 	void ImageTransition(VkCommandBuffer cbuff, VkImage image, VkImageLayout oldLayout, VkImageLayout newLayout, int numMips = 1, int numLayers = 1);
-
+	VkBufferUsageFlagBits VkBufferUsageFromErmy(ermy::rendering::BufferUsage busage);
 	namespace debug
 	{
 		void _setObjectName(ermy::u64 objHandle, VkObjectType objType, const char* name);

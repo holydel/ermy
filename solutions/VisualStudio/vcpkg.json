@@ -2,11 +2,12 @@
   "dependencies": [
     {
       "name": "openimageio",
-      "features": [ "webp", "gif", "jpegxl", "libheif", "libraw","openjpeg" ]
+      "features": [ "webp", "gif", "jpegxl", "libheif", "libraw", "openjpeg" ]
     },
-      "assimp",
-      "ffmpeg",
-      "usd",
-      "ktx"
+    "assimp",
+    "ffmpeg",
+    "usd",
+    "ktx",
+    "directxtex"
   ]
 }

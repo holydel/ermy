@@ -7,6 +7,30 @@ namespace ermy
 {
 	namespace rendering
 	{
+		struct StaticVertexDedicated
+		{
+			float x, y, z;
+			float nx, ny, nz;
+			float tx, ty, tz;
+			float bx, by, bz;
+			float u0, v0;
+			float u1, v1;
+			float r, g, b, a;
+		};
+
+		struct SkinnedVertexDedicated
+		{
+			float x, y, z;
+			float nx, ny, nz;
+			float tx, ty, tz;
+			float bx, by, bz;
+			float u0, v0;
+			float u1, v1;
+			float r, g, b, a;
+			float w0, w1, w2, w3;
+			u32 boneIndices;
+		};
+
 		enum class Format
 		{
 			RGBA8_UNORM
@@ -19,6 +43,10 @@ namespace ermy
 			, RG16_UNORM
 			, R16_UNORM
 			, RGBA8_UINT
+			, R32F
+			, RG32F
+			, RGB32F
+			, RGBA32F
 		};
 
 		struct FormatInfo
@@ -54,6 +82,19 @@ namespace ermy
 			LineStrip
 		};
 
+		struct VertexAttribute
+		{
+			Format format;
+		};
+
+		enum class BufferUsage
+		{
+			Vertex,
+			Index,
+			Uniform,
+			Storage
+		};
+
 		typedef Handle32 PSOID;
 		typedef Handle32 TextureID;
 		typedef Handle32 BufferID;
@@ -73,6 +114,7 @@ namespace ermy
 			PrimitiveTopology topology = PrimitiveTopology::TriangleList;
 
 			std::vector<ShaderUniformType> uniforms;
+			std::vector<VertexAttribute> vertexAttributes;
 			const char* debugName = nullptr;
 
 			RenderPassID specificRenderPass;
@@ -96,7 +138,9 @@ namespace ermy
 
 		struct BufferDesc
 		{
-			u64 size;
+			u64 size = 0;
+			BufferUsage usage = BufferUsage::Uniform;
+			void* initialData = nullptr;
 			const char* debugName = nullptr;
 		};
 
@@ -113,7 +157,6 @@ namespace ermy
 
 		ermy::u64 GetTextureDescriptor(TextureID tid); //ImTexture
 
-		RenderPassID CreateRenderPass(const RenderPassDesc &desc);
-		
+		RenderPassID CreateRenderPass(const RenderPassDesc &desc);		
 	}
 }

@@ -28,6 +28,12 @@ struct TextureInfo
 	ImageMeta meta;
 };
 
+struct BufferInfo {
+	VkBuffer buffer;
+	VmaAllocation allocation;
+	VmaAllocationInfo allocationInfo;
+};
+
 constexpr uint32_t OpEntryPoint = 15;
 
 std::string _extractEntryPointName(const uint32_t* spirv, int numOpCodes) {
@@ -360,9 +366,65 @@ TextureInfo _createTexture(const TextureDesc& desc)
 	return result;
 }
 
-VkBuffer _createBuffer(const BufferDesc& desc)
-{
-	return VK_NULL_HANDLE;
+BufferInfo _createBuffer(const BufferDesc& desc) {
+	// Create the buffer in GPU memory
+	VkBufferCreateInfo bufferInfo{};
+	bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+	bufferInfo.size = desc.size; // Size of the buffer
+	bufferInfo.usage = vk_utils::VkBufferUsageFromErmy(desc.usage) | VK_BUFFER_USAGE_TRANSFER_DST_BIT; // Usage flags (e.g., VK_BUFFER_USAGE_VERTEX_BUFFER_BIT)
+	bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+	VmaAllocationCreateInfo allocCreateInfo{};
+	allocCreateInfo.usage = VMA_MEMORY_USAGE_GPU_ONLY; // Allocate in GPU memory
+
+	VkBuffer buffer = VK_NULL_HANDLE;
+	VmaAllocation allocation = VK_NULL_HANDLE;
+	VmaAllocationInfo allocationInfo;
+	VK_CALL(vmaCreateBuffer(gVMA_Allocator, &bufferInfo, &allocCreateInfo, &buffer, &allocation, &allocationInfo));
+
+	// If initial data is provided, use a staging buffer to copy data to the GPU buffer
+	if (desc.initialData) {
+		// Create a staging buffer in CPU-visible memory
+		VkBuffer stagingBuffer;
+		VmaAllocation stagingBufferAllocation;
+		void* stagingData = nullptr;
+
+		VkBufferCreateInfo stagingBufferInfo{};
+		stagingBufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+		stagingBufferInfo.size = desc.size;
+		stagingBufferInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+
+		VmaAllocationCreateInfo stagingAllocCreateInfo{};
+		stagingAllocCreateInfo.usage = VMA_MEMORY_USAGE_CPU_ONLY;
+
+		VK_CALL(vmaCreateBuffer(gVMA_Allocator, &stagingBufferInfo, &stagingAllocCreateInfo, &stagingBuffer, &stagingBufferAllocation, nullptr));
+
+		// Map the staging buffer and copy the data
+		vmaMapMemory(gVMA_Allocator, stagingBufferAllocation, &stagingData);
+		memcpy(stagingData, desc.initialData, static_cast<size_t>(desc.size));
+		vmaUnmapMemory(gVMA_Allocator, stagingBufferAllocation);
+
+		// Use a command buffer to copy data from the staging buffer to the GPU buffer
+		auto c = AllocateSingleTimeCommandBuffer();
+
+		VkBufferCopy copyRegion{};
+		copyRegion.srcOffset = 0;
+		copyRegion.dstOffset = 0;
+		copyRegion.size = desc.size;
+		vkCmdCopyBuffer(c.cbuff, stagingBuffer, buffer, 1, &copyRegion);
+
+		c.Sumbit();
+
+		// Clean up the staging buffer
+		//vmaDestroyBuffer(gVMA_Allocator, stagingBuffer, stagingBufferAllocation);
+	}
+
+	// Return the buffer and its allocation information
+	BufferInfo result;
+	result.buffer = buffer;
+	result.allocation = allocation;
+	result.allocationInfo = allocationInfo;
+	return result;
 }
 
 VkPipeline _createPipeline(const PSODesc& desc)
@@ -443,6 +505,35 @@ VkPipeline _createPipeline(const PSODesc& desc)
 	VkPipelineDynamicStateCreateInfo pipDynamicState = { VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO };
 
 	VkPipelineColorBlendAttachmentState bstate = {};
+
+	VkVertexInputBindingDescription bindingDescription = {};
+	bindingDescription.binding = 0;
+	bindingDescription.stride = sizeof(StaticVertexDedicated);
+	bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+	std::vector<VkVertexInputAttributeDescription> attributeDescriptions = {};
+
+	int currentOffset = 0;
+	int location = 0;
+	if(!desc.vertexAttributes.empty())
+	{
+		for (auto& d : desc.vertexAttributes)
+		{
+			VkVertexInputAttributeDescription& ad = attributeDescriptions.emplace_back();
+			ad.binding = 0;
+			ad.location = location++;
+			ad.format = vk_utils::VkFormatFromErmy(d.format);
+			ad.offset = currentOffset;
+			
+			auto const &fi = ermy::rendering::GetFormatInfo(d.format);
+
+			currentOffset += fi.size;
+		}
+		
+		pipVertexInputState.vertexBindingDescriptionCount = 1;
+		pipVertexInputState.pVertexBindingDescriptions = &bindingDescription;
+		pipVertexInputState.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
+		pipVertexInputState.pVertexAttributeDescriptions = attributeDescriptions.data();
+	}
 
 	bstate.srcColorBlendFactor = VkBlendFactor::VK_BLEND_FACTOR_SRC_COLOR;
 	bstate.dstColorBlendFactor = VkBlendFactor::VK_BLEND_FACTOR_DST_COLOR;
@@ -574,7 +665,9 @@ TextureID ermy::rendering::CreateDedicatedTexture(const TextureDesc& desc)
 BufferID ermy::rendering::CreateDedicatedBuffer(const BufferDesc& desc)
 {
 	BufferID id{ static_cast<u32>(gAllBuffers.size()) };
-	gAllBuffers.push_back(_createBuffer(desc));
+	auto buf = _createBuffer(desc);
+
+	gAllBuffers.push_back(buf.buffer);
 	return id;
 }
 

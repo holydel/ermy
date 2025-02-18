@@ -65,6 +65,14 @@ FormatInfo ermy::rendering::GetFormatInfo(Format format)
 		return FormatInfo{ 2 };
 	case  Format::RGBA8_UINT:
 		return FormatInfo{ 4 };
+	case  Format::R32F:
+		return FormatInfo{ 4 };
+	case  Format::RG32F:
+		return FormatInfo{ 8 };
+	case  Format::RGB32F:
+		return FormatInfo{ 12 };
+	case  Format::RGBA32F:
+		return FormatInfo{ 16 };
 	}
 
 	return FormatInfo{ 4 };

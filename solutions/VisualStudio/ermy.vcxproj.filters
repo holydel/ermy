@@ -46,9 +46,6 @@
     <Filter Include="Source Files\rendering\internal_shaders">
       <UniqueIdentifier>{49830a33-f1c3-45ea-b0a4-47d4982f04d4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\NewFilter1">
-      <UniqueIdentifier>{999a8968-23a6-4df5-b160-9a0faf956956}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\sound">
       <UniqueIdentifier>{f68f688f-1cb2-470b-80fb-5e5986ff45f5}</UniqueIdentifier>
     </Filter>

@@ -30,11 +30,35 @@ VkFormat vk_utils::VkFormatFromErmy(ermy::rendering::Format format)
 		return VK_FORMAT_R16_UNORM;
 	case  Format::RGBA8_UINT:
 		return VK_FORMAT_R8G8B8A8_UINT;
+	case  Format::R32F:
+		return VK_FORMAT_R32_SFLOAT;
+	case  Format::RG32F:
+		return VK_FORMAT_R32G32_SFLOAT;
+	case  Format::RGB32F:
+		return VK_FORMAT_R32G32B32_SFLOAT;
+	case  Format::RGBA32F:
+		return VK_FORMAT_R32G32B32A32_SFLOAT;
 	}
 
 	return VK_FORMAT_R8G8B8A8_SRGB;
 }
 
+VkBufferUsageFlagBits  vk_utils::VkBufferUsageFromErmy(ermy::rendering::BufferUsage busage)
+{
+	switch (busage) {
+	case ermy::rendering::BufferUsage::Vertex:
+		return VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+	case ermy::rendering::BufferUsage::Index:
+		return VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
+	case ermy::rendering::BufferUsage::Uniform:
+		return VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
+	case ermy::rendering::BufferUsage::Storage:
+		return VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+	default:
+		// Handle unknown or unsupported buffer usage
+		return VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+	}
+}
 VkShaderStageFlagBits vk_utils::VkShaderStageFromErmy(ermy::ShaderStage stage)
 {
 	switch (stage)
