@@ -101,6 +101,7 @@ rendering::Format FromGLInternalFormat(u32 glInternalFormat)
 	constexpr u32 GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR = 0x93DB;
 	constexpr u32 GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR = 0x93DC;
 	constexpr u32 GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR = 0x93DD;
+	constexpr u32 GL_R16 = 0x822A;
 
 	switch (glInternalFormat)
 	{
@@ -112,7 +113,8 @@ rendering::Format FromGLInternalFormat(u32 glInternalFormat)
 		return Format::R16_UINT;
 	case GL_RGBA8UI_EXT:
 		return Format::RGBA8_UINT;
-
+	case GL_R16:
+		return Format::R16_UNORM;
 	default:
 		assert(!"Unknown format");
 	}

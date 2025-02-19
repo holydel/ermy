@@ -65,15 +65,15 @@ std::string _extractEntryPointName(const uint32_t* spirv, int numOpCodes) {
 	return "";
 }
 
-void _addShader(const ermy::ShaderBytecode& bc, std::vector<VkPipelineShaderStageCreateInfo>& stages)
+void _addShader(const ermy::ShaderInfo& sinfo, std::vector<VkPipelineShaderStageCreateInfo>& stages)
 {
-	if (!bc.cachedDeviceObjectID.isValid())
+	if (!sinfo.byteCode.cachedDeviceObjectID.isValid())
 	{
-		bc.cachedDeviceObjectID.handle = static_cast<u16>(gAllShaderModules.size());
+		sinfo.byteCode.cachedDeviceObjectID.handle = static_cast<u16>(gAllShaderModules.size());
 
 		VkShaderModuleCreateInfo cinfo = { VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO };
-		cinfo.pCode = (const uint32_t*)bc.data;
-		cinfo.codeSize = bc.size;
+		cinfo.pCode = (const uint32_t*)sinfo.byteCode.data;
+		cinfo.codeSize = sinfo.byteCode.size;
 
 		VkShaderModule& shaderModule = gAllShaderModules.emplace_back();
 		VK_CALL(vkCreateShaderModule(gVKDevice, &cinfo, gVKGlobalAllocationsCallbacks, &shaderModule));
@@ -83,8 +83,8 @@ void _addShader(const ermy::ShaderBytecode& bc, std::vector<VkPipelineShaderStag
 	}
 
 	auto& newStage = stages.emplace_back();
-	newStage.module = gAllShaderModules[bc.cachedDeviceObjectID.handle];
-	newStage.stage = vk_utils::VkShaderStageFromErmy(bc.stage);
+	newStage.module = gAllShaderModules[sinfo.byteCode.cachedDeviceObjectID.handle];
+	newStage.stage = vk_utils::VkShaderStageFromErmy(sinfo.byteCode.stage);
 	newStage.pName = "main";
 	newStage.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 }
@@ -191,6 +191,7 @@ TextureInfo _createTexture(const TextureDesc& desc)
 	meta.height = static_cast<uint32_t>(desc.height);
 	meta.format = vk_utils::VkFormatFromErmy(desc.texelFormat);
 	meta.samples = VK_SAMPLE_COUNT_1_BIT;
+	meta.depth = static_cast<uint32_t>(desc.depth);
 
 	VkImageType imgType = VK_IMAGE_TYPE_2D;
 	if (desc.height == 1 && desc.width > 1 && desc.depth == 1)
@@ -207,13 +208,13 @@ TextureInfo _createTexture(const TextureDesc& desc)
 	//if (desc.numLayers > 1 && !(desc.numLayers && desc.isCubemap))
 	//	imageInfo.flags |= VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT;
 
-	imageInfo.imageType = VK_IMAGE_TYPE_2D;
+	imageInfo.imageType = imgType;
 	imageInfo.extent.width = static_cast<uint32_t>(desc.width);
 	imageInfo.extent.height = static_cast<uint32_t>(desc.height);
 	imageInfo.extent.depth = static_cast<uint32_t>(desc.depth);
 	imageInfo.mipLevels = static_cast<uint32_t>(desc.numMips);
 	imageInfo.arrayLayers = static_cast<uint32_t>(desc.numLayers);
-	imageInfo.format = meta.format; // 4-channel format
+	imageInfo.format = meta.format; 
 	imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
 	imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 	imageInfo.usage = textureUsage;
@@ -250,11 +251,13 @@ TextureInfo _createTexture(const TextureDesc& desc)
 		u32 bufferOffset = 0;
 		std::vector<VkBufferImageCopy> allRegions;
 		allRegions.reserve(desc.numLayers * desc.numMips);
+		int  blockPixels = formatInfo.blockWidth * formatInfo.blockHeight * formatInfo.blockDepth;
 
 		for (int l = 0; l < desc.numLayers; ++l)
 		{
 			u32 mipWidth = desc.width;
 			u32 mipHeight = desc.height;
+			u32 mipDepth = desc.depth;
 
 			for (int m = 0; m < desc.numMips; ++m)
 			{
@@ -267,12 +270,19 @@ TextureInfo _createTexture(const TextureDesc& desc)
 				region.imageSubresource.baseArrayLayer = l;
 				region.imageSubresource.layerCount = 1;
 				region.imageOffset = { 0, 0, 0 };
-				region.imageExtent = { mipWidth, mipHeight, 1 };
+				region.imageExtent = { mipWidth, mipHeight, mipDepth };
 
-				int currentMipDataSize = mipWidth * mipHeight * formatInfo.size;
+				int currentMipDataSize = mipWidth * mipHeight * mipDepth * formatInfo.blockSize / blockPixels;
 				bufferOffset += currentMipDataSize;
-				mipWidth /= 2;
-				mipHeight /= 2;
+
+				if(mipWidth > formatInfo.blockWidth)
+					mipWidth /= 2;
+
+				if (mipHeight > formatInfo.blockHeight)
+					mipHeight /= 2;
+
+				if (mipDepth > formatInfo.blockDepth)
+					mipDepth /= 2;
 			}
 		}
 
@@ -429,8 +439,9 @@ BufferInfo _createBuffer(const BufferDesc& desc) {
 
 VkPipeline _createPipeline(const PSODesc& desc)
 {
-
+	
 	VkPipeline result = VK_NULL_HANDLE;
+	return result;
 
 	VkGraphicsPipelineCreateInfo cinfo = { VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO };
 	VkPipelineLayout layout = VK_NULL_HANDLE;
@@ -526,7 +537,7 @@ VkPipeline _createPipeline(const PSODesc& desc)
 			
 			auto const &fi = ermy::rendering::GetFormatInfo(d.format);
 
-			currentOffset += fi.size;
+			currentOffset += fi.blockSize;
 		}
 		
 		pipVertexInputState.vertexBindingDescriptionCount = 1;
@@ -557,7 +568,7 @@ VkPipeline _createPipeline(const PSODesc& desc)
 	pipColorBlendState.logicOp = VK_LOGIC_OP_COPY;
 
 	std::vector<VkPipelineShaderStageCreateInfo> allStages;
-	for (auto& d : desc.shaders)
+	for (auto& d : desc.allShaderStages)
 	{
 		_addShader(d, allStages);
 	}

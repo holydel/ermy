@@ -38,6 +38,24 @@ VkFormat vk_utils::VkFormatFromErmy(ermy::rendering::Format format)
 		return VK_FORMAT_R32G32B32_SFLOAT;
 	case  Format::RGBA32F:
 		return VK_FORMAT_R32G32B32A32_SFLOAT;
+	case  Format::BC1:
+		return VK_FORMAT_BC1_RGB_SRGB_BLOCK;
+	case  Format::BC2:
+		return VK_FORMAT_BC2_SRGB_BLOCK;
+	case  Format::BC3:
+		return VK_FORMAT_BC3_SRGB_BLOCK;
+	case  Format::BC4:
+		return VK_FORMAT_BC4_UNORM_BLOCK;
+	case  Format::BC5:
+		return VK_FORMAT_BC5_UNORM_BLOCK;
+	case  Format::BC6:
+		return VK_FORMAT_BC6H_UFLOAT_BLOCK;
+	case  Format::BC7:
+		return VK_FORMAT_BC7_SRGB_BLOCK;
+	case  Format::R8_UNORM:
+		return VK_FORMAT_R8_UNORM;
+	case Format::BGRA8_UNORM:
+		return VK_FORMAT_B8G8R8A8_UNORM;
 	}
 
 	return VK_FORMAT_R8G8B8A8_SRGB;

@@ -73,6 +73,9 @@
     <ClCompile Include="..\..\editor\src\shaders\spirv.cpp">
       <Filter>src\shaders</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\editor\src\assets\DDSLoader.cpp">
+      <Filter>src\assets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\editor\include\editor_main.h">
@@ -152,6 +155,9 @@
     </ClInclude>
     <ClInclude Include="..\..\editor\include\preview_props.h">
       <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editor\include\assets\DDSLoader.h">
+      <Filter>include\assets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

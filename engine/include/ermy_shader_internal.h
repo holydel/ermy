@@ -5,10 +5,10 @@ namespace ermy
 {
 	namespace shader_internal
 	{
-		ShaderBytecode computeMain();
-		ShaderBytecode dedicatedSpriteVS();
-		ShaderBytecode testTriangleVS();
-		ShaderBytecode testTriangleFS();
-		ShaderBytecode dedicatedSpriteFS();
+		ShaderInfo computeMain();
+		ShaderInfo dedicatedSpriteVS();
+		ShaderInfo testTriangleVS();
+		ShaderInfo testTriangleFS();
+		ShaderInfo dedicatedSpriteFS();
 	}
 }

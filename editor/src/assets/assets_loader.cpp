@@ -2,6 +2,7 @@
 #include "assets/FFMPEGLoader.h"
 #include "assets/OpenImageLoader.h"
 #include "assets/KTXLoader.h"
+#include "assets/DDSLoader.h"
 #include "assets/AssimpLoader.h"
 #include "assets/texture_asset.h"
 #include "assets/video_asset.h"
@@ -21,6 +22,7 @@ FFMpegLoader* gFfmpegLoader = nullptr;
 OpenImageLoader* gOpenImageLoader = nullptr;
 AssimpLoader* gAssimpLoader = nullptr;
 KTXLoader* gKTXLoader = nullptr;
+DDSLoader* gDDSLoader = nullptr;
 
 void PopulateLoaderExtensions(AssetsLoader* loader)
 {
@@ -37,9 +39,11 @@ bool AssetsLoader::Initialize()
     gFfmpegLoader = new FFMpegLoader();
     gAssimpLoader = new AssimpLoader();
     gKTXLoader = new KTXLoader();
+    gDDSLoader = new DDSLoader();
 
     //It's important to populate specific loaders first. The order matters.
     PopulateLoaderExtensions(gKTXLoader);
+    PopulateLoaderExtensions(gDDSLoader);
     PopulateLoaderExtensions(gOpenImageLoader);
     PopulateLoaderExtensions(gAssimpLoader);
     PopulateLoaderExtensions(gFfmpegLoader);

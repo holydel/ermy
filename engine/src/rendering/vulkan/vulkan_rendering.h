@@ -14,8 +14,9 @@ extern std::vector<VkDescriptorSet> gAllImageDescriptors;
 
 struct ImageMeta
 {
-	int width;
-	int height;
+	ermy::u16 width;
+	ermy::u16 height;
+	ermy::u16 depth;
 	VkFormat format;
 	VkSampleCountFlagBits samples;
 };

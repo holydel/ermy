@@ -12,11 +12,13 @@ struct TextureLivePreviewParams2D
 {
 	glm::vec2 uv0;
 	glm::vec2 uv1;
+	int arrayLevel;
 };
 
 struct TextureLivePreviewParamsCube
 {
 	glm::vec4 dir_tanfov;	
+	int arrayLevel;
 };
 
 class TextureRenderPreview
@@ -27,9 +29,16 @@ class TextureRenderPreview
 	rendering::PSOID fullscreenEmpty;
 	rendering::PSOID fullscreen2D;
 	rendering::PSOID fullscreenCube;
+	rendering::PSOID fullscreen2DArray;
+	rendering::PSOID fullscreenCubeArray;
+	rendering::PSOID fullscreen3D;
 
 	rendering::PSOID fullscreen2DStatic;
 	rendering::PSOID fullscreenCubeStatic;
+	rendering::PSOID fullscreen2DArrayStatic;
+	rendering::PSOID fullscreenCubeArrayStatic;
+	rendering::PSOID fullscreen3DStatic;
+
 public:
 	static TextureRenderPreview& Instance()
 	{
@@ -55,7 +64,30 @@ public:
 				cl.SetPSO(fullscreenCube);
 			return;
 		}
-
+		if (texType == rendering::TextureType::TexArray2D)
+		{
+			if (isStatic)
+				cl.SetPSO(fullscreen2DArrayStatic);
+			else
+				cl.SetPSO(fullscreen2DArray);
+			return;
+		}
+		if (texType == rendering::TextureType::TexArrayCube)
+		{
+			if (isStatic)
+				cl.SetPSO(fullscreenCubeArrayStatic);
+			else
+				cl.SetPSO(fullscreenCubeArray);
+			return;
+		}
+		if (texType == rendering::TextureType::Tex3D)
+		{
+			if (isStatic)
+				cl.SetPSO(fullscreen3DStatic);
+			else
+				cl.SetPSO(fullscreen3D);
+			return;
+		}
 		cl.SetPSO(fullscreenEmpty);
 	}
 };
@@ -68,53 +100,114 @@ TextureRenderPreview::TextureRenderPreview()
 	//live preview PSD
 	{
 		rendering::PSODesc desc;
-		desc.shaders.push_back(ermy::shader_internal::fullscreenVS());
-		desc.shaders.push_back(ermy::shader_internal::fullscreenFSEmpty());
+		desc.SetShaderStage(ermy::shader_editor::fullscreenVS());
+		desc.SetShaderStage(ermy::shader_editor::fullscreenFSEmpty());
 		desc.specificRenderPass = RTT;
 		fullscreenEmpty = rendering::CreatePSO(desc);
 	}
 	
 	{
 		rendering::PSODesc desc;
-		desc.shaders.push_back(ermy::shader_internal::fullscreenVS());
-		desc.shaders.push_back(ermy::shader_internal::fullscreenFS2D());
+		desc.SetShaderStage(ermy::shader_editor::fullscreenVS());
+		desc.SetShaderStage(ermy::shader_editor::fullscreenFS2D());
 		desc.uniforms.push_back(rendering::ShaderUniformType::Texture2D);
 		//desc.uniforms.push_back(rendering::ShaderUniformType::TextureCube);
 		desc.specificRenderPass = RTT;
-		desc.rootConstantRanges[(int)ShaderStage::Fragment] = { 0,sizeof(TextureLivePreviewParams2D)};
+		desc.AddRootConstantRange(ShaderStage::Fragment, sizeof(TextureLivePreviewParams2D));
 		fullscreen2D = rendering::CreatePSO(desc);
 	}
 
 	{
 		rendering::PSODesc desc;
-		desc.shaders.push_back(ermy::shader_internal::fullscreenVS());
-		desc.shaders.push_back(ermy::shader_internal::fullscreenFSCubemap());
+		desc.SetShaderStage(ermy::shader_editor::fullscreenVS());
+		desc.SetShaderStage(ermy::shader_editor::fullscreenFSCubemap());
 		//desc.uniforms.push_back(rendering::ShaderUniformType::Texture2D);
 		desc.uniforms.push_back(rendering::ShaderUniformType::TextureCube);
 		desc.specificRenderPass = RTT;
-		desc.rootConstantRanges[(int)ShaderStage::Fragment] = { 0,sizeof(TextureLivePreviewParamsCube) };
+		desc.AddRootConstantRange(ShaderStage::Fragment, sizeof(TextureLivePreviewParamsCube));
 		fullscreenCube = rendering::CreatePSO(desc);
+	}
+
+	{
+		rendering::PSODesc desc;
+		desc.SetShaderStage(ermy::shader_editor::fullscreenVS());
+		desc.SetShaderStage(ermy::shader_editor::fullscreenFS2DArray());
+		desc.uniforms.push_back(rendering::ShaderUniformType::Texture2DArray);
+		//desc.uniforms.push_back(rendering::ShaderUniformType::TextureCube);
+		desc.specificRenderPass = RTT;
+		desc.AddRootConstantRange(ShaderStage::Fragment, sizeof(TextureLivePreviewParams2D));
+		fullscreen2DArray = rendering::CreatePSO(desc);
+	}
+
+	{
+		rendering::PSODesc desc;
+		desc.SetShaderStage(ermy::shader_editor::fullscreenVS());
+		desc.SetShaderStage(ermy::shader_editor::fullscreenFSCubemapArray());
+		//desc.uniforms.push_back(rendering::ShaderUniformType::Texture2D);
+		desc.uniforms.push_back(rendering::ShaderUniformType::TextureCubeArray);
+		desc.specificRenderPass = RTT;
+		desc.AddRootConstantRange(ShaderStage::Fragment, sizeof(TextureLivePreviewParamsCube));
+		fullscreenCubeArray = rendering::CreatePSO(desc);
+	}
+
+	{
+		rendering::PSODesc desc;
+		desc.SetShaderStage(ermy::shader_editor::fullscreenVS());
+		//desc.SetShaderStage(ermy::shader_internal::fullscreenFSVolumetric());
+		//desc.uniforms.push_back(rendering::ShaderUniformType::Texture2D);
+		desc.uniforms.push_back(rendering::ShaderUniformType::TextureVolume);
+		desc.specificRenderPass = RTT;
+		desc.AddRootConstantRange(ShaderStage::Fragment, sizeof(TextureLivePreviewParamsCube));
+		//fullscreen3D = rendering::CreatePSO(desc);
 	}
 
 	//static preview
 	{
 		rendering::PSODesc desc;
-		desc.shaders.push_back(ermy::shader_internal::fullscreenVS());
-		desc.shaders.push_back(ermy::shader_internal::fullscreenFS2DStatic());
+		desc.SetShaderStage(ermy::shader_editor::fullscreenVS());
+		desc.SetShaderStage(ermy::shader_editor::fullscreenFS2DStatic());
 		desc.uniforms.push_back(rendering::ShaderUniformType::Texture2D);
-		//desc.uniforms.push_back(rendering::ShaderUniformType::TextureCube);
 		desc.specificRenderPass = staticRTT;
 		fullscreen2DStatic = rendering::CreatePSO(desc);
 	}
 
 	{
 		rendering::PSODesc desc;
-		desc.shaders.push_back(ermy::shader_internal::fullscreenVS());
-		desc.shaders.push_back(ermy::shader_internal::fullscreenFSCubemapStatic());
+		desc.SetShaderStage(ermy::shader_editor::fullscreenVS());
+		desc.SetShaderStage(ermy::shader_editor::fullscreenFSCubemapStatic());
 		//desc.uniforms.push_back(rendering::ShaderUniformType::Texture2D);
 		desc.uniforms.push_back(rendering::ShaderUniformType::TextureCube);
 		desc.specificRenderPass = staticRTT;
 		fullscreenCubeStatic = rendering::CreatePSO(desc);
+	}
+
+	{
+		rendering::PSODesc desc;
+		desc.SetShaderStage(ermy::shader_editor::fullscreenVS());
+		desc.SetShaderStage(ermy::shader_editor::fullscreenFS2DArrayStatic());
+		desc.uniforms.push_back(rendering::ShaderUniformType::Texture2DArray);
+		desc.specificRenderPass = staticRTT;
+		desc.AddRootConstantRange(ShaderStage::Fragment, sizeof(int));
+		fullscreen2DArrayStatic = rendering::CreatePSO(desc);
+	}
+
+	{
+		rendering::PSODesc desc;
+		desc.SetShaderStage(ermy::shader_editor::fullscreenVS());
+		desc.SetShaderStage(ermy::shader_editor::fullscreenFSCubemapArrayStatic());
+		desc.uniforms.push_back(rendering::ShaderUniformType::Texture2DArray);
+		desc.specificRenderPass = staticRTT;
+		desc.AddRootConstantRange(ShaderStage::Fragment, sizeof(int));
+		fullscreenCubeArrayStatic = rendering::CreatePSO(desc);
+	}
+
+	{
+		rendering::PSODesc desc;
+		desc.SetShaderStage(ermy::shader_editor::fullscreenVS());
+		desc.SetShaderStage(ermy::shader_editor::fullscreenFSVolumetricStatic());
+		desc.uniforms.push_back(rendering::ShaderUniformType::TextureVolume);
+		desc.specificRenderPass = staticRTT;
+		fullscreen3DStatic= rendering::CreatePSO(desc);
 	}
 }
 
@@ -173,6 +266,10 @@ void TextureAsset::DrawPreview()
 	ImGui::Text("Datasize: %s",ermy_utils::string::humanReadableFileSize(dataSize).c_str());
 
 	ImGui::Checkbox("IsStatic", &isStaticPreview);
+	if (texType == rendering::TextureType::TexArrayCube || texType == rendering::TextureType::TexArray2D)
+	{
+		ImGui::SliderInt("Layer", &currentArrayLevel, 0, (isCubemap ? numLayers / 6 : numLayers) - 1);
+	}
 }
 
 void TextureAsset::RegeneratePreview()
@@ -236,6 +333,14 @@ void TextureAsset::RenderStaticPreview(ermy::rendering::CommandList& cl)
 	cl.BeginRenderPass(staticRTT);
 	TextureRenderPreview::Instance().BindPSO(cl, texType, true);
 	cl.SetDescriptorSet(0, assetPreviewTexLive);
+
+	if (texType == rendering::TextureType::TexArrayCube || texType == rendering::TextureType::TexArray2D)
+	{
+		int actualLayers = isCubemap ? numLayers / 6 : numLayers;
+
+		cl.SetRootConstant(actualLayers, ShaderStage::Fragment);
+	}
+
 	cl.Draw(3);
 	cl.EndRenderPass();
 
@@ -247,8 +352,9 @@ void TextureAsset::RenderStaticPreview(ermy::rendering::CommandList& cl)
 void TextureAsset::RenderPreview(ermy::rendering::CommandList& cl)
 {
 	TextureRenderPreview::Instance().BindPSO(cl, texType,isStaticPreview);
+	
 	{
-		if (texType == rendering::TextureType::Tex2D)
+		if (texType == rendering::TextureType::Tex2D || texType == rendering::TextureType::TexArray2D)
 		{
 			TextureLivePreviewParams2D pass;
 			float aspect = (float)width / (float)height;
@@ -272,13 +378,13 @@ void TextureAsset::RenderPreview(ermy::rendering::CommandList& cl)
 
 			pass.uv0 = glm::vec2(baseU0, baseV0);
 			pass.uv1 = glm::vec2(baseU1, baseV1);
-
+			pass.arrayLevel = currentArrayLevel;
 			if(!isStaticPreview)
 			cl.SetRootConstant(pass,ShaderStage::Fragment);
 			cl.SetDescriptorSet(0, assetPreviewTexLive);
 		}
 
-		if (texType == rendering::TextureType::TexCube)
+		if (texType == rendering::TextureType::TexCube || texType == rendering::TextureType::TexArrayCube || texType == rendering::TextureType::Tex3D)
 		{
 			TextureLivePreviewParamsCube pass;
 
@@ -290,7 +396,7 @@ void TextureAsset::RenderPreview(ermy::rendering::CommandList& cl)
 			float dirz = std::cos(pitch) * std::sin(yaw); // Right (Z)
 
 			pass.dir_tanfov = glm::vec4(dirx, diry, dirz, previewZoom);
-
+			pass.arrayLevel = currentArrayLevel;
 			if(!isStaticPreview)
 			cl.SetRootConstant(pass, ShaderStage::Fragment);
 			cl.SetDescriptorSet(0, assetPreviewTexLive);

@@ -4,6 +4,8 @@
 #include <iostream>
 #include <fstream>
 #include <ermy_api.h>
+
+
 using namespace ermy;
 
 ShaderCompiler gShaderCompiler;
@@ -100,7 +102,7 @@ bool ShaderCompiler::Initialize()
 	TargetWEBGPU.format = SlangCompileTarget::SLANG_WGSL_SPIRV;
 
 	TargetDXIL.profile = gSlangGlobalSession->findProfile("sm_6_5");
-	
+
 	std::vector<slang::CompilerOptionEntry> sharedCompilerOptions;
 
 	slang::CompilerOptionEntry debugLevel;
@@ -144,18 +146,35 @@ void ShaderCompiler::CompileShader(const std::string& shaderContent)
 
 }
 
-void AppendHeader(std::ostringstream& stream, SlangCompileTarget target)
+std::string ShaderDomainSuffix(ermy::ShaderDomainTag tag)
+{
+	std::string shaderDomainSuffix = "internal";
+	if (tag == ermy::ShaderDomainTag::Editor)
+	{
+		shaderDomainSuffix = "editor";
+	}
+	if (tag == ermy::ShaderDomainTag::Runtime)
+	{
+		shaderDomainSuffix = "runtime";
+	}
+	if (tag == ermy::ShaderDomainTag::Application)
+	{
+		shaderDomainSuffix = "application";
+	}
+	return shaderDomainSuffix;
+}
+void AppendHeader(ermy::ShaderDomainTag shaderTag, std::ostringstream& stream, SlangCompileTarget target)
 {
 	stream << "#include <ermy_shader_internal.h>\n";
 	stream << "#ifdef ERMY_GAPI_" << TargetErmyHeader(target) << std::endl;
-	stream << "namespace ermy::shader_internal"
-	"{\n";
+	stream << "namespace ermy::shader_" << ShaderDomainSuffix(shaderTag) << std::endl;
+	stream << "{\n";
 }
 
 void AppendFooter(std::ostringstream& stream)
 {
 	stream << "}\n"
-	"#endif\n";
+		"#endif\n";
 }
 
 //#include <ermy_shader_internal.h>
@@ -175,9 +194,9 @@ void AppendFooter(std::ostringstream& stream)
 //}
 //#endif
 
-void AppendShader(std::ostringstream& stream, const char* name, SlangStage stage, ISlangBlob* shaderBlob)
+void AppendShader(ermy::ShaderDomainTag shaderTag, std::ostringstream& stream, const char* name, SlangStage stage, ISlangBlob* shaderBlob)
 {
-	stream << "	ShaderBytecode " << name << "()\n";
+	stream << "	ShaderInfo " << name << "()\n";
 	stream << "	{\n"
 		"		static u8 data[] = {";
 
@@ -193,19 +212,40 @@ void AppendShader(std::ostringstream& stream, const char* name, SlangStage stage
 			if (i % 128 == 0)
 				stream << std::endl;
 		}
-		
+
 		stream << static_cast<uint32_t>(data[i]);
 	}
 
 	stream << "};\n\n";
 
-	stream << "		ShaderBytecode result;\n"
-	"		result.data = data;\n"
-	"		result.size = sizeof(data);\n"
-	"		result.isInternal = true;\n";
-	stream << "		result.stage = ShaderStage::"<<ErmyStageFromSlangStage(stage)<<";\n\n";
+	ermy::u64 shaderByteCodeCRC = ermy_utils::hash::CalculateCRC64(data, numBytes);
+	std::string tagName = "Internal";
+
+	if (shaderTag == ermy::ShaderDomainTag::Editor)
+	{
+		tagName = "Editor";
+	}
+	if (shaderTag == ermy::ShaderDomainTag::Runtime)
+	{
+		tagName = "Runtime";
+	}
+	if (shaderTag == ermy::ShaderDomainTag::Application)
+	{
+		tagName = "Application";
+	}
+
+	stream << "		ShaderInfo result;\n"
+		"		result.byteCode.data = data;\n"
+		"		result.byteCode.size = sizeof(data);\n"
+		"		result.byteCode.isInternal = true;\n";
+	stream << "		result.byteCode.stage = ShaderStage::" << ErmyStageFromSlangStage(stage) << ";\n\n";
+
+	stream << "		result.bytecodeCRC64 = " << shaderByteCodeCRC << ";\n";
+	stream << "		result.shaderName = \"" << name << "\";\n";
+	stream << "		result.tag = ermy::ShaderDomainTag::" << tagName << ";\n";
+
 	stream << "		return result;\n"
-	"	}\n\n";
+		"	}\n\n";
 }
 
 void AddInternalTranslationUnit(const std::filesystem::path& shadersFolder, const std::string& shaderName)
@@ -222,7 +262,7 @@ void WriteStringStreamToFile(const std::ostringstream& stream, const std::string
 	outFile.close();
 }
 
-void ShaderCompiler::CompileAllInternalShaders(const std::string& moduleName, const std::filesystem::path& shadersFolder, const std::filesystem::path& outputHeader)
+void ShaderCompiler::CompileAllShaders(ermy::ShaderDomainTag shaderTag, const std::string& moduleName, const std::filesystem::path& shadersFolder, const std::filesystem::path& outputHeader)
 {
 	AddInternalTranslationUnit(shadersFolder, moduleName);
 
@@ -241,14 +281,16 @@ void ShaderCompiler::CompileAllInternalShaders(const std::string& moduleName, co
 	SlangReflection* reflection = gSlangRequest->getReflection();
 
 
-	std::ostringstream internalShadersEngineHeader;
+	std::ostringstream shadersEngineHeader;
 
-	internalShadersEngineHeader << "#pragma once\n"
+
+
+	shadersEngineHeader << "#pragma once\n"
 		"#include \"ermy_shader.h\"\n"
 		"\n"
 		"namespace ermy\n"
 		"{\n"
-		"	namespace shader_internal\n"
+		"	namespace shader_" << ShaderDomainSuffix(shaderTag) << "\n"
 		"	{\n";
 
 	std::vector<std::ostringstream> shaderCppEmbded(gTargets.size());
@@ -256,7 +298,7 @@ void ShaderCompiler::CompileAllInternalShaders(const std::string& moduleName, co
 	//SlangReflection* reflection = spGetReflection(gSlangRequest);
 	for (int i = 0; i < gTargets.size(); ++i)
 	{
-		AppendHeader(shaderCppEmbded[i], gTargets[i].format);
+		AppendHeader(shaderTag, shaderCppEmbded[i], gTargets[i].format);
 	}
 
 	u32 entryPointCount = static_cast<u32>(spReflection_getEntryPointCount(reflection));
@@ -271,7 +313,7 @@ void ShaderCompiler::CompileAllInternalShaders(const std::string& moduleName, co
 		//spReflectionEntryPoint_getComputeThreadGroupSize(entryPointInfo,)
 		spReflectionEntryPoint_getComputeWaveSize(entryPointInfo, &waveSize);
 
-		internalShadersEngineHeader << "		ShaderBytecode " << eName << "();\n";
+		shadersEngineHeader << "		ShaderInfo " << eName << "();\n";
 
 		//size_t size = 0;
 		//const void* spirvCode = spGetEntryPointCode(gSlangRequest, i, &size);
@@ -280,7 +322,7 @@ void ShaderCompiler::CompileAllInternalShaders(const std::string& moduleName, co
 			ISlangBlob* shaderILCode = nullptr;
 			auto res = spGetEntryPointCodeBlob(gSlangRequest, i, j, &shaderILCode);
 
-			AppendShader(shaderCppEmbded[j], eName, eStage, shaderILCode);
+			AppendShader(shaderTag, shaderCppEmbded[j], eName, eStage, shaderILCode);
 
 			//size_t shaderSize = shaderILCode->getBufferSize();
 			//auto shaderILCodeRaw = shaderILCode->getBufferPointer();
@@ -290,10 +332,10 @@ void ShaderCompiler::CompileAllInternalShaders(const std::string& moduleName, co
 
 
 
-	internalShadersEngineHeader << "	}\n"
+	shadersEngineHeader << "	}\n"
 		"}";
 
-	WriteStringStreamToFile(internalShadersEngineHeader, outputHeader.string());
+	WriteStringStreamToFile(shadersEngineHeader, outputHeader.string());
 
 	for (int i = 0; i < gTargets.size(); ++i)
 	{
@@ -309,7 +351,7 @@ void ShaderCompiler::CompileAllEditorShaders()
 	std::filesystem::path shadersPath = "../../editor/src/shaders/";
 	std::filesystem::path shadersHeaderPath = "../../editor/include/editor_shader_internal.h";
 
-	CompileAllInternalShaders("editor", shadersPath, shadersHeaderPath);
+	CompileAllShaders(ShaderDomainTag::Editor, "editor", shadersPath, shadersHeaderPath);
 }
 
 void ShaderCompiler::CompileAllEngineShaders()
@@ -317,7 +359,7 @@ void ShaderCompiler::CompileAllEngineShaders()
 	std::filesystem::path shadersPath = "../../engine/src/rendering/internal_shaders/";
 	std::filesystem::path shadersHeaderPath = "../../engine/include/ermy_shader_internal.h";
 
-	CompileAllInternalShaders("internal",shadersPath, shadersHeaderPath);
+	CompileAllShaders(ShaderDomainTag::Internal, "internal", shadersPath, shadersHeaderPath);
 }
 
 void ShaderCompiler::CompileShaderFile(const std::filesystem::path& shaderPath)
@@ -345,14 +387,14 @@ void ShaderCompiler::CompileShaderFile(const std::filesystem::path& shaderPath)
 	SlangReflection* reflection = gSlangRequest->getReflection();
 
 
-	
+
 	u32 entryPointCount = static_cast<u32>(spReflection_getEntryPointCount(reflection));
 	for (u32 i = 0; i < entryPointCount; ++i)
 	{
 		auto entryPointInfo = spReflection_getEntryPointByIndex(reflection, i);
 		const char* eName = spReflectionEntryPoint_getName(entryPointInfo);
 		auto eStage = spReflectionEntryPoint_getStage(entryPointInfo);
-		
+
 		SlangUInt axesThread[8] = {};
 		SlangUInt waveSize = 0;
 		//spReflectionEntryPoint_getComputeThreadGroupSize(entryPointInfo,)

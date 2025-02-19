@@ -46,8 +46,9 @@ void ermy::canvas::DrawDedicatedSprite(float x, float y, float w, float h, float
 void canvas_interface::Initialize()
 {
     PSODesc desc;
-    desc.shaders.push_back(shader_internal::dedicatedSpriteVS());
-    desc.shaders.push_back(shader_internal::dedicatedSpriteFS());
+    desc.SetShaderStage(shader_internal::dedicatedSpriteVS());
+    desc.SetShaderStage(shader_internal::dedicatedSpriteFS());
+
     desc.topology = PrimitiveTopology::TriangleStrip;
     desc.rootConstantRanges[(int)ShaderStage::Vertex] = { 0,sizeof(SpriteInfo)}; //float2 pos, float2 size, float2 uv0, float2 uv1, uint packedColor, float angle
 

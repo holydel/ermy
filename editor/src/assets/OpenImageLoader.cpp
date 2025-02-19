@@ -89,14 +89,16 @@ AssetData* OpenImageLoader::Load(const std::filesystem::path& path)
    result->width = spec.width;
    result->height = spec.height;
    result->numChannels = spec.nchannels;
-   result->channelBytes = spec.channel_bytes();
+   int channelBytes = spec.channel_bytes();
 
    if (result->numChannels == 3)
        result->numChannels = 4;
 
-   result->dataSize = result->width * result->height * result->numChannels * result->channelBytes;
+   result->dataSize = result->width * result->height * result->numChannels * channelBytes;
    result->data = malloc(result->dataSize);
    
+   //TODO: texFormat evristics
+
    if (spec.channel_bytes() == 2)
    {
        result->texelFormat = ermy::rendering::Format::RGBA16F;
@@ -104,21 +106,21 @@ AssetData* OpenImageLoader::Load(const std::filesystem::path& path)
    //direct loading for 1,2,4 channels
    if (result->numChannels == spec.nchannels)
    {
-       in->read_image(0, 0, 0, result->numChannels, spec.format, result->data);
+       in->read_image(0, 0, 0, result->numChannels, spec.format, result->data);       
    }
    else
    {
-       int tempDataSize = result->width * result->height * result->channelBytes * spec.nchannels;
+       int tempDataSize = result->width * result->height * channelBytes * spec.nchannels;
        void* temp = malloc(result->dataSize);
        in->read_image(0, 0, 0, spec.nchannels, spec.format, temp);
        
-       if (result->channelBytes == 1)
+       if (channelBytes == 1)
            ConvertRGBtoRGBA(static_cast<ermy::u8*>(result->data), static_cast<ermy::u8*>(temp), result->width, result->height);
 
-       if (result->channelBytes == 2)
+       if (channelBytes == 2)
            ConvertRGBtoRGBA(static_cast<ermy::u16*>(result->data), static_cast<ermy::u16*>(temp), result->width, result->height);
 
-       if (result->channelBytes == 4)
+       if (channelBytes == 4)
            ConvertRGBtoRGBA(static_cast<ermy::u32*>(result->data), static_cast<ermy::u32*>(temp), result->width, result->height);
 
        free(temp);

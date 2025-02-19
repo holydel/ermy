@@ -3,15 +3,21 @@
 
 namespace ermy
 {
-	namespace shader_internal
+	namespace shader_editor
 	{
-		ShaderBytecode dedicatedStaticMeshVS();
-		ShaderBytecode dedicatedStaticMeshFS_UV0();
-		ShaderBytecode fullscreenVS();
-		ShaderBytecode fullscreenFSEmpty();
-		ShaderBytecode fullscreenFS2D();
-		ShaderBytecode fullscreenFSCubemap();
-		ShaderBytecode fullscreenFS2DStatic();
-		ShaderBytecode fullscreenFSCubemapStatic();
+		ShaderInfo dedicatedStaticMeshVS();
+		ShaderInfo dedicatedStaticMeshFS();
+		ShaderInfo fullscreenVS();
+		ShaderInfo fullscreenFSEmpty();
+		ShaderInfo fullscreenFS2D();
+		ShaderInfo fullscreenFSCubemap();
+		ShaderInfo fullscreenFS2DArray();
+		ShaderInfo fullscreenFSCubemapArray();
+		ShaderInfo fullscreenFS2DStatic();
+		ShaderInfo fullscreenFS2DArrayStatic();
+		ShaderInfo fullscreenFSCubemapStatic();
+		ShaderInfo fullscreenFSCubemapArrayStatic();
+		ShaderInfo fullscreenFSVolumetric();
+		ShaderInfo fullscreenFSVolumetricStatic();
 	}
 }

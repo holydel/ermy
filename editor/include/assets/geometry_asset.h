@@ -14,6 +14,7 @@ class GeometryAsset : public AssetData
 	float OldYaw = 0.0f;
 	bool isPreviewDragging = false;
 	void RecalculateBoundingSphere();
+	int currentMode = 0;
 public:
 	glm::vec4 boundingSphere =  glm::vec4(0); //xyz - center, w - radius
 	std::vector<ermy::u16> allIndices;

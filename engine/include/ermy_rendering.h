@@ -2,6 +2,8 @@
 #include <ermy_api.h>
 #include <vector>
 #include <ermy_shader.h>
+#include <array>
+#include <ermy_utils.h>
 
 namespace ermy
 {
@@ -47,11 +49,24 @@ namespace ermy
 			, RG32F
 			, RGB32F
 			, RGBA32F
+			, BC1
+			,BC2
+			,BC3
+			,BC4
+			,BC5
+			,BC6
+			,BC7
+			,R8_UNORM
+			,BGRA8_UNORM
 		};
 
 		struct FormatInfo
 		{
-			int size;
+			u8 blockSize;
+			u8 channelsCount;
+			u8 blockWidth;
+			u8 blockHeight;
+			u8 blockDepth;
 		};
 
 		enum class TextureType
@@ -71,6 +86,7 @@ namespace ermy
 			Texture2DArray,
 			TextureCube,
 			TextureVolume,
+			TextureCubeArray,
 		};
 
 		enum class PrimitiveTopology
@@ -110,7 +126,8 @@ namespace ermy
 		{
 			//int numRootConstants = 0;			
 			RootConstantRange rootConstantRanges[(int)ShaderStage::MAX] = {};
-			std::vector<ShaderBytecode> shaders;
+			std::array<ShaderInfo, (int)ShaderStage::MAX> allShaderStages;
+
 			PrimitiveTopology topology = PrimitiveTopology::TriangleList;
 
 			std::vector<ShaderUniformType> uniforms;
@@ -118,6 +135,39 @@ namespace ermy
 			const char* debugName = nullptr;
 
 			RenderPassID specificRenderPass;
+
+			void SetShaderStageInternal(const ShaderInfo& info)
+			{
+				allShaderStages[(int)info.byteCode.stage] = info;
+			}
+
+			void SetShaderStage(const ShaderInfo& info)
+			{
+				SetShaderStageInternal(info);
+			}
+
+			void SetShaderStage(const ShaderBytecode& bytecode, const std::string& shaderName = "")
+			{
+				int stageIndex = (int)bytecode.stage;
+
+				allShaderStages[stageIndex].byteCode = bytecode;
+				allShaderStages[stageIndex].shaderName = shaderName;
+				allShaderStages[stageIndex].tag = ShaderDomainTag::Runtime;
+				allShaderStages[stageIndex].bytecodeCRC64 = ermy_utils::hash::CalculateCRC64(bytecode.data, bytecode.size);
+			}
+
+			void AddRootConstantRange(ShaderStage stage, int size)
+			{
+				int maxEndOffset = 0;
+
+				for (int i = 0; i < std::size(rootConstantRanges); ++i)
+				{
+					maxEndOffset = std::max(maxEndOffset,rootConstantRanges[i].offset + rootConstantRanges[i].size);
+				}
+
+				rootConstantRanges[(int)stage].offset = maxEndOffset;
+				rootConstantRanges[(int)stage].size = size;
+			}
 		};
 
 		struct TextureDesc
@@ -158,5 +208,7 @@ namespace ermy
 		ermy::u64 GetTextureDescriptor(TextureID tid); //ImTexture
 
 		RenderPassID CreateRenderPass(const RenderPassDesc &desc);		
+
+		void UpdateShaderBytecode(ShaderDomainTag tag, const std::string& name, u64 bytecodeCRC, u8* bytecode, u32 bytecodeSize);
 	}
 }

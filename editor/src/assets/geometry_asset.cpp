@@ -42,8 +42,8 @@ GeometryRenderPreview::GeometryRenderPreview()
 	//live preview PSO
 	{
 		rendering::PSODesc desc;
-		desc.shaders.push_back(ermy::shader_internal::fullscreenVS());
-		desc.shaders.push_back(ermy::shader_internal::fullscreenFSEmpty());
+		desc.SetShaderStage(ermy::shader_editor::fullscreenVS());
+		desc.SetShaderStage(ermy::shader_editor::fullscreenFSEmpty());
 		desc.specificRenderPass = RTT;
 		fullscreenEmpty = rendering::CreatePSO(desc);
 	}	
@@ -51,11 +51,12 @@ GeometryRenderPreview::GeometryRenderPreview()
 	//render mesh PSO
 	{
 		rendering::PSODesc desc;
-		desc.shaders.push_back(ermy::shader_internal::dedicatedStaticMeshVS());
-		desc.shaders.push_back(ermy::shader_internal::dedicatedStaticMeshFS_UV0());
+		desc.SetShaderStage(ermy::shader_editor::dedicatedStaticMeshVS());
+		//desc.SetShaderStage(ermy::shader_internal::dedicatedStaticMeshFS());
 		desc.specificRenderPass = RTT;
 		desc.rootConstantRanges[(int)ermy::ShaderStage::Vertex].size = 64;
-
+		desc.rootConstantRanges[(int)ermy::ShaderStage::Fragment].offset = 64;
+		desc.rootConstantRanges[(int)ermy::ShaderStage::Fragment].size = 4;
 		//float x, y, z;
 		//float nx, ny, nz;
 		//float tx, ty, tz;
@@ -71,7 +72,7 @@ GeometryRenderPreview::GeometryRenderPreview()
 		desc.vertexAttributes.push_back({ rendering::Format::RG32F });
 		desc.vertexAttributes.push_back({ rendering::Format::RG32F });
 		desc.vertexAttributes.push_back({ rendering::Format::RGBA32F });
-		renderMeshUV = rendering::CreatePSO(desc);
+		//renderMeshUV = rendering::CreatePSO(desc);
 	}
 }
 
@@ -163,6 +164,10 @@ void GeometryAsset::DrawPreview()
 	ImGui::Text("Triangles: %d Vertices: %d", (numIndices / 3), numVertices);
 
 	ImGui::Checkbox("IsStatic", &isStaticPreview);
+
+	const char* modes[] = { "Solid Color","UV","Lit","Vertex Color" };
+
+	ImGui::Combo("Mode", &currentMode, modes, std::size(modes));
 }
 
 void GeometryAsset::RegeneratePreview()
@@ -273,8 +278,10 @@ void GeometryAsset::RenderStaticPreview(ermy::rendering::CommandList& cl)
 
 	glm::mat4 MVP = projectionMatrix * viewMatrix * modelMatrix;
 	// * viewMatrix * modelMatrix
-	cl.DrawDedicatedMesh(previewMesh, glm::transpose(MVP));
 
+	cl.SetRootConstant(currentMode, ShaderStage::Fragment,64);
+	cl.DrawDedicatedMesh(previewMesh, glm::transpose(MVP));
+	
 	cl.EndRenderPass();
 
 	auto staticRTTTex = PreviewRenderer::Instance().GetStaticTexture();
@@ -311,6 +318,7 @@ void GeometryAsset::RenderPreview(ermy::rendering::CommandList& cl)
 
 	glm::mat4 MVP = projectionMatrix * viewMatrix * modelMatrix;
 	// * viewMatrix * modelMatrix
+	cl.SetRootConstant(currentMode, ShaderStage::Fragment,64);
 	cl.DrawDedicatedMesh(previewMesh, glm::transpose(MVP));
 }
 

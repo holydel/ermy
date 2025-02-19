@@ -12,4 +12,9 @@ namespace ermy_utils
 		std::string toUpper(const std::string& input);
 		std::string humanReadableFileSize(ermy::u64 bytes);
 	}
+
+	namespace hash
+	{
+		ermy::u64 CalculateCRC64(const ermy::u8* data, const ermy::u32 size);
+	}
 }

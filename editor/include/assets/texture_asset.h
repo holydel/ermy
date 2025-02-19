@@ -12,6 +12,7 @@ class TextureAsset : public AssetData
 	float oldPreviewDX = 0.0f;
 	float oldPreviewDY = 0.0f;
 	bool isStaticPreview = false;
+	int currentArrayLevel = 0;
 	ermy::rendering::TextureType texType = ermy::rendering::TextureType::Tex2D;
 public:
 	ermy::u32 width = 0;
@@ -21,7 +22,6 @@ public:
 	ermy::u32 numMips = 1;
 	ermy::u32 dataSize = 1;
 	ermy::u8 numChannels = 4;
-	ermy::u8 channelBytes = 1;
 	bool isCubemap = 0;
 	bool isSparse = 0;
 	void* data = nullptr;

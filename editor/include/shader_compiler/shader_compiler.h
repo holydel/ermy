@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <filesystem>
-
+#include <ermy_rendering.h>
 class ShaderCompiler
 {
 public:
@@ -16,7 +16,7 @@ public:
 	void CompileAllShaders();
 
 
-	void CompileAllInternalShaders(const std::string& moduleName, const std::filesystem::path& shadersFolder, const std::filesystem::path& outputHeader);
+	void CompileAllShaders(ermy::ShaderDomainTag shaderTag, const std::string& moduleName, const std::filesystem::path& shadersFolder, const std::filesystem::path& outputHeader);
 	void CompileAllEngineShaders();
 	void CompileAllEditorShaders();
 
