@@ -9,7 +9,9 @@ namespace ermy
 		Internal,
 		Editor,
 		Runtime,
-		Application
+		Application,
+
+		UNKNOWN
 	};
 
 	enum class ShaderStage : u8
@@ -17,24 +19,25 @@ namespace ermy
 		Vertex,
 		Fragment,
 		Compute,
+		Geometry,
 
 		MAX
 	};
 
 	struct ShaderBytecode
 	{
-		u8* data;
-		u32 size;
-		ShaderStage stage;
-		bool isInternal;
+		const u8* data = nullptr;
+		u32 size = 0;
+		ShaderStage stage = ShaderStage::MAX;
+		bool isInternal  = true;
 		mutable Handle16 cachedDeviceObjectID;
 	};
 
 	struct ShaderInfo
 	{
 		ShaderBytecode byteCode;
-		std::string shaderName;
-		ShaderDomainTag tag;
-		u64 bytecodeCRC64;
+		std::string shaderName  ="";
+		ShaderDomainTag tag = ShaderDomainTag::UNKNOWN;
+		u64 bytecodeCRC64 = 0;;
 	};
 }

@@ -6,6 +6,16 @@
 using namespace ermy;
 using namespace ermy::rendering;
 
+struct ShaderRelatedPSO
+{
+	ermy::ShaderStage stage;
+	u64 shaderHash;
+	std::vector<int> psoIndices;
+};
+
+std::unordered_map<std::string, ShaderRelatedPSO> gShaderRelatedPSOs;
+std::vector<ermy::rendering::PSODesc> gAllPipelineDescs;
+
 std::vector<VkPipeline> gAllPipelines;
 std::vector<VkPipelineLayout> gAllPipelineLayouts;
 std::vector<VkDescriptorSetLayout> gAllPipelineDSLayouts;
@@ -67,6 +77,9 @@ std::string _extractEntryPointName(const uint32_t* spirv, int numOpCodes) {
 
 void _addShader(const ermy::ShaderInfo& sinfo, std::vector<VkPipelineShaderStageCreateInfo>& stages)
 {
+	if (sinfo.byteCode.size == 0)
+		return;
+
 	if (!sinfo.byteCode.cachedDeviceObjectID.isValid())
 	{
 		sinfo.byteCode.cachedDeviceObjectID.handle = static_cast<u16>(gAllShaderModules.size());
@@ -91,10 +104,21 @@ void _addShader(const ermy::ShaderInfo& sinfo, std::vector<VkPipelineShaderStage
 
 RenderpassInfo _createRenderPass(const RenderPassDesc& desc)
 {
-	RenderpassInfo result;
+	RenderpassInfo result = {};
 	const ImageMeta& meta = gAllImageMetas[desc.colorAttachment.handle];
 	VkImage image = gAllImages[desc.colorAttachment.handle];
 	VkImageView imageView = gAllImageViews[desc.colorAttachment.handle];
+
+	ImageMeta metaDepth = {};
+	VkImage imageDepth = {};
+	VkImageView imageViewDepth = {};
+
+	if (desc.depthStencilAttachment.isValid())
+	{
+		metaDepth = gAllImageMetas[desc.depthStencilAttachment.handle];
+		imageDepth = gAllImages[desc.depthStencilAttachment.handle];
+		imageViewDepth = gAllImageViews[desc.depthStencilAttachment.handle];
+	}
 
 	VkRenderPassCreateInfo rpass = { VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO };
 
@@ -108,15 +132,46 @@ RenderpassInfo _createRenderPass(const RenderPassDesc& desc)
 	colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 	colorAttachment.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
+	VkAttachmentDescription depthAttachment = {};
+	depthAttachment.format = metaDepth.format;
+	depthAttachment.samples = metaDepth.samples;
+	depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+	depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+	depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+	depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+	depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+	depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
 	VkAttachmentReference colorAttachmentRef = {};
 	colorAttachmentRef.attachment = 0;
 	colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+	VkAttachmentReference depthAttachmentRef = {};
+	depthAttachmentRef.attachment = 0;
+	depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
+	std::vector<VkAttachmentDescription> attachments;
+	std::vector<VkImageView> attachmentsViews;
+
+	int colorAttachmentIndex = 0;
+
+	if (desc.depthStencilAttachment.isValid())
+	{
+		colorAttachmentIndex = 1;
+		attachments.push_back(depthAttachment);
+		attachmentsViews.push_back(imageViewDepth);
+		result.useDepth = true;
+	}
+
+	colorAttachmentRef.attachment = colorAttachmentIndex;
+	attachments.push_back(colorAttachment);
+	attachmentsViews.push_back(imageView);
 
 	VkSubpassDescription subpass = {};
 	subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
 	subpass.colorAttachmentCount = 1;
 	subpass.pColorAttachments = &colorAttachmentRef;
-
+	subpass.pDepthStencilAttachment = result.useDepth ? &depthAttachmentRef : nullptr;
 	//VkSubpassDependency dependency = {};
 	//dependency.srcSubpass = VK_SUBPASS_EXTERNAL; // External dependency
 	//dependency.dstSubpass = 0; // Our single subpass
@@ -142,8 +197,8 @@ RenderpassInfo _createRenderPass(const RenderPassDesc& desc)
 	dependency.dstAccessMask = VK_ACCESS_INPUT_ATTACHMENT_READ_BIT; //renderpass B is reading from the image in a shader.
 	dependency.dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT; //By region dependencies make no sense here, since they're not part of the same renderpass.
 
-	rpass.attachmentCount = 1;
-	rpass.pAttachments = &colorAttachment;
+	rpass.attachmentCount = attachments.size();
+	rpass.pAttachments = attachments.data();
 	rpass.subpassCount = 1;
 	rpass.pSubpasses = &subpass;
 	rpass.dependencyCount = 0;
@@ -154,8 +209,8 @@ RenderpassInfo _createRenderPass(const RenderPassDesc& desc)
 	VkFramebufferCreateInfo fbuff = { VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO };
 
 	fbuff.renderPass = result.renderpass; // Associate the framebuffer with the render pass
-	fbuff.attachmentCount = 1;
-	fbuff.pAttachments = &imageView; // Use the provided VkImageView
+	fbuff.attachmentCount = attachmentsViews.size();
+	fbuff.pAttachments = attachmentsViews.data(); // Use the provided VkImageView
 	fbuff.width = meta.width; // Use the provided extent
 	fbuff.height = meta.height;
 	fbuff.layers = 1; // Single layer
@@ -178,6 +233,11 @@ TextureInfo _createTexture(const TextureDesc& desc)
 	auto formatInfo = ermy::rendering::GetFormatInfo(desc.texelFormat);
 
 	VkImageUsageFlags textureUsage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+	bool isDepthFormat = ermy::rendering::IsDepthFormat(desc.texelFormat);
+
+	VkImageAspectFlags aspect = VK_IMAGE_ASPECT_COLOR_BIT;
+	if (isDepthFormat)
+		aspect = VK_IMAGE_ASPECT_DEPTH_BIT;
 
 	if (desc.pixelsData)
 	{
@@ -185,8 +245,12 @@ TextureInfo _createTexture(const TextureDesc& desc)
 	}
 	else
 	{
-		textureUsage |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+		if (isDepthFormat)
+			textureUsage |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+		else
+			textureUsage |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 	}
+
 	meta.width = static_cast<uint32_t>(desc.width);
 	meta.height = static_cast<uint32_t>(desc.height);
 	meta.format = vk_utils::VkFormatFromErmy(desc.texelFormat);
@@ -289,11 +353,11 @@ TextureInfo _createTexture(const TextureDesc& desc)
 		vkCmdCopyBufferToImage(c.cbuff, stagingBuffer, textureImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, static_cast<uint32_t>(allRegions.size()), allRegions.data());
 
 
-		vk_utils::ImageTransition(c.cbuff, textureImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, desc.numMips, desc.numLayers);
+		vk_utils::ImageTransition(c.cbuff, textureImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, aspect, desc.numMips, desc.numLayers);
 	}
 	else
 	{
-		vk_utils::ImageTransition(c.cbuff, textureImage, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, desc.numMips, desc.numLayers);
+		vk_utils::ImageTransition(c.cbuff, textureImage, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, aspect, desc.numMips, desc.numLayers);
 	}
 
 	c.Sumbit();
@@ -332,7 +396,7 @@ TextureInfo _createTexture(const TextureDesc& desc)
 	viewInfo.image = textureImage;
 	viewInfo.viewType = imgViewType;
 	viewInfo.format = meta.format;
-	viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+	viewInfo.subresourceRange.aspectMask = aspect;
 	viewInfo.subresourceRange.baseMipLevel = 0;
 	viewInfo.subresourceRange.levelCount = desc.numMips;
 	viewInfo.subresourceRange.baseArrayLayer = 0;
@@ -438,10 +502,8 @@ BufferInfo _createBuffer(const BufferDesc& desc) {
 }
 
 VkPipeline _createPipeline(const PSODesc& desc)
-{
-	
+{	
 	VkPipeline result = VK_NULL_HANDLE;
-	return result;
 
 	VkGraphicsPipelineCreateInfo cinfo = { VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO };
 	VkPipelineLayout layout = VK_NULL_HANDLE;
@@ -451,18 +513,31 @@ VkPipeline _createPipeline(const PSODesc& desc)
 		VkPipelineLayoutCreateInfo cinfo{};
 		cinfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		std::vector<VkPushConstantRange> pushConstantRanges;
+		int maxRange = 0;
 
 		for (int i = 0; i < (int)ShaderStage::MAX; ++i)
 		{
 			if (desc.rootConstantRanges[i].size > 0)
 			{
-				VkPushConstantRange& range = pushConstantRanges.emplace_back();
+				maxRange = std::max(maxRange, desc.rootConstantRanges[i].offset + desc.rootConstantRanges[i].size);	
 
-				range.size = desc.rootConstantRanges[i].size;
-				range.offset = desc.rootConstantRanges[i].offset;
-				range.stageFlags = vk_utils::VkShaderStageFromErmy((ShaderStage)i);
+				//VkPushConstantRange& range = pushConstantRanges.emplace_back();
+
+				//range.size = desc.rootConstantRanges[i].size;
+				//range.offset = desc.rootConstantRanges[i].offset;
+				//range.stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS;// vk_utils::VkShaderStageFromErmy((ShaderStage)i);
 			}
 		}
+
+
+		if (maxRange > 0)
+		{
+			VkPushConstantRange& range = pushConstantRanges.emplace_back();
+			range.size = maxRange;
+			range.offset = 0;
+			range.stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS;
+		}
+
 
 		cinfo.pushConstantRangeCount = static_cast<u32>(pushConstantRanges.size());
 		cinfo.pPushConstantRanges = pushConstantRanges.data();
@@ -607,8 +682,8 @@ VkPipeline _createPipeline(const PSODesc& desc)
 	all_dinamic_states.push_back(VK_DYNAMIC_STATE_SCISSOR);
 
 
-	pipDepthStencilState.depthWriteEnable = false;// desc.writeDepth;
-	pipDepthStencilState.depthTestEnable = false;// desc.writeDepth;
+	pipDepthStencilState.depthWriteEnable = desc.writeDepth;
+	pipDepthStencilState.depthTestEnable = desc.testDepth;
 	pipDepthStencilState.depthCompareOp = VkCompareOp::VK_COMPARE_OP_LESS;
 
 	pipDynamicState.pDynamicStates = all_dinamic_states.data();
@@ -656,7 +731,34 @@ PSOID ermy::rendering::CreatePSO(const PSODesc& desc)
 {
 	PSOID id{ static_cast<u32>(gAllPipelines.size()) };
 
-	gAllPipelines.push_back(_createPipeline(desc));
+	auto PSO = _createPipeline(desc);
+	gAllPipelines.push_back(PSO);
+	gAllPipelineDescs.push_back(desc);
+
+	for (auto& s : desc.allShaderStages)
+	{
+		if(s.byteCode.size == 0)
+			continue;
+
+		auto it = gShaderRelatedPSOs.find(s.shaderName);
+		if (it == gShaderRelatedPSOs.end())
+		{
+			ShaderRelatedPSO newPSO;
+			newPSO.shaderHash = s.bytecodeCRC64;
+			newPSO.psoIndices.push_back(id.handle);
+			newPSO.stage = s.byteCode.stage;
+			gShaderRelatedPSOs[s.shaderName] = newPSO;
+		}
+		else
+		{
+			if (it->second.shaderHash != s.bytecodeCRC64)
+			{
+				it->second.psoIndices.clear();
+			}
+
+			it->second.psoIndices.push_back(id.handle);
+		}
+	}
 	return id;
 }
 
@@ -696,4 +798,36 @@ RenderPassID ermy::rendering::CreateRenderPass(const RenderPassDesc& desc)
 	gAllRenderPasses.push_back(_createRenderPass(desc));
 	return id;
 }
+
+void ermy::rendering::UpdateShaderBytecode(ShaderDomainTag tag, const std::string& name, u64 bytecodeCRC, const u8* bytecode, u32 bytecodeSize)
+{
+	auto it = gShaderRelatedPSOs.find(name);
+
+	if (it != gShaderRelatedPSOs.end())
+	{
+		if (it->second.shaderHash != bytecodeCRC) //updated shader
+		{
+			for (auto& psoIndex : it->second.psoIndices)
+			{
+				auto& pso = gAllPipelines[psoIndex];
+				vkDestroyPipeline(gVKDevice, pso, gVKGlobalAllocationsCallbacks);
+
+				auto& shader = gAllPipelineDescs[psoIndex].allShaderStages[(int)it->second.stage];
+				auto& shaderBytecode = shader.byteCode;
+
+				shaderBytecode.data = bytecode;
+				shaderBytecode.size = bytecodeSize;
+				shaderBytecode.cachedDeviceObjectID.Invalidate();
+				shader.bytecodeCRC64 = bytecodeCRC;
+
+				pso = _createPipeline(gAllPipelineDescs[psoIndex]);
+			}
+		}
+		else
+		{
+			it->second.psoIndices.clear();
+		}
+	}
+}
+
 #endif

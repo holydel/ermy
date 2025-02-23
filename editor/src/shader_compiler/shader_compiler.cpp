@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <ermy_api.h>
-
+#include <ermy_rendering.h>
 
 using namespace ermy;
 
@@ -194,7 +194,7 @@ void AppendFooter(std::ostringstream& stream)
 //}
 //#endif
 
-void AppendShader(ermy::ShaderDomainTag shaderTag, std::ostringstream& stream, const char* name, SlangStage stage, ISlangBlob* shaderBlob)
+void AppendShader(ermy::ShaderDomainTag shaderTag, std::ostringstream& stream, const char* name, SlangStage stage, ISlangBlob* shaderBlob, u64 bytecodeCRC64)
 {
 	stream << "	ShaderInfo " << name << "()\n";
 	stream << "	{\n"
@@ -218,7 +218,7 @@ void AppendShader(ermy::ShaderDomainTag shaderTag, std::ostringstream& stream, c
 
 	stream << "};\n\n";
 
-	ermy::u64 shaderByteCodeCRC = ermy_utils::hash::CalculateCRC64(data, numBytes);
+	
 	std::string tagName = "Internal";
 
 	if (shaderTag == ermy::ShaderDomainTag::Editor)
@@ -240,7 +240,7 @@ void AppendShader(ermy::ShaderDomainTag shaderTag, std::ostringstream& stream, c
 		"		result.byteCode.isInternal = true;\n";
 	stream << "		result.byteCode.stage = ShaderStage::" << ErmyStageFromSlangStage(stage) << ";\n\n";
 
-	stream << "		result.bytecodeCRC64 = " << shaderByteCodeCRC << ";\n";
+	stream << "		result.bytecodeCRC64 = " << bytecodeCRC64 << ";\n";
 	stream << "		result.shaderName = \"" << name << "\";\n";
 	stream << "		result.tag = ermy::ShaderDomainTag::" << tagName << ";\n";
 
@@ -321,8 +321,20 @@ void ShaderCompiler::CompileAllShaders(ermy::ShaderDomainTag shaderTag, const st
 		{
 			ISlangBlob* shaderILCode = nullptr;
 			auto res = spGetEntryPointCodeBlob(gSlangRequest, i, j, &shaderILCode);
+			int targetBytecode = -1;
+#ifdef ERMY_GAPI_VULKAN
+			targetBytecode = 0;
+#endif
+#ifdef ERMY_GAPI_D3D12
+			targetBytecode = 1;
+#endif
+			ermy::u64 shaderByteCodeCRC = ermy_utils::hash::CalculateCRC64(static_cast<const ermy::u8*>(shaderILCode->getBufferPointer()), static_cast<ermy::u32>(shaderILCode->getBufferSize()));
 
-			AppendShader(shaderTag, shaderCppEmbded[j], eName, eStage, shaderILCode);
+			if (j == targetBytecode)
+			{
+				ermy::rendering::UpdateShaderBytecode(shaderTag, eName, shaderByteCodeCRC, static_cast<const ermy::u8*>(shaderILCode->getBufferPointer()), static_cast<ermy::u32>(shaderILCode->getBufferSize()));
+			}
+			AppendShader(shaderTag, shaderCppEmbded[j], eName, eStage, shaderILCode, shaderByteCodeCRC);
 
 			//size_t shaderSize = shaderILCode->getBufferSize();
 			//auto shaderILCodeRaw = shaderILCode->getBufferPointer();

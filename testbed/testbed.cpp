@@ -53,9 +53,8 @@ void TestBedApplication::OnEndFrame()
 void TestBedApplication::OnLoad()
 {
 	rendering::PSODesc desc;
-	desc.shaders.push_back(shader_internal::testTriangleVS());
-	desc.shaders.push_back(shader_internal::testTriangleFS());
-	desc.numRootConstants = 0;
+	desc.SetShaderStageInternal(shader_internal::testTriangleVS());
+	desc.SetShaderStageInternal(shader_internal::testTriangleFS());
 
 	testTrianglePSO = rendering::CreatePSO(desc);
 }

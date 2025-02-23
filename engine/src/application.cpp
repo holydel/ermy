@@ -4,6 +4,7 @@
 #include "logger.h"
 
 #include "rendering/rendering.h"
+#include "sound/sound_interface.h"
 
 ermy::Application *gApplication = nullptr;
 
@@ -34,7 +35,7 @@ void ErmyApplicationStart()
 	ERMY_LOG("start initialize ermy engine for application: %s", gApplication->staticConfig.appName.c_str()); //
 
 	os::CreateNativeWindow();
-
+	sound_interface::Initialize();
 	rendering::Initialize();
 	gApplication->OnInitialization();
 
@@ -51,7 +52,7 @@ bool ErmyApplicationStep()
 	//gApplication->OnBeginFrame();
 
 	rendering::Process();
-
+	sound_interface::Process();
 	//gApplication->OnEndFrame();
 
 	rendering::EndFrame();
@@ -67,6 +68,7 @@ void ErmyApplicationShutdown()
 	gApplication->OnShutdown();
 
 	rendering::Shutdown();
+	sound_interface::Shutdown();
 	loggerImpl::Shutdown();
 }
 

@@ -126,7 +126,7 @@ VkClearValue clearValue;
 		if(gVKConfig.useDynamicRendering)
 		{
 
-			vk_utils::ImageTransition(frame.cmdBuffer, swapchain::GetCurrentImage(), swapchain::GetCurrentImageLayout(), VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+			vk_utils::ImageTransition(frame.cmdBuffer, swapchain::GetCurrentImage(), swapchain::GetCurrentImageLayout(), VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,VK_IMAGE_ASPECT_COLOR_BIT);
 			
 			
 			VkRenderingAttachmentInfo colorAttachment{VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO};
@@ -169,7 +169,7 @@ VkClearValue clearValue;
 		if(gVKConfig.useDynamicRendering)
 		{
 			vkCmdEndRendering(frame.cmdBuffer);
-			vk_utils::ImageTransition(frame.cmdBuffer, swapchain::GetCurrentImage(), VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+			vk_utils::ImageTransition(frame.cmdBuffer, swapchain::GetCurrentImage(), VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, VK_IMAGE_ASPECT_COLOR_BIT);
 		}
 		else
 		{

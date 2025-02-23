@@ -127,6 +127,7 @@
     <ClInclude Include="..\..\engine\include\ermy_rendering.h" />
     <ClInclude Include="..\..\engine\include\ermy_shader.h" />
     <ClInclude Include="..\..\engine\include\ermy_shader_internal.h" />
+    <ClInclude Include="..\..\engine\include\ermy_sound.h" />
     <ClInclude Include="..\..\engine\include\ermy_utils.h" />
     <ClInclude Include="..\..\engine\src\application.h" />
     <ClInclude Include="..\..\engine\src\graphics\canvas_interface.h" />

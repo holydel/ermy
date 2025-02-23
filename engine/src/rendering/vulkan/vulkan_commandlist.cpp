@@ -37,10 +37,10 @@ void CommandList::SetViewport(int x, int y, int width, int height)
 {
 	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
 
-	VkViewport viewport = {static_cast<float>(x),static_cast<float>(y)
-		,static_cast<float>(width),static_cast<float>(height),0,1};
+	VkViewport viewport = { static_cast<float>(x),static_cast<float>(y)
+		,static_cast<float>(width),static_cast<float>(height),0.0f,1.0f };
 	vkCmdSetViewport(cbuff, 0, 1, &viewport);
-	
+
 }
 
 void CommandList::SetScissor(int x, int y, int width, int height)
@@ -53,7 +53,8 @@ void CommandList::SetScissor(int x, int y, int width, int height)
 void CommandList::SetRootConstants(const void* data, int size, ermy::ShaderStage stage, int offset)
 {
 	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
-	vkCmdPushConstants(cbuff, gAllPipelineLayouts[gCurrentPSOID.handle], vk_utils::VkShaderStageFromErmy(stage), offset, size, data);
+	//vk_utils::VkShaderStageFromErmy(stage)
+	vkCmdPushConstants(cbuff, gAllPipelineLayouts[gCurrentPSOID.handle], VK_SHADER_STAGE_ALL_GRAPHICS, offset, size, data);
 }
 
 void CommandList::SetDescriptorSet(int set, u64 handle)
@@ -99,7 +100,7 @@ void CommandList::EndDebugScope()
 		return;
 
 	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
-	vkCmdEndDebugUtilsLabelEXT(cbuff);	
+	vkCmdEndDebugUtilsLabelEXT(cbuff);
 }
 
 static RenderpassInfo currentRPass;
@@ -110,12 +111,22 @@ void CommandList::BeginRenderPass(RenderPassID rtt, glm::vec4 clearColor)
 
 	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
 	currentRPass = gAllRenderPasses[rtt.handle];
-	
-	VkClearValue clearValue;
-	clearValue.color.float32[0] = clearColor.x;
-	clearValue.color.float32[1] = clearColor.y;
-	clearValue.color.float32[2] = clearColor.z;
-	clearValue.color.float32[3] = clearColor.w;
+
+	VkClearValue clearValue[2];
+
+	int colorAttachmentIndex = 0;
+
+	if (currentRPass.useDepth)
+	{
+		clearValue[0].depthStencil.depth = 1.0f;
+		clearValue[0].depthStencil.stencil = 0;
+		colorAttachmentIndex = 1;
+	}
+
+	clearValue[colorAttachmentIndex].color.float32[0] = clearColor.x;
+	clearValue[colorAttachmentIndex].color.float32[1] = clearColor.y;
+	clearValue[colorAttachmentIndex].color.float32[2] = clearColor.z;
+	clearValue[colorAttachmentIndex].color.float32[3] = clearColor.w;
 
 	VkRenderPassBeginInfo info = { VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO };
 	info.framebuffer = currentRPass.framebuffer;
@@ -124,8 +135,8 @@ void CommandList::BeginRenderPass(RenderPassID rtt, glm::vec4 clearColor)
 	info.renderArea.extent.width = currentRPass.defaultWidth;
 	info.renderArea.extent.height = currentRPass.defaultHeight;
 
-	info.clearValueCount = 1;
-	info.pClearValues = &clearValue;
+	info.clearValueCount = currentRPass.useDepth ? 2 : 1;
+	info.pClearValues = clearValue;
 	vkCmdBeginRenderPass(cbuff, &info, VK_SUBPASS_CONTENTS_INLINE);
 
 	SetViewport(0, 0, currentRPass.defaultWidth, currentRPass.defaultHeight);
@@ -139,7 +150,7 @@ void CommandList::EndRenderPass()
 	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
 	vkCmdEndRenderPass(cbuff);
 
-	vk_utils::ImageTransition(cbuff, currentRPass.targetImage, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+	vk_utils::ImageTransition(cbuff, currentRPass.targetImage, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_ASPECT_COLOR_BIT);
 }
 
 void CommandList::BlitTexture(TextureID src, TextureID dest)
@@ -149,14 +160,14 @@ void CommandList::BlitTexture(TextureID src, TextureID dest)
 	auto srcImg = gAllImages[src.handle];
 	auto dstImg = gAllImages[dest.handle];
 
-	vk_utils::ImageTransition(cbuff, srcImg, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
-	vk_utils::ImageTransition(cbuff, dstImg, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+	vk_utils::ImageTransition(cbuff, srcImg, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_ASPECT_COLOR_BIT);
+	vk_utils::ImageTransition(cbuff, dstImg, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_ASPECT_COLOR_BIT);
 
 	VkImageBlit blitRegion = {};
 	blitRegion.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 	blitRegion.srcSubresource.mipLevel = 0;
 	blitRegion.srcSubresource.baseArrayLayer = 0;
-	blitRegion.srcSubresource.layerCount = 1;	
+	blitRegion.srcSubresource.layerCount = 1;
 	blitRegion.srcOffsets[0] = { 0, 0, 0 };
 	blitRegion.srcOffsets[1] = { gAllImageMetas[src.handle].width, gAllImageMetas[src.handle].height, 1 };
 
@@ -169,14 +180,14 @@ void CommandList::BlitTexture(TextureID src, TextureID dest)
 
 	vkCmdBlitImage(cbuff, srcImg, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, dstImg, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &blitRegion, VkFilter::VK_FILTER_LINEAR);
 
-	vk_utils::ImageTransition(cbuff, srcImg, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-	vk_utils::ImageTransition(cbuff, dstImg, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+	vk_utils::ImageTransition(cbuff, srcImg, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_ASPECT_COLOR_BIT);
+	vk_utils::ImageTransition(cbuff, dstImg, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_ASPECT_COLOR_BIT);
 }
 
 void CommandList::SetVertexStream(BufferID buf)
 {
 	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
-	
+
 	VkDeviceSize offset = 0;
 
 	vkCmdBindVertexBuffers(cbuff, 0, 1, &gAllBuffers[buf.handle], &offset);

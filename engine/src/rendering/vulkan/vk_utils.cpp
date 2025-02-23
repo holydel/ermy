@@ -56,6 +56,12 @@ VkFormat vk_utils::VkFormatFromErmy(ermy::rendering::Format format)
 		return VK_FORMAT_R8_UNORM;
 	case Format::BGRA8_UNORM:
 		return VK_FORMAT_B8G8R8A8_UNORM;
+	case Format::D32F:
+		return VK_FORMAT_D32_SFLOAT;
+	case Format::D16_UNORM:
+		return VK_FORMAT_D16_UNORM;
+	case Format::D24_UNORM_S8_UINT:
+		return VK_FORMAT_D24_UNORM_S8_UINT;
 	}
 
 	return VK_FORMAT_R8G8B8A8_SRGB;
@@ -160,9 +166,8 @@ static VkImageMemoryBarrier2 createImageMemoryBarrier(VkImage       image,
 	return barrier;
 }
 
-void vk_utils::ImageTransition(VkCommandBuffer cbuff, VkImage image, VkImageLayout oldLayout, VkImageLayout newLayout, int numMips, int numLayers)
+void vk_utils::ImageTransition(VkCommandBuffer cbuff, VkImage image, VkImageLayout oldLayout, VkImageLayout newLayout, VkImageAspectFlags aspectMask, int numMips, int numLayers)
 {
-	VkImageAspectFlags aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 	const VkImageMemoryBarrier2 barrier = createImageMemoryBarrier(image, oldLayout, newLayout, { aspectMask, 0, (uint32_t)numMips, 0, (uint32_t)numLayers });
 	const VkDependencyInfo depInfo{ .sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO, .imageMemoryBarrierCount = 1, .pImageMemoryBarriers = &barrier };
 

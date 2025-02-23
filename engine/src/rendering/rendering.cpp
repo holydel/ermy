@@ -82,6 +82,12 @@ FormatInfo ermy::rendering::GetFormatInfo(Format format)
 		return FormatInfo{ 16,4,1,1,1 };
 	case Format::BGRA8_UNORM:
 		return FormatInfo{ 4,4,1,1,1 };
+	case Format::D32F:
+		return FormatInfo{ 4,1,1,1,1 };
+	case Format::D16_UNORM:
+		return FormatInfo{ 2,1,1,1,1 };
+	case Format::D24_UNORM_S8_UINT:
+		return FormatInfo{ 4,2,1,1,1 };
 		// Block-compressed formats
 	case Format::BC1:
 		return FormatInfo{ 8, 4, 4, 4 ,1}; // BC1 (DXT1) uses 8 bytes per 4x4 block
@@ -97,8 +103,19 @@ FormatInfo ermy::rendering::GetFormatInfo(Format format)
 		return FormatInfo{ 16, 3, 4, 4,1 }; // BC6 uses 16 bytes per 4x4 block (three channels, HDR)
 	case Format::BC7:
 		return FormatInfo{ 16, 4, 4, 4,1 }; // BC7 uses 16 bytes per 4x4 block (four channels)
-
 	}
 
 	return FormatInfo{ 4,1,1,1 };
+}
+
+bool ermy::rendering::IsDepthFormat(Format format)
+{
+	switch (format)
+	{
+	case Format::D32F:
+	case Format::D16_UNORM:
+	case Format::D24_UNORM_S8_UINT:
+		return true;
+	}
+	return false;
 }

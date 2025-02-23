@@ -57,7 +57,7 @@ OutStaticVertexDedicated dedicatedStaticMeshVS(StaticVertexDedicated vtx, unifor
 [shader("fragment")]
 float4 dedicatedStaticMeshFS(OutStaticVertexDedicated input, uniform float4x4 padding, uniform int mode) : SV_Target
 {
-    float4 color = float4(1, 0, 0, 1);
+    float4 color = float4(0, 1, 0, 1);
 
     if (mode == 0)
         color = float4(input.uv.x, input.uv.y, 0.5f,1.0f);

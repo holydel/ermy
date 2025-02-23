@@ -108,6 +108,10 @@ namespace ermy
 		{
 			return handle;
 		}
+		void Invalidate()
+		{
+			handle = InvalidValue;
+		}
 	};
 
 	struct Handle64
@@ -124,6 +128,10 @@ namespace ermy
 		u64 Value()
 		{
 			return handle;
+		}
+		void Invalidate()
+		{
+			handle = InvalidValue;
 		}
 	};
 
@@ -142,6 +150,10 @@ namespace ermy
 		{
 			return handle;
 		}
+		void Invalidate()
+		{
+			handle = InvalidValue;
+		}
 	};
 
 	struct Handle8
@@ -158,6 +170,10 @@ namespace ermy
 		u8 Value()
 		{
 			return handle;
+		}
+		void Invalidate()
+		{
+			handle = InvalidValue;
 		}
 	};
 }

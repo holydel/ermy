@@ -52,27 +52,22 @@ GeometryRenderPreview::GeometryRenderPreview()
 	{
 		rendering::PSODesc desc;
 		desc.SetShaderStage(ermy::shader_editor::dedicatedStaticMeshVS());
-		//desc.SetShaderStage(ermy::shader_internal::dedicatedStaticMeshFS());
+		desc.SetShaderStage(ermy::shader_editor::dedicatedStaticMeshFS());
 		desc.specificRenderPass = RTT;
 		desc.rootConstantRanges[(int)ermy::ShaderStage::Vertex].size = 64;
-		desc.rootConstantRanges[(int)ermy::ShaderStage::Fragment].offset = 64;
-		desc.rootConstantRanges[(int)ermy::ShaderStage::Fragment].size = 4;
-		//float x, y, z;
-		//float nx, ny, nz;
-		//float tx, ty, tz;
-		//float bx, by, bz;
-		//float u0, v0;
-		//float u1, v1;
-		//float r, g, b, a;
+		desc.rootConstantRanges[(int)ermy::ShaderStage::Fragment].size = 68;
 
-		desc.vertexAttributes.push_back({ rendering::Format::RGB32F });
-		desc.vertexAttributes.push_back({ rendering::Format::RGB32F });
-		desc.vertexAttributes.push_back({ rendering::Format::RGB32F });
-		desc.vertexAttributes.push_back({ rendering::Format::RGB32F });
-		desc.vertexAttributes.push_back({ rendering::Format::RG32F });
-		desc.vertexAttributes.push_back({ rendering::Format::RG32F });
-		desc.vertexAttributes.push_back({ rendering::Format::RGBA32F });
-		//renderMeshUV = rendering::CreatePSO(desc);
+		desc.vertexAttributes.push_back({ rendering::Format::RGB32F }); //float x, y, z;
+		desc.vertexAttributes.push_back({ rendering::Format::RGB32F }); //float nx, ny, nz;
+		desc.vertexAttributes.push_back({ rendering::Format::RGB32F }); //float tx, ty, tz;
+		desc.vertexAttributes.push_back({ rendering::Format::RGB32F }); //float bx, by, bz;
+		desc.vertexAttributes.push_back({ rendering::Format::RG32F }); //float u0, v0;
+		desc.vertexAttributes.push_back({ rendering::Format::RG32F }); //float u1, v1;
+		desc.vertexAttributes.push_back({ rendering::Format::RGBA32F }); //float r, g, b, a;
+
+		desc.writeDepth = true;
+		desc.testDepth = true;
+		renderMeshUV = rendering::CreatePSO(desc);
 	}
 }
 
@@ -165,7 +160,7 @@ void GeometryAsset::DrawPreview()
 
 	ImGui::Checkbox("IsStatic", &isStaticPreview);
 
-	const char* modes[] = { "Solid Color","UV","Lit","Vertex Color" };
+	const char* modes[] = { "UV","Normals","Vertex Color","Solid Color" };
 
 	ImGui::Combo("Mode", &currentMode, modes, std::size(modes));
 }
@@ -254,11 +249,10 @@ void GeometryAsset::RenderStaticPreview(ermy::rendering::CommandList& cl)
 
 	cl.BeginRenderPass(staticRTT);
 	GeometryRenderPreview::Instance().BindCheckerPSO(cl);
-	//cl.SetDescriptorSet(0, assetPreviewTexLive);
-	//draw scene
 	cl.Draw(3);
 
 	GeometryRenderPreview::Instance().BindPSO(cl,true);
+
 	float r = boundingSphere.w;
 	glm::vec3 C = glm::vec3(boundingSphere);
 
@@ -279,7 +273,8 @@ void GeometryAsset::RenderStaticPreview(ermy::rendering::CommandList& cl)
 	glm::mat4 MVP = projectionMatrix * viewMatrix * modelMatrix;
 	// * viewMatrix * modelMatrix
 
-	cl.SetRootConstant(currentMode, ShaderStage::Fragment,64);
+	const int UVMode = 0;
+	cl.SetRootConstant(UVMode, ShaderStage::Fragment, 64);
 	cl.DrawDedicatedMesh(previewMesh, glm::transpose(MVP));
 	
 	cl.EndRenderPass();
@@ -321,21 +316,3 @@ void GeometryAsset::RenderPreview(ermy::rendering::CommandList& cl)
 	cl.SetRootConstant(currentMode, ShaderStage::Fragment,64);
 	cl.DrawDedicatedMesh(previewMesh, glm::transpose(MVP));
 }
-
-//std::vector<std::string>  GeometryAsset::Initialize()
-//{
-//	gAssetImporter = new Assimp::Importer();
-//
-//	aiString supportedGeometryExtensions;
-//	gAssetImporter->GetExtensionList(supportedGeometryExtensions);
-//	
-//	ERMY_LOG("Supported geometry extenions list: %s\n", supportedGeometryExtensions.C_Str());
-//
-//	std::vector<std::string> result;
-//	return result;
-//}
-//
-//void GeometryAsset::Shutdown()
-//{
-//	delete gAssetImporter;
-//}

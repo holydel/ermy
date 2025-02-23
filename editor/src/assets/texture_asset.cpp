@@ -111,7 +111,6 @@ TextureRenderPreview::TextureRenderPreview()
 		desc.SetShaderStage(ermy::shader_editor::fullscreenVS());
 		desc.SetShaderStage(ermy::shader_editor::fullscreenFS2D());
 		desc.uniforms.push_back(rendering::ShaderUniformType::Texture2D);
-		//desc.uniforms.push_back(rendering::ShaderUniformType::TextureCube);
 		desc.specificRenderPass = RTT;
 		desc.AddRootConstantRange(ShaderStage::Fragment, sizeof(TextureLivePreviewParams2D));
 		fullscreen2D = rendering::CreatePSO(desc);
@@ -121,7 +120,6 @@ TextureRenderPreview::TextureRenderPreview()
 		rendering::PSODesc desc;
 		desc.SetShaderStage(ermy::shader_editor::fullscreenVS());
 		desc.SetShaderStage(ermy::shader_editor::fullscreenFSCubemap());
-		//desc.uniforms.push_back(rendering::ShaderUniformType::Texture2D);
 		desc.uniforms.push_back(rendering::ShaderUniformType::TextureCube);
 		desc.specificRenderPass = RTT;
 		desc.AddRootConstantRange(ShaderStage::Fragment, sizeof(TextureLivePreviewParamsCube));
@@ -133,7 +131,6 @@ TextureRenderPreview::TextureRenderPreview()
 		desc.SetShaderStage(ermy::shader_editor::fullscreenVS());
 		desc.SetShaderStage(ermy::shader_editor::fullscreenFS2DArray());
 		desc.uniforms.push_back(rendering::ShaderUniformType::Texture2DArray);
-		//desc.uniforms.push_back(rendering::ShaderUniformType::TextureCube);
 		desc.specificRenderPass = RTT;
 		desc.AddRootConstantRange(ShaderStage::Fragment, sizeof(TextureLivePreviewParams2D));
 		fullscreen2DArray = rendering::CreatePSO(desc);
@@ -143,7 +140,6 @@ TextureRenderPreview::TextureRenderPreview()
 		rendering::PSODesc desc;
 		desc.SetShaderStage(ermy::shader_editor::fullscreenVS());
 		desc.SetShaderStage(ermy::shader_editor::fullscreenFSCubemapArray());
-		//desc.uniforms.push_back(rendering::ShaderUniformType::Texture2D);
 		desc.uniforms.push_back(rendering::ShaderUniformType::TextureCubeArray);
 		desc.specificRenderPass = RTT;
 		desc.AddRootConstantRange(ShaderStage::Fragment, sizeof(TextureLivePreviewParamsCube));
@@ -153,12 +149,11 @@ TextureRenderPreview::TextureRenderPreview()
 	{
 		rendering::PSODesc desc;
 		desc.SetShaderStage(ermy::shader_editor::fullscreenVS());
-		//desc.SetShaderStage(ermy::shader_internal::fullscreenFSVolumetric());
-		//desc.uniforms.push_back(rendering::ShaderUniformType::Texture2D);
+		desc.SetShaderStage(ermy::shader_editor::fullscreenFSVolumetric());
 		desc.uniforms.push_back(rendering::ShaderUniformType::TextureVolume);
 		desc.specificRenderPass = RTT;
 		desc.AddRootConstantRange(ShaderStage::Fragment, sizeof(TextureLivePreviewParamsCube));
-		//fullscreen3D = rendering::CreatePSO(desc);
+		fullscreen3D = rendering::CreatePSO(desc);
 	}
 
 	//static preview
@@ -175,7 +170,6 @@ TextureRenderPreview::TextureRenderPreview()
 		rendering::PSODesc desc;
 		desc.SetShaderStage(ermy::shader_editor::fullscreenVS());
 		desc.SetShaderStage(ermy::shader_editor::fullscreenFSCubemapStatic());
-		//desc.uniforms.push_back(rendering::ShaderUniformType::Texture2D);
 		desc.uniforms.push_back(rendering::ShaderUniformType::TextureCube);
 		desc.specificRenderPass = staticRTT;
 		fullscreenCubeStatic = rendering::CreatePSO(desc);

@@ -11,7 +11,8 @@ namespace vk_utils
 	VkShaderStageFlagBits VkShaderStageFromErmy(ermy::ShaderStage stage);
 	VkPrimitiveTopology VkPrimitiveTopologyFromErmy(ermy::rendering::PrimitiveTopology topology);
 	VkFormat VkFormatFromErmy(ermy::rendering::Format format);
-	void ImageTransition(VkCommandBuffer cbuff, VkImage image, VkImageLayout oldLayout, VkImageLayout newLayout, int numMips = 1, int numLayers = 1);
+	
+	void ImageTransition(VkCommandBuffer cbuff, VkImage image, VkImageLayout oldLayout, VkImageLayout newLayout, VkImageAspectFlags aspectMask, int numMips = 1, int numLayers = 1);
 	VkBufferUsageFlagBits VkBufferUsageFromErmy(ermy::rendering::BufferUsage busage);
 	namespace debug
 	{

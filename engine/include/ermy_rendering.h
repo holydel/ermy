@@ -58,6 +58,9 @@ namespace ermy
 			,BC7
 			,R8_UNORM
 			,BGRA8_UNORM
+			, D32F
+			, D16_UNORM			
+			, D24_UNORM_S8_UINT
 		};
 
 		struct FormatInfo
@@ -79,6 +82,7 @@ namespace ermy
 		};
 
 		FormatInfo GetFormatInfo(Format format);
+		bool IsDepthFormat(Format format);
 
 		enum class ShaderUniformType
 		{
@@ -135,6 +139,9 @@ namespace ermy
 			const char* debugName = nullptr;
 
 			RenderPassID specificRenderPass;
+
+			bool writeDepth : 1 = false;
+			bool testDepth : 1 = false;
 
 			void SetShaderStageInternal(const ShaderInfo& info)
 			{
@@ -209,6 +216,6 @@ namespace ermy
 
 		RenderPassID CreateRenderPass(const RenderPassDesc &desc);		
 
-		void UpdateShaderBytecode(ShaderDomainTag tag, const std::string& name, u64 bytecodeCRC, u8* bytecode, u32 bytecodeSize);
+		void UpdateShaderBytecode(ShaderDomainTag tag, const std::string& name, u64 bytecodeCRC, const u8* bytecode, u32 bytecodeSize);
 	}
 }

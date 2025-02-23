@@ -30,6 +30,7 @@ struct RenderpassInfo
 	VkImage targetImage;
 	int defaultWidth;
 	int defaultHeight;
+	bool useDepth;
 };
 
 extern std::vector<RenderpassInfo> gAllRenderPasses;

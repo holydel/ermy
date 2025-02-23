@@ -77,19 +77,28 @@ void PreviewRenderer::RenderPreview(ermy::rendering::CommandList& finalCL)
 PreviewRenderer::PreviewRenderer()
 {
 	{
-		rendering::TextureDesc tdesc;
-		tdesc.width = 512;
-		tdesc.height = 512;
+		rendering::TextureDesc tdesc_color;
+		tdesc_color.width = 1024;
+		tdesc_color.height = 1024;
+		tdesc_color.texelFormat = rendering::Format::RGBA8_UNORM;
+		rendering::TextureDesc tdesc_depth;
+		tdesc_depth.width = 1024;
+		tdesc_depth.height = 1024;
+		tdesc_depth.texelFormat = rendering::Format::D32F;
 
-		RTT_Color = rendering::CreateDedicatedTexture(tdesc);
+		RTT_Color = rendering::CreateDedicatedTexture(tdesc_color);
+		RTT_Depth = rendering::CreateDedicatedTexture(tdesc_depth);
+
 
 		rendering::RenderPassDesc rdesc;
 		rdesc.colorAttachment = RTT_Color;
+		rdesc.depthStencilAttachment = RTT_Depth;
 
 		RTT = rendering::CreateRenderPass(rdesc);
 
 		previewTextureID = rendering::GetTextureDescriptor(RTT_Color);
 	}
+
 
 	{
 		rendering::TextureDesc tdesc;
@@ -98,8 +107,16 @@ PreviewRenderer::PreviewRenderer()
 
 		RTT_ColorStaticDoubleRes = rendering::CreateDedicatedTexture(tdesc);
 
+		rendering::TextureDesc tdesc_depth;
+		tdesc_depth.width = 256;
+		tdesc_depth.height = 256;
+		tdesc_depth.texelFormat = rendering::Format::D32F;
+
+		RTT_DepthStaticDoubleRes = rendering::CreateDedicatedTexture(tdesc_depth);
+
 		rendering::RenderPassDesc rdesc;
 		rdesc.colorAttachment = RTT_ColorStaticDoubleRes;
+		rdesc.depthStencilAttachment = RTT_DepthStaticDoubleRes;
 
 		RTT_Static = rendering::CreateRenderPass(rdesc);
 

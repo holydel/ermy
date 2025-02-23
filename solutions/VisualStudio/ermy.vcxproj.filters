@@ -305,6 +305,9 @@
     <ClInclude Include="..\..\engine\include\ermy_utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\engine\include\ermy_sound.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\engine\src\rendering\internal_shaders\internal.slang">
