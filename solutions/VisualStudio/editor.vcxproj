@@ -138,6 +138,7 @@
     <ClCompile Include="..\..\editor\src\assets\geometry_asset.cpp" />
     <ClCompile Include="..\..\editor\src\assets\KTXLoader.cpp" />
     <ClCompile Include="..\..\editor\src\assets\OpenImageLoader.cpp" />
+    <ClCompile Include="..\..\editor\src\assets\SoundsLoader.cpp" />
     <ClCompile Include="..\..\editor\src\assets\sound_asset.cpp" />
     <ClCompile Include="..\..\editor\src\assets\texture_asset.cpp" />
     <ClCompile Include="..\..\editor\src\assets\video_asset.cpp" />
@@ -163,6 +164,7 @@
     <ClInclude Include="..\..\editor\include\assets\FFMPEGLoader.h" />
     <ClInclude Include="..\..\editor\include\assets\KTXLoader.h" />
     <ClInclude Include="..\..\editor\include\assets\OpenImageLoader.h" />
+    <ClInclude Include="..\..\editor\include\assets\SoundsLoader.h" />
     <ClInclude Include="..\..\editor\include\assets_packed_cache.h" />
     <ClInclude Include="..\..\editor\include\assets_packer.h" />
     <ClInclude Include="..\..\editor\include\assets\asset.h" />

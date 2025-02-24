@@ -32,6 +32,8 @@ struct DeviceEnabledExtensions
 	bool ExtPageableDeviceLocalMemory : 1 = false;
 	bool KhrDynamicRendering : 1 = false;
 	bool KhrDynamicRenderingLocalRead : 1 = false;
+	bool KhrFragmentShaderBarycentric : 1 = false;
+	bool NvFragmentShaderBarycentric : 1 = false;
 };
 
 struct SingleTimeCommandBuffer

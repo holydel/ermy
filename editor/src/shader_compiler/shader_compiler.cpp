@@ -54,6 +54,8 @@ std::string ErmyStageFromSlangStage(SlangStage stage)
 		return "Compute";
 	case SlangStage::SLANG_STAGE_FRAGMENT:
 		return "Fragment";
+	case SlangStage::SLANG_STAGE_GEOMETRY:
+		return "Geometry";
 	}
 
 	return "unknown";

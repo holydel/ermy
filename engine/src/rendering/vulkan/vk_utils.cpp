@@ -93,6 +93,8 @@ VkShaderStageFlagBits vk_utils::VkShaderStageFromErmy(ermy::ShaderStage stage)
 		return VkShaderStageFlagBits::VK_SHADER_STAGE_FRAGMENT_BIT;
 	case ShaderStage::Compute:
 		return VkShaderStageFlagBits::VK_SHADER_STAGE_COMPUTE_BIT;
+	case ShaderStage::Geometry:
+		return VkShaderStageFlagBits::VK_SHADER_STAGE_GEOMETRY_BIT;
 	}
 
 	return VkShaderStageFlagBits::VK_SHADER_STAGE_VERTEX_BIT;

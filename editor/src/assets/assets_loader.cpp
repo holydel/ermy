@@ -8,6 +8,7 @@
 #include "assets/video_asset.h"
 #include "assets/geometry_asset.h"
 #include "assets/sound_asset.h"
+#include "assets/SoundsLoader.h"
 
 #include <vector>
 #include <tuple>
@@ -23,6 +24,7 @@ OpenImageLoader* gOpenImageLoader = nullptr;
 AssimpLoader* gAssimpLoader = nullptr;
 KTXLoader* gKTXLoader = nullptr;
 DDSLoader* gDDSLoader = nullptr;
+SoundsLoader* gSoundsLoader = nullptr;
 
 void PopulateLoaderExtensions(AssetsLoader* loader)
 {
@@ -40,8 +42,9 @@ bool AssetsLoader::Initialize()
     gAssimpLoader = new AssimpLoader();
     gKTXLoader = new KTXLoader();
     gDDSLoader = new DDSLoader();
-
+	gSoundsLoader = new SoundsLoader();
     //It's important to populate specific loaders first. The order matters.
+	PopulateLoaderExtensions(gSoundsLoader);
     PopulateLoaderExtensions(gKTXLoader);
     PopulateLoaderExtensions(gDDSLoader);
     PopulateLoaderExtensions(gOpenImageLoader);

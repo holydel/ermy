@@ -76,6 +76,9 @@
     <ClCompile Include="..\..\editor\src\assets\DDSLoader.cpp">
       <Filter>src\assets</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\editor\src\assets\SoundsLoader.cpp">
+      <Filter>src\assets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\editor\include\editor_main.h">
@@ -157,6 +160,9 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\editor\include\assets\DDSLoader.h">
+      <Filter>include\assets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editor\include\assets\SoundsLoader.h">
       <Filter>include\assets</Filter>
     </ClInclude>
   </ItemGroup>

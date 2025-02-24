@@ -20,6 +20,11 @@ ermy::Application::Application()
 	gApplication = this;
 }
 
+const ermy::Application* ermy::Application::GetApplication()
+{
+	return gApplication;
+}
+
 ermy::Application::~Application()
 {
 	gApplication = nullptr;

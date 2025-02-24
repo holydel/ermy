@@ -106,3 +106,21 @@ void sound::SetCone(SoundID sound, float innerAngle, float outerAngle, float vol
 	ma_sound_set_cone(gSounds[sound.handle], innerAngle, outerAngle, volume);
 }
 
+float  sound::GetDuration(SoundID sound)
+{
+	float length = 0.0f;
+	ma_sound_get_length_in_seconds(gSounds[sound.handle],&length);
+	return length;
+}
+
+bool sound::IsPlaying(SoundID sound)
+{
+	return ma_sound_is_playing(gSounds[sound.handle]);
+}
+
+float sound::CurrentTime(SoundID sound)
+{
+	double ms = static_cast<double>(ma_sound_get_time_in_milliseconds(gSounds[sound.handle]));
+	
+	return static_cast<float>(ms / 1000.0);
+}

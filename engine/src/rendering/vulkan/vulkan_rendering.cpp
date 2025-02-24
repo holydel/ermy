@@ -684,7 +684,7 @@ VkPipeline _createPipeline(const PSODesc& desc)
 
 	pipDepthStencilState.depthWriteEnable = desc.writeDepth;
 	pipDepthStencilState.depthTestEnable = desc.testDepth;
-	pipDepthStencilState.depthCompareOp = VkCompareOp::VK_COMPARE_OP_LESS;
+	pipDepthStencilState.depthCompareOp = VkCompareOp::VK_COMPARE_OP_LESS_OR_EQUAL;
 
 	pipDynamicState.pDynamicStates = all_dinamic_states.data();
 	pipDynamicState.dynamicStateCount = (u32)all_dinamic_states.size();
@@ -810,7 +810,8 @@ void ermy::rendering::UpdateShaderBytecode(ShaderDomainTag tag, const std::strin
 			for (auto& psoIndex : it->second.psoIndices)
 			{
 				auto& pso = gAllPipelines[psoIndex];
-				vkDestroyPipeline(gVKDevice, pso, gVKGlobalAllocationsCallbacks);
+				//vkDestroyPipeline(gVKDevice, pso, gVKGlobalAllocationsCallbacks);
+				//TODO: destroy after safe 3 frames
 
 				auto& shader = gAllPipelineDescs[psoIndex].allShaderStages[(int)it->second.stage];
 				auto& shaderBytecode = shader.byteCode;

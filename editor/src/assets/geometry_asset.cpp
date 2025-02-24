@@ -4,6 +4,7 @@
 #include <editor_shader_internal.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <ermy_application.h>
 
 //Assimp::Importer* gAssetImporter = nullptr;
 using namespace ermy;
@@ -36,6 +37,8 @@ public:
 
 GeometryRenderPreview::GeometryRenderPreview()
 {
+	auto const& renderCfg = ermy::Application::GetApplication()->staticConfig.render;
+
 	auto RTT = PreviewRenderer::Instance().GetRTT();
 	auto staticRTT = PreviewRenderer::Instance().GetStaticRTT();
 
@@ -52,7 +55,27 @@ GeometryRenderPreview::GeometryRenderPreview()
 	{
 		rendering::PSODesc desc;
 		desc.SetShaderStage(ermy::shader_editor::dedicatedStaticMeshVS());
-		desc.SetShaderStage(ermy::shader_editor::dedicatedStaticMeshFS());
+
+		//if support barycentric
+		if (renderCfg.enableBarycentricFS)
+		{
+			desc.SetShaderStage(ermy::shader_editor::dedicatedStaticMeshBaryFS());
+		}
+		else
+		{
+			if (renderCfg.enableGeometryShader) //support geometry shader
+			{
+				desc.SetShaderStage(ermy::shader_editor::dedicatedStaticMeshGeomBaryFS());
+				desc.SetShaderStage(ermy::shader_editor::generateBarycentricGS());
+			}
+			else
+			{
+				desc.SetShaderStage(ermy::shader_editor::dedicatedStaticMeshFS());
+			}
+		}
+		
+
+
 		desc.specificRenderPass = RTT;
 		desc.rootConstantRanges[(int)ermy::ShaderStage::Vertex].size = 64;
 		desc.rootConstantRanges[(int)ermy::ShaderStage::Fragment].size = 68;
@@ -217,7 +240,7 @@ void GeometryAsset::ResetView()
 
 void GeometryAsset::MouseZoom(float value)
 {
-	Zoom /= value;
+	Zoom *= value;
 }
 void GeometryAsset::MouseDown(float normalizedX, float normalizedY)
 {

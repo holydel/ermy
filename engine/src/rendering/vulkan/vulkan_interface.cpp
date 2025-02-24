@@ -365,6 +365,10 @@ struct EnabledVKFeatures
 	VkPhysicalDeviceTimelineSemaphoreFeaturesKHR timelineSemaphoreFeatures = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES_KHR, nullptr };
 	VkPhysicalDeviceDynamicRenderingFeaturesKHR dynamicRenderingFeatures = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR, nullptr };
 	VkPhysicalDeviceDynamicRenderingLocalReadFeaturesKHR dynamicRenderingFeaturesLocalRead = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_LOCAL_READ_FEATURES_KHR, nullptr };
+	
+	VkPhysicalDeviceFragmentShaderBarycentricFeaturesKHR fragmentShaderBarycentricFeatures;
+	VkPhysicalDeviceFragmentShaderBarycentricFeaturesNV fragmentShaderBarycentricFeaturesNV;
+
 	void* BuildPChains();
 	void* pchain = nullptr;
 
@@ -423,11 +427,24 @@ void* EnabledVKFeatures::BuildPChains()
 			NextPChain(pchain, &dynamicRenderingFeaturesLocalRead);
 	}
 
+	if (gVKDeviceEnabledExtensions.KhrFragmentShaderBarycentric)
+	{
+		fragmentShaderBarycentricFeatures.fragmentShaderBarycentric = true;
+		NextPChain(pchain, &fragmentShaderBarycentricFeatures);
+	}
+
+	if (gVKDeviceEnabledExtensions.NvFragmentShaderBarycentric)
+	{
+		fragmentShaderBarycentricFeaturesNV.fragmentShaderBarycentric = true;
+		NextPChain(pchain, &fragmentShaderBarycentricFeaturesNV);
+	}
 	return pchain;
 }
 
 void CreateDevice()
 {
+	auto& renderCfg = GetApplication().staticConfig.render;
+
 	VKDeviceExtender device_extender(gVKPhysicalDevice, gPhysicalDeviceAPIVersion);
 
 	auto queueFamilies = EnumerateVulkanObjects(gVKPhysicalDevice, vkGetPhysicalDeviceQueueFamilyProperties);
@@ -554,19 +571,44 @@ void CreateDevice()
 	gVKDeviceEnabledExtensions.ExtMemoryPriority = device_extender.TryAddExtension(VK_EXT_MEMORY_PRIORITY_EXTENSION_NAME);
 	gVKDeviceEnabledExtensions.ExtPageableDeviceLocalMemory = device_extender.TryAddExtension(VK_EXT_PAGEABLE_DEVICE_LOCAL_MEMORY_EXTENSION_NAME);
 
+	VkPhysicalDeviceFeatures enabledFeatures10 = {};
+	VkPhysicalDeviceFeatures supportedFeatures;
+	vkGetPhysicalDeviceFeatures(gVKPhysicalDevice, &supportedFeatures);
+
 	if (gVKConfig.useDynamicRendering)
 	{
 		gVKDeviceEnabledExtensions.KhrDynamicRendering = device_extender.TryAddExtension(VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME, Ver13);
 		gVKDeviceEnabledExtensions.KhrDynamicRenderingLocalRead = device_extender.TryAddExtension(VK_KHR_DYNAMIC_RENDERING_LOCAL_READ_EXTENSION_NAME, Ver14);
 	}
 
+	if (renderCfg.enableBarycentricFS)
+	{
+		gVKDeviceEnabledExtensions.KhrFragmentShaderBarycentric = device_extender.TryAddExtension(VK_KHR_FRAGMENT_SHADER_BARYCENTRIC_EXTENSION_NAME);
+		if (!gVKDeviceEnabledExtensions.KhrFragmentShaderBarycentric)
+		{
+			gVKDeviceEnabledExtensions.NvFragmentShaderBarycentric = device_extender.TryAddExtension(VK_NV_FRAGMENT_SHADER_BARYCENTRIC_EXTENSION_NAME);
+		}
+		
+		renderCfg.enableBarycentricFS = gVKDeviceEnabledExtensions.KhrFragmentShaderBarycentric || gVKDeviceEnabledExtensions.NvFragmentShaderBarycentric;
+		if(!renderCfg.enableBarycentricFS)
+			ERMY_WARNING("Barycentric FS requested but not supported");
+		else
+			ERMY_LOG("Barycentric FS enabled!");
+	}
+
+	if (renderCfg.enableGeometryShader)
+	{
+		renderCfg.enableGeometryShader = enabledFeatures10.geometryShader = supportedFeatures.geometryShader;
+
+		if (!renderCfg.enableGeometryShader)
+			ERMY_WARNING("Geometry Shader requested but not supported");
+		else
+			ERMY_LOG("Geometry Shader enabled!");
+	}
+
 #ifdef ERMY_OS_MACOS
 	device_extender.TryAddExtension(VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME);
 #endif
-
-	VkPhysicalDeviceFeatures enabledFeatures10 = {};
-	VkPhysicalDeviceFeatures supportedFeatures;
-	vkGetPhysicalDeviceFeatures(gVKPhysicalDevice, &supportedFeatures);
 
 	enabledFeatures10.imageCubeArray = supportedFeatures.imageCubeArray;
 

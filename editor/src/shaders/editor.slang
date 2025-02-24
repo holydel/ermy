@@ -11,6 +11,13 @@ struct PreviewTextureConstantsCubemap
     int arrayLevel;
 };
 
+struct PreviewSoundConstants
+{
+    int numChannels;
+    float position;
+};
+
+
 struct StaticVertexDedicated
 {
     float3 pos : POSITION;
@@ -36,6 +43,15 @@ struct VOutFS
     float2 uv : TEXCOORD0;
 };
 
+struct OutStaticVertexDedicatedWithBary
+{
+    float4 position : SV_Position;
+    float2 uv : TEXCOORD0;
+    float4 color : COLOR0;
+    float3 normal : NORMAL;
+    float3 barycentric : TEXCOORD1; // Barycentric coordinates
+};
+
 [shader("vertex")]
 OutStaticVertexDedicated dedicatedStaticMeshVS(StaticVertexDedicated vtx, uniform float4x4 MVP)
 {
@@ -54,19 +70,85 @@ OutStaticVertexDedicated dedicatedStaticMeshVS(StaticVertexDedicated vtx, unifor
     return output;
 }
 
-[shader("fragment")]
-float4 dedicatedStaticMeshFS(OutStaticVertexDedicated input, uniform float4x4 padding, uniform int mode) : SV_Target
+float4 ShadeMesh(float2 uv, float3 normal, float4 vcolor, int mode)
 {
     float4 color = float4(0, 1, 0, 1);
 
     if (mode == 0)
-        color = float4(input.uv.x, input.uv.y, 0.5f,1.0f);
+        color = float4(uv.x, uv.y, 0.5f, 1.0f);
     if (mode == 1)
-        color = float4(input.normal * 0.5f + float3(0.5f),1.0f);
+        color = float4(normal * 0.5f + float3(0.5f), 1.0f);
     if (mode == 2)
-        color = input.color;
+        color = vcolor;
 
     return color;
+}
+
+[shader("fragment")]
+float4 dedicatedStaticMeshFS(OutStaticVertexDedicated input, uniform float4x4 padding, uniform int mode) : SV_Target
+{
+    return ShadeMesh(input.uv, input.normal, input.color, mode);
+}
+
+float CalculateWireFactor(float3 barycentricCoords)
+{
+    // Define wireframe thickness (2 pixels)
+    float wireframeThickness = 3.14f;
+
+    // Calculate the minimum barycentric coordinate
+    float minBarycentric = min(barycentricCoords.x, min(barycentricCoords.y, barycentricCoords.z));
+
+    // Calculate the rate of change of the barycentric coordinates
+    float barycentricWidth = fwidth(minBarycentric);
+
+    float wireframe = 1.0f - smoothstep(0.0f, barycentricWidth * wireframeThickness, minBarycentric);
+
+    return wireframe;
+}
+
+[shader("fragment")]
+float4 dedicatedStaticMeshBaryFS(OutStaticVertexDedicated input, float3 baryWeights: SV_Barycentrics, uniform float4x4 padding, uniform int mode) : SV_Target
+{
+    float4 color = ShadeMesh(input.uv, input.normal, input.color, mode);
+    // Smoothly interpolate the wireframe edges using antialiasing
+    float wireframe = CalculateWireFactor(baryWeights);
+
+    return color + float4(0.8f, 0.8f, 0.2f, 1.0f) * wireframe;
+}
+
+[maxvertexcount(3)]
+[shader("geometry")]
+void generateBarycentricGS(triangle OutStaticVertexDedicated input[3], inout TriangleStream<OutStaticVertexDedicatedWithBary> triStream)
+{
+    OutStaticVertexDedicatedWithBary output;
+
+    // Barycentric coordinates for the three vertices of the triangle
+    float3 barycentricCoords[3] = {
+        float3(1, 0, 0),
+        float3(0, 1, 0),
+        float3(0, 0, 1)
+    };
+
+    for (int i = 0; i < 3; i++)
+    {
+        output.position = input[i].position;
+        output.uv = input[i].uv;
+        output.color = input[i].color;
+        output.normal = input[i].normal;
+        output.barycentric = barycentricCoords[i];
+        triStream.Append(output);
+    }
+
+    triStream.RestartStrip();
+}
+
+[shader("fragment")]
+float4 dedicatedStaticMeshGeomBaryFS(OutStaticVertexDedicatedWithBary input, uniform float4x4 padding, uniform int mode) : SV_Target
+{
+    float4 color = ShadeMesh(input.uv, input.normal, input.color, mode);
+    // Smoothly interpolate the wireframe edges using antialiasing
+    float wireframe = CalculateWireFactor(input.barycentric);
+    return color + float4(0.8f, 0.8f, 0.2f, 1.0f) * wireframe;
 }
 
 [shader("vertex")]
@@ -127,7 +209,7 @@ float3 checkerColor(float2 uv, float cellSize)
     bool checker = (cell.x % 2) ^ (cell.y % 2);
 
     // Return black or white based on checkerboard pattern
-    return checker ? float3(0.88, 0.89, 0.9) : float3(0.2, 0.19, 0.18);
+    return checker ? float3(0.3, 0.31, 0.32) : float3(0.2, 0.19, 0.18);
 }
 
 [shader("fragment")]
@@ -443,4 +525,21 @@ float4 fullscreenFSVolumetricStatic(VOutFS input) : SV_Target
 
     // Return the accumulated color
     return accumulatedColor;
+}
+
+[shader("fragment")]
+float4 fullscreenFSSoundWavefront(VOutFS input, uniform PreviewSoundConstants params) : SV_Target
+{
+    float4 color = float4(0.15f, 0.16f, 0.17f, 1.0f);
+    int channelID = (int)(input.uv.y * params.numChannels);
+
+    float channelHeight = 1.0 / float(params.numChannels * 2);
+    float channelCenter = channelHeight * ((channelID * 2) + 1);
+
+    float volume = preview2D.Sample(float2(input.uv.x, channelCenter)).x;
+    float current = abs(channelCenter - input.uv.y) / channelHeight;
+    if (volume > current)
+        color = float4(0.9f, 0.9f, 0.77f, 1.0f);
+
+    return color;
 }

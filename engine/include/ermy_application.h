@@ -94,8 +94,6 @@ namespace ermy
 #ifdef ERMY_GAPI_D3D12
 				D3D12Config d3d12Config;
 #endif
-				
-				
 
 				i8 adapterID = -1;
 
@@ -104,6 +102,15 @@ namespace ermy
 #else
 				bool enableDebugLayers = true;
 #endif
+
+				bool enableRaytracing : 1 = false;	
+				bool enableBarycentricFS : 1 = false;
+				bool enableMeshShader : 1 = false;
+				bool enableSamplerFeedback : 1 = false;
+				bool enableVariableRateShading : 1 = false;
+				bool enableGeometryShader : 1 = false;
+				bool enableTessellation : 1 = false;
+				bool enableSamplerYCbCr : 1 = false;
 			};
 
 			OutputMode outputMode = OutputMode::Window;
@@ -190,5 +197,7 @@ namespace ermy
 		virtual bool IsRunning() {
 			return true;
 		}
+
+		static const Application* GetApplication();
 	};
 }

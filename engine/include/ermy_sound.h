@@ -18,5 +18,8 @@ namespace ermy
 		void SetVelocity(SoundID sound, float x, float y, float z);
 		void SetDirection(SoundID sound, float x, float y, float z);
 		void SetCone(SoundID sound, float innerAngle, float outerAngle, float volume);		
+		float GetDuration(SoundID sound);
+		bool IsPlaying(SoundID sound);
+		float CurrentTime(SoundID sound);
 	}
 }

@@ -25,6 +25,12 @@ public:
 
 		staticConfig.imgui.enable = true;
 		staticConfig.imgui.enableDocking = true;
+
+		staticConfig.render.enableBarycentricFS = true;
+		staticConfig.render.enableGeometryShader = true;
+		staticConfig.render.enableMeshShader = true;
+		staticConfig.render.enableRaytracing = true;
+		staticConfig.render.enableSamplerYCbCr = true;
 	}
 
 	void OnLoad() override

@@ -7,6 +7,9 @@ namespace ermy
 	{
 		ShaderInfo dedicatedStaticMeshVS();
 		ShaderInfo dedicatedStaticMeshFS();
+		ShaderInfo dedicatedStaticMeshBaryFS();
+		ShaderInfo generateBarycentricGS();
+		ShaderInfo dedicatedStaticMeshGeomBaryFS();
 		ShaderInfo fullscreenVS();
 		ShaderInfo fullscreenFSEmpty();
 		ShaderInfo fullscreenFS2D();
@@ -19,5 +22,6 @@ namespace ermy
 		ShaderInfo fullscreenFSCubemapArrayStatic();
 		ShaderInfo fullscreenFSVolumetric();
 		ShaderInfo fullscreenFSVolumetricStatic();
+		ShaderInfo fullscreenFSSoundWavefront();
 	}
 }
