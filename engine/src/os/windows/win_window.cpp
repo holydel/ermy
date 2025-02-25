@@ -3,6 +3,7 @@
 #include "application.h"
 #include <windowsx.h>
 #include <ermy_input.h>
+using namespace ermy;
 
 HWND gMainWindow = nullptr;
 HINSTANCE gWinSystemInstance = nullptr;
@@ -19,7 +20,7 @@ void* os::CreateNativeWindow()
 	auto& winCfg = GetApplication().staticConfig.window;
 
 	const char* utf8WinCaption = config.GetWindowTitle().c_str();
-	bool is_maximized = winCfg.mode != ermy::Application::StaticConfig::WindowConfig::WindowMode::Windowed;
+	bool is_maximized = winCfg.initialState == Application::StaticConfig::WindowConfig::InitialState::Maximized;
 
 	WNDCLASSEXW windowClass = {};
 

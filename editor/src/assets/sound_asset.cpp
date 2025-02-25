@@ -8,6 +8,7 @@ struct SoundLivePreviewParams
 {
 	int numChannels;
 	float position;
+	float volume;
 };
 
 class SoundRenderPreview
@@ -73,8 +74,8 @@ void SoundAsset::DrawPreview()
 		}
 
 		ImGui::SameLine();
-		float currentTime = ermy::sound::CurrentTime(sound);
-		ImGui::ProgressBar(currentTime / duration);
+		//float currentTime = ermy::sound::GetCurrentPlaybackTime(sound);
+		//ImGui::ProgressBar(currentTime / duration);
 	}
 	else
 	{
@@ -162,6 +163,7 @@ void SoundAsset::RenderStaticPreview(ermy::rendering::CommandList& cl)
 	SoundLivePreviewParams pass;
 	pass.numChannels = channels;
 	pass.position = 0;
+	pass.volume = 1.0f;
 	cl.SetRootConstant(pass, ShaderStage::Fragment);
 	cl.Draw(3);
 	cl.EndRenderPass();
@@ -177,7 +179,18 @@ void SoundAsset::RenderPreview(ermy::rendering::CommandList& cl)
 	cl.SetDescriptorSet(0, assetPreviewTexLive);
 	SoundLivePreviewParams pass;
 	pass.numChannels = channels;
-	pass.position = 0;
+	pass.position = (ermy::sound::GetCurrentPlaybackTime(sound) / duration);
+	pass.volume = volume;
 	cl.SetRootConstant(pass, ShaderStage::Fragment);
 	cl.Draw(3);
+}
+
+void SoundAsset::MouseZoom(float dv)
+{
+	volume *= dv;
+	ermy::sound::SetVolume(sound, volume);
+}
+void SoundAsset::MouseDown(float normalizedX, float normalizedY)
+{
+	ermy::sound::SetPlayingOffset(sound, normalizedX * duration);
 }

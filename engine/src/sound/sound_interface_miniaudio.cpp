@@ -118,9 +118,28 @@ bool sound::IsPlaying(SoundID sound)
 	return ma_sound_is_playing(gSounds[sound.handle]);
 }
 
-float sound::CurrentTime(SoundID sound)
+float sound::GetCurrentPlaybackTime(SoundID sound)
 {
 	double ms = static_cast<double>(ma_sound_get_time_in_milliseconds(gSounds[sound.handle]));
 	
 	return static_cast<float>(ms / 1000.0);
+}
+
+void sound::SetPlayingOffset(SoundID sound, float offset)
+{
+	if (offset < 0)
+		offset = 0;
+
+	u64 numPCMFrames = 0;
+	ma_sound_get_length_in_pcm_frames(gSounds[sound.handle],&numPCMFrames);
+	if (numPCMFrames == 0)
+		return;
+
+	//ma_sound_get_data_format(gSounds[sound.handle], nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
+	u64 pcmFrame = static_cast<u64>(offset * numPCMFrames / GetDuration(sound));
+
+	if (pcmFrame >= numPCMFrames)
+		pcmFrame = numPCMFrames - 1;
+	
+	ma_sound_seek_to_pcm_frame(gSounds[sound.handle], pcmFrame);
 }

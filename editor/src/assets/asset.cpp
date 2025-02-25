@@ -80,7 +80,7 @@ void Asset::DrawProps()
 	auto strPath = source.string();
 	ImGui::InputText("P", (char*)strPath.c_str(), strPath.size(), ImGuiInputTextFlags_ReadOnly);
 	ImGui::Text("Asset file size: %s", ermy_utils::string::humanReadableFileSize(fileSize).c_str());
-
+	ImGui::Checkbox("Include in PAK", &includeInPAK);
 	if (data)
 		data->DrawPreview();
 }

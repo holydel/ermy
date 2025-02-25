@@ -3,6 +3,7 @@
 
 #include "ermy_entry_point.h"
 #include <ermy_input.h>
+#include <ermy_pak.h>
 
 using namespace ermy;
 
@@ -57,6 +58,8 @@ void TestBedApplication::OnLoad()
 	desc.SetShaderStageInternal(shader_internal::testTriangleFS());
 
 	testTrianglePSO = rendering::CreatePSO(desc);
+
+	ermy::pak::MountPak("D:\\Projects\\ermy\\eproj_template\\paks\\0.epak");
 }
 
 void TestBedApplication::OnBeginFinalPass(rendering::CommandList& finalCL)

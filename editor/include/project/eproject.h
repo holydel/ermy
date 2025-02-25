@@ -15,7 +15,8 @@ class ErmyProject
 	std::filesystem::path projPath;
 
 	char projName[64] = { 'U','n','n','a','m','e','d',' ','E','r','m','y',' ','P','r','o','j','e','c','t' };
-
+	char pakPath[256] = { 0 };
+	char postBuildCmd[256] = { 0 };
 	AssetFolder* rootAssets = nullptr;
 	AssetFolder* rootShaders = nullptr;
 
@@ -32,7 +33,8 @@ public:
 	bool RecompileAllInternalShaders();
 	bool RecompileAllShaders();
 	bool RecompileAllEditorShaders();
-
+	bool RebuildPAK();
+	void Load();
 	void Save();
 
 	void DrawProjectSettings();

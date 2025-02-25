@@ -64,6 +64,7 @@ protected:
 
 class Asset : public Props
 {
+	bool includeInPAK = false;
 protected:
 	std::filesystem::path source = "";
 	std::filesystem::path intermediate = "";

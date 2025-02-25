@@ -20,6 +20,7 @@ namespace ermy
 		void SetCone(SoundID sound, float innerAngle, float outerAngle, float volume);		
 		float GetDuration(SoundID sound);
 		bool IsPlaying(SoundID sound);
-		float CurrentTime(SoundID sound);
+		float GetCurrentPlaybackTime(SoundID sound);
+		void SetPlayingOffset(SoundID sound, float offset);
 	}
 }

@@ -15,6 +15,7 @@ struct PreviewSoundConstants
 {
     int numChannels;
     float position;
+    float volume;
 };
 
 
@@ -536,10 +537,15 @@ float4 fullscreenFSSoundWavefront(VOutFS input, uniform PreviewSoundConstants pa
     float channelHeight = 1.0 / float(params.numChannels * 2);
     float channelCenter = channelHeight * ((channelID * 2) + 1);
 
-    float volume = preview2D.Sample(float2(input.uv.x, channelCenter)).x;
+    float volume = preview2D.Sample(float2(input.uv.x, channelCenter)).x * params.volume;
     float current = abs(channelCenter - input.uv.y) / channelHeight;
     if (volume > current)
         color = float4(0.9f, 0.9f, 0.77f, 1.0f);
+
+    if (input.uv.x < params.position)
+    {
+        color *= 0.5f;
+    }
 
     return color;
 }

@@ -199,7 +199,7 @@ void imgui_interface::BeginFrame(void* cmdList)
 
 void imgui_interface::EndFrame(void* cmdList)
 {
-	ImGui::ShowDemoWindow(); // Show demo window! :)
+	//ImGui::ShowDemoWindow(); // Show demo window! :)
 	ImGui::Render();
 
 #ifdef ERMY_GAPI_VULKAN

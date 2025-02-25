@@ -66,6 +66,11 @@ namespace main_window
 				{
 					ErmyProject::Instance().RecompileAllEditorShaders();
 				}
+				ImGui::Separator();
+				if (ImGui::MenuItem("Rebuild PAK"))
+				{
+					ErmyProject::Instance().RebuildPAK();
+				}
 				ImGui::EndMenu();
 			}
 			if (ImGui::BeginMenu("Windows"))

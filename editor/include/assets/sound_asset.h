@@ -9,6 +9,7 @@ class SoundAsset : public AssetData
 public:
 	std::vector<float> samples;
 	int channels = 0;
+	float volume = 1.0f;
 	ermy::sound::SoundID sound;
 	double duration = 0.0;
 
@@ -20,4 +21,7 @@ public:
 	void RegeneratePreview() override;
 	void RenderPreview(ermy::rendering::CommandList& cl) override;
 	void RenderStaticPreview(ermy::rendering::CommandList& cl) override;
+
+	void MouseZoom(float) override;
+	void MouseDown(float normalizedX, float normalizedY) override;
 };

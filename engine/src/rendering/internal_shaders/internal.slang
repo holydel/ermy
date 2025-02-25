@@ -100,8 +100,12 @@ float4 testTriangleFS(VOutTest input) : SV_Target
     return float4(input.color, 1.0f);
 }
 
+[vk_binding(0, 0)]
+Sampler2D preview2D;
+
 [shader("fragment")]
 float4 dedicatedSpriteFS(VOutDedicatedSprite input) : SV_Target
 {
-    return input.color;
+    float4 color = preview2D.Sample(input.uv);
+    return color * input.color;
 }

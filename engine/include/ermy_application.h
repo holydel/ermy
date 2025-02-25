@@ -29,11 +29,19 @@ namespace ermy
 					ExclusiveFullscreen //tried to eliminate the compositor's delay
 				};
 
+				enum class InitialState
+				{
+					Normal,
+					Maximized,
+					Minimized,
+					Hidden
+				};
+
 				int width = 800;
 				int height = 600;
 				std::string title = ""; //when e,pty - get name from AppConfig
 				WindowMode mode = WindowMode::Windowed;
-
+				InitialState initialState = InitialState::Normal;
 			};
 
 			struct SwapchainConfig
