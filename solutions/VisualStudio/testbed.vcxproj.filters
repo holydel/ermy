@@ -144,5 +144,11 @@
     <None Include="AndroidPackaging\app\proguard-rules.pro">
       <Filter>AndroidPackaging\app</Filter>
     </None>
+    <None Include="..\..\eproj_template\assets\shaders\ermy_base.slang">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\..\eproj_template\assets\shaders\ermy_engine.slang">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

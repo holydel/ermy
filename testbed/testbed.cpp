@@ -18,7 +18,8 @@ public:
 
 		staticConfig.appName = "TestBed";
 
-		staticConfig.render.adapterID = 1;
+		staticConfig.render.enableDebugLayers = true;
+		staticConfig.render.adapterID = 0;
 		//staticConfig.render.vkConfig.useDynamicRendering = false;
 	}
 
@@ -56,7 +57,7 @@ void TestBedApplication::OnLoad()
 	rendering::PSODesc desc;
 	desc.SetShaderStageInternal(shader_internal::testTriangleVS());
 	desc.SetShaderStageInternal(shader_internal::testTriangleFS());
-
+	desc.debugName = "TestTriangle";
 	testTrianglePSO = rendering::CreatePSO(desc);
 
 	ermy::pak::MountPak("D:\\Projects\\ermy\\eproj_template\\paks\\0.epak");

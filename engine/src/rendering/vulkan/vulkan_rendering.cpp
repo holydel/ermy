@@ -91,6 +91,7 @@ void _addShader(const ermy::ShaderInfo& sinfo, std::vector<VkPipelineShaderStage
 		VkShaderModule& shaderModule = gAllShaderModules.emplace_back();
 		VK_CALL(vkCreateShaderModule(gVKDevice, &cinfo, gVKGlobalAllocationsCallbacks, &shaderModule));
 
+		vk_utils::debug::SetName(shaderModule, sinfo.shaderName.c_str());
 		//auto entryPoint = _extractEntryPointName((const uint32_t*)bc.data, bc.size / 4);
 		//gAllShaderModulesEntryPoints.push_back(entryPoint);
 	}
@@ -437,6 +438,16 @@ TextureInfo _createTexture(const TextureDesc& desc)
 	result.descriptor = textureDescriptorSet;
 	result.meta = meta;
 
+	if (desc.debugName)
+	{
+		vk_utils::debug::SetName(textureImage, desc.debugName);
+
+		std::string debugViewName = desc.debugName;
+		debugViewName += "_View";
+		vk_utils::debug::SetName(textureImageView, debugViewName.c_str());
+	}
+		
+
 	return result;
 }
 
@@ -724,6 +735,15 @@ VkPipeline _createPipeline(const PSODesc& desc)
 
 	VkPipeline pipeline = nullptr;
 	VK_CALL(vkCreateGraphicsPipelines(gVKDevice, nullptr /*TODO: PipelineCache*/, 1, &cinfo, gVKGlobalAllocationsCallbacks, &pipeline));
+
+	if (desc.debugName)
+	{
+		vk_utils::debug::SetName(pipeline, desc.debugName);
+
+		std::string debugLayoutName = desc.debugName;
+		debugLayoutName += "_Layout";
+		vk_utils::debug::SetName(layout, debugLayoutName.c_str());
+	}
 	return pipeline;
 }
 

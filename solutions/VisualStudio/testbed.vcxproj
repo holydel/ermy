@@ -236,6 +236,8 @@
     <ClCompile Include="..\..\testbed\testbed.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\eproj_template\assets\shaders\ermy_base.slang" />
+    <None Include="..\..\eproj_template\assets\shaders\ermy_engine.slang" />
     <None Include="AndroidPackaging\app\build.gradle" />
     <None Include="AndroidPackaging\app\proguard-rules.pro" />
     <None Include="AndroidPackaging\build.gradle" />

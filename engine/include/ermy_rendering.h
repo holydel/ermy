@@ -33,7 +33,7 @@ namespace ermy
 			u32 boneIndices;
 		};
 
-		enum class Format
+		enum class Format : u8
 		{
 			RGBA8_UNORM
 			,RGBA16_UNORM
@@ -179,18 +179,17 @@ namespace ermy
 
 		struct TextureDesc
 		{
+			void* pixelsData = nullptr;
+			const char* debugName = nullptr;
+			u32 dataSize = 0;
 			u16 width = 1;
 			u16 height = 1;
 			u16 depth = 1;
 			u16 numLayers =1;
 			u8 numMips = 1;
+			Format texelFormat = Format::RGBA8_UNORM;
 			bool isCubemap : 1 = false;
 			bool isSparse : 1 = false;
-			Format texelFormat = Format::RGBA8_UNORM;
-			u32 dataSize = 0;
-
-			void* pixelsData = nullptr;
-			const char* debugName = nullptr;
 		};
 
 		struct BufferDesc

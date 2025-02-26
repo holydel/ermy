@@ -103,6 +103,7 @@ TextureRenderPreview::TextureRenderPreview()
 		desc.SetShaderStage(ermy::shader_editor::fullscreenVS());
 		desc.SetShaderStage(ermy::shader_editor::fullscreenFSEmpty());
 		desc.specificRenderPass = RTT;
+		desc.debugName = "FullscreenEmpty";
 		fullscreenEmpty = rendering::CreatePSO(desc);
 	}
 	
@@ -113,6 +114,7 @@ TextureRenderPreview::TextureRenderPreview()
 		desc.uniforms.push_back(rendering::ShaderUniformType::Texture2D);
 		desc.specificRenderPass = RTT;
 		desc.AddRootConstantRange(ShaderStage::Fragment, sizeof(TextureLivePreviewParams2D));
+		desc.debugName = "Fullscreen2D";
 		fullscreen2D = rendering::CreatePSO(desc);
 	}
 
@@ -123,6 +125,7 @@ TextureRenderPreview::TextureRenderPreview()
 		desc.uniforms.push_back(rendering::ShaderUniformType::TextureCube);
 		desc.specificRenderPass = RTT;
 		desc.AddRootConstantRange(ShaderStage::Fragment, sizeof(TextureLivePreviewParamsCube));
+		desc.debugName = "FullscreenCube";
 		fullscreenCube = rendering::CreatePSO(desc);
 	}
 
@@ -133,6 +136,7 @@ TextureRenderPreview::TextureRenderPreview()
 		desc.uniforms.push_back(rendering::ShaderUniformType::Texture2DArray);
 		desc.specificRenderPass = RTT;
 		desc.AddRootConstantRange(ShaderStage::Fragment, sizeof(TextureLivePreviewParams2D));
+		desc.debugName = "Fullscreen2DArray";
 		fullscreen2DArray = rendering::CreatePSO(desc);
 	}
 
@@ -143,6 +147,7 @@ TextureRenderPreview::TextureRenderPreview()
 		desc.uniforms.push_back(rendering::ShaderUniformType::TextureCubeArray);
 		desc.specificRenderPass = RTT;
 		desc.AddRootConstantRange(ShaderStage::Fragment, sizeof(TextureLivePreviewParamsCube));
+		desc.debugName = "FullscreenCubeArray";
 		fullscreenCubeArray = rendering::CreatePSO(desc);
 	}
 
@@ -153,6 +158,7 @@ TextureRenderPreview::TextureRenderPreview()
 		desc.uniforms.push_back(rendering::ShaderUniformType::TextureVolume);
 		desc.specificRenderPass = RTT;
 		desc.AddRootConstantRange(ShaderStage::Fragment, sizeof(TextureLivePreviewParamsCube));
+		desc.debugName = "Fullscreen3D";
 		fullscreen3D = rendering::CreatePSO(desc);
 	}
 
@@ -163,6 +169,7 @@ TextureRenderPreview::TextureRenderPreview()
 		desc.SetShaderStage(ermy::shader_editor::fullscreenFS2DStatic());
 		desc.uniforms.push_back(rendering::ShaderUniformType::Texture2D);
 		desc.specificRenderPass = staticRTT;
+		desc.debugName = "Fullscreen2DStatic";
 		fullscreen2DStatic = rendering::CreatePSO(desc);
 	}
 
@@ -172,6 +179,7 @@ TextureRenderPreview::TextureRenderPreview()
 		desc.SetShaderStage(ermy::shader_editor::fullscreenFSCubemapStatic());
 		desc.uniforms.push_back(rendering::ShaderUniformType::TextureCube);
 		desc.specificRenderPass = staticRTT;
+		desc.debugName = "FullscreenCubeStatic";
 		fullscreenCubeStatic = rendering::CreatePSO(desc);
 	}
 
@@ -182,6 +190,7 @@ TextureRenderPreview::TextureRenderPreview()
 		desc.uniforms.push_back(rendering::ShaderUniformType::Texture2DArray);
 		desc.specificRenderPass = staticRTT;
 		desc.AddRootConstantRange(ShaderStage::Fragment, sizeof(int));
+		desc.debugName = "Fullscreen2DArrayStatic";
 		fullscreen2DArrayStatic = rendering::CreatePSO(desc);
 	}
 
@@ -192,6 +201,7 @@ TextureRenderPreview::TextureRenderPreview()
 		desc.uniforms.push_back(rendering::ShaderUniformType::Texture2DArray);
 		desc.specificRenderPass = staticRTT;
 		desc.AddRootConstantRange(ShaderStage::Fragment, sizeof(int));
+		desc.debugName = "FullscreenCubeArrayStatic";
 		fullscreenCubeArrayStatic = rendering::CreatePSO(desc);
 	}
 
@@ -201,6 +211,7 @@ TextureRenderPreview::TextureRenderPreview()
 		desc.SetShaderStage(ermy::shader_editor::fullscreenFSVolumetricStatic());
 		desc.uniforms.push_back(rendering::ShaderUniformType::TextureVolume);
 		desc.specificRenderPass = staticRTT;
+		desc.debugName = "Fullscreen3DStatic";
 		fullscreen3DStatic= rendering::CreatePSO(desc);
 	}
 }

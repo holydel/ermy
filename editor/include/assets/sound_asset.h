@@ -7,6 +7,8 @@
 class SoundAsset : public AssetData
 {
 public:
+	AssetDataType GetDataType() override { return AssetDataType::Sound; }
+
 	std::vector<float> samples;
 	int channels = 0;
 	float volume = 1.0f;

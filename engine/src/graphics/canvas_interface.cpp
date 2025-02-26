@@ -30,25 +30,18 @@ void canvas_interface::SetCommandList(ermy::rendering::CommandList* cl)
     gCanvasCL = cl;
 }
 
-void ermy::canvas::DrawDedicatedSprite(float x, float y, float w, float h, float a)
+ermy::rendering::TextureID ermy::canvas::GetWhiteTextureID()
 {
-    assert(gCanvasCL);
-
-    gCanvasCL->SetPSO(gDedicatedSpritePSO);
-
-    SpriteInfo sinfo = { x,y,w,h,0.0f,0.0f,1.0f,1.0f,a,0xFFFFFFFFu };
-
-    gCanvasCL->SetRootConstants(&sinfo, sizeof(sinfo));
-    gCanvasCL->Draw(4);
+	return gWhiteTexture;
 }
 
-void ermy::canvas::DrawDedicatedSprite(TextureID texture, float x, float y, float w, float h, float a)
+void ermy::canvas::DrawDedicatedSprite(rendering::TextureID texture, float x, float y, float w, float h, float a, u32 packedColor, float u0, float v0, float u1, float v1)
 {
     assert(gCanvasCL);
 
     gCanvasCL->SetPSO(gDedicatedSpritePSO);
 
-    SpriteInfo sinfo = { x,y,w,h,0.0f,0.0f,1.0f,1.0f,a,0xFFFFFFFFu };
+    SpriteInfo sinfo = { x,y,w,h,u0,v0,u1,v1,a,packedColor };
 	gCanvasCL->SetDescriptorSet(0, rendering::GetTextureDescriptor(texture));
     gCanvasCL->SetRootConstants(&sinfo, sizeof(sinfo));
     gCanvasCL->Draw(4);
@@ -62,7 +55,7 @@ void canvas_interface::Initialize()
 	desc.uniforms.push_back(ShaderUniformType::Texture2D);
     desc.topology = PrimitiveTopology::TriangleStrip;
     desc.rootConstantRanges[(int)ShaderStage::Vertex] = { 0,sizeof(SpriteInfo)}; //float2 pos, float2 size, float2 uv0, float2 uv1, uint packedColor, float angle
-
+	desc.debugName = "DedicatedSprite";
     gDedicatedSpritePSO = CreatePSO(desc);
 
 	TextureDesc whiteTexDesc;

@@ -43,6 +43,7 @@ SoundRenderPreview::SoundRenderPreview()
 		desc.specificRenderPass = RTT;
 		desc.uniforms.push_back(rendering::ShaderUniformType::Texture2D);
 		desc.AddRootConstantRange(ShaderStage::Fragment, sizeof(SoundLivePreviewParams));
+		desc.debugName = "FullscreenWavefront";
 		fullscreenWavefront = rendering::CreatePSO(desc);
 	}
 }

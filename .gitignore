@@ -42,3 +42,5 @@ solutions/VisualStudio/editor/x64
 solutions/VisualStudio/packages/Microsoft.Windows.CppWinRT.2.0.220531.1
 solutions/VisualStudio/AndroidPackaging/.gradle
 solutions/VisualStudio/vcpkg_installed
+eproj_template/paks
+eproj_template/assets_cache.xml

@@ -3,7 +3,8 @@
 #include <algorithm>
 #include <cctype>
 #include <iomanip>
-
+#include <chrono>
+#include <ctime>
 using namespace ermy_utils::string;
 
 std::vector<std::string> ermy_utils::string::split(const std::string& input, char delimiter)
@@ -66,4 +67,27 @@ std::string ermy_utils::string::humanReadableFileSize(ermy::u64 bytes)
         }
 
         return oss.str();
+}
+
+std::string ermy_utils::string::humanReadableFileDate(const std::filesystem::file_time_type& time)
+{
+    auto sctp = std::chrono::time_point_cast<std::chrono::system_clock::duration>(
+        time - std::filesystem::file_time_type::clock::now() + std::chrono::system_clock::now());
+
+    // Convert to time_t
+    std::time_t tt = std::chrono::system_clock::to_time_t(sctp);
+
+    // Convert to tm structure for local time
+    std::tm tm;
+    auto err = localtime_s(&tm, &tt); // Use localtime_s instead of localtime
+
+    char buffer[80] = {};
+
+    if (err == 0)
+    {
+        // Format the time into a string
+        std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", &tm);
+    }
+    
+    return std::string(buffer);
 }

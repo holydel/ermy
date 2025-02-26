@@ -2,6 +2,7 @@
 #include "ermy_api.h"
 #include <vector>
 #include <string>
+#include <filesystem>
 
 namespace ermy_utils
 {	
@@ -11,6 +12,7 @@ namespace ermy_utils
 		std::string toLower(const std::string& input);
 		std::string toUpper(const std::string& input);
 		std::string humanReadableFileSize(ermy::u64 bytes);
+		std::string humanReadableFileDate(const std::filesystem::file_time_type& time);
 	}
 
 	namespace hash

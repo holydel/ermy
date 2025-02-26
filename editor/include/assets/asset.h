@@ -8,16 +8,24 @@
 #include <imgui.h>
 #include <ermy_rendering.h>
 #include "preview_props.h"
+#include <pugixml.hpp>
 
 enum class AssetType
 {
 	UNKNOWN,
 	AUTO,
 	Folder,
+	General,
+};
+
+enum class AssetDataType
+{
+	UNKNOWN,
 	Texture,
+	Material,
 	Geometry,
 	Sound,
-	VideoTexture
+	Video,
 };
 
 enum class AssetLoaderType
@@ -38,6 +46,8 @@ protected:
 	ImTextureID assetPreviewTexLive = 0;
 	ImTextureID assetPreviewTexStatic = 0;
 public:
+	
+	virtual AssetDataType GetDataType() { return AssetDataType::UNKNOWN; }
 	struct MetaData
 	{
 	public:
@@ -71,11 +81,16 @@ protected:
 	std::string name = "";
 	AssetData* data = nullptr;
 	ermy::u64 fileSize = 0;
-
+	std::filesystem::file_time_type	lastWriteTime = {};
 	std::string assetName = "";
 	ermy::u8 assetNameRows = 0;
 	void CalculateAssetName();
 public:
+	std::filesystem::path GetSourcePath() const
+	{
+		return source;
+	}
+
 	ermy::u64 ID = 0;
 	AssetData* GetData()
 	{
@@ -106,10 +121,18 @@ public:
 
 	void DrawProps();
 
-	ermy::u64 FileSize()
+	ermy::u64 FileSize() const
 	{
 		return fileSize;
 	}
+
+	bool NeedToIncludeInPAK() const
+	{
+		return includeInPAK;
+	}
+
+	virtual pugi::xml_node Save(pugi::xml_node& node, const std::filesystem::path& rootPath);
+	virtual void Load(pugi::xml_node& node, const std::filesystem::path& currentPath);
 };
 
 class AssetFolder : public Asset
@@ -134,6 +157,9 @@ public:
 	AssetType GetType() override { return AssetType::Folder; }
 
 	void Scan(const std::filesystem::path& path);
+
+	virtual pugi::xml_node Save(pugi::xml_node& node, const std::filesystem::path& rootPath) override;
+	virtual void Load(pugi::xml_node& node, const std::filesystem::path& currentPath) override;
 };
 
 class BinaryAssetData : public AssetData

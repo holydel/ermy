@@ -15,6 +15,7 @@ class TextureAsset : public AssetData
 	int currentArrayLevel = 0;
 	ermy::rendering::TextureType texType = ermy::rendering::TextureType::Tex2D;
 public:
+	AssetDataType GetDataType() override { return AssetDataType::Texture; }
 	ermy::u32 width = 0;
 	ermy::u32 height = 0;
 	ermy::u32 depth = 1;

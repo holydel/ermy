@@ -30,9 +30,12 @@ namespace vk_utils
 			std::is_same_v<T, VkImageView> ||
 			std::is_same_v<T, VkInstance> ||
 			std::is_same_v<T, VkPhysicalDevice> ||
+			std::is_same_v<T, VkPipeline> ||
+			std::is_same_v<T, VkPipelineLayout> ||
 			std::is_same_v<T, VkRenderPass> ||
 			std::is_same_v<T, VkSampler> ||
 			std::is_same_v<T, VkSemaphore> ||
+			std::is_same_v<T, VkShaderModule> ||
 			std::is_same_v<T, VkSwapchainKHR> ||
 			std::is_same_v<T, VkQueue>;
 		};
@@ -63,12 +66,18 @@ namespace vk_utils
 					return VK_OBJECT_TYPE_INSTANCE;
 				else if constexpr (std::is_same_v<T, VkPhysicalDevice>)
 					return VK_OBJECT_TYPE_PHYSICAL_DEVICE;
+				else if constexpr (std::is_same_v<T, VkPipeline>)
+					return VK_OBJECT_TYPE_PIPELINE;
+				else if constexpr (std::is_same_v<T, VkPipelineLayout>)
+					return VK_OBJECT_TYPE_PIPELINE_LAYOUT;
 				else if constexpr (std::is_same_v<T, VkRenderPass>)
 					return VK_OBJECT_TYPE_RENDER_PASS;
 				else if constexpr (std::is_same_v<T, VkSampler>)
 					return VK_OBJECT_TYPE_SAMPLER;
 				else if constexpr (std::is_same_v<T, VkSemaphore>)
 					return VK_OBJECT_TYPE_SEMAPHORE;
+				else if constexpr (std::is_same_v<T, VkShaderModule>)
+					return VK_OBJECT_TYPE_SHADER_MODULE;
 				else if constexpr (std::is_same_v<T, VkSwapchainKHR>)
 					return VK_OBJECT_TYPE_SWAPCHAIN_KHR;
 				else if constexpr (std::is_same_v<T, VkQueue>)

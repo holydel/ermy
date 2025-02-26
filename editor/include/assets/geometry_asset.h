@@ -16,6 +16,7 @@ class GeometryAsset : public AssetData
 	void RecalculateBoundingSphere();
 	int currentMode = 0;
 public:
+	AssetDataType GetDataType() override { return AssetDataType::Geometry; }
 	glm::vec4 boundingSphere =  glm::vec4(0); //xyz - center, w - radius
 	std::vector<ermy::u16> allIndices;
 	std::vector<ermy::rendering::StaticVertexDedicated> allVertices;

@@ -16,7 +16,7 @@ class GeometryRenderPreview
 	~GeometryRenderPreview();
 
 	rendering::PSOID fullscreenEmpty;
-	rendering::PSOID renderMeshUV;
+	rendering::PSOID renderMesh;
 public:
 	static GeometryRenderPreview& Instance()
 	{
@@ -31,7 +31,7 @@ public:
 
 	void BindPSO(rendering::CommandList& cl, bool isStatic = false)
 	{
-		cl.SetPSO(renderMeshUV);
+		cl.SetPSO(renderMesh);
 	}
 };
 
@@ -48,6 +48,7 @@ GeometryRenderPreview::GeometryRenderPreview()
 		desc.SetShaderStage(ermy::shader_editor::fullscreenVS());
 		desc.SetShaderStage(ermy::shader_editor::fullscreenFSEmpty());
 		desc.specificRenderPass = RTT;
+		desc.debugName = "FullscreenEmpty";
 		fullscreenEmpty = rendering::CreatePSO(desc);
 	}	
 
@@ -90,7 +91,8 @@ GeometryRenderPreview::GeometryRenderPreview()
 
 		desc.writeDepth = true;
 		desc.testDepth = true;
-		renderMeshUV = rendering::CreatePSO(desc);
+		desc.debugName = "RenderMesh";
+		renderMesh = rendering::CreatePSO(desc);
 	}
 }
 
@@ -225,7 +227,6 @@ void GeometryAsset::RegeneratePreview()
 	descStatic.dataSize = 0;
 
 	previewTextureStatic = ermy::rendering::CreateDedicatedTexture(descStatic);
-	assetPreviewTexLive = ermy::rendering::GetTextureDescriptor(previewTextureLive);
 	assetPreviewTexStatic = ermy::rendering::GetTextureDescriptor(previewTextureStatic);
 
 	PreviewRenderer::Instance().EnqueueStaticPreviewGeneration(this);

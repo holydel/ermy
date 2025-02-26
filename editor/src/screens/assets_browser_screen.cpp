@@ -83,6 +83,9 @@ AssetsSelectionWithDeletion* gAssetsSelectionWithDeletion = nullptr;
 
 void DrawAssetsFolders(AssetFolder* folder)
 {
+	if (folder == nullptr)
+		return;
+
 	// Check if the current folder is selected
 	bool isSelected = (gSelectedFolder == folder);
 
@@ -409,7 +412,6 @@ void AssetsBrowserScreen::Draw()
 
 		ImGui::BeginChild("FoldersColumn", ImVec2(0, 0), true);
 		DrawAssetsFolders(ErmyProject::Instance().GetRootAssets());
-		DrawAssetsFolders(ErmyProject::Instance().GetRootShaders());
 		ImGui::EndChild();
 
 		ImGui::NextColumn();
