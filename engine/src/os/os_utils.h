@@ -1,6 +1,7 @@
 #pragma once
 #include <ermy_api.h>
 #include <ermy_log.h>
+#include <ermy_os_utils.h>
 
 namespace os
 {
@@ -45,7 +46,7 @@ namespace os
 	const char* GetVulkanRuntimeLibraryName();
 #endif
 
-	ermy::i64 GetCurrentTimestamp();
+	ermy::i64 GetCurrentTimestamp();	
 }
 
 #define LOAD_FUNC_BY_NAME(libHandle,funcPtrOut,funcName) funcPtrOut = os::GetFuncPtr<decltype(funcPtrOut)>(libHandle,funcName);

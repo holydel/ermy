@@ -9,6 +9,7 @@ namespace ermy
 		typedef Handle32 SoundID;
 
 		SoundID LoadFromFile(const char* filename);
+		SoundID LoadFromMemory(const void* dataPtr, u32 filesize);
 		void Play(SoundID sound);
 		void Stop(SoundID sound);
 		void SetVolume(SoundID sound, float volume);

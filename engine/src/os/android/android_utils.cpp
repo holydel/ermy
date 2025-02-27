@@ -15,7 +15,14 @@
 #include <dlfcn.h>
 #include <unordered_map>
 
-
+#include <fcntl.h>      // For open, O_RDONLY, O_RDWR, O_CREAT, etc.
+#include <sys/mman.h>   // For mmap, munmap
+#include <sys/stat.h>   // For fstat
+#include <unistd.h>     // For close, ftruncate
+#include <cstdint>      // For u64
+#include <cstring>      // For strerror
+#include <cerrno>       // For errno
+#include <stdexcept>    // For std::runtime_error
 
 void os::SetNativeThreadName(void* nativeThreadHandle, const char* utf8threadName)
 {
@@ -51,12 +58,12 @@ void os::WriteDebugLogMessageIDE(ermy::LogSeverity severity, const char* utf8Mes
 	//OutputDebugStringA(utf8Message);
 }
 
-void WriteDebugLogMessageConsole(ermy::LogSeverity severity, const char* utf8Message)
+void os::WriteDebugLogMessageConsole(ermy::LogSeverity severity, const char* utf8Message)
 {
 
 }
 
-void WriteDebugLogMessageFile(ermy::LogSeverity severity, const char* utf8Message)
+void os::WriteDebugLogMessageFile(ermy::LogSeverity severity, const char* utf8Message)
 {
 
 }
@@ -102,3 +109,88 @@ const char* os::GetVulkanRuntimeLibraryName()
 	return "libvulkan.so";
 }
 #endif
+
+namespace ermy::os_utils
+{
+	struct MappedFileInfoPosix
+	{
+		int fd = -1;                // File descriptor
+		void* pData = nullptr;      // Pointer to mapped memory
+		size_t fileSize = 0;        // Size of the file
+	};
+
+	MappedFileHandle MapFileReadOnly(const char* pathUtf8)
+	{
+		MappedFileInfoPosix* m = new MappedFileInfoPosix();
+
+		// Open the file
+		m->fd = open(pathUtf8, O_RDONLY);
+		if (m->fd == -1) {
+			return m;
+		}
+
+		// Get the file size
+		struct stat fileStat;
+		if (fstat(m->fd, &fileStat)) {
+			close(m->fd);
+			return m;
+		}
+
+		m->fileSize = fileStat.st_size;
+
+			// Map the file into memory
+			m->pData = mmap(nullptr, m->fileSize, PROT_READ, MAP_PRIVATE, m->fd, 0);
+			if (m->pData == MAP_FAILED) {
+				close(m->fd);
+				return m;
+			}
+
+		return m;
+	}
+
+	MappedFileHandle MapFileWrite(const char* pathUtf8, u64 filesize)
+	{
+		MappedFileInfoPosix* m = new MappedFileInfoPosix();
+
+		// Open the file for writing
+		m->fd = open(pathUtf8, O_RDWR | O_CREAT | O_TRUNC, 0644);
+		if (m->fd == -1) {
+			return m;
+		}
+
+		// Set the file size
+		if (ftruncate(m->fd, filesize)) {
+			close(m->fd);
+			return m;
+		}
+		m->fileSize = filesize;
+
+		// Map the file into memory
+		m->pData = mmap(nullptr, m->fileSize, PROT_READ | PROT_WRITE, MAP_SHARED, m->fd, 0);
+		if (m->pData == MAP_FAILED) {
+			close(m->fd);
+			return m;
+		}
+
+		return m;
+	}
+
+	void* GetPointer(MappedFileHandle mfile)
+	{
+		MappedFileInfoPosix* m = reinterpret_cast<MappedFileInfoPosix*>(mfile);
+		return m->pData;
+	}
+
+	void CloseMappedFile(MappedFileHandle mfile)
+	{
+		MappedFileInfoPosix* m = reinterpret_cast<MappedFileInfoPosix*>(mfile);
+
+		if (m->pData) {
+			munmap(m->pData, m->fileSize);
+		}
+		if (m->fd != -1) {
+			close(m->fd);
+		}
+		delete m;
+	}
+}

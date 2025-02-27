@@ -72,7 +72,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <AndroidMinSdkVersion>24</AndroidMinSdkVersion>
-    <AndroidNdkVersion>27.0.12077973</AndroidNdkVersion>
+    <AndroidNdkVersion>26.3.11579264</AndroidNdkVersion>
     <CppLanguageStandard>cpp2a</CppLanguageStandard>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'" Label="Configuration">
@@ -82,7 +82,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <AndroidMinSdkVersion>24</AndroidMinSdkVersion>
-    <AndroidNdkVersion>27.0.12077973</AndroidNdkVersion>
+    <AndroidNdkVersion>26.3.11579264</AndroidNdkVersion>
     <CppLanguageStandard>cpp2a</CppLanguageStandard>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />

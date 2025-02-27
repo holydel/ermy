@@ -199,20 +199,20 @@ static void* gLibHandle = nullptr;
 
 void* LoadDeviceFunction(VkDevice device, const char* funcName)
 {
-	void* fptr = vkGetDeviceProcAddr(device, funcName);
+	void* fptr = (void*)vkGetDeviceProcAddr(device, funcName);
 
 	if (fptr == nullptr)
 	{
 		std::string fname = funcName;
 		fname += "KHR";;
-		fptr = vkGetDeviceProcAddr(device, fname.c_str());
+		fptr = (void*)vkGetDeviceProcAddr(device, fname.c_str());
 	}
 
 	if (fptr == nullptr)
 	{
 		std::string fname = funcName;
 		fname += "EXT";;
-		fptr = vkGetDeviceProcAddr(device, fname.c_str());
+		fptr = (void*)vkGetDeviceProcAddr(device, fname.c_str());
 	}
 
 	return fptr;

@@ -317,6 +317,15 @@
     <ClInclude Include="..\..\engine\src\pak.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\engine\include\ermy_os_utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\include\ermy_mapped_reader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\include\ermy_mapped_writer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\engine\src\rendering\internal_shaders\internal.slang">

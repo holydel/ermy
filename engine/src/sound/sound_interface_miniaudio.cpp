@@ -62,8 +62,35 @@ SoundID sound::LoadFromFile(const char* filename)
 	SoundID result = { static_cast<u32>(gSounds.size()) };
 
 	ma_sound* pSound = new ma_sound();
-	ma_sound_init_from_file(&gMAEngine, filename, 0, nullptr, nullptr, pSound);
+	ma_result initResult = ma_sound_init_from_file(&gMAEngine, filename, 0, nullptr, nullptr, pSound);
+
+	if (initResult != MA_SUCCESS) {
+		delete pSound;
+		return { SoundID::InvalidValue };
+	}
+
 	gSounds.push_back(pSound);
+	return result;
+}
+
+SoundID sound::LoadFromMemory(const void* dataPtr, u32 filesize)
+{
+	SoundID result = { static_cast<u32>(gSounds.size()) };
+
+	ma_sound* pSound = new ma_sound();
+
+	ma_decoder_config decoderConfig = ma_decoder_config_init(ma_format_unknown, 0, 0);
+	ma_decoder* decoder = new ma_decoder();
+	ma_result initResult = ma_decoder_init_memory(dataPtr, filesize, &decoderConfig, decoder);
+	if (initResult != MA_SUCCESS) {
+		delete pSound;
+		return { SoundID::InvalidValue };
+	}
+
+	ma_sound_init_from_data_source(&gMAEngine, decoder, 0, nullptr, pSound);
+
+	gSounds.push_back(pSound);
+
 	return result;
 }
 

@@ -79,8 +79,12 @@ std::string ermy_utils::string::humanReadableFileDate(const std::filesystem::fil
 
     // Convert to tm structure for local time
     std::tm tm;
+#ifdef _WIN32
     auto err = localtime_s(&tm, &tt); // Use localtime_s instead of localtime
-
+#else
+    int err = 0;
+    tm = *localtime(&tt);
+#endif
     char buffer[80] = {};
 
     if (err == 0)

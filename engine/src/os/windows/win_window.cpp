@@ -186,3 +186,143 @@ ermy::i64 os::GetCurrentTimestamp()
 
 	return timestamp.QuadPart;
 }
+
+namespace ermy::os_utils
+{
+	struct MappedFileInfoWin
+	{
+		HANDLE hFile = 0;
+		LARGE_INTEGER fileSize = {};
+		HANDLE hMapping = 0;
+		LPVOID pData = 0;
+	};
+
+	MappedFileHandle MapFileReadOnly(const char* pathUtf8)
+	{
+		MappedFileInfoWin* m = new MappedFileInfoWin();
+
+		m->hFile = CreateFileA(
+			pathUtf8,              
+			GENERIC_READ,                   
+			FILE_SHARE_READ,                
+			NULL,                           // Default security
+			OPEN_EXISTING,                  
+			FILE_ATTRIBUTE_NORMAL,          
+			NULL                            // No template
+		);
+
+		if (m->hFile == INVALID_HANDLE_VALUE) {
+			return m;
+		}
+
+		if (!GetFileSizeEx(m->hFile, &m->fileSize)) {
+			CloseHandle(m->hFile);
+			return m;
+		}
+
+		HANDLE hMapping = CreateFileMappingA(
+			m->hFile,                       
+			NULL,                           // Default security
+			PAGE_READONLY,                  // Read-only access
+			0,                              // High-order size
+			0,                              // Low-order size
+			NULL                            // No name for the mapping
+		);
+
+		if (!hMapping) {
+			CloseHandle(m->hFile);
+			return m;
+		}
+
+		m->pData = MapViewOfFile(
+			hMapping,                       
+			FILE_MAP_READ,                  
+			0,                              // High-order offset
+			0,                              // Low-order offset
+			m->fileSize.QuadPart            // Whole file
+		);
+
+		if (!m->pData) {
+			CloseHandle(m->hMapping);
+			CloseHandle(m->hFile);
+			return m;
+		}
+
+		return m;
+	}
+
+	MappedFileHandle MapFileWrite(const char* pathUtf8, u64 filesize)
+	{
+		MappedFileInfoWin* m = new MappedFileInfoWin();
+
+		// Open the file for writing
+		m->hFile = CreateFileA(
+			pathUtf8,
+			GENERIC_READ | GENERIC_WRITE,  // Read and write access
+			0,                              // No sharing
+			NULL,                           // Default security
+			CREATE_ALWAYS,                  
+			FILE_ATTRIBUTE_NORMAL,          
+			NULL                            // No template
+		);
+
+		if (m->hFile == INVALID_HANDLE_VALUE) {
+			return m;
+		}
+
+		// Set the file size
+		LARGE_INTEGER size;
+		size.QuadPart = filesize;
+		if (!SetFilePointerEx(m->hFile, size, NULL, FILE_BEGIN) || !SetEndOfFile(m->hFile)) {
+			CloseHandle(m->hFile);
+			return m;
+		}
+
+		// Create a file mapping object
+		m->hMapping = CreateFileMappingA(
+			m->hFile,
+			NULL,                           // Default security
+			PAGE_READWRITE,                 // Read/write access
+			size.HighPart,                  // High-order size
+			size.LowPart,                   // Low-order size
+			NULL                            // No name for the mapping
+		);
+
+		if (!m->hMapping) {
+			CloseHandle(m->hFile);
+			return m;
+		}
+
+		// Map the file into memory
+		m->pData = MapViewOfFile(
+			m->hMapping,
+			FILE_MAP_WRITE,                 // Write access
+			0,                              // High-order offset
+			0,                              // Low-order offset
+			filesize                        // Whole file
+		);
+
+		if (!m->pData) {
+			CloseHandle(m->hMapping);
+			CloseHandle(m->hFile);
+			return m;
+		}
+
+		return m;
+	}
+
+	void* GetPointer(MappedFileHandle mfile)
+	{
+		MappedFileInfoWin* m = (MappedFileInfoWin*)mfile;
+		return m->pData;
+	}
+
+	void CloseMappedFile(MappedFileHandle mfile)
+	{
+		MappedFileInfoWin* m = (MappedFileInfoWin*)mfile;
+		UnmapViewOfFile(m->pData);
+		CloseHandle(m->hMapping);
+		CloseHandle(m->hFile);
+		delete m;
+	}
+}

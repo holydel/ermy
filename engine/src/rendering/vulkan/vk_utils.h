@@ -83,7 +83,9 @@ namespace vk_utils
 				else if constexpr (std::is_same_v<T, VkQueue>)
 					return VK_OBJECT_TYPE_QUEUE;
 				else {
+#ifdef _WIN32
 					static_assert(false, "Unsupported Vulkan object type");
+#endif
 				}
 			}();
 

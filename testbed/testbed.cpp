@@ -60,7 +60,11 @@ void TestBedApplication::OnLoad()
 	desc.debugName = "TestTriangle";
 	testTrianglePSO = rendering::CreatePSO(desc);
 
+#ifdef _WIN32
 	ermy::pak::MountPak("D:\\Projects\\ermy\\eproj_template\\paks\\0.epak");
+#else
+	ermy::pak::MountPak("/sdcard/Android/data/com.hexcelltechvr.ermy.testbed/files/0.epak");
+#endif
 }
 
 void TestBedApplication::OnBeginFinalPass(rendering::CommandList& finalCL)
@@ -75,4 +79,6 @@ void TestBedApplication::OnBeginFinalPass(rendering::CommandList& finalCL)
 	a += 0.1f;
 
 	canvas::DrawDedicatedSprite(mpos.x, mpos.y, 80, 10, a);
+
+	canvas::DrawDedicatedSprite(rendering::TextureID(3), 300, 300, 200, 200);
 }

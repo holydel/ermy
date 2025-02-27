@@ -311,7 +311,7 @@ TextureInfo _createTexture(const TextureDesc& desc)
 		memcpy(pixelsCPUdata, desc.pixelsData, static_cast<size_t>(desc.dataSize));
 		vmaUnmapMemory(gVMA_Allocator, stagingBufferAllocation);
 
-		vk_utils::ImageTransition(c.cbuff, textureImage, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,desc.numMips,desc.numLayers);
+		vk_utils::ImageTransition(c.cbuff, textureImage, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, aspect, desc.numMips,desc.numLayers);
 
 		u32 bufferOffset = 0;
 		std::vector<VkBufferImageCopy> allRegions;

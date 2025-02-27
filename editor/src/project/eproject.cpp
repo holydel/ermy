@@ -8,6 +8,8 @@
 
 #include "assets/texture_asset.h"
 #include "assets/sound_asset.h"
+#include <ermy_os_utils.h>
+#include <ermy_mapped_writer.h>
 
 namespace fs = std::filesystem;
 using namespace ermy;
@@ -252,6 +254,19 @@ bool copyFile(const std::filesystem::path& sourcePath, std::ofstream& destinatio
 }
 
 
+template <typename T>
+void writeBinary(std::ofstream& to, const T& value)
+{
+    to.write((const char*)&value, sizeof(value));
+}
+
+template <typename T>
+void writeVector(std::ofstream& to, const std::vector<T>& vec)
+{
+    writeBinary(to, vec.size());
+    to.write((const char*)vec.data(), vec.size() * sizeof(T));
+}
+
 bool ErmyProject::RebuildPAK()
 {
     std::ofstream pak(pakPath, std::ios::binary);
@@ -260,7 +275,8 @@ bool ErmyProject::RebuildPAK()
         return false;
     }
 
-    pak << ermy::pak::PAK_MAGIC;
+    writeBinary(pak, ermy::pak::PAK_MAGIC);
+    //pak.write((const char*)&ermy::pak::PAK_MAGIC,sizeof(ermy::pak::PAK_MAGIC));
 	
     AssetsToPak collectedAssets;
     //Collect assets to pak
@@ -293,11 +309,8 @@ bool ErmyProject::RebuildPAK()
         soundMeta[i].dataSize = sound->FileSize();
 	}
 
-	pak << texMeta.size();
-	pak.write((const char*)texMeta.data(), texMeta.size() * sizeof(pak::TextureRawInfo));
-
-	pak << soundMeta.size();
-	pak.write((const char*)soundMeta.data(), soundMeta.size() * sizeof(pak::SoundRawInfo));
+    writeVector(pak, texMeta);
+    writeVector(pak, soundMeta);
 
 	for (int i = 0; i < collectedAssets.textures.size(); ++i)
 	{
@@ -315,5 +328,6 @@ bool ErmyProject::RebuildPAK()
 		copyFile(sound->GetSourcePath(), pak);
 	}
 	
+
 	return true;
 }

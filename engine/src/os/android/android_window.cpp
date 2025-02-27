@@ -1,5 +1,6 @@
 #include "android_utils.h"
 #include "../os.h"
+#include <ermy_input.h>
 
 ANativeWindow* gMainWindow = nullptr;
 
@@ -17,4 +18,9 @@ bool os::Update()
 void* os::GetNativeWindowHandle()
 {
 	return static_cast<void*>(gMainWindow);
+}
+
+glm::ivec2 ermy::input::mouse::GetCurrentPosition()
+{
+	return { 0 ,0 };
 }
