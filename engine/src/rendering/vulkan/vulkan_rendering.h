@@ -21,6 +21,12 @@ struct ImageMeta
 	VkSampleCountFlagBits samples;
 };
 
+struct BufferMeta
+{
+	ermy::u64 size;
+	void* presistentMappedPtr = nullptr;
+};
+
 extern std::vector<ImageMeta> gAllImageMetas;
 
 struct RenderpassInfo

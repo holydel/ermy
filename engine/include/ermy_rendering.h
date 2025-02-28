@@ -126,6 +126,13 @@ namespace ermy
 			u8 size = 0;
 		};
 
+		enum class PSODomain
+		{
+			None,
+			Canvas,
+			Scene
+		};
+
 		struct PSODesc
 		{
 			//int numRootConstants = 0;			
@@ -133,6 +140,8 @@ namespace ermy
 			std::array<ShaderInfo, (int)ShaderStage::MAX> allShaderStages;
 
 			PrimitiveTopology topology = PrimitiveTopology::TriangleList;
+
+			PSODomain domain = PSODomain::None;
 
 			std::vector<ShaderUniformType> uniforms;
 			std::vector<VertexAttribute> vertexAttributes;
@@ -210,8 +219,9 @@ namespace ermy
 
 		TextureID CreateDedicatedTexture(const TextureDesc &desc);
 		BufferID CreateDedicatedBuffer(const BufferDesc &desc);
-
+		void UpdateBufferData(BufferID buffer, const void* data);
 		ermy::u64 GetTextureDescriptor(TextureID tid); //ImTexture
+		ermy::u64 GetBufferDescriptor(BufferID tid); //ImTexture
 
 		RenderPassID CreateRenderPass(const RenderPassDesc &desc);		
 

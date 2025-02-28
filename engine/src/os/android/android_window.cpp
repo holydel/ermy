@@ -20,7 +20,10 @@ void* os::GetNativeWindowHandle()
 	return static_cast<void*>(gMainWindow);
 }
 
+extern int androidCursorX;
+extern int androidCursorY;
+
 glm::ivec2 ermy::input::mouse::GetCurrentPosition()
 {
-	return { 0 ,0 };
+	return { androidCursorX ,androidCursorY };
 }

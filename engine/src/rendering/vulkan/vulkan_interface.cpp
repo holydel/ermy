@@ -23,6 +23,8 @@ VkRenderPass gVKRenderPass = VK_NULL_HANDLE;
 DeviceEnabledExtensions gVKDeviceEnabledExtensions;
 
 VkDescriptorSetLayout gImguiPreviewLayout = VK_NULL_HANDLE;
+VkDescriptorSetLayout gFrameConstantsLayout = VK_NULL_HANDLE;
+
 VkDescriptorPool gStaticDescriptorsPool = VK_NULL_HANDLE;
 VkSampler gLinearSampler = VK_NULL_HANDLE;
 
@@ -158,9 +160,15 @@ struct ValidationSettings
 			{layerName, "syncval_message_extra_properties_pretty_print", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
 			{layerName, "printf_enable", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &falsePtr},
 			{layerName, "printf_verbose", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &falsePtr},
+#ifdef _WIN32
 			{layerName, "gpuav_enable", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
 			{layerName, "gpuav_image_layout", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
 			{layerName, "gpuav_shader_instrumentation", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
+#else
+			{layerName, "gpuav_enable", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &falsePtr},
+			{layerName, "gpuav_image_layout", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &falsePtr},
+			{layerName, "gpuav_shader_instrumentation", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &falsePtr},
+#endif
 			{layerName, "validate_best_practices", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
 			{layerName, "validate_best_practices_arm", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
 			{layerName, "validate_best_practices_amd", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
@@ -781,15 +789,29 @@ void CreateDevice()
 
 	VK_CALL(vkCreateDescriptorSetLayout(gVKDevice, &layoutInfo, nullptr, &gImguiPreviewLayout));
 
-	VkDescriptorPoolSize poolSize{};
-	poolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	poolSize.descriptorCount = 1024;
+	VkDescriptorSetLayoutBinding frameConstantsBinding{};
+	frameConstantsBinding.binding = 0;
+	frameConstantsBinding.descriptorCount = 1;
+	frameConstantsBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	frameConstantsBinding.pImmutableSamplers = nullptr;// &gLinearSampler;
+	frameConstantsBinding.stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS;
+
+	VkDescriptorSetLayoutCreateInfo frameConstantsLayoutInfo{};
+	frameConstantsLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+	frameConstantsLayoutInfo.bindingCount = 1;
+	frameConstantsLayoutInfo.pBindings = &frameConstantsBinding;
+
+	VK_CALL(vkCreateDescriptorSetLayout(gVKDevice, &frameConstantsLayoutInfo, nullptr, &gFrameConstantsLayout));
+
+	std::vector<VkDescriptorPoolSize> staticDescriptorsPoolSizes;
+	staticDescriptorsPoolSizes.push_back({ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER , 1024 });
+	staticDescriptorsPoolSizes.push_back({ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER , 1024 });
 
 	VkDescriptorPoolCreateInfo poolInfo{};
 	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-	poolInfo.poolSizeCount = 1;
-	poolInfo.pPoolSizes = &poolSize;
-	poolInfo.maxSets = 1024;
+	poolInfo.poolSizeCount = (int)staticDescriptorsPoolSizes.size();
+	poolInfo.pPoolSizes = staticDescriptorsPoolSizes.data();
+	poolInfo.maxSets = 4096;
 
 	VK_CALL(vkCreateDescriptorPool(gVKDevice, &poolInfo, nullptr, &gStaticDescriptorsPool));
 

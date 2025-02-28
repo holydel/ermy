@@ -21,7 +21,7 @@ public:
 
 		staticConfig.appName = "Ermy Editor";
 		//staticConfig.window.initialState = ermy::Application::StaticConfig::WindowConfig::InitialState::Maximized;
-		staticConfig.render.adapterID = 1;
+		staticConfig.render.adapterID = 0;
 		staticConfig.render.enableDebugLayers = true;
 
 		staticConfig.imgui.enable = true;

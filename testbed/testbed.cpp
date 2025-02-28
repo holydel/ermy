@@ -78,7 +78,7 @@ void TestBedApplication::OnBeginFinalPass(rendering::CommandList& finalCL)
 	static float a = 0.0f;
 	a += 0.1f;
 
-	canvas::DrawDedicatedSprite(mpos.x, mpos.y, 80, 10, a);
+	canvas::DrawDedicatedSprite(mpos.x, mpos.y, 80, 10, a,0xAA7722FFu);
 
 	canvas::DrawDedicatedSprite(rendering::TextureID(3), 300, 300, 200, 200);
 }

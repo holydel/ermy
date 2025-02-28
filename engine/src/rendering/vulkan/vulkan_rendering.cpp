@@ -22,6 +22,8 @@ std::vector<VkDescriptorSetLayout> gAllPipelineDSLayouts;
 std::vector<VkShaderModule> gAllShaderModules;
 
 std::vector<VkBuffer> gAllBuffers;
+std::vector<VkDescriptorSet> gAllBufferDescriptors;
+std::vector<BufferMeta> gAllBufferMetas;
 
 std::vector<VkImage> gAllImages;
 std::vector<VkImageView> gAllImageViews;
@@ -42,6 +44,8 @@ struct BufferInfo {
 	VkBuffer buffer;
 	VmaAllocation allocation;
 	VmaAllocationInfo allocationInfo;
+	VkDescriptorSet descriptor;
+	BufferMeta meta;
 };
 
 constexpr uint32_t OpEntryPoint = 15;
@@ -460,12 +464,23 @@ BufferInfo _createBuffer(const BufferDesc& desc) {
 	bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
 	VmaAllocationCreateInfo allocCreateInfo{};
-	allocCreateInfo.usage = VMA_MEMORY_USAGE_GPU_ONLY; // Allocate in GPU memory
+	allocCreateInfo.usage = VMA_MEMORY_USAGE_AUTO; // Allocate in GPU memory
+	
+	if (desc.usage == BufferUsage::Uniform)
+	{
+		allocCreateInfo.flags |= VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT;
 
+		allocCreateInfo.requiredFlags = VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
+		allocCreateInfo.preferredFlags = VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+	}
+	
 	VkBuffer buffer = VK_NULL_HANDLE;
 	VmaAllocation allocation = VK_NULL_HANDLE;
 	VmaAllocationInfo allocationInfo;
+	BufferMeta meta = { };
+
 	VK_CALL(vmaCreateBuffer(gVMA_Allocator, &bufferInfo, &allocCreateInfo, &buffer, &allocation, &allocationInfo));
+	meta.size = desc.size;
 
 	// If initial data is provided, use a staging buffer to copy data to the GPU buffer
 	if (desc.initialData) {
@@ -503,13 +518,66 @@ BufferInfo _createBuffer(const BufferDesc& desc) {
 		// Clean up the staging buffer
 		//vmaDestroyBuffer(gVMA_Allocator, stagingBuffer, stagingBufferAllocation);
 	}
+	VkDescriptorSet descriptor = VK_NULL_HANDLE;
+
+	if (desc.usage == BufferUsage::Uniform)
+	{
+		// Create a descriptor set for the texture
+		VkDescriptorSetAllocateInfo allocInfo{};
+		allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+		allocInfo.descriptorPool = gStaticDescriptorsPool; // Assume this is created elsewhere
+		allocInfo.descriptorSetCount = 1;
+		allocInfo.pSetLayouts = &gFrameConstantsLayout; // Assume this is created elsewhere
+
+		VK_CALL(vkAllocateDescriptorSets(gVKDevice, &allocInfo, &descriptor));
+
+		VkDescriptorBufferInfo bufferInfoDesc{};
+		bufferInfoDesc.buffer = buffer;
+		bufferInfoDesc.offset = 0;
+		bufferInfoDesc.range = desc.size;
+
+		VkWriteDescriptorSet descriptorWrite{};
+		descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrite.dstSet = descriptor;
+		descriptorWrite.dstBinding = 0;
+		descriptorWrite.dstArrayElement = 0;
+		descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		descriptorWrite.descriptorCount = 1;
+		descriptorWrite.pBufferInfo = &bufferInfoDesc;
+
+		vkUpdateDescriptorSets(gVKDevice, 1, &descriptorWrite, 0, nullptr);
+
+		vmaMapMemory(gVMA_Allocator, allocation, &meta.presistentMappedPtr);
+	}
 
 	// Return the buffer and its allocation information
 	BufferInfo result;
 	result.buffer = buffer;
 	result.allocation = allocation;
 	result.allocationInfo = allocationInfo;
+	result.descriptor = descriptor;
+	result.meta = meta;
 	return result;
+}
+
+VkDescriptorSetLayout _createFrameDSLayout()
+{
+	VkDescriptorSetLayoutBinding frsameConstantsBinding = {};
+	frsameConstantsBinding.binding = 0;
+	frsameConstantsBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	frsameConstantsBinding.descriptorCount = 1;
+	frsameConstantsBinding.stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS;
+	frsameConstantsBinding.pImmutableSamplers = nullptr; // Bind sampler here
+
+	VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+	layoutInfo.bindingCount = 1;
+	layoutInfo.pBindings = &frsameConstantsBinding;
+	
+	VkDescriptorSetLayout dsLayout = VK_NULL_HANDLE;
+	vkCreateDescriptorSetLayout(gVKDevice, &layoutInfo, gVKGlobalAllocationsCallbacks, &dsLayout);
+
+	return dsLayout;
 }
 
 VkPipeline _createPipeline(const PSODesc& desc)
@@ -552,17 +620,14 @@ VkPipeline _createPipeline(const PSODesc& desc)
 
 		cinfo.pushConstantRangeCount = static_cast<u32>(pushConstantRanges.size());
 		cinfo.pPushConstantRanges = pushConstantRanges.data();
-		//VkDescriptorSetLayoutBinding samplerBinding{};
-		//samplerBinding.binding = 0;
-		//samplerBinding.descriptorCount = 1;
-		//samplerBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		//samplerBinding.pImmutableSamplers = nullptr;// &gLinearSampler;
-		//samplerBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
-		//VkDescriptorSetLayoutCreateInfo layoutInfo{};
-		//layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-		//layoutInfo.bindingCount = 1;
-		//layoutInfo.pBindings = &samplerBinding;
+		std::vector<VkDescriptorSetLayout> dsLayouts;
+
+		if (desc.domain == PSODomain::Canvas || desc.domain == PSODomain::Scene)
+		{
+			static VkDescriptorSetLayout frameDSLayout = _createFrameDSLayout();
+			dsLayouts.push_back(frameDSLayout);
+		}
 
 		if (!desc.uniforms.empty())
 		{
@@ -579,10 +644,11 @@ VkPipeline _createPipeline(const PSODesc& desc)
 			layoutInfo.pBindings = &samplerLayoutBinding;
 
 			vkCreateDescriptorSetLayout(gVKDevice, &layoutInfo, gVKGlobalAllocationsCallbacks, &dsLayout);
-
-			cinfo.pSetLayouts = &dsLayout;
-			cinfo.setLayoutCount = 1;
+			dsLayouts.push_back(dsLayout);
 		}
+
+		cinfo.pSetLayouts = dsLayouts.data();
+		cinfo.setLayoutCount = (u32)dsLayouts.size();
 
 		vkCreatePipelineLayout(gVKDevice, &cinfo, gVKGlobalAllocationsCallbacks, &layout);
 	}
@@ -801,7 +867,20 @@ BufferID ermy::rendering::CreateDedicatedBuffer(const BufferDesc& desc)
 	auto buf = _createBuffer(desc);
 
 	gAllBuffers.push_back(buf.buffer);
+	gAllBufferMetas.push_back(buf.meta);
+	gAllBufferDescriptors.push_back(buf.descriptor);
+
 	return id;
+}
+
+void ermy::rendering::UpdateBufferData(BufferID bid, const void* data)
+{
+	if (!bid.isValid())
+		return;
+
+	auto& buffer = gAllBufferMetas[bid.handle];
+
+	memcpy(buffer.presistentMappedPtr, data, buffer.size);
 }
 
 u64 ermy::rendering::GetTextureDescriptor(TextureID tid)
@@ -810,6 +889,14 @@ u64 ermy::rendering::GetTextureDescriptor(TextureID tid)
 		return 0;
 
 	return reinterpret_cast<u64>(gAllImageDescriptors[tid.handle]);
+}
+
+u64 ermy::rendering::GetBufferDescriptor(BufferID bid)
+{
+	if (!bid.isValid())
+		return 0;
+
+	return reinterpret_cast<u64>(gAllBufferDescriptors[bid.handle]);
 }
 
 RenderPassID ermy::rendering::CreateRenderPass(const RenderPassDesc& desc)

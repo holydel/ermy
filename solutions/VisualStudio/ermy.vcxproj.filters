@@ -331,5 +331,11 @@
     <None Include="..\..\engine\src\rendering\internal_shaders\internal.slang">
       <Filter>Source Files\rendering\internal_shaders</Filter>
     </None>
+    <None Include="..\..\engine\src\rendering\internal_shaders\ermy_base.slang">
+      <Filter>Source Files\rendering\internal_shaders</Filter>
+    </None>
+    <None Include="..\..\engine\src\rendering\internal_shaders\ermy_engine.slang">
+      <Filter>Source Files\rendering\internal_shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

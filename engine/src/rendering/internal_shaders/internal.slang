@@ -1,3 +1,8 @@
+import ermy_engine;
+
+[[vk::binding(0, 0)]]
+public ConstantBuffer<ErmyFrame> frameConstants;
+
 StructuredBuffer<float> buffer0;
 StructuredBuffer<float> buffer1;
 RWStructuredBuffer<float> result;
@@ -33,8 +38,6 @@ struct DedicatedSpriteConstats
     uint packedColor;
 };
 
-[vk::push_constant]
-ConstantBuffer<DedicatedSpriteConstats> dedicatedSpriteConstants : register(b0);
 
 float2x2 createRotationMatrix2x2(float angle)
 {
@@ -45,8 +48,9 @@ float2x2 createRotationMatrix2x2(float angle)
     );
 }
 
+
 [shader("vertex")]
-VOutDedicatedSprite dedicatedSpriteVS(uint id: SV_VertexID)
+VOutDedicatedSprite dedicatedSpriteVS(uint id: SV_VertexID, uniform DedicatedSpriteConstats dedicatedSpriteConstants)
 {
     float2 positions[4] = {
         float2(-0.5f, -0.5f),
@@ -61,11 +65,20 @@ VOutDedicatedSprite dedicatedSpriteVS(uint id: SV_VertexID)
                            createRotationMatrix2x2(dedicatedSpriteConstants.spriteAngle)) +
                        dedicatedSpriteConstants.spritePos;
 
-    canvasPos *= float2(1.0f / 400.f, 1.0f / 300.0f);
+    canvasPos *= frameConstants.canvasRepSizeHalf;
     canvasPos -= float2(1.0f, 1.0f);
 
     output.position = float4(canvasPos, 0.0f, 1.0f);
-    output.color = float4(0.9, 0.5, 0.2, 1.0);
+
+    uint packedColor = dedicatedSpriteConstants.packedColor;
+    float4 unpackedColor;
+    unpackedColor.r = float((packedColor & 0x000000FF) >> 0) / 255.0f;  // Red
+    unpackedColor.g = float((packedColor & 0x0000FF00) >> 8) / 255.0f;  // Green
+    unpackedColor.b = float((packedColor & 0x00FF0000) >> 16) / 255.0f; // Blue
+    unpackedColor.a = float((packedColor & 0xFF000000) >> 24) / 255.0f; // Alpha
+
+    output.color = unpackedColor;
+
     output.uv = positions[id] + float2(0.5f, 0.5f);
     return output;
 }
@@ -100,12 +113,12 @@ float4 testTriangleFS(VOutTest input) : SV_Target
     return float4(input.color, 1.0f);
 }
 
-[vk_binding(0, 0)]
-Sampler2D preview2D;
+[vk_binding(0, 1)]
+Sampler2D tex2D;
 
 [shader("fragment")]
 float4 dedicatedSpriteFS(VOutDedicatedSprite input) : SV_Target
 {
-    float4 color = preview2D.Sample(input.uv);
+    float4 color = tex2D.Sample(input.uv);
     return color * input.color;
 }

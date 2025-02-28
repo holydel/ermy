@@ -144,6 +144,20 @@ void swapchain::ShutdownSwapchainResources()
 
 }
 
+VkCompositeAlphaFlagBitsKHR CalculateCompositeAlphaFlag()
+{
+	if (gVKSurfaceCaps.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR)
+		return VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR;
+
+	if (gVKSurfaceCaps.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR)
+		return VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR;
+
+	if (gVKSurfaceCaps.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR)
+		return VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR;
+
+	return VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+}
+
 void swapchain::InitSwapchain()
 {
 	gVKOldSwapchain = gVKSwapchain;
@@ -162,7 +176,7 @@ void swapchain::InitSwapchain()
 	createInfo.preTransform = gVKSurfaceCaps.currentTransform;
 	createInfo.oldSwapchain = gVKOldSwapchain;
 	createInfo.clipped = VK_TRUE;
-	createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+	createInfo.compositeAlpha = CalculateCompositeAlphaFlag();
 
 	VkPresentModeKHR presentMode = VK_PRESENT_MODE_FIFO_KHR;
 	VkSwapchainPresentModesCreateInfoEXT presentationModesEnabled = { VK_STRUCTURE_TYPE_SWAPCHAIN_PRESENT_MODES_CREATE_INFO_EXT };

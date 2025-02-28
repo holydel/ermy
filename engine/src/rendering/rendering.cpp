@@ -119,3 +119,5 @@ bool ermy::rendering::IsDepthFormat(Format format)
 	}
 	return false;
 }
+
+ErmyFrame gErmyFrameConstants;

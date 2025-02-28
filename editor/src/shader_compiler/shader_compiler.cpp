@@ -91,7 +91,7 @@ bool ShaderCompiler::Initialize()
 {
 	//SlangGlobalSessionDesc
 	//auto res1 = slang_createGlobalSessionWithoutCoreModule(SLANG_API_VERSION, &gSlangGlobalSession);
-	//auto res1 = slang_createGlobalSession(SLANG_API_VERSION, &gSlangGlobalSession);
+	auto res1 = slang_createGlobalSession(SLANG_API_VERSION, &gSlangGlobalSession);
 
 	if (!gSlangGlobalSession)
 		return false;
