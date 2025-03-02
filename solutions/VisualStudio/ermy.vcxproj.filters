@@ -49,6 +49,9 @@
     <Filter Include="Source Files\sound">
       <UniqueIdentifier>{f68f688f-1cb2-470b-80fb-5e5986ff45f5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\scene">
+      <UniqueIdentifier>{9529d6b9-afd0-47f8-836b-012ced22c1b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\engine\src\ermy.cpp">
@@ -181,6 +184,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\engine\src\pak.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\src\scene\scene.cpp">
+      <Filter>Source Files\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\src\geometry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -324,6 +333,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\engine\include\ermy_mapped_writer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\include\ermy_scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\scene\scene.h">
+      <Filter>Source Files\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\include\ermy_geometry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

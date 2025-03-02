@@ -1,6 +1,7 @@
 #pragma once
 
 #include "framegraph_interface.h"
+#include <ermy_rendering.h>
 
 namespace framegraph
 {
@@ -8,3 +9,5 @@ namespace framegraph
 	void Shutdown();
 	void Process();
 };
+
+extern ermy::rendering::BufferID gFrameConstants;

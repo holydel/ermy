@@ -211,6 +211,8 @@ VK_DECLARE_FUNCTION(vkQueueEndDebugUtilsLabelEXT);
 VK_DECLARE_FUNCTION(vkQueueInsertDebugUtilsLabelEXT);
 VK_DECLARE_FUNCTION(vkSetDebugUtilsObjectNameEXT);
 VK_DECLARE_FUNCTION(vkSetDebugUtilsObjectTagEXT);
+
+VK_DECLARE_FUNCTION(vkCmdUpdateBuffer);
 #ifdef ERMY_OS_WINDOWS
 VK_DECLARE_FUNCTION(vkGetWinrtDisplayNV);
 VK_DECLARE_FUNCTION(vkAcquireWinrtDisplayNV);

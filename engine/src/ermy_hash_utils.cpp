@@ -15,7 +15,7 @@ ermy::u64 ermy_utils::hash::CalculateCRC64(const ermy::u8* data, const ermy::u32
         uint64_t compute(const ermy::u8* data, const ermy::u32 size) {
             uint64_t crc = 0;
 
-            for (int i = 0; i < size; ++i) {
+            for (ermy::u32 i = 0; i < size; ++i) {
                 crc = (crc >> 8) ^ table[(crc ^ data[i]) & 0xFF];
             }
 

@@ -55,8 +55,15 @@ void* os::CreateNativeWindow()
 	wchar_t winTitleBuff[256] = { 0 };
 	UTF8ToWCS(utf8WinCaption, winTitleBuff);
 
+	DWORD exFlags = 0;
+
+	if (winCfg.supportTransparent)
+	{
+		exFlags |= WS_EX_LAYERED | WS_EX_TRANSPARENT;
+	}
+
 	HWND hWnd = ::CreateWindowExW(
-		0,
+		exFlags,
 		winClassName,
 		winTitleBuff,
 		WS_OVERLAPPEDWINDOW,

@@ -23,8 +23,11 @@ struct ImageMeta
 
 struct BufferMeta
 {
-	ermy::u64 size;
+	ermy::u64 size = 0;
 	void* presistentMappedPtr = nullptr;
+
+	VkBuffer stagingBuffer = VK_NULL_HANDLE;
+	VmaAllocation stagingBufferAllocation = VK_NULL_HANDLE;
 };
 
 extern std::vector<ImageMeta> gAllImageMetas;

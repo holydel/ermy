@@ -70,6 +70,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\..\engine\src\geometry.cpp" />
     <ClCompile Include="..\..\engine\src\graphics\canvas_interface.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Android-arm64-v8a'">
       </PrecompiledHeader>
@@ -328,6 +329,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\..\engine\src\scene\scene.cpp" />
     <ClCompile Include="..\..\engine\src\sound\sound_interface.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Android-arm64-v8a'">
       </PrecompiledHeader>
@@ -414,6 +416,7 @@
     <ClInclude Include="..\..\engine\include\ermy_canvas.h" />
     <ClInclude Include="..\..\engine\include\ermy_commandlist.h" />
     <ClInclude Include="..\..\engine\include\ermy_entry_point.h" />
+    <ClInclude Include="..\..\engine\include\ermy_geometry.h" />
     <ClInclude Include="..\..\engine\include\ermy_input.h" />
     <ClInclude Include="..\..\engine\include\ermy_log.h" />
     <ClInclude Include="..\..\engine\include\ermy_mapped_reader.h" />
@@ -423,6 +426,7 @@
     <ClInclude Include="..\..\engine\include\ermy_profiler.h" />
     <ClInclude Include="..\..\engine\include\ermy_rendergraph.h" />
     <ClInclude Include="..\..\engine\include\ermy_rendering.h" />
+    <ClInclude Include="..\..\engine\include\ermy_scene.h" />
     <ClInclude Include="..\..\engine\include\ermy_shader.h" />
     <ClInclude Include="..\..\engine\include\ermy_shader_internal.h" />
     <ClInclude Include="..\..\engine\include\ermy_sound.h" />
@@ -453,6 +457,7 @@
     <ClInclude Include="..\..\engine\src\rendering\vulkan\vulkan_interface.h" />
     <ClInclude Include="..\..\engine\src\rendering\vulkan\vulkan_rendering.h" />
     <ClInclude Include="..\..\engine\src\rendering\vulkan\vulkan_swapchain.h" />
+    <ClInclude Include="..\..\engine\src\scene\scene.h" />
     <ClInclude Include="..\..\engine\src\sound\sound_interface.h" />
     <ClInclude Include="..\..\third_party\VulkanMemoryAllocator\include\vk_mem_alloc.h" />
   </ItemGroup>

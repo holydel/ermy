@@ -23,7 +23,8 @@ VkRenderPass gVKRenderPass = VK_NULL_HANDLE;
 DeviceEnabledExtensions gVKDeviceEnabledExtensions;
 
 VkDescriptorSetLayout gImguiPreviewLayout = VK_NULL_HANDLE;
-VkDescriptorSetLayout gFrameConstantsLayout = VK_NULL_HANDLE;
+VkDescriptorSetLayout gCanvasDomainLayout = VK_NULL_HANDLE;
+VkDescriptorSetLayout gSceneDomainLayout = VK_NULL_HANDLE;
 
 VkDescriptorPool gStaticDescriptorsPool = VK_NULL_HANDLE;
 VkSampler gLinearSampler = VK_NULL_HANDLE;
@@ -789,19 +790,45 @@ void CreateDevice()
 
 	VK_CALL(vkCreateDescriptorSetLayout(gVKDevice, &layoutInfo, nullptr, &gImguiPreviewLayout));
 
-	VkDescriptorSetLayoutBinding frameConstantsBinding{};
-	frameConstantsBinding.binding = 0;
-	frameConstantsBinding.descriptorCount = 1;
-	frameConstantsBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	frameConstantsBinding.pImmutableSamplers = nullptr;// &gLinearSampler;
-	frameConstantsBinding.stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS;
+	{
+		VkDescriptorSetLayoutBinding frameConstantsBinding{};
+		frameConstantsBinding.binding = 0;
+		frameConstantsBinding.descriptorCount = 1;
+		frameConstantsBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		frameConstantsBinding.pImmutableSamplers = nullptr;
+		frameConstantsBinding.stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS;
 
-	VkDescriptorSetLayoutCreateInfo frameConstantsLayoutInfo{};
-	frameConstantsLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-	frameConstantsLayoutInfo.bindingCount = 1;
-	frameConstantsLayoutInfo.pBindings = &frameConstantsBinding;
+		VkDescriptorSetLayoutCreateInfo frameConstantsLayoutInfo{};
+		frameConstantsLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+		frameConstantsLayoutInfo.bindingCount = 1;
+		frameConstantsLayoutInfo.pBindings = &frameConstantsBinding;
 
-	VK_CALL(vkCreateDescriptorSetLayout(gVKDevice, &frameConstantsLayoutInfo, nullptr, &gFrameConstantsLayout));
+		VK_CALL(vkCreateDescriptorSetLayout(gVKDevice, &frameConstantsLayoutInfo, nullptr, &gCanvasDomainLayout));
+		vk_utils::debug::SetName(gCanvasDomainLayout, "gCanvasDomainLayout");
+	}
+
+	{
+		VkDescriptorSetLayoutBinding frameConstantsBindings[2];
+		frameConstantsBindings[0].binding = 0;
+		frameConstantsBindings[0].descriptorCount = 1;
+		frameConstantsBindings[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		frameConstantsBindings[0].pImmutableSamplers = nullptr;
+		frameConstantsBindings[0].stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS;
+
+		frameConstantsBindings[1].binding = 1;
+		frameConstantsBindings[1].descriptorCount = 1;
+		frameConstantsBindings[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		frameConstantsBindings[1].pImmutableSamplers = nullptr;
+		frameConstantsBindings[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+		VkDescriptorSetLayoutCreateInfo frameConstantsLayoutInfo{};
+		frameConstantsLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+		frameConstantsLayoutInfo.bindingCount = 2;
+		frameConstantsLayoutInfo.pBindings = frameConstantsBindings;
+
+		VK_CALL(vkCreateDescriptorSetLayout(gVKDevice, &frameConstantsLayoutInfo, nullptr, &gSceneDomainLayout));
+		vk_utils::debug::SetName(gSceneDomainLayout, "gSceneDomainLayout");
+	}
 
 	std::vector<VkDescriptorPoolSize> staticDescriptorsPoolSizes;
 	staticDescriptorsPoolSizes.push_back({ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER , 1024 });

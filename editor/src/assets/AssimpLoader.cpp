@@ -102,7 +102,7 @@ AssetData* AssimpLoader::Load(const std::filesystem::path& path)
 
 		auto bbox = mesh->mAABB;
 
-		ermy::rendering::DedicatedMesh::SubMesh submesh;
+		ermy::rendering::SubMesh submesh;
 		submesh.indexCount = mesh->mNumFaces * 3;
 		submesh.vertexCount = mesh->mNumVertices;
 		submesh.indexOffset = currentIndexOffset;

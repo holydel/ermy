@@ -3,17 +3,8 @@ import ermy_engine;
 [[vk::binding(0, 0)]]
 public ConstantBuffer<ErmyFrame> frameConstants;
 
-StructuredBuffer<float> buffer0;
-StructuredBuffer<float> buffer1;
-RWStructuredBuffer<float> result;
-
-[shader("compute")]
-[numthreads(1, 1, 1)]
-void computeMain(uint3 threadId: SV_DispatchThreadID)
-{
-    uint index = threadId.x;
-    result[index] = buffer0[index] + buffer1[index];
-}
+[[vk::binding(1, 0)]]
+SamplerCube sceneSkyBox;
 
 struct VOutTest
 {
@@ -113,7 +104,7 @@ float4 testTriangleFS(VOutTest input) : SV_Target
     return float4(input.color, 1.0f);
 }
 
-[vk_binding(0, 1)]
+[[vk::binding(0, 1)]]
 Sampler2D tex2D;
 
 [shader("fragment")]
@@ -121,4 +112,41 @@ float4 dedicatedSpriteFS(VOutDedicatedSprite input) : SV_Target
 {
     float4 color = tex2D.Sample(input.uv);
     return color * input.color;
+}
+
+// Vertex shader output structure
+struct VSSkyBoxOutput
+{
+    float4 pos : SV_POSITION;
+    float3 uv : TEXCOORD0;
+};
+
+[shader("vertex")]
+VSSkyBoxOutput skyboxVS(uint vertexId: SV_VertexID)
+{
+    VSSkyBoxOutput output;
+
+    // Generate clip space positions for a fullscreen triangle
+    // Vertex ID 0: (-1, -1), ID 1: (3, -1), ID 2: (-1, 3)
+    float2 uv;
+    uv.x = (vertexId == 1) ? 2.0 : 0.0;
+    uv.y = (vertexId == 2) ? 2.0 : 0.0;
+
+    output.pos = float4(uv * 2.0 - 1.0, 0.0, 1.0);
+
+    // Flip y to match Vulkan convention if needed (depends on your setup)
+    output.pos.y = -output.pos.y;
+
+    // Calculate view direction in world space
+    float4 clipPos = float4(output.pos.xy, 1.0, 1.0); // z=1 for far plane
+    float4 worldPos = mul(frameConstants.ViewProjMatrixInv[0], clipPos);
+    output.uv = normalize(worldPos.xyz / worldPos.w);
+
+    return output;
+}
+
+[shader("fragment")]
+float4 skyboxFS(VSSkyBoxOutput input) : SV_TARGET
+{
+    return sceneSkyBox.Sample(input.uv);
 }

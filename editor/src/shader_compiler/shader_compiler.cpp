@@ -389,13 +389,15 @@ void ShaderCompiler::CompileShaderFile(const std::filesystem::path& shaderPath)
 	gSlangRequest->addTranslationUnitSourceFile(0, shaderPath.string().c_str());
 
 	auto res1 = gSlangRequest->compile();
+
+
+	const char* diagnostics = spGetDiagnosticOutput(gSlangRequest);
+	std::cout << diagnostics << std::endl;
+
 	if (res1 != SLANG_OK)
 	{
 		std::cout << "Shader compilation failed!" << std::endl;
 	}
-
-	const char* diagnostics = spGetDiagnosticOutput(gSlangRequest);
-	std::cout << diagnostics << std::endl;
 
 	slang::IComponentType* outProgram = nullptr;
 	gSlangRequest->getProgram(&outProgram);

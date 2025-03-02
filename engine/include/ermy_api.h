@@ -88,11 +88,22 @@ namespace ermy
 	typedef float32x4_t				f32v4;
 #endif
 
-	unsigned long long operator ""_KB(unsigned long long v);
+	inline constexpr unsigned long long operator ""_KB(unsigned long long v)
+	{
+		return v * 1024;
+	}
 
-	unsigned long long operator ""_MB(unsigned long long v);
+	inline constexpr unsigned long long operator ""_MB(unsigned long long v)
+	{
+		return v * 1024 * 1024;
+	}
 
-	unsigned long long operator ""_GB(unsigned long long v);
+	inline constexpr unsigned long long operator ""_GB(unsigned long long v)
+	{
+		{
+			return v * 1024 * 1024 * 1024;
+		}
+	}
 
 	struct Handle32
 	{

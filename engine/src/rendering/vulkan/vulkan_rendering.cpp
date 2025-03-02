@@ -2,14 +2,15 @@
 #include "vulkan_swapchain.h"
 #ifdef ERMY_GAPI_VULKAN
 #include "vk_utils.h"
+#include "ermy_rendering.h"
 
 using namespace ermy;
 using namespace ermy::rendering;
 
 struct ShaderRelatedPSO
 {
-	ermy::ShaderStage stage;
-	u64 shaderHash;
+	ermy::ShaderStage stage = ermy::ShaderStage::Vertex;
+	u64 shaderHash = 0;
 	std::vector<int> psoIndices;
 };
 
@@ -41,10 +42,10 @@ struct TextureInfo
 };
 
 struct BufferInfo {
-	VkBuffer buffer;
-	VmaAllocation allocation;
-	VmaAllocationInfo allocationInfo;
-	VkDescriptorSet descriptor;
+	VkBuffer buffer = VK_NULL_HANDLE;
+	VmaAllocation allocation = VK_NULL_HANDLE;
+	VmaAllocationInfo allocationInfo = {};
+	VkDescriptorSet descriptor = VK_NULL_HANDLE;
 	BufferMeta meta;
 };
 
@@ -483,12 +484,8 @@ BufferInfo _createBuffer(const BufferDesc& desc) {
 	meta.size = desc.size;
 
 	// If initial data is provided, use a staging buffer to copy data to the GPU buffer
-	if (desc.initialData) {
+	if (desc.initialData || desc.persistentMapped) {
 		// Create a staging buffer in CPU-visible memory
-		VkBuffer stagingBuffer;
-		VmaAllocation stagingBufferAllocation;
-		void* stagingData = nullptr;
-
 		VkBufferCreateInfo stagingBufferInfo{};
 		stagingBufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 		stagingBufferInfo.size = desc.size;
@@ -497,13 +494,21 @@ BufferInfo _createBuffer(const BufferDesc& desc) {
 		VmaAllocationCreateInfo stagingAllocCreateInfo{};
 		stagingAllocCreateInfo.usage = VMA_MEMORY_USAGE_CPU_ONLY;
 
-		VK_CALL(vmaCreateBuffer(gVMA_Allocator, &stagingBufferInfo, &stagingAllocCreateInfo, &stagingBuffer, &stagingBufferAllocation, nullptr));
+		VK_CALL(vmaCreateBuffer(gVMA_Allocator, &stagingBufferInfo, &stagingAllocCreateInfo, &meta.stagingBuffer, &meta.stagingBufferAllocation, nullptr));
 
 		// Map the staging buffer and copy the data
-		vmaMapMemory(gVMA_Allocator, stagingBufferAllocation, &stagingData);
-		memcpy(stagingData, desc.initialData, static_cast<size_t>(desc.size));
-		vmaUnmapMemory(gVMA_Allocator, stagingBufferAllocation);
+		vmaMapMemory(gVMA_Allocator, meta.stagingBufferAllocation, &meta.presistentMappedPtr);
 
+		if (desc.initialData != nullptr)
+		{
+			memcpy(meta.presistentMappedPtr, desc.initialData, static_cast<size_t>(desc.size));
+		}
+		
+		if (!desc.persistentMapped)
+		{
+			vmaUnmapMemory(gVMA_Allocator, meta.stagingBufferAllocation);
+		}
+		
 		// Use a command buffer to copy data from the staging buffer to the GPU buffer
 		auto c = AllocateSingleTimeCommandBuffer();
 
@@ -511,7 +516,7 @@ BufferInfo _createBuffer(const BufferDesc& desc) {
 		copyRegion.srcOffset = 0;
 		copyRegion.dstOffset = 0;
 		copyRegion.size = desc.size;
-		vkCmdCopyBuffer(c.cbuff, stagingBuffer, buffer, 1, &copyRegion);
+		vkCmdCopyBuffer(c.cbuff, meta.stagingBuffer, buffer, 1, &copyRegion);
 
 		c.Sumbit();
 
@@ -527,7 +532,7 @@ BufferInfo _createBuffer(const BufferDesc& desc) {
 		allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 		allocInfo.descriptorPool = gStaticDescriptorsPool; // Assume this is created elsewhere
 		allocInfo.descriptorSetCount = 1;
-		allocInfo.pSetLayouts = &gFrameConstantsLayout; // Assume this is created elsewhere
+		allocInfo.pSetLayouts = &gCanvasDomainLayout; // Assume this is created elsewhere
 
 		VK_CALL(vkAllocateDescriptorSets(gVKDevice, &allocInfo, &descriptor));
 
@@ -549,6 +554,17 @@ BufferInfo _createBuffer(const BufferDesc& desc) {
 
 		vmaMapMemory(gVMA_Allocator, allocation, &meta.presistentMappedPtr);
 	}
+	
+
+	if (desc.debugName)
+	{
+		vk_utils::debug::SetName(buffer, desc.debugName);
+		
+		if (meta.stagingBuffer)
+		{
+			vk_utils::debug::SetName(meta.stagingBuffer, "%s_STAGING", desc.debugName);
+		}		
+	}
 
 	// Return the buffer and its allocation information
 	BufferInfo result;
@@ -560,7 +576,7 @@ BufferInfo _createBuffer(const BufferDesc& desc) {
 	return result;
 }
 
-VkDescriptorSetLayout _createFrameDSLayout()
+VkDescriptorSetLayout _createCanvasDSLayout()
 {
 	VkDescriptorSetLayoutBinding frsameConstantsBinding = {};
 	frsameConstantsBinding.binding = 0;
@@ -574,6 +590,32 @@ VkDescriptorSetLayout _createFrameDSLayout()
 	layoutInfo.bindingCount = 1;
 	layoutInfo.pBindings = &frsameConstantsBinding;
 	
+	VkDescriptorSetLayout dsLayout = VK_NULL_HANDLE;
+	vkCreateDescriptorSetLayout(gVKDevice, &layoutInfo, gVKGlobalAllocationsCallbacks, &dsLayout);
+
+	return dsLayout;
+}
+
+VkDescriptorSetLayout _createSceneDSLayout()
+{
+	VkDescriptorSetLayoutBinding frsameConstantsBinding[2] = {};
+	frsameConstantsBinding[0].binding = 0;
+	frsameConstantsBinding[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	frsameConstantsBinding[0].descriptorCount = 1;
+	frsameConstantsBinding[0].stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS;
+	frsameConstantsBinding[0].pImmutableSamplers = nullptr; // Bind sampler here
+
+	frsameConstantsBinding[1].binding = 1;
+	frsameConstantsBinding[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	frsameConstantsBinding[1].descriptorCount = 1;
+	frsameConstantsBinding[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+	frsameConstantsBinding[1].pImmutableSamplers = nullptr; // Bind sampler here
+
+	VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+	layoutInfo.bindingCount = 2;
+	layoutInfo.pBindings = frsameConstantsBinding;
+
 	VkDescriptorSetLayout dsLayout = VK_NULL_HANDLE;
 	vkCreateDescriptorSetLayout(gVKDevice, &layoutInfo, gVKGlobalAllocationsCallbacks, &dsLayout);
 
@@ -623,9 +665,15 @@ VkPipeline _createPipeline(const PSODesc& desc)
 
 		std::vector<VkDescriptorSetLayout> dsLayouts;
 
-		if (desc.domain == PSODomain::Canvas || desc.domain == PSODomain::Scene)
+		if (desc.domain == PSODomain::Canvas)
 		{
-			static VkDescriptorSetLayout frameDSLayout = _createFrameDSLayout();
+			static VkDescriptorSetLayout frameDSLayout = _createCanvasDSLayout();
+			dsLayouts.push_back(frameDSLayout);
+		}
+
+		if (desc.domain == PSODomain::Scene)
+		{
+			static VkDescriptorSetLayout frameDSLayout = _createSceneDSLayout();
 			dsLayouts.push_back(frameDSLayout);
 		}
 
@@ -936,6 +984,108 @@ void ermy::rendering::UpdateShaderBytecode(ShaderDomainTag tag, const std::strin
 			it->second.psoIndices.clear();
 		}
 	}
+}
+
+void rendering::UpdateBufferData(BufferID buffer, u32 offset, void* data, u16 dataSize)
+{
+	auto c = AllocateSingleTimeCommandBuffer();
+	vkCmdUpdateBuffer(c.cbuff, gAllBuffers[buffer.handle],offset,dataSize,data);
+	c.Sumbit();
+}
+
+ermy::u64 ermy::rendering::CreateDescriptorSet(PSODomain domain, const DescriptorSetDesc& desc)
+{
+	VkDescriptorSet descriptor = VK_NULL_HANDLE;
+	VkDescriptorSetLayout toLayout = VK_NULL_HANDLE;
+
+	if (domain == PSODomain::Canvas)
+		toLayout = gCanvasDomainLayout;
+
+	if (domain == PSODomain::Scene)
+		toLayout = gSceneDomainLayout;
+
+	VkDescriptorSetAllocateInfo allocInfo{};
+	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+	allocInfo.descriptorPool = gStaticDescriptorsPool; // Assume this is created elsewhere
+	allocInfo.descriptorSetCount = 1;
+	allocInfo.pSetLayouts = &toLayout; // Assume this is created elsewhere
+
+	VK_CALL(vkAllocateDescriptorSets(gVKDevice, &allocInfo, &descriptor));
+
+	std::vector<VkDescriptorBufferInfo> allBufferInfos;
+	std::vector<VkDescriptorImageInfo> allImageInfos;
+	std::vector< VkWriteDescriptorSet> allWrites;
+	allBufferInfos.reserve(desc.allBindings.size());
+	allImageInfos.reserve(desc.allBindings.size());
+	allWrites.reserve(desc.allBindings.size());
+
+	for (const auto& b : desc.allBindings)
+	{
+		VkWriteDescriptorSet descriptorWrite{};
+		descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrite.dstSet = descriptor;
+		descriptorWrite.dstBinding = b.bindingSlot;
+		descriptorWrite.dstArrayElement = 0;
+		descriptorWrite.descriptorCount = 1;
+
+		if (b.uniformType == ShaderUniformType::UniformBuffer)
+		{
+			int handle = b.uniformBufferInfo.uniformBuffer.handle;
+			VkDescriptorBufferInfo bufferInfoDesc{};
+			bufferInfoDesc.buffer = gAllBuffers[handle];
+			bufferInfoDesc.offset = 0;
+			bufferInfoDesc.range = gAllBufferMetas[handle].size;
+			allBufferInfos.push_back(bufferInfoDesc);
+
+			descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			descriptorWrite.pBufferInfo = &allBufferInfos[allBufferInfos.size()-1];
+		}
+
+		if (b.uniformType == ShaderUniformType::Texture2D
+			|| b.uniformType == ShaderUniformType::TextureCube)
+		{
+			int handle = b.textureInfo.texture.handle;
+			VkDescriptorImageInfo imageInfoDesc{};
+			imageInfoDesc.imageView = gAllImageViews[handle];
+			imageInfoDesc.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+			imageInfoDesc.sampler = gLinearSampler;
+			allImageInfos.push_back(imageInfoDesc);
+
+			descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			descriptorWrite.pImageInfo = &allImageInfos[allImageInfos.size() - 1];
+		}
+
+		allWrites.push_back(descriptorWrite);
+	}
+	
+	vkUpdateDescriptorSets(gVKDevice, (u32)allWrites.size(), allWrites.data(), 0, nullptr);
+
+	return ermy::u64(descriptor);
+}
+
+void ermy::rendering::UpdateDescriptorSet(ermy::u64 ds, const DescriptorSetDesc::Binding& b)
+{
+	VkWriteDescriptorSet descriptorWrite{};
+	descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+	descriptorWrite.dstSet = (VkDescriptorSet)ds;
+	descriptorWrite.dstBinding = b.bindingSlot;
+	descriptorWrite.dstArrayElement = 0;
+	descriptorWrite.descriptorCount = 1;
+
+	VkDescriptorImageInfo imageInfoDesc{};
+
+	if (b.uniformType == ShaderUniformType::Texture2D
+		|| b.uniformType == ShaderUniformType::TextureCube)
+	{
+		int handle = b.textureInfo.texture.handle;	
+		imageInfoDesc.imageView = gAllImageViews[handle];
+		imageInfoDesc.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		imageInfoDesc.sampler = gLinearSampler;
+		descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		descriptorWrite.pImageInfo = &imageInfoDesc;
+	}
+
+	vkUpdateDescriptorSets(gVKDevice, 1, &descriptorWrite, 0, nullptr);
 }
 
 #endif

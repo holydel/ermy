@@ -24,6 +24,7 @@ namespace vk_utils
 		std::is_same_v<T, VkCommandBuffer> ||
 			std::is_same_v<T, VkCommandPool> ||
 			std::is_same_v<T, VkDevice> ||
+			std::is_same_v<T, VkDescriptorSetLayout> ||
 			std::is_same_v<T, VkFence> ||
 			std::is_same_v<T, VkFramebuffer> ||
 			std::is_same_v<T, VkImage> ||
@@ -54,6 +55,8 @@ namespace vk_utils
 					return VK_OBJECT_TYPE_COMMAND_POOL;
 				else if constexpr (std::is_same_v<T, VkDevice>)
 					return VK_OBJECT_TYPE_DEVICE;
+				else if constexpr (std::is_same_v<T, VkDescriptorSetLayout>)
+					return VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT;
 				else if constexpr (std::is_same_v<T, VkFence>)
 					return VK_OBJECT_TYPE_FENCE;
 				else if constexpr (std::is_same_v<T, VkFramebuffer>)

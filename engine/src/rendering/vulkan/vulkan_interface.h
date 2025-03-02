@@ -18,7 +18,8 @@ extern VkRenderPass gVKRenderPass;
 extern ermy::Application::StaticConfig::VKConfig gVKConfig;
 
 extern VkDescriptorSetLayout gImguiPreviewLayout;
-extern VkDescriptorSetLayout gFrameConstantsLayout;
+extern VkDescriptorSetLayout gCanvasDomainLayout;
+extern VkDescriptorSetLayout gSceneDomainLayout;
 extern VkDescriptorPool gStaticDescriptorsPool;
 extern VkSampler gLinearSampler;
 

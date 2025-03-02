@@ -20,7 +20,7 @@ public:
 	glm::vec4 boundingSphere =  glm::vec4(0); //xyz - center, w - radius
 	std::vector<ermy::u16> allIndices;
 	std::vector<ermy::rendering::StaticVertexDedicated> allVertices;
-	std::vector<ermy::rendering::DedicatedMesh::SubMesh> subMeshes;
+	std::vector<ermy::rendering::SubMesh> subMeshes;
 
 	ermy::u32 numVertices;
 	ermy::u32 numIndices;

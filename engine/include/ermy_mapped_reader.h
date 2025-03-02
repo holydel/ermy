@@ -68,7 +68,7 @@ namespace ermy
 		{
 			size_t size = ReadU64();
 			out.resize(size);
-			ReadBytes(sizeof(T) * size, out.data());
+			ReadBytes(static_cast<u32>(sizeof(T) * size), out.data());
 		}
 	};
 }

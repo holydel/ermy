@@ -5,6 +5,7 @@
 #include "swapchain_interface.h"
 #include "graphics/canvas_interface.h"
 #include "rendering.h"
+#include "scene/scene.h"
 
 using namespace ermy::rendering;
 
@@ -13,8 +14,6 @@ BufferID gFrameConstants;
 void framegraph::Initialize(ermy::u8 numFrames)
 {
 	framegraph_interface::Initialize(numFrames);
-	canvas_interface::Initialize();
-	imgui_interface::Initialize();
 
 	ermy::rendering::BufferDesc frameConstDesc;
 	frameConstDesc.debugName = "Frame Constants";
@@ -22,6 +21,9 @@ void framegraph::Initialize(ermy::u8 numFrames)
 	frameConstDesc.usage = BufferUsage::Uniform;
 
 	gFrameConstants = CreateDedicatedBuffer(frameConstDesc);
+
+	canvas_interface::Initialize();
+	imgui_interface::Initialize();
 }
 
 void framegraph::Shutdown()
@@ -33,6 +35,8 @@ void framegraph::Shutdown()
 void framegraph::Process()
 {
 	auto& app = GetApplication();
+
+	app.OnUpdate();
 
 	void* finalCmdList = framegraph_interface::BeginFrame();
 	ermy::rendering::CommandList clist(finalCmdList);
@@ -57,6 +61,7 @@ void framegraph::Process()
 	gErmyFrameConstants.canvasPreRotate[0].x = 8.0f;
 	gErmyFrameConstants.canvasPreRotate[1].y = 9.0f;
 
+	scene_internal::UpdateUniforms();
 	UpdateBufferData(gFrameConstants, &gErmyFrameConstants);
 	app.OnBeginFrame(clist);
 
@@ -66,7 +71,11 @@ void framegraph::Process()
 	clist.SetScissor(0, 0, finalPassWidth, finalPassHeight);
 
 	imgui_interface::BeginFrame(finalCmdList);
+	//render scene
+	scene_internal::Render(clist);
+	//render canvas
 	canvas_interface::SetCommandList(&clist);
+
 	app.OnBeginFinalPass(clist);
 	app.OnIMGUI();
 	imgui_interface::EndFrame(finalCmdList);

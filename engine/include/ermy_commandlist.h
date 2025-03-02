@@ -6,22 +6,6 @@ namespace ermy
 {
 	namespace rendering
 	{
-		struct DedicatedMesh
-		{
-			struct SubMesh
-			{
-				u32 indexOffset;
-				u32 vertexOffset;
-				u32 indexCount;
-				u32 vertexCount;
-			};
-
-			BufferID indexBuffer;
-			BufferID vertexBuffer;
-
-			std::vector<SubMesh> subMeshes;
-		};
-
 		struct CommandList
 		{
 		private:

@@ -9,6 +9,27 @@ namespace ermy
 {
 	namespace rendering
 	{
+		typedef Handle32 PSOID;
+		typedef Handle32 TextureID;
+		typedef Handle32 BufferID;
+		typedef Handle16 RenderPassID;
+
+		struct SubMesh
+		{
+			u32 indexOffset;
+			u32 vertexOffset;
+			u32 indexCount;
+			u32 vertexCount;
+		};
+
+		struct DedicatedMesh
+		{
+			BufferID indexBuffer;
+			BufferID vertexBuffer;
+
+			std::vector<SubMesh> subMeshes;
+		};
+
 		struct StaticVertexDedicated
 		{
 			float x, y, z;
@@ -84,16 +105,19 @@ namespace ermy
 		FormatInfo GetFormatInfo(Format format);
 		bool IsDepthFormat(Format format);
 
-		enum class ShaderUniformType
+		enum class ShaderUniformType : u8
 		{
 			Texture2D,
 			Texture2DArray,
 			TextureCube,
 			TextureVolume,
 			TextureCubeArray,
+			UniformBuffer,
+			StorageBuffer,
+			StorageImage
 		};
 
-		enum class PrimitiveTopology
+		enum class PrimitiveTopology : u8
 		{
 			TriangleList,
 			TriangleStrip,
@@ -107,7 +131,7 @@ namespace ermy
 			Format format;
 		};
 
-		enum class BufferUsage
+		enum class BufferUsage : u8
 		{
 			Vertex,
 			Index,
@@ -115,18 +139,13 @@ namespace ermy
 			Storage
 		};
 
-		typedef Handle32 PSOID;
-		typedef Handle32 TextureID;
-		typedef Handle32 BufferID;
-		typedef Handle16 RenderPassID;
-
 		struct RootConstantRange
 		{
 			u8 offset = 0;
 			u8 size = 0;
 		};
 
-		enum class PSODomain
+		enum class PSODomain : u8
 		{
 			None,
 			Canvas,
@@ -207,12 +226,68 @@ namespace ermy
 			BufferUsage usage = BufferUsage::Uniform;
 			void* initialData = nullptr;
 			const char* debugName = nullptr;
+
+			bool persistentMapped = false;
 		};
 
 		struct RenderPassDesc
 		{
 			TextureID colorAttachment;
 			TextureID depthStencilAttachment;
+		};
+
+		struct DescriptorSetDesc
+		{
+			struct Binding
+			{
+				u8 bindingSlot;
+				ShaderUniformType uniformType;
+
+				union
+				{
+					struct TextureInfo
+					{
+						TextureID texture;
+					} textureInfo;
+
+					struct UniformBufferInfo
+					{
+						BufferID uniformBuffer;
+					} uniformBufferInfo;
+				};
+			};
+
+			std::vector<Binding> allBindings;
+
+			void AddBindingImpl(ShaderUniformType type, auto&& setter)
+			{
+				Binding binding{};
+				binding.bindingSlot = static_cast<u8>(allBindings.size());
+				binding.uniformType = type;
+				setter(binding);
+				allBindings.push_back(binding);
+			}
+
+			void AddBindingTexture2D(TextureID tex)
+			{
+				AddBindingImpl(ShaderUniformType::Texture2D, [tex](Binding& b) {
+					b.textureInfo.texture = tex;
+				});
+			}
+
+			void AddBindingTextureCube(TextureID tex)
+			{
+				AddBindingImpl(ShaderUniformType::TextureCube, [tex](Binding& b) {
+					b.textureInfo.texture = tex;
+				});
+			}
+
+			void AddBindingUniformBuffer(BufferID buffer)
+			{
+				AddBindingImpl(ShaderUniformType::UniformBuffer, [buffer](Binding& b) {
+					b.uniformBufferInfo.uniformBuffer = buffer;
+				});
+			}
 		};
 
 		PSOID CreatePSO(const PSODesc &desc);
@@ -226,5 +301,10 @@ namespace ermy
 		RenderPassID CreateRenderPass(const RenderPassDesc &desc);		
 
 		void UpdateShaderBytecode(ShaderDomainTag tag, const std::string& name, u64 bytecodeCRC, const u8* bytecode, u32 bytecodeSize);
+
+		void UpdateBufferData(BufferID buffer, u32 offset, void* data, u16 dataSize);
+
+		ermy::u64 CreateDescriptorSet(PSODomain domain, const DescriptorSetDesc& desc);
+		void UpdateDescriptorSet(ermy::u64 ds, const DescriptorSetDesc::Binding& binding);
 	}
 }

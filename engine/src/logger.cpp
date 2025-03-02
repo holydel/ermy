@@ -44,6 +44,10 @@ void ermy::logger::EnqueueLogMessageRAWTagged(LogSeverity severity, const char *
 	va_list args;
 	va_start(args, message);
 	int size = std::vsnprintf(data, sizeof(data)-2, message, args);
+	
+	if (size > 4094)
+		size = 4094;
+
 	data[size] = '\n';
 	data[size + 1] = '\0';
 

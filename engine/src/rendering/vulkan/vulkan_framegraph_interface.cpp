@@ -7,6 +7,7 @@
 #include "vulkan_swapchain.h"
 #include <array>
 #include "vk_utils.h"
+#include "../../graphics/canvas_interface.h"
 
 using namespace ermy;
 
@@ -115,13 +116,8 @@ namespace framegraph_interface
 		auto& frame = gFrames[gFrameRingCurrent];
 		VkCommandBuffer cmd = frame.cmdBuffer;
 
-		static float a = 0.0f;
-		a += 0.01f;
-
-		float clearColors[4] = { 0.3f, (float)sin(a) * 0.5f + 0.5f, 0.7f, 1.0f };
-
-VkClearValue clearValue;
-		clearValue.color = { clearColors[0], clearColors[1], clearColors[2], clearColors[3] };
+		VkClearValue clearValue;
+		clearValue.color = { canvas_interface::BgColor[0], canvas_interface::BgColor[1], canvas_interface::BgColor[2], canvas_interface::BgColor[3] };
 
 		if(gVKConfig.useDynamicRendering)
 		{

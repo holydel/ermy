@@ -42,6 +42,8 @@ namespace ermy
 				std::string title = ""; //when e,pty - get name from AppConfig
 				WindowMode mode = WindowMode::Windowed;
 				InitialState initialState = InitialState::Normal;
+
+				bool supportTransparent = false;
 			};
 
 			struct SwapchainConfig
@@ -173,6 +175,7 @@ namespace ermy
 		/// </summary>
 		virtual void OnLoad() {}
 
+		virtual void OnUpdate() {}
 		/// <summary>
 		/// Begin Frame (after acquire frame from swapchain)
 		/// </summary>

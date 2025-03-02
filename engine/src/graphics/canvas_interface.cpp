@@ -1,6 +1,7 @@
 #include "canvas_interface.h"
 #include <ermy_shader_internal.h>
 #include <cassert>
+#include "../rendering/framegraph.h"
 
 using namespace ermy;
 using namespace ermy::rendering;
@@ -9,6 +10,7 @@ float canvas_interface::BgColor[4] = {1.0f,1.0f,1.0f,1.0f};
 CommandList* gCanvasCL = nullptr;
 PSOID gDedicatedSpritePSO;
 TextureID gWhiteTexture;
+ermy::u64 gCanvasDescriptorSet;
 
 struct SpriteInfo
 {
@@ -28,6 +30,7 @@ void ermy::canvas::SetClearColor(float r, float g, float b, float a)
 void canvas_interface::SetCommandList(ermy::rendering::CommandList* cl)
 {
     gCanvasCL = cl;
+    //cl->SetDescriptorSet(0, gCanvasDescriptorSet);
 }
 
 ermy::rendering::TextureID ermy::canvas::GetWhiteTextureID()
@@ -45,7 +48,7 @@ void ermy::canvas::DrawDedicatedSprite(rendering::TextureID texture, float x, fl
 
     SpriteInfo sinfo = { x,y,w,h,u0,v0,u1,v1,a,packedColor };
 
-    gCanvasCL->SetDescriptorSet(0, rendering::GetBufferDescriptor(gFrameConstants));
+    gCanvasCL->SetDescriptorSet(0, gCanvasDescriptorSet);
 	gCanvasCL->SetDescriptorSet(1, rendering::GetTextureDescriptor(texture));
     gCanvasCL->SetRootConstants(&sinfo, sizeof(sinfo));
     gCanvasCL->Draw(4);
@@ -77,6 +80,11 @@ void canvas_interface::Initialize()
 	whiteTexDesc.pixelsData = whiteData;
 
 	gWhiteTexture = CreateDedicatedTexture(whiteTexDesc);
+
+    
+    ermy::rendering::DescriptorSetDesc dsDesc;
+    dsDesc.AddBindingUniformBuffer(gFrameConstants);
+    gCanvasDescriptorSet = ermy::rendering::CreateDescriptorSet(rendering::PSODomain::Canvas, dsDesc);
 }
 
 void canvas_interface::Shutdown()

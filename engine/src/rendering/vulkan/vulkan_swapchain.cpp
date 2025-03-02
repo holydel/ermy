@@ -21,12 +21,12 @@ bool gSwapchainNeedRebuild = false;
 
 struct FrameInFlight
 {
-	VkSemaphore imageAvailableSemaphore;
-	VkSemaphore renderFinishedSemaphore;
-	VkFence inFlightFence;
-	VkFramebuffer framebuffer;
-	VkImage image;
-	VkImageView imageView;
+	VkSemaphore imageAvailableSemaphore = VK_NULL_HANDLE;
+	VkSemaphore renderFinishedSemaphore = VK_NULL_HANDLE;
+	VkFence inFlightFence = VK_NULL_HANDLE;
+	VkFramebuffer framebuffer = VK_NULL_HANDLE;
+	VkImage image = VK_NULL_HANDLE;
+	VkImageView imageView = VK_NULL_HANDLE;
 	VkImageLayout imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 };
 
@@ -163,7 +163,6 @@ void swapchain::InitSwapchain()
 	gVKOldSwapchain = gVKSwapchain;
 	VkSwapchainCreateInfoKHR createInfo{ VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR };
 	createInfo.clipped = VK_TRUE;
-	createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
 	createInfo.imageArrayLayers = 1;
 	createInfo.imageColorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
 	createInfo.imageExtent = gVKSurfaceCaps.currentExtent;
