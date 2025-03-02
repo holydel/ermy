@@ -14,6 +14,8 @@ struct SceneMeta
 
 	ermy::rendering::PSOID skyBoxPass;
 
+	ermy::rendering::PSOID internalColoredMeshesPass;
+	
 	bool isLoaded = false;
 	bool isActive = false;
 
@@ -24,7 +26,7 @@ struct SceneMeta
 
 	glm::vec3 cameraPosition = glm::vec3(0,0,0);
 	glm::quat cameraOrientation = glm::identity<glm::quat>();
-	float cameraVerticalFOV = 2.5f;
+	float cameraVerticalFOV = 1.25f;
 	float cameraNearZ = 0.1f;
 	float cameraFarZ = 1000.0f;
 	float cameraAspect = 1.0f;
@@ -34,6 +36,11 @@ struct SceneMeta
 
 	glm::vec3 cameraViewDir = glm::vec3(0.0f, 0.0f, -1.0f);
 	ermy::u64 sceneDescriptorSet;
+
+	std::vector<ermy::rendering::SubMesh> allGeometries;
+
+	std::vector<ermy::scene::GeometryID> entityGeometries;
+	std::vector<ermy::scene::Transform> entityTransformsWorld;
 };
 
 extern std::vector<SceneMeta> gAllScenes3D;

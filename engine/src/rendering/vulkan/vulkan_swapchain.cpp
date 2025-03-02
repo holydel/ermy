@@ -5,6 +5,7 @@
 #include "vulkan_interface.h"
 #include "vk_utils.h"
 #include <array>
+#include <application.h>
 
 using namespace ermy;
 
@@ -12,7 +13,10 @@ VkSwapchainKHR gVKSwapchain = VK_NULL_HANDLE;
 VkSwapchainKHR gVKOldSwapchain = VK_NULL_HANDLE;
 VkSurfaceKHR gVKSurface = VK_NULL_HANDLE;
 VkSurfaceCapabilitiesKHR gVKSurfaceCaps;
-VkFormat gVKSurfaceFormat;
+VkFormat gVKSurfaceFormat = VK_FORMAT_UNDEFINED;
+VkSampleCountFlagBits gVKSurfaceSamples = VK_SAMPLE_COUNT_1_BIT;
+VkFormat gVKSurfaceDepthFormat = VK_FORMAT_UNDEFINED;
+
 u32 gAcquiredNextImageIndex = 0;
 VkSemaphore gSwapchainSemaphore = VK_NULL_HANDLE;
 int gSwapchainCurrentFrame = 0;
@@ -28,6 +32,14 @@ struct FrameInFlight
 	VkImage image = VK_NULL_HANDLE;
 	VkImageView imageView = VK_NULL_HANDLE;
 	VkImageLayout imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+
+	VkImage depthImage = VK_NULL_HANDLE;
+	VkImageView depthImageView = VK_NULL_HANDLE;
+	VkImage msaaImage = VK_NULL_HANDLE;
+	VkImageView msaaImageView = VK_NULL_HANDLE;
+
+	VmaAllocation depthAllocation = VK_NULL_HANDLE;
+	VmaAllocation msaaAllocation = VK_NULL_HANDLE;
 };
 
 std::vector<FrameInFlight> gFramesInFlight;
@@ -96,6 +108,77 @@ void swapchain::InitSwapchainResources()
 	gFramesInFlight.resize(imageCount);
 	for (int i = 0; i < gNumberOfFrames; ++i)
 	{
+		if (gVKSurfaceDepthFormat != VK_FORMAT_UNDEFINED)
+		{
+			VkImageCreateInfo depthImageInfo{};
+			depthImageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+			depthImageInfo.imageType = VK_IMAGE_TYPE_2D;
+			depthImageInfo.format = gVKSurfaceDepthFormat; // e.g., VK_FORMAT_D32_SFLOAT
+			depthImageInfo.extent = { gVKSurfaceCaps.currentExtent.width, gVKSurfaceCaps.currentExtent.height, 1 };
+			depthImageInfo.mipLevels = 1;
+			depthImageInfo.arrayLayers = 1;
+			depthImageInfo.samples = gVKSurfaceSamples; // Match MSAA sample count
+			depthImageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+			depthImageInfo.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+			depthImageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+
+			VmaAllocationCreateInfo depthAllocInfo{};
+			depthAllocInfo.usage = VMA_MEMORY_USAGE_GPU_ONLY;
+
+			vmaCreateImage(gVMA_Allocator, &depthImageInfo, &depthAllocInfo,
+				&gFramesInFlight[i].depthImage, &gFramesInFlight[i].depthAllocation, nullptr);
+			vk_utils::debug::SetName(gFramesInFlight[i].depthImage, "Depth Image (%d)", i);
+
+			VkImageViewCreateInfo depthViewInfo{ VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO };
+			depthViewInfo.image = gFramesInFlight[i].depthImage;
+			depthViewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+			depthViewInfo.format = gVKSurfaceDepthFormat;
+			depthViewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+			depthViewInfo.subresourceRange.baseMipLevel = 0;
+			depthViewInfo.subresourceRange.levelCount = 1;
+			depthViewInfo.subresourceRange.baseArrayLayer = 0;
+			depthViewInfo.subresourceRange.layerCount = 1;
+
+			vkCreateImageView(gVKDevice, &depthViewInfo, nullptr, &gFramesInFlight[i].depthImageView);
+			vk_utils::debug::SetName(gFramesInFlight[i].depthImageView, "Depth Image View (%d)", i);
+		}
+
+		// MSAA Image Creation with VMA
+		if (gVKSurfaceSamples != VK_SAMPLE_COUNT_1_BIT)
+		{
+			VkImageCreateInfo msaaImageInfo{};
+			msaaImageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+			msaaImageInfo.imageType = VK_IMAGE_TYPE_2D;
+			msaaImageInfo.format = gVKSurfaceFormat;
+			msaaImageInfo.extent = { gVKSurfaceCaps.currentExtent.width, gVKSurfaceCaps.currentExtent.height, 1 };
+			msaaImageInfo.mipLevels = 1;
+			msaaImageInfo.arrayLayers = 1;
+			msaaImageInfo.samples = gVKSurfaceSamples; // e.g., VK_SAMPLE_COUNT_4_BIT
+			msaaImageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+			msaaImageInfo.usage = VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+			msaaImageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+
+			VmaAllocationCreateInfo msaaAllocInfo{};
+			msaaAllocInfo.usage = VMA_MEMORY_USAGE_GPU_ONLY;
+
+			vmaCreateImage(gVMA_Allocator, &msaaImageInfo, &msaaAllocInfo,
+				&gFramesInFlight[i].msaaImage, &gFramesInFlight[i].msaaAllocation, nullptr);
+			vk_utils::debug::SetName(gFramesInFlight[i].msaaImage, "MSAA Image (%d)", i);
+
+			VkImageViewCreateInfo msaaViewInfo{ VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO };
+			msaaViewInfo.image = gFramesInFlight[i].msaaImage;
+			msaaViewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+			msaaViewInfo.format = gVKSurfaceFormat;
+			msaaViewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			msaaViewInfo.subresourceRange.baseMipLevel = 0;
+			msaaViewInfo.subresourceRange.levelCount = 1;
+			msaaViewInfo.subresourceRange.baseArrayLayer = 0;
+			msaaViewInfo.subresourceRange.layerCount = 1;
+
+			vkCreateImageView(gVKDevice, &msaaViewInfo, nullptr, &gFramesInFlight[i].msaaImageView);
+			vk_utils::debug::SetName(gFramesInFlight[i].msaaImageView, "MSAA Image View (%d)", i);
+		}
+
 		gFramesInFlight[i].image = images[i];
 		vk_utils::debug::SetName(gFramesInFlight[i].image, "Swapchain Target (%d)", i);
 
@@ -117,10 +200,28 @@ void swapchain::InitSwapchainResources()
 		vkCreateSemaphore(gVKDevice, &semaphoreInfo, nullptr, &gFramesInFlight[i].renderFinishedSemaphore);
 		if (!gVKConfig.useDynamicRendering)
 		{
+			VkImageView allViews[3] = { VK_NULL_HANDLE };
+			int currentViewIndex = 0;
+
+			if (gVKSurfaceDepthFormat != VK_FORMAT_UNDEFINED)
+			{
+				allViews[currentViewIndex] = gFramesInFlight[i].depthImageView;
+				currentViewIndex++;
+			}
+
+			if (gVKSurfaceSamples != VK_SAMPLE_COUNT_1_BIT)
+			{
+				allViews[currentViewIndex] = gFramesInFlight[i].msaaImageView;
+				currentViewIndex++;
+			}
+
+			allViews[currentViewIndex] = gFramesInFlight[i].imageView;
+			currentViewIndex++;
+
 			VkFramebufferCreateInfo framebufferInfo{ VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO };
 			framebufferInfo.renderPass = gVKRenderPass;
-			framebufferInfo.attachmentCount = 1;
-			framebufferInfo.pAttachments = &gFramesInFlight[i].imageView;
+			framebufferInfo.attachmentCount = currentViewIndex;
+			framebufferInfo.pAttachments = allViews;
 			framebufferInfo.width = gVKSurfaceCaps.currentExtent.width;
 			framebufferInfo.height = gVKSurfaceCaps.currentExtent.height;
 			framebufferInfo.layers = 1;
@@ -140,6 +241,17 @@ void swapchain::ShutdownSwapchainResources()
 		vkDestroySemaphore(gVKDevice, frame.renderFinishedSemaphore, nullptr);
 		vkDestroyFramebuffer(gVKDevice, frame.framebuffer, nullptr);
 		vkDestroyImageView(gVKDevice, frame.imageView, nullptr);
+
+		if (frame.depthImage != VK_NULL_HANDLE)
+		{
+			vkDestroyImageView(gVKDevice, frame.depthImageView, nullptr);
+			vmaDestroyImage(gVMA_Allocator, frame.depthImage, frame.depthAllocation);
+		}
+		if (frame.msaaImage != VK_NULL_HANDLE)
+		{
+			vkDestroyImageView(gVKDevice, frame.msaaImageView, nullptr);
+			vmaDestroyImage(gVMA_Allocator, frame.msaaImage, frame.msaaAllocation);
+		}
 	}
 
 }
@@ -328,27 +440,113 @@ void swapchain::Initialize()
 
 	gNumberOfFrames = std::max(3u, capabilities2.surfaceCapabilities.minImageCount);
 
+	const auto& swapchainSettings = GetApplication().staticConfig.swapchain;
+
+	auto preferredMSAAMode = swapchainSettings.msaaMode;
+	auto preferredDepthMode = swapchainSettings.depthMode;
+	gVKSurfaceSamples = (VkSampleCountFlagBits)preferredMSAAMode;
+
+	{
+		using mode = ermy::Application::StaticConfig::SwapchainConfig::DepthMode;
+		if (preferredDepthMode == mode::Depth16)
+			gVKSurfaceDepthFormat = VK_FORMAT_D16_UNORM;
+		if (preferredDepthMode == mode::Depth24_Stencil8)
+			gVKSurfaceDepthFormat = VK_FORMAT_D24_UNORM_S8_UINT;
+		if (preferredDepthMode == mode::Depth32F)
+			gVKSurfaceDepthFormat = VK_FORMAT_D32_SFLOAT;
+		if (preferredDepthMode == mode::Depth32F_Stencil8)
+			gVKSurfaceDepthFormat = VK_FORMAT_D32_SFLOAT_S8_UINT;
+	}
+
+	//if(preferredMSAAMode == )
 	if (!gVKConfig.useDynamicRendering)
 	{
 		VkRenderPassCreateInfo renderPassInfo{ VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO };
-		VkAttachmentDescription colorAttachment{};
-		colorAttachment.format = gVKSurfaceFormat;
-		colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-		colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-		colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-		colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-		colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
-		VkAttachmentReference colorAttachmentRef{};
-		colorAttachmentRef.attachment = 0;
-		colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		std::vector<VkAttachmentDescription> attachments;
+		std::vector<VkAttachmentReference> attachmentRefs;
+		int depthAttachmentIndex = -1;
+		int msaaAttachmentIndex = -1;
+		int finalAttachmentIndex = 0;
+
+		if (gVKSurfaceDepthFormat != VK_FORMAT_UNDEFINED)
+		{
+			VkAttachmentDescription depthAttachment{};
+			depthAttachment.format = gVKSurfaceDepthFormat;
+			depthAttachment.samples = gVKSurfaceSamples;
+			depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+			depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+			depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+			depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+			depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+			depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
+			depthAttachmentIndex = attachments.size();
+			attachments.push_back(depthAttachment);
+		}
+
+		if (gVKSurfaceSamples != VK_SAMPLE_COUNT_1_BIT)
+		{
+			VkAttachmentDescription msaaColorAttachment{};
+			msaaColorAttachment.format = gVKSurfaceFormat;
+			msaaColorAttachment.samples = gVKSurfaceSamples;
+			msaaColorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+			msaaColorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+			msaaColorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+			msaaColorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+			msaaColorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+			msaaColorAttachment.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+			msaaAttachmentIndex = attachments.size();
+			attachments.push_back(msaaColorAttachment);
+		}
+
+		{
+			VkAttachmentDescription colorAttachment{};
+			colorAttachment.format = gVKSurfaceFormat;
+			colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+			colorAttachment.loadOp = gVKSurfaceSamples != VK_SAMPLE_COUNT_1_BIT ? VK_ATTACHMENT_LOAD_OP_DONT_CARE : VK_ATTACHMENT_LOAD_OP_CLEAR;
+			colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+			colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+			colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+			colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+			colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+			finalAttachmentIndex = attachments.size();
+			attachments.push_back(colorAttachment);
+		}
+
+		VkAttachmentReference finalAttachmentRef{};
+		finalAttachmentRef.attachment = finalAttachmentIndex;
+		finalAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+		VkAttachmentReference msaaColorAttachmentRef{};
+		msaaColorAttachmentRef.attachment = msaaAttachmentIndex; 
+		msaaColorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+		VkAttachmentReference depthAttachmentRef{};
+		depthAttachmentRef.attachment = depthAttachmentIndex;
+		depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
 		VkSubpassDescription subpass{};
 		subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
 		subpass.colorAttachmentCount = 1;
-		subpass.pColorAttachments = &colorAttachmentRef;
+		
+
+		if (depthAttachmentIndex >= 0)
+		{
+			subpass.pDepthStencilAttachment = &depthAttachmentRef;
+		}
+
+		if (msaaAttachmentIndex >= 0)
+		{
+			subpass.pColorAttachments = &msaaColorAttachmentRef;
+			subpass.pResolveAttachments = &finalAttachmentRef;
+		}
+		else
+		{
+			subpass.pColorAttachments = &finalAttachmentRef;
+		}
 
 		// These dependencies ensure proper synchronization
 		std::array<VkSubpassDependency, 2> dependencies;
@@ -357,25 +555,44 @@ void swapchain::Initialize()
 		dependencies[0] = {
 			.srcSubpass = VK_SUBPASS_EXTERNAL,
 			.dstSubpass = 0,
-			.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-			.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+			.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT,
+			.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT,
 			.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT,
-			.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+			.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
 			.dependencyFlags = 0
 		};
-
 		dependencies[1] = {
 			.srcSubpass = 0,
 			.dstSubpass = VK_SUBPASS_EXTERNAL,
-			.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT ,
+			.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
 			.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-			.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-			.dstAccessMask = VK_ACCESS_MEMORY_WRITE_BIT,
+			.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
+			.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT,
 			.dependencyFlags = 0
 		};
 
-		renderPassInfo.attachmentCount = 1;
-		renderPassInfo.pAttachments = &colorAttachment;
+		//dependencies[0] = {
+		//	.srcSubpass = VK_SUBPASS_EXTERNAL,
+		//	.dstSubpass = 0,
+		//	.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+		//	.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+		//	.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT,
+		//	.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+		//	.dependencyFlags = 0
+		//};
+
+		//dependencies[1] = {
+		//	.srcSubpass = 0,
+		//	.dstSubpass = VK_SUBPASS_EXTERNAL,
+		//	.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT ,
+		//	.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+		//	.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+		//	.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT,
+		//	.dependencyFlags = 0
+		//};
+
+		renderPassInfo.attachmentCount = (u32)attachments.size();
+		renderPassInfo.pAttachments = attachments.data();
 		renderPassInfo.subpassCount = 1;
 		renderPassInfo.pSubpasses = &subpass;
 		renderPassInfo.dependencyCount = static_cast<u32>(dependencies.size());
@@ -385,6 +602,7 @@ void swapchain::Initialize()
 
 		vk_utils::debug::SetName(gVKRenderPass, "Final RenderPass");
 	}
+
 	InitSwapchain();
 	InitSwapchainResources();
 }

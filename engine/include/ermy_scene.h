@@ -8,7 +8,15 @@ namespace ermy
 {
 	namespace scene
 	{
+		struct Transform
+		{
+			glm::vec4 position_uniform_scale = glm::vec4(0,0,0,1);
+			glm::quat orientation = glm::identity<glm::quat>();
+		};
+
 		typedef Handle16 SceneID;
+		typedef Handle32 GeometryID;
+		typedef Handle32 EntityID;
 
 		struct SceneDesc
 		{
@@ -28,9 +36,9 @@ namespace ermy
 		void SetActive(SceneID sceneId, bool status);
 		void SetCurrent(SceneID sceneId);
 
-		rendering::SubMesh LoadSubmesh(int numVertices, int numIndices, rendering::StaticVertexDedicated* vertices, u16* indices);
+		GeometryID LoadSubmesh(int numVertices, int numIndices, rendering::StaticVertexDedicated* vertices, u16* indices);
 
-		inline rendering::SubMesh LoadSubmesh(const geometry::GeometryData& geoData)
+		inline GeometryID LoadSubmesh(const geometry::GeometryData& geoData)
 		{
 			return LoadSubmesh(geoData.numVertices, geoData.numIndices, geoData.verticecs, geoData.indices);
 		}
@@ -40,5 +48,8 @@ namespace ermy
 		void SetCameraVerticalFOV(float fovRadians);
 
 		void SetSkyBoxTexture(rendering::TextureID texture);
+
+		EntityID AddEntity(GeometryID geom, const Transform& initialTransform = {});
+		Transform& GetTransform(EntityID ent);
 	}
 }

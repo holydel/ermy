@@ -126,21 +126,18 @@ VSSkyBoxOutput skyboxVS(uint vertexId: SV_VertexID)
 {
     VSSkyBoxOutput output;
 
-    // Generate clip space positions for a fullscreen triangle
-    // Vertex ID 0: (-1, -1), ID 1: (3, -1), ID 2: (-1, 3)
-    float2 uv;
-    uv.x = (vertexId == 1) ? 2.0 : 0.0;
-    uv.y = (vertexId == 2) ? 2.0 : 0.0;
+    float2 pos[4] = {
+        float2(-1.0, -1.0),
+        float2(1.0, -1.0),
+        float2(-1.0, 1.0),
+        float2(1.0, 1.0)
+    };
 
-    output.pos = float4(uv * 2.0 - 1.0, 0.0, 1.0);
+    output.pos = float4(pos[vertexId], 0.0, 1.0);
 
-    // Flip y to match Vulkan convention if needed (depends on your setup)
-    output.pos.y = -output.pos.y;
-
-    // Calculate view direction in world space
-    float4 clipPos = float4(output.pos.xy, 1.0, 1.0); // z=1 for far plane
-    float4 worldPos = mul(frameConstants.ViewProjMatrixInv[0], clipPos);
-    output.uv = normalize(worldPos.xyz / worldPos.w);
+    float4 viewPos = mul(output.pos, frameConstants.ProjMatrixInv[0]);
+    float3 worldDir = mul(float3x3(frameConstants.ViewMatrix[0][0].xyz, frameConstants.ViewMatrix[0][1].xyz, frameConstants.ViewMatrix[0][2].xyz), viewPos.xyz);
+    output.uv = -worldDir;
 
     return output;
 }
@@ -149,4 +146,67 @@ VSSkyBoxOutput skyboxVS(uint vertexId: SV_VertexID)
 float4 skyboxFS(VSSkyBoxOutput input) : SV_TARGET
 {
     return sceneSkyBox.Sample(input.uv);
+}
+
+struct StaticVertexDedicated
+{
+    float3 pos : POSITION;
+    float3 normal : NORMAL;
+    float3 tangent : TANGENT;
+    float3 bitangent : BITANGENT;
+    float2 uv0 : TEXCOORD0;
+    float2 uv1 : TEXCOORD1;
+    float4 color : COLOR0;
+};
+
+struct OutStaticVertexDedicated
+{
+    float4 position : SV_Position;
+    float2 uv : TEXCOORD0;
+    float4 color : COLOR0;
+    float3 normal : NORMAL;
+};
+
+struct SceneTransform
+{
+    float4 position_uniform_scale;
+    float4 orientation_unit_quaternion;
+}
+
+[shader("vertex")]
+OutStaticVertexDedicated sceneStaticMeshVS(StaticVertexDedicated vtx, uniform SceneTransform transform)
+{
+    OutStaticVertexDedicated output;
+
+    float4x4 viewProj = frameConstants.ViewProjMatrix[0];
+
+    // Extract components from transform
+    float3 position = transform.position_uniform_scale.xyz;
+    float scale = transform.position_uniform_scale.w;
+    float4 quat = transform.orientation_unit_quaternion;
+
+    // Rotate position and normal
+    float3 rotatedPos = rotateVectorByQuaternion(vtx.pos, quat);
+    float3 rotatedNormal = rotateVectorByQuaternion(vtx.normal, quat);
+    //float3 rotatedTangent = rotateVectorByQuaternion(vtx.tangent, quat);
+    //float3 rotatedBitangent = rotateVectorByQuaternion(vtx.bitangent, quat);
+
+    // Apply scaling and translation to position
+    float3 worldPos = position + rotatedPos * scale;
+
+    // Transform to clip space
+    output.position = mul(float4(worldPos, 1.0), viewProj);
+
+    // Pass through other attributes
+    output.uv = vtx.uv0;
+    output.color = vtx.color;
+    output.normal = rotatedNormal;
+
+    return output;
+}
+
+[shader("fragment")]
+float4 sceneStaticMeshColored(OutStaticVertexDedicated input) : SV_Target
+{
+    return float4(input.uv, 0.5f, 1.0f);
 }

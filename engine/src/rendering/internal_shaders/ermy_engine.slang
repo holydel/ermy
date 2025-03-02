@@ -22,3 +22,11 @@ public struct ErmyFrame
 	public float deltaTime;
 	public float refreshRateTime;
 };
+
+// Rotate a vector by a quaternion (assumes unit quaternion)
+public float3 rotateVectorByQuaternion(float3 vec, float4 quat)
+{
+    float3 qvec = quat.xyz; // Vector part (x, y, z)
+    float qw = quat.w;      // Scalar part (w)
+    return vec + 2.0 * cross(qvec, cross(qvec, vec) + qw * vec);
+}

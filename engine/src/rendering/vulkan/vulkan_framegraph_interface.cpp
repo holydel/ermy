@@ -116,11 +116,10 @@ namespace framegraph_interface
 		auto& frame = gFrames[gFrameRingCurrent];
 		VkCommandBuffer cmd = frame.cmdBuffer;
 
-		VkClearValue clearValue;
-		clearValue.color = { canvas_interface::BgColor[0], canvas_interface::BgColor[1], canvas_interface::BgColor[2], canvas_interface::BgColor[3] };
-
 		if(gVKConfig.useDynamicRendering)
 		{
+			VkClearValue clearValue;
+			clearValue.color = { canvas_interface::BgColor[0], canvas_interface::BgColor[1], canvas_interface::BgColor[2], canvas_interface::BgColor[3] };
 
 			vk_utils::ImageTransition(frame.cmdBuffer, swapchain::GetCurrentImage(), swapchain::GetCurrentImageLayout(), VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,VK_IMAGE_ASPECT_COLOR_BIT);
 			
@@ -143,11 +142,25 @@ namespace framegraph_interface
 		}
 		else
 		{
-		
+			VkClearValue clearValues[3] = {};
+			int colorAttachmentIndex = 0;
+
+			if (gVKSurfaceDepthFormat != VK_FORMAT_UNDEFINED)
+			{
+				clearValues[0].depthStencil.depth = 1.0f;
+				clearValues[0].depthStencil.stencil = 0;
+				colorAttachmentIndex++;
+			}
+
+			for(int i = 0;i<4;++i)
+				clearValues[colorAttachmentIndex].color.float32[i] = canvas_interface::BgColor[i];
+			
+			colorAttachmentIndex++;
+
 
 			VkRenderPassBeginInfo rpass{ VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO };
-			rpass.clearValueCount = 1;
-			rpass.pClearValues = &clearValue;
+			rpass.clearValueCount = colorAttachmentIndex;
+			rpass.pClearValues = clearValues;
 			rpass.framebuffer = swapchain::GetFramebuffer();
 			rpass.renderArea = { 0,0, gVKSurfaceCaps.currentExtent.width, gVKSurfaceCaps.currentExtent.height };
 			rpass.renderPass = swapchain::GetRenderPass();

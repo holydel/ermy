@@ -48,7 +48,7 @@ void imgui_interface::Initialize()
 	init_info.MinImageCount = 3;
 	init_info.ImageCount = 3;
 	init_info.CheckVkResultFn = mercury_check_vk_result;
-	init_info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
+	init_info.MSAASamples = gVKSurfaceSamples;
 	init_info.RenderPass = gVKRenderPass;
 	init_info.MinAllocationSize = 1024 * 1024;
 

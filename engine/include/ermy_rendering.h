@@ -245,15 +245,8 @@ namespace ermy
 
 				union
 				{
-					struct TextureInfo
-					{
-						TextureID texture;
-					} textureInfo;
-
-					struct UniformBufferInfo
-					{
-						BufferID uniformBuffer;
-					} uniformBufferInfo;
+					TextureID texture;
+					BufferID uniformBuffer;
 				};
 			};
 
@@ -271,21 +264,21 @@ namespace ermy
 			void AddBindingTexture2D(TextureID tex)
 			{
 				AddBindingImpl(ShaderUniformType::Texture2D, [tex](Binding& b) {
-					b.textureInfo.texture = tex;
+					b.texture = tex;
 				});
 			}
 
 			void AddBindingTextureCube(TextureID tex)
 			{
 				AddBindingImpl(ShaderUniformType::TextureCube, [tex](Binding& b) {
-					b.textureInfo.texture = tex;
+					b.texture = tex;
 				});
 			}
 
 			void AddBindingUniformBuffer(BufferID buffer)
 			{
 				AddBindingImpl(ShaderUniformType::UniformBuffer, [buffer](Binding& b) {
-					b.uniformBufferInfo.uniformBuffer = buffer;
+					b.uniformBuffer = buffer;
 				});
 			}
 		};
@@ -306,5 +299,7 @@ namespace ermy
 
 		ermy::u64 CreateDescriptorSet(PSODomain domain, const DescriptorSetDesc& desc);
 		void UpdateDescriptorSet(ermy::u64 ds, const DescriptorSetDesc::Binding& binding);
+
+		void WaitDeviceIdle();
 	}
 }

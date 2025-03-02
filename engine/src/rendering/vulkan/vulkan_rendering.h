@@ -28,18 +28,21 @@ struct BufferMeta
 
 	VkBuffer stagingBuffer = VK_NULL_HANDLE;
 	VmaAllocation stagingBufferAllocation = VK_NULL_HANDLE;
+
+	ermy::rendering::BufferUsage bufferUsage;
 };
 
 extern std::vector<ImageMeta> gAllImageMetas;
 
 struct RenderpassInfo
 {
-	VkRenderPass renderpass;
-	VkFramebuffer framebuffer;
-	VkImage targetImage;
-	int defaultWidth;
-	int defaultHeight;
-	bool useDepth;
+	VkRenderPass renderpass = VK_NULL_HANDLE;
+	VkFramebuffer framebuffer = VK_NULL_HANDLE;
+	VkImage targetImage = VK_NULL_HANDLE;
+	int defaultWidth = 0;
+	int defaultHeight = 0;
+	bool useDepth = false;
+	VkSampleCountFlagBits samples = VkSampleCountFlagBits::VK_SAMPLE_COUNT_1_BIT;
 };
 
 extern std::vector<RenderpassInfo> gAllRenderPasses;

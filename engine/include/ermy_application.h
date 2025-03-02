@@ -48,16 +48,36 @@ namespace ermy
 
 			struct SwapchainConfig
 			{
-				enum ColorWidth
+				enum class ColorWidth : u8
 				{
 					Prefer16bit,
 					Prefer32bit,
 					PreferHDR
 				};
 
-				ColorWidth colorWidth = ColorWidth::Prefer32bit;
+				enum class DepthMode : u8
+				{
+					None,
+					Depth16,
+					Depth24_Stencil8,
+					Depth32F,
+					Depth32F_Stencil8
+				};
 
-				enum VSyncMode
+				enum class MSAAMode : u8
+				{
+					None = 1,
+					Samples2 = 2,
+					Samples4 = 4,
+					Samples8 = 8,
+					Samples16 = 16
+				};
+
+				ColorWidth colorWidth = ColorWidth::Prefer32bit;
+				DepthMode depthMode = DepthMode::None;
+				MSAAMode msaaMode = MSAAMode::None;
+
+				enum class VSyncMode : u8
 				{
 					NoVSync,
 					AdaptiveVSync,
@@ -66,7 +86,7 @@ namespace ermy
 
 				VSyncMode vsync = VSyncMode::AlwaysVSync;
 
-				bool useAlpha = false;
+				bool useAlpha : 1 = false;
 			};
 
 			struct ImguiConfig

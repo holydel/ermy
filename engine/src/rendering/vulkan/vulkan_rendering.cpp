@@ -482,6 +482,7 @@ BufferInfo _createBuffer(const BufferDesc& desc) {
 
 	VK_CALL(vmaCreateBuffer(gVMA_Allocator, &bufferInfo, &allocCreateInfo, &buffer, &allocation, &allocationInfo));
 	meta.size = desc.size;
+	meta.bufferUsage = desc.usage;
 
 	// If initial data is provided, use a staging buffer to copy data to the GPU buffer
 	if (desc.initialData || desc.persistentMapped) {
@@ -798,9 +799,6 @@ VkPipeline _createPipeline(const PSODesc& desc)
 	pipViewportState.scissorCount = 1;
 	pipViewportState.pScissors = &viewrect;
 
-
-	pipMultisamplingState.rasterizationSamples = VkSampleCountFlagBits::VK_SAMPLE_COUNT_1_BIT;
-
 	std::vector<VkDynamicState> all_dinamic_states;
 
 	all_dinamic_states.push_back(VK_DYNAMIC_STATE_VIEWPORT);
@@ -842,6 +840,7 @@ VkPipeline _createPipeline(const PSODesc& desc)
 		}
 		else
 		{
+			pipMultisamplingState.rasterizationSamples = gVKSurfaceSamples;
 			cinfo.renderPass = gVKRenderPass; //final pass. TODO:// framegraph passes
 		}
 	}
@@ -990,6 +989,28 @@ void rendering::UpdateBufferData(BufferID buffer, u32 offset, void* data, u16 da
 {
 	auto c = AllocateSingleTimeCommandBuffer();
 	vkCmdUpdateBuffer(c.cbuff, gAllBuffers[buffer.handle],offset,dataSize,data);
+
+	auto& meta = gAllBufferMetas[buffer.handle];
+	VkAccessFlags accessFlags = VK_ACCESS_MEMORY_READ_BIT;
+
+	if (meta.bufferUsage == rendering::BufferUsage::Index)
+		accessFlags = VK_ACCESS_INDEX_READ_BIT;
+	if (meta.bufferUsage == rendering::BufferUsage::Vertex)
+		accessFlags = VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT;
+	if (meta.bufferUsage == rendering::BufferUsage::Uniform)
+		accessFlags = VK_ACCESS_UNIFORM_READ_BIT;
+	//
+	// Barrier to ensure write completes before read
+	VkMemoryBarrier barrier{};
+	barrier.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+	barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+	barrier.dstAccessMask = accessFlags;
+
+	vkCmdPipelineBarrier(c.cbuff,
+		VK_PIPELINE_STAGE_TRANSFER_BIT,    // Write stage
+		VK_PIPELINE_STAGE_VERTEX_INPUT_BIT, // Read stage
+		0, 1, &barrier, 0, nullptr, 0, nullptr);
+
 	c.Sumbit();
 }
 
@@ -1030,7 +1051,7 @@ ermy::u64 ermy::rendering::CreateDescriptorSet(PSODomain domain, const Descripto
 
 		if (b.uniformType == ShaderUniformType::UniformBuffer)
 		{
-			int handle = b.uniformBufferInfo.uniformBuffer.handle;
+			int handle = b.uniformBuffer.handle;
 			VkDescriptorBufferInfo bufferInfoDesc{};
 			bufferInfoDesc.buffer = gAllBuffers[handle];
 			bufferInfoDesc.offset = 0;
@@ -1044,7 +1065,7 @@ ermy::u64 ermy::rendering::CreateDescriptorSet(PSODomain domain, const Descripto
 		if (b.uniformType == ShaderUniformType::Texture2D
 			|| b.uniformType == ShaderUniformType::TextureCube)
 		{
-			int handle = b.textureInfo.texture.handle;
+			int handle = b.texture.handle;
 			VkDescriptorImageInfo imageInfoDesc{};
 			imageInfoDesc.imageView = gAllImageViews[handle];
 			imageInfoDesc.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -1077,7 +1098,7 @@ void ermy::rendering::UpdateDescriptorSet(ermy::u64 ds, const DescriptorSetDesc:
 	if (b.uniformType == ShaderUniformType::Texture2D
 		|| b.uniformType == ShaderUniformType::TextureCube)
 	{
-		int handle = b.textureInfo.texture.handle;	
+		int handle = b.texture.handle;	
 		imageInfoDesc.imageView = gAllImageViews[handle];
 		imageInfoDesc.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 		imageInfoDesc.sampler = gLinearSampler;
@@ -1086,6 +1107,11 @@ void ermy::rendering::UpdateDescriptorSet(ermy::u64 ds, const DescriptorSetDesc:
 	}
 
 	vkUpdateDescriptorSets(gVKDevice, 1, &descriptorWrite, 0, nullptr);
+}
+
+void ermy::rendering::WaitDeviceIdle()
+{
+	vkDeviceWaitIdle(gVKDevice);
 }
 
 #endif

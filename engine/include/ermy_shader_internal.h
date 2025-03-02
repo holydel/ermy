@@ -11,5 +11,7 @@ namespace ermy
 		ShaderInfo dedicatedSpriteFS();
 		ShaderInfo skyboxVS();
 		ShaderInfo skyboxFS();
+		ShaderInfo sceneStaticMeshVS();
+		ShaderInfo sceneStaticMeshColored();
 	}
 }

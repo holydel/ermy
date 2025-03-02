@@ -7,6 +7,8 @@ extern VkSwapchainKHR gVKSwapchain;
 extern VkSurfaceKHR gVKSurface;
 extern VkSurfaceCapabilitiesKHR gVKSurfaceCaps;
 extern VkFormat gVKSurfaceFormat;
+extern VkSampleCountFlagBits gVKSurfaceSamples;
+extern VkFormat gVKSurfaceDepthFormat;
 //TODO: Collect information about VK_EXT_swapchain_maintenance1, VK_KHR_present_id, VK_KHR_present_wait, VK_GOOGLE_display_timing
 
 namespace swapchain
