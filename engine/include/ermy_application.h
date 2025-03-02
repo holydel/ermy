@@ -100,10 +100,7 @@ namespace ermy
 				bool EnableIMGUI = false;
 				bool EnableSound = false;
 				bool EnableBulletPhysics = false;
-				bool EnableXR = false;
-
-				bool GraphicsValidation  = false;
-				bool XRValidation  = false;				
+				bool EnableXR = false;		
 			};
 
 			struct D3D12Config
@@ -114,6 +111,11 @@ namespace ermy
 			struct VKConfig
 			{
 				bool useDynamicRendering = false;
+			};
+
+			struct XRConfig
+			{
+				bool useDebugLayers = true;
 			};
 
 			struct RendererConfig
@@ -149,7 +151,7 @@ namespace ermy
 			RendererConfig render;
 			ImguiConfig imgui;
 			SwapchainConfig swapchain;
-
+			XRConfig xr;
 			struct Version
 			{
 				union

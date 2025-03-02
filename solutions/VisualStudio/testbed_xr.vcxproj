@@ -39,6 +39,8 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <EnableASAN>true</EnableASAN>
+    <EnableFuzzer>true</EnableFuzzer>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Android-arm64-v8a'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -46,7 +48,7 @@
     <PlatformToolset>Clang</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <AndroidMinSdkVersion>25</AndroidMinSdkVersion>
-    <AndroidNdkVersion>26.3.11579264</AndroidNdkVersion>
+    <AndroidNdkVersion>27.0.12077973</AndroidNdkVersion>
     <CppLanguageStandard>cpp2a</CppLanguageStandard>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|x64'" Label="Configuration">
@@ -70,7 +72,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <AndroidMinSdkVersion>25</AndroidMinSdkVersion>
-    <AndroidNdkVersion>26.3.11579264</AndroidNdkVersion>
+    <AndroidNdkVersion>27.0.12077973</AndroidNdkVersion>
     <CppLanguageStandard>cpp2a</CppLanguageStandard>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'" Label="Configuration">
@@ -81,7 +83,7 @@
     <CharacterSet>Unicode</CharacterSet>
     <CppLanguageStandard>cpp2a</CppLanguageStandard>
     <AndroidMinSdkVersion>25</AndroidMinSdkVersion>
-    <AndroidNdkVersion>26.3.11579264</AndroidNdkVersion>
+    <AndroidNdkVersion>27.0.12077973</AndroidNdkVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -131,7 +133,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../../engine/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../third_party/glm</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -144,7 +147,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../../engine/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../third_party/glm</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -159,7 +162,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../../engine/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../third_party/glm</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -176,7 +180,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../../engine/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../third_party/glm</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -193,7 +198,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../../engine/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../third_party/glm</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -210,7 +215,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../../engine/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../third_party/glm</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

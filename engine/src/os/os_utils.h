@@ -46,6 +46,10 @@ namespace os
 	const char* GetVulkanRuntimeLibraryName();
 #endif
 
+#ifdef ERMY_XR_OPENXR
+	const char* GetOpenXRLoaderLibraryName();
+#endif
+
 	ermy::i64 GetCurrentTimestamp();	
 }
 

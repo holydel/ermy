@@ -5,6 +5,7 @@
 
 #include "rendering/rendering.h"
 #include "sound/sound_interface.h"
+#include "xr/xr_interface.h"
 
 ermy::Application *gApplication = nullptr;
 
@@ -38,6 +39,8 @@ void ErmyApplicationStart()
 	// initialize engine
 	loggerImpl::Initialize();
 	ERMY_LOG("start initialize ermy engine for application: %s", gApplication->staticConfig.appName.c_str()); //
+
+	xr_interface::Initialize();
 
 	os::CreateNativeWindow();
 	sound_interface::Initialize();
@@ -74,6 +77,8 @@ void ErmyApplicationShutdown()
 
 	rendering::Shutdown();
 	sound_interface::Shutdown();
+
+	xr_interface::Shutdown();
 	loggerImpl::Shutdown();
 }
 

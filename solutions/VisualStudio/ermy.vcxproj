@@ -357,6 +357,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\..\engine\src\xr\openxr\ermy_openxr.cpp" />
+    <ClCompile Include="..\..\engine\src\xr\openxr\openxr_interface.cpp" />
     <ClCompile Include="..\..\third_party\D3D12MemoryAllocator\src\D3D12MemAlloc.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Android-arm64-v8a'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dev|Android-arm64-v8a'">true</ExcludedFromBuild>
@@ -431,6 +433,7 @@
     <ClInclude Include="..\..\engine\include\ermy_shader_internal.h" />
     <ClInclude Include="..\..\engine\include\ermy_sound.h" />
     <ClInclude Include="..\..\engine\include\ermy_utils.h" />
+    <ClInclude Include="..\..\engine\include\ermy_xr.h" />
     <ClInclude Include="..\..\engine\src\application.h" />
     <ClInclude Include="..\..\engine\src\graphics\canvas_interface.h" />
     <ClInclude Include="..\..\engine\src\imgui\ermy_imgui.h" />
@@ -459,6 +462,10 @@
     <ClInclude Include="..\..\engine\src\rendering\vulkan\vulkan_swapchain.h" />
     <ClInclude Include="..\..\engine\src\scene\scene.h" />
     <ClInclude Include="..\..\engine\src\sound\sound_interface.h" />
+    <ClInclude Include="..\..\engine\src\xr\openxr\ermy_openxr.h" />
+    <ClInclude Include="..\..\engine\src\xr\openxr\openxr_interface.h" />
+    <ClInclude Include="..\..\engine\src\xr\xr.h" />
+    <ClInclude Include="..\..\engine\src\xr\xr_interface.h" />
     <ClInclude Include="..\..\third_party\VulkanMemoryAllocator\include\vk_mem_alloc.h" />
   </ItemGroup>
   <ItemGroup>
@@ -559,7 +566,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include;../../third_party/glm</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include;../../third_party/glm;../../third_party/OpenXR-SDK\include</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -582,7 +589,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;;../../third_party/glm</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;;../../third_party/glm;../../third_party/OpenXR-SDK\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -600,7 +607,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include;../../third_party/glm</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include;../../third_party/glm;../../third_party/OpenXR-SDK\include</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -627,7 +634,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include;../../third_party/glm</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include;../../third_party/glm;../../third_party/OpenXR-SDK\include</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -652,7 +659,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;;../../third_party/glm</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;;../../third_party/glm;../../third_party/OpenXR-SDK\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -672,7 +679,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;;../../third_party/glm</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;;../../third_party/glm;../../third_party/OpenXR-SDK\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>

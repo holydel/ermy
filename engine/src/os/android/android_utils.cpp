@@ -110,6 +110,13 @@ const char* os::GetVulkanRuntimeLibraryName()
 }
 #endif
 
+#ifdef ERMY_XR_OPENXR
+const char* os::GetOpenXRLoaderLibraryName()
+{
+	return "libopenxr_loader.so";
+}
+#endif
+
 namespace ermy::os_utils
 {
 	struct MappedFileInfoPosix

@@ -99,3 +99,10 @@ const char* os::GetVulkanRuntimeLibraryName()
 	return "vulkan-1.dll";
 }
 #endif
+
+#ifdef ERMY_XR_OPENXR
+const char* os::GetOpenXRLoaderLibraryName()
+{
+	return "openxr_loader.dll";
+}
+#endif

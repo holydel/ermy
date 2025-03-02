@@ -52,6 +52,15 @@
     <Filter Include="Source Files\scene">
       <UniqueIdentifier>{9529d6b9-afd0-47f8-836b-012ced22c1b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\xr">
+      <UniqueIdentifier>{93ef0f59-e1b4-4761-b9cc-8d38f5e8fa28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\xr\openxr">
+      <UniqueIdentifier>{78969d93-9a18-4ed6-9af8-bf661d437171}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\xr\apple_reality_kit">
+      <UniqueIdentifier>{1e1a3129-3680-49f8-b641-6d4b226a69cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\engine\src\ermy.cpp">
@@ -191,6 +200,12 @@
     </ClCompile>
     <ClCompile Include="..\..\engine\src\geometry.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\src\xr\openxr\openxr_interface.cpp">
+      <Filter>Source Files\xr\openxr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\src\xr\openxr\ermy_openxr.cpp">
+      <Filter>Source Files\xr\openxr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -343,6 +358,21 @@
     </ClInclude>
     <ClInclude Include="..\..\engine\include\ermy_geometry.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\xr\xr.h">
+      <Filter>Source Files\xr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\xr\xr_interface.h">
+      <Filter>Source Files\xr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\xr\openxr\openxr_interface.h">
+      <Filter>Source Files\xr\openxr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\include\ermy_xr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\xr\openxr\ermy_openxr.h">
+      <Filter>Source Files\xr\openxr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

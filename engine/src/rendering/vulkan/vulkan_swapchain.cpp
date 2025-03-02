@@ -571,26 +571,6 @@ void swapchain::Initialize()
 			.dependencyFlags = 0
 		};
 
-		//dependencies[0] = {
-		//	.srcSubpass = VK_SUBPASS_EXTERNAL,
-		//	.dstSubpass = 0,
-		//	.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-		//	.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-		//	.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT,
-		//	.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-		//	.dependencyFlags = 0
-		//};
-
-		//dependencies[1] = {
-		//	.srcSubpass = 0,
-		//	.dstSubpass = VK_SUBPASS_EXTERNAL,
-		//	.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT ,
-		//	.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-		//	.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-		//	.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT,
-		//	.dependencyFlags = 0
-		//};
-
 		renderPassInfo.attachmentCount = (u32)attachments.size();
 		renderPassInfo.pAttachments = attachments.data();
 		renderPassInfo.subpassCount = 1;

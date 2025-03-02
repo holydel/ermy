@@ -50,8 +50,8 @@
 //#define ERMY_PHYSICS_BULLET
 //#define ERMY_PHYSICS_PHYSX
 
-#define ERMY_XR_NONE
-//#define ERMY_XR_OPENXR
+//#define ERMY_XR_NONE
+#define ERMY_XR_OPENXR
 //#define ERMY_XR_WEBXR
 //#define ERMY_XR_APPLE_REALITY_KIT
 
