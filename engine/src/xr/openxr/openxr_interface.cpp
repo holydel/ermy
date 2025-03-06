@@ -113,8 +113,11 @@ void CreateInstance()
 	//create instance
 	XrInstanceCreateInfo createInfo{ XR_TYPE_INSTANCE_CREATE_INFO };
 	createInfo.applicationInfo = { "", 1, "Ermy", 1, XR_API_VERSION_1_0 };
+#ifdef _WIN32
 	strcpy_s(createInfo.applicationInfo.applicationName, GetApplication().staticConfig.appName.c_str());
-
+#else
+	strcpy(createInfo.applicationInfo.applicationName, GetApplication().staticConfig.appName.c_str());
+#endif
 	createInfo.enabledApiLayerCount = (u32)instance_extender.enabledLayers.size();
 	createInfo.enabledApiLayerNames = instance_extender.enabledLayers.data();
 	createInfo.enabledExtensionCount = (u32)instance_extender.enabledExtensions.size();
@@ -163,11 +166,21 @@ void GetSystem()
 	}
 }
 
+#ifdef ERMY_OS_ANDROID
+extern ANativeActivity* gMainNativeActivity;
+#endif
 
 void xr_interface::Initialize()
 {
 	ERMY_LOG("Initialize OpenXR");
 	LoadXR_Library();
+
+#ifdef ERMY_OS_ANDROID
+	XrLoaderInitInfoAndroidKHR loaderInitInfo = { XR_TYPE_LOADER_INIT_INFO_ANDROID_KHR };
+	loaderInitInfo.applicationVM = gMainNativeActivity->vm;
+	loaderInitInfo.applicationContext = gMainNativeActivity->clazz;
+	XR_CALL(xrInitializeLoaderKHR((XrLoaderInitInfoBaseHeaderKHR*)&loaderInitInfo));
+#endif
 
 	CreateInstance();
 
@@ -341,7 +354,7 @@ void xr_interface::WaitFrame()
 
 void xr_interface::AcquireImage()
 {
-	if (gSessionIsActive && gFrameState.shouldRender)
+	if (gSessionRunning)
 	{
 		// Acquire and render to swapchains (black screen for now)
 		// Acquire swapchain image
@@ -359,7 +372,7 @@ void xr_interface::AcquireImage()
 
 void xr_interface::ReleaseImage()
 {
-	if (gSessionIsActive && gFrameState.shouldRender)
+	if (gSessionRunning)
 	{
 		XrSwapchainImageReleaseInfo releaseInfo{ XR_TYPE_SWAPCHAIN_IMAGE_RELEASE_INFO };
 		XR_CALL(xrReleaseSwapchainImage(gXRSwapchain_Color, &releaseInfo));
@@ -368,7 +381,7 @@ void xr_interface::ReleaseImage()
 
 void xr_interface::SubmitXRFrame()
 {
-	if (gSessionIsActive)
+	if (gSessionRunning)
 	{
 		XrCompositionLayerProjection layer{ XR_TYPE_COMPOSITION_LAYER_PROJECTION };
 		XrCompositionLayerProjectionView projectionViews[2] = { { XR_TYPE_COMPOSITION_LAYER_PROJECTION_VIEW }, { XR_TYPE_COMPOSITION_LAYER_PROJECTION_VIEW } };
@@ -519,7 +532,7 @@ void InitializeSwapchains()
 		printf("%d", vkformat);
 	}
 
-	gSwapchainFormatColor = static_cast<VkFormat>(formats[0]);
+	gSwapchainFormatColor = VK_FORMAT_R8G8B8A8_SRGB;// static_cast<VkFormat>(formats[0]);
 
 	if (gSwapchainFormatColor == VK_FORMAT_UNDEFINED)
 	{
@@ -568,6 +581,9 @@ void InitializeSwapchains()
 	{
 		gSwapchainImages.push_back(image.image);
 	}
+
+	extern int gNumberOfSwapchainFrames;
+	gNumberOfSwapchainFrames = imageCount;
 
 	VkRenderPassCreateInfo2 renderPassInfo{ VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO_2 };
 
@@ -928,6 +944,9 @@ VkResult openXRCreateVulkanInstance(const VkInstanceCreateInfo* pCreateInfo,
 	const VkAllocationCallbacks* pAllocator,
 	VkInstance* pInstance)
 {
+	if (gXRSystemID == XR_NULL_SYSTEM_ID)
+		return vkCreateInstance(pCreateInfo, pAllocator, pInstance);
+
 	VkResult result = VK_ERROR_INITIALIZATION_FAILED;
 
 	XrVulkanInstanceCreateInfoKHR cinfo = { XR_TYPE_VULKAN_INSTANCE_CREATE_INFO_KHR };
@@ -943,6 +962,9 @@ VkResult openXRCreateVulkanInstance(const VkInstanceCreateInfo* pCreateInfo,
 
 VkResult openXRGetPhysicalDevice(VkPhysicalDevice* pPhysicalDevice)
 {
+	if (gXRSystemID == XR_NULL_SYSTEM_ID)
+		return VK_ERROR_LAYER_NOT_PRESENT;
+
 	XrVulkanGraphicsDeviceGetInfoKHR cinfo = { XR_TYPE_VULKAN_GRAPHICS_DEVICE_GET_INFO_KHR };
 
 	cinfo.systemId = gXRSystemID;
@@ -953,11 +975,14 @@ VkResult openXRGetPhysicalDevice(VkPhysicalDevice* pPhysicalDevice)
 	return XR_SUCCEEDED(result) ? VK_SUCCESS : VK_ERROR_INITIALIZATION_FAILED;
 }
 
-VkResult openXRCreateVulkanDevice(VkPhysicalDevice                            physicalDevice,
+VkResult openXRCreateVulkanDevice(VkPhysicalDevice physicalDevice,
 	const VkDeviceCreateInfo* pCreateInfo,
 	const VkAllocationCallbacks* pAllocator,
 	VkDevice* pDevice)
 {
+	if (gXRSystemID == XR_NULL_SYSTEM_ID)
+		return vkCreateDevice(physicalDevice, pCreateInfo, pAllocator, pDevice);
+
 	VkResult result = VK_ERROR_INITIALIZATION_FAILED;
 
 	XrVulkanDeviceCreateInfoKHR cinfo = { XR_TYPE_VULKAN_DEVICE_CREATE_INFO_KHR };

@@ -99,8 +99,12 @@ SceneID ermy::scene::Create(const SceneDesc& desc)
 	coloredPass.testDepth = true;
 	coloredPass.writeDepth = true;
 
-	scene.skyBoxPass = rendering::CreatePSO(skyBox);
-	scene.internalColoredMeshesPass = rendering::CreatePSO(coloredPass);
+	if (!scene.initialDesc.isXRScene)
+	{
+		scene.skyBoxPass = rendering::CreatePSO(skyBox);
+		scene.internalColoredMeshesPass = rendering::CreatePSO(coloredPass);
+	}
+
 
 	skyBox.SetShaderStage(ermy::shader_internal::skyboxStereoVS());
 	coloredPass.SetShaderStage(ermy::shader_internal::sceneStaticMeshStereoVS());
@@ -114,8 +118,12 @@ SceneID ermy::scene::Create(const SceneDesc& desc)
 	skyBox.isStereo = true;
 	coloredPass.isStereo = true;
 
-	scene.skyBoxPassXR = rendering::CreatePSO(skyBox);
-	scene.internalColoredMeshesPassXR = rendering::CreatePSO(coloredPass);
+	if (scene.initialDesc.isXRScene)
+	{
+		scene.skyBoxPassXR = rendering::CreatePSO(skyBox);
+		scene.internalColoredMeshesPassXR = rendering::CreatePSO(coloredPass);
+	}
+
 
 	ermy::rendering::DescriptorSetDesc dsDesc;
 	dsDesc.AddBindingUniformBuffer(gFrameConstants);
@@ -298,6 +306,9 @@ void scene_internal::Render(ermy::rendering::CommandList& cl, bool isXRPass)
 		return;
 
 	auto& scene = gAllScenes3D[gCurrentSceneID.handle];
+
+	if (isXRPass != scene.initialDesc.isXRScene)
+		return;
 
 	cl.SetPSO(isXRPass ? scene.skyBoxPassXR : scene.skyBoxPass);
 	cl.SetDescriptorSet(0, scene.sceneDescriptorSet);

@@ -101,6 +101,7 @@ namespace ermy
 				bool EnableSound = false;
 				bool EnableBulletPhysics = false;
 				bool EnableXR = false;		
+				bool EnableXRMirroring = false;
 			};
 
 			struct D3D12Config
@@ -175,6 +176,20 @@ namespace ermy
 					return appName;
 				else
 					return window.title;
+			}
+
+			bool HasOutputWindow() const
+			{
+				if (outputMode == OutputMode::Window)
+					return true;
+
+				if (outputMode == OutputMode::VR)
+				{
+					if (engine.EnableXRMirroring)
+						return true;
+				}
+
+				return false;
 			}
 		} staticConfig;
 

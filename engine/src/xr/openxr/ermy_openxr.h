@@ -12,6 +12,8 @@
 
 #ifdef ERMY_OS_ANDROID
 #define XR_USE_PLATFORM_ANDROID
+#include <jni.h>
+#include <android/native_activity.h>
 #endif
 
 #ifdef ERMY_GAPI_VULKAN
@@ -90,6 +92,7 @@ XR_DECLARE_FUNCTION(xrThermalGetTemperatureTrendEXT);
 XR_DECLARE_FUNCTION(xrStructureTypeToString);
 XR_DECLARE_FUNCTION(xrCreateVulkanInstanceKHR);
 XR_DECLARE_FUNCTION(xrCreateVulkanDeviceKHR);
+XR_DECLARE_FUNCTION(xrInitializeLoaderKHR);
 
 const char* XrResultToString(XrResult result);
 

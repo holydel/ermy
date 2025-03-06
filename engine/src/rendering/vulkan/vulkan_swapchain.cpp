@@ -20,7 +20,7 @@ VkFormat gVKSurfaceDepthFormat = VK_FORMAT_UNDEFINED;
 u32 gAcquiredNextImageIndex = 0;
 VkSemaphore gSwapchainSemaphore = VK_NULL_HANDLE;
 int gSwapchainCurrentFrame = 0;
-int gNumberOfFrames = 3;
+int gNumberOfSwapchainFrames = 3;
 bool gSwapchainNeedRebuild = false;
 
 struct FrameInFlight
@@ -106,7 +106,7 @@ void swapchain::InitSwapchainResources()
 	vkGetSwapchainImagesKHR(gVKDevice, gVKSwapchain, &imageCount, images.data());
 
 	gFramesInFlight.resize(imageCount);
-	for (int i = 0; i < gNumberOfFrames; ++i)
+	for (int i = 0; i < gNumberOfSwapchainFrames; ++i)
 	{
 		if (gVKSurfaceDepthFormat != VK_FORMAT_UNDEFINED)
 		{
@@ -281,7 +281,7 @@ void swapchain::InitSwapchain()
 	createInfo.imageFormat = gVKSurfaceFormat;
 	createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
 	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-	createInfo.minImageCount = gNumberOfFrames;
+	createInfo.minImageCount = gNumberOfSwapchainFrames;
 	createInfo.presentMode = VK_PRESENT_MODE_FIFO_KHR;
 	createInfo.surface = gVKSurface;
 	createInfo.preTransform = gVKSurfaceCaps.currentTransform;
@@ -438,7 +438,7 @@ void swapchain::Initialize()
 	VkSurfaceCapabilities2KHR             capabilities2{ .sType = VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_2_KHR };
 	vkGetPhysicalDeviceSurfaceCapabilities2KHR(gVKPhysicalDevice, &surfaceInfo2, &capabilities2);
 
-	gNumberOfFrames = std::max(3u, capabilities2.surfaceCapabilities.minImageCount);
+	gNumberOfSwapchainFrames = std::max(3u, capabilities2.surfaceCapabilities.minImageCount);
 
 	const auto& swapchainSettings = GetApplication().staticConfig.swapchain;
 
@@ -589,6 +589,9 @@ void swapchain::Initialize()
 
 bool swapchain::ReInitIfNeeded()
 {
+	if (gFramesInFlight.empty())
+		return false;
+
 	if (gSwapchainNeedRebuild)
 	{
 		vkQueueWaitIdle(gVKMainQueue);
@@ -630,6 +633,9 @@ void swapchain::Process()
 
 void swapchain::AcquireNextImage()
 {
+	if (gFramesInFlight.empty())
+		return;
+
 	auto& frame = gFramesInFlight[gSwapchainCurrentFrame];
 
 	auto result = vkAcquireNextImageKHR(gVKDevice, gVKSwapchain, UINT64_MAX, frame.imageAvailableSemaphore, VK_NULL_HANDLE, &gAcquiredNextImageIndex);
@@ -643,6 +649,9 @@ void swapchain::AcquireNextImage()
 
 void swapchain::Present()
 {
+	if (gFramesInFlight.empty())
+		return;
+
 	auto& frame = gFramesInFlight[gSwapchainCurrentFrame];
 
 	// Setup the presentation info, linking the swapchain and the image index
@@ -670,6 +679,6 @@ void swapchain::Present()
 
 int swapchain::GetNumFrames()
 {
-	return gNumberOfFrames;
+	return gNumberOfSwapchainFrames;
 }
 #endif

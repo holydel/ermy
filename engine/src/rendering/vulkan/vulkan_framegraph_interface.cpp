@@ -203,16 +203,20 @@ namespace framegraph_interface
 		-*/
 		std::vector<VkSemaphoreSubmitInfo> waitSemaphores;
 		std::vector<VkSemaphoreSubmitInfo> signalSemaphores;
-		waitSemaphores.push_back({
-			.sType = VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO,
-			.semaphore = swapchain::GetWaitSemaphores(),
-			.stageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR,
-			});
-		signalSemaphores.push_back({
-			.sType = VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO,
-			.semaphore = swapchain::GetSignalSemaphores(),
-			.stageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR,
-			});
+
+		if (ermy::Application::GetApplication()->staticConfig.HasOutputWindow())
+		{
+			waitSemaphores.push_back({
+				.sType = VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO,
+				.semaphore = swapchain::GetWaitSemaphores(),
+				.stageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR,
+				});
+			signalSemaphores.push_back({
+				.sType = VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO,
+				.semaphore = swapchain::GetSignalSemaphores(),
+				.stageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR,
+				});
+		}
 
 		/*--
 		 * Calculate the signal value for when this frame completes

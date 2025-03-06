@@ -5,6 +5,8 @@
 #include <chrono>
 #include "../../application.h"
 
+ANativeActivity* gMainNativeActivity;
+
 extern ANativeWindow* gMainWindow;
 
 extern int32_t ImGui_ImplAndroid_HandleInputEvent(const AInputEvent* input_event);
@@ -121,42 +123,51 @@ int32_t HandleInputEvent(const AInputEvent* input_event)
 
 void onStart(ANativeActivity* activity)
 {
-	ERMY_LOG("onStart");
-	mainThread = new std::thread([]()
-	{
-		while (gMainWindow == nullptr)
-		{
-			std::this_thread::sleep_for(1ms);
-		}
+    ERMY_LOG("onStart");
+    if (mainThread == nullptr)
+    {
+        mainThread = new std::thread([]()
+        {
 
-		ErmyApplicationStart();
-		while (ErmyApplicationStep())
-		{
-			if (gMainInputQueue != nullptr)
-			{
-				while (AInputQueue_hasEvents(gMainInputQueue) > 0)
-				{
-					AInputEvent* event = nullptr;
-					AInputQueue_getEvent(gMainInputQueue, &event);
+            //while (gMainWindow == nullptr)
+            //{
+            //	std::this_thread::sleep_for(1ms);
+            //}
 
-					if (AInputQueue_preDispatchEvent(gMainInputQueue, event)) {
-						continue;
-					}
+            ErmyApplicationStart();
+            while (ErmyApplicationStep())
+            {
+                if (gMainInputQueue != nullptr)
+                {
+                    while (AInputQueue_hasEvents(gMainInputQueue) > 0)
+                    {
+                        AInputEvent* event = nullptr;
+                        AInputQueue_getEvent(gMainInputQueue, &event);
 
-					int32_t handled = 0;
-                    
-                    HandleInputEvent(event);
-					ImGui_ImplAndroid_HandleInputEvent(event);
-					//pass to input system
+                        if (AInputQueue_preDispatchEvent(gMainInputQueue, event)) {
+                            continue;
+                        }
 
-					AInputQueue_finishEvent(gMainInputQueue, event, handled);
-				}
-			}
+                        int32_t handled = 0;
 
-			//std::this_thread::sleep_for(1ms);
-		}
-		ErmyApplicationShutdown();
-	});
+                        HandleInputEvent(event);
+
+                        if (ermy::Application::GetApplication()->staticConfig.HasOutputWindow())
+                        {
+                            ImGui_ImplAndroid_HandleInputEvent(event);
+                        }
+                        
+                        //pass to input system
+
+                        AInputQueue_finishEvent(gMainInputQueue, event, handled);
+                    }
+                }
+
+                //std::this_thread::sleep_for(1ms);
+            }
+            ErmyApplicationShutdown();
+        });
+    }
 }
 
 /**
@@ -328,6 +339,9 @@ void onLowMemory(ANativeActivity* activity)
 extern "C" JNIEXPORT void ANativeActivity_onCreate(ANativeActivity* activity,
 	void* savedState, size_t savedStateSize)
 {
+    gMainNativeActivity = activity;
+   // sleep(5);
+
 	activity->callbacks->onConfigurationChanged = onConfigurationChanged;
 	activity->callbacks->onContentRectChanged = onContentRectChanged;
 	activity->callbacks->onDestroy = onDestroy;

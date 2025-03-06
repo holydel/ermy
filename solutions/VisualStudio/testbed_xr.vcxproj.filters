@@ -19,24 +19,6 @@
     <Filter Include="AndroidPackagingTestBedXR\app\src\main">
       <UniqueIdentifier>{6b698913-851d-4d5c-bd07-4d7c941f55e3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AndroidPackagingTestBedXR\app\src\main\cpp">
-      <UniqueIdentifier>{922ef3b0-a506-4763-a27f-b505bbe8a5a4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AndroidPackagingTestBedXR\app\src\main\java">
-      <UniqueIdentifier>{78394a1f-9261-453d-b0bc-68048939c095}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AndroidPackagingTestBedXR\app\src\main\java\com">
-      <UniqueIdentifier>{784ffcd5-45de-460e-b0a8-ec80ea7f78b7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AndroidPackagingTestBedXR\app\src\main\java\com\hexcelltechvr">
-      <UniqueIdentifier>{f77d4dd4-d790-4c74-b198-cc46f4a94bb6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AndroidPackagingTestBedXR\app\src\main\java\com\hexcelltechvr\ermy">
-      <UniqueIdentifier>{f2983282-e0ae-4e64-a04d-ab6bcf9a5949}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AndroidPackagingTestBedXR\app\src\main\java\com\hexcelltechvr\ermy\testbed_xr">
-      <UniqueIdentifier>{ed6547dd-2eb8-402d-94db-744a1d254d80}</UniqueIdentifier>
-    </Filter>
     <Filter Include="AndroidPackagingTestBedXR\app\src\main\res">
       <UniqueIdentifier>{e840c7ee-38cf-4d0e-80bd-9fe0ce31f126}</UniqueIdentifier>
     </Filter>
@@ -92,9 +74,6 @@
     </None>
     <None Include="AndroidPackagingTestBedXR\settings.gradle">
       <Filter>AndroidPackagingTestBedXR</Filter>
-    </None>
-    <None Include="AndroidPackagingTestBedXR\app\src\main\java\com\hexcelltechvr\ermy\testbed_xr\MainActivity.java">
-      <Filter>AndroidPackagingTestBedXR\app\src\main\java\com\hexcelltechvr\ermy\testbed_xr</Filter>
     </None>
     <None Include="AndroidPackagingTestBedXR\app\src\main\res\drawable\ic_launcher_background.xml">
       <Filter>AndroidPackagingTestBedXR\app\src\main\res\drawable</Filter>
@@ -161,9 +140,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AndroidPackagingTestBedXR\app\src\main\cpp\JniBindings.cpp">
-      <Filter>AndroidPackagingTestBedXR\app\src\main\cpp</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\testbed_xr\testbed_xr.cpp" />
   </ItemGroup>
 </Project>

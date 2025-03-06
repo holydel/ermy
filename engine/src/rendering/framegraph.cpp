@@ -23,8 +23,11 @@ void framegraph::Initialize(ermy::u8 numFrames)
 
 	gFrameConstants = CreateDedicatedBuffer(frameConstDesc);
 
-	canvas_interface::Initialize();
-	imgui_interface::Initialize();
+	if (ermy::Application::GetApplication()->staticConfig.HasOutputWindow())
+	{
+		canvas_interface::Initialize();
+		imgui_interface::Initialize();
+	}
 }
 
 void framegraph::Shutdown()
@@ -71,23 +74,25 @@ void framegraph::Process()
 
 	xr_interface::EndXRFinalRenderPass(clist);
 
+	if (app.staticConfig.HasOutputWindow())
+	{
+		framegraph_interface::BeginFinalRenderPass();
 
-	framegraph_interface::BeginFinalRenderPass();
+		clist.SetViewport(0, 0, finalPassWidth, finalPassHeight);
+		clist.SetScissor(0, 0, finalPassWidth, finalPassHeight);
 
-	clist.SetViewport(0, 0, finalPassWidth, finalPassHeight);
-	clist.SetScissor(0, 0, finalPassWidth, finalPassHeight);
+		imgui_interface::BeginFrame(finalCmdList);
+		//render scene
+		scene_internal::Render(clist, false);
+		//render canvas
+		canvas_interface::SetCommandList(&clist);
 
-	imgui_interface::BeginFrame(finalCmdList);
-	//render scene
-	//scene_internal::Render(clist,false);
-	//render canvas
-	canvas_interface::SetCommandList(&clist);
+		app.OnBeginFinalPass(clist);
+		app.OnIMGUI();
+		imgui_interface::EndFrame(finalCmdList);
 
-	app.OnBeginFinalPass(clist);
-	app.OnIMGUI();
-	imgui_interface::EndFrame(finalCmdList);
-
-	framegraph_interface::EndFinalRenderPass();
+		framegraph_interface::EndFinalRenderPass();
+	}
 
 	app.OnEndFrame();
 	framegraph_interface::EndFrame();

@@ -299,10 +299,10 @@ void InitializeInstance()
 
 	LoadVkInstanceLevelFuncs(gVKInstance);
 
-	if (vkCreateDebugUtilsMessengerEXT != nullptr)
-	{
-		vkCreateDebugUtilsMessengerEXT(gVKInstance, &debugCreateInfo, gVKGlobalAllocationsCallbacks, &gVKDebugMessenger);
-	}
+	//if (vkCreateDebugUtilsMessengerEXT != nullptr)
+	//{
+	//	vkCreateDebugUtilsMessengerEXT(gVKInstance, &debugCreateInfo, gVKGlobalAllocationsCallbacks, &gVKDebugMessenger);
+	//}
 }
 
 static i8 ChoosePhysicalDeviceByHeuristics(const std::vector<VkPhysicalDevice>& allDevices)
@@ -337,6 +337,8 @@ static void ChoosePhysicalDevice()
 
 #ifdef ERMY_XR_OPENXR
 	openXRGetPhysicalDevice(&gVKPhysicalDevice);
+	if(gVKPhysicalDevice == VK_NULL_HANDLE)
+		gVKPhysicalDevice = phys_devices[selectedAdapterID];
 #else
 	gVKPhysicalDevice = phys_devices[selectedAdapterID];
 #endif
@@ -390,7 +392,7 @@ struct EnabledVKFeatures
 	VkPhysicalDeviceTimelineSemaphoreFeaturesKHR timelineSemaphoreFeatures = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES_KHR, nullptr };
 	VkPhysicalDeviceDynamicRenderingFeaturesKHR dynamicRenderingFeatures = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR, nullptr };
 	VkPhysicalDeviceDynamicRenderingLocalReadFeaturesKHR dynamicRenderingFeaturesLocalRead = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_LOCAL_READ_FEATURES_KHR, nullptr };
-	
+
 	VkPhysicalDeviceFragmentShaderBarycentricFeaturesKHR fragmentShaderBarycentricFeatures = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_KHR };
 	VkPhysicalDeviceFragmentShaderBarycentricFeaturesNV fragmentShaderBarycentricFeaturesNV = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_NV };
 
@@ -590,7 +592,7 @@ void CreateDevice()
 
 	swapchain::RequestDeviceExtensions(device_extender);
 
-	device_extender.TryAddExtension(VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME, Ver11);
+	bool hasRenderPass2 = device_extender.TryAddExtension(VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME, Ver12);
 
 	gVKDeviceEnabledExtensions.NvDecompressMemory = device_extender.TryAddExtension(VK_NV_MEMORY_DECOMPRESSION_EXTENSION_NAME);
 	gVKDeviceEnabledExtensions.KhrBufferDeviceAddress = device_extender.TryAddExtension(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME, Ver12);

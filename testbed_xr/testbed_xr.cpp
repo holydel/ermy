@@ -27,11 +27,13 @@ public:
 	{
 		auto& logConfig = ermy::logger::Config();
 		logConfig.FileMirroring.enabled = true;
-
+		staticConfig.outputMode = ermy::Application::StaticConfig::OutputMode::VR;
 		staticConfig.appName = "TestBedXR";
-
-		staticConfig.render.enableDebugLayers = true;
+		staticConfig.engine.EnableXR = true;
+		staticConfig.render.enableDebugLayers = false;
 		staticConfig.render.adapterID = 0;
+
+		//staticConfig.engine.EnableXRMirroring = true;
 
 		staticConfig.swapchain.depthMode = ermy::Application::StaticConfig::SwapchainConfig::DepthMode::Depth32F;
 		staticConfig.swapchain.msaaMode = ermy::Application::StaticConfig::SwapchainConfig::MSAAMode::Samples4;
@@ -110,23 +112,17 @@ glm::quat randomUnitQuaternionAxisAngle()
 
 void TestBedXRApplication::OnLoad()
 {
-	rendering::PSODesc desc;
-	desc.SetShaderStageInternal(shader_internal::testTriangleVS());
-	desc.SetShaderStageInternal(shader_internal::testTriangleFS());
-	desc.debugName = "TestTriangle";
-	testTrianglePSO = rendering::CreatePSO(desc);
-
 #ifdef _WIN32
 	ermy::pak::MountPak("D:\\Projects\\ermy\\eproj_template\\paks\\0.epak");
 #else
-	ermy::pak::MountPak("/sdcard/Android/data/com.hexcelltechvr.ermy.testbed/files/0.epak");
+	ermy::pak::MountPak("/sdcard/Android/data/com.hexcelltechvr.ermy.testbed_xr/files/0.epak");
 #endif
 
 	scene::SceneDesc sdesc = {};
 	sdesc.isXRScene = true;
 
 	sceneId = scene::Create(sdesc);
-	scene::SetSkyBoxTexture(rendering::TextureID(1));
+	scene::SetSkyBoxTexture(rendering::TextureID(0));
 
 	cubeGeom = scene::LoadSubmesh(geometry::CreateCubeGeometry(1.0f));
 	allCubes.resize(numCubes);

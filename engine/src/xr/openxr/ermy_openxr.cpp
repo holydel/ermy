@@ -90,6 +90,7 @@ XR_DEFINE_FUNCTION(xrThermalGetTemperatureTrendEXT);
 XR_DEFINE_FUNCTION(xrStructureTypeToString);
 XR_DEFINE_FUNCTION(xrCreateVulkanInstanceKHR);
 XR_DEFINE_FUNCTION(xrCreateVulkanDeviceKHR);
+XR_DEFINE_FUNCTION(xrInitializeLoaderKHR);
 
 const char* XrResultToString(XrResult result) {
 	static char buffer[XR_MAX_RESULT_STRING_SIZE];
@@ -115,6 +116,7 @@ void LoadXR_Library()
 	XR_LOAD_GLOBAL_FUNC(xrCreateInstance);
 	XR_LOAD_GLOBAL_FUNC(xrEnumerateApiLayerProperties);
 	XR_LOAD_GLOBAL_FUNC(xrEnumerateInstanceExtensionProperties);
+	XR_LOAD_GLOBAL_FUNC(xrInitializeLoaderKHR);
 	int a = 42;
 }
 

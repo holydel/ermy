@@ -9,7 +9,11 @@ namespace rendering
 	void Initialize()
 	{
 		rendering_interface::Initialize();
-		swapchain::Initialize();
+		auto& config = ermy::Application::GetApplication()->staticConfig;
+
+		if(config.HasOutputWindow())
+			swapchain::Initialize();
+
 		framegraph::Initialize(swapchain::GetNumFrames());
 	}
 

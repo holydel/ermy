@@ -70,7 +70,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\engine\src\geometry.cpp" />
+    <ClCompile Include="..\..\engine\src\geometry.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dev|Android-arm64-v8a'">
+      </PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\..\engine\src\graphics\canvas_interface.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Android-arm64-v8a'">
       </PrecompiledHeader>
@@ -289,7 +292,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\engine\src\rendering\vulkan\VulkanRenderPass.cpp" />
+    <ClCompile Include="..\..\engine\src\rendering\vulkan\VulkanRenderPass.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dev|Android-arm64-v8a'">
+      </PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\..\engine\src\rendering\vulkan\vulkan_commandlist.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Android-arm64-v8a'">
       </PrecompiledHeader>
@@ -330,7 +336,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\engine\src\scene\scene.cpp" />
+    <ClCompile Include="..\..\engine\src\scene\scene.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dev|Android-arm64-v8a'">
+      </PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\..\engine\src\sound\sound_interface.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Android-arm64-v8a'">
       </PrecompiledHeader>
@@ -358,8 +367,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\engine\src\xr\openxr\ermy_openxr.cpp" />
-    <ClCompile Include="..\..\engine\src\xr\openxr\openxr_interface.cpp" />
+    <ClCompile Include="..\..\engine\src\xr\openxr\ermy_openxr.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dev|Android-arm64-v8a'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\src\xr\openxr\openxr_interface.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dev|Android-arm64-v8a'">
+      </PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\..\third_party\D3D12MemoryAllocator\src\D3D12MemAlloc.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Android-arm64-v8a'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dev|Android-arm64-v8a'">true</ExcludedFromBuild>

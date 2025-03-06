@@ -36,17 +36,24 @@ void ErmyApplicationStart()
 	assert(gApplication != nullptr);
 	gApplication->OnConfigure();
 
+	const auto& config = gApplication->staticConfig;
+	
 	// initialize engine
 	loggerImpl::Initialize();
-	ERMY_LOG("start initialize ermy engine for application: %s", gApplication->staticConfig.appName.c_str()); //
+	ERMY_LOG("start initialize ermy engine for application: %s", config.appName.c_str()); //
 
-	xr_interface::Initialize();
+	if(config.engine.EnableXR)
+		xr_interface::Initialize();
 
-	os::CreateNativeWindow();
+	if(config.HasOutputWindow())
+		os::CreateNativeWindow();
+
 	sound_interface::Initialize();
 	rendering::Initialize();
 
-	xr_interface::CreateSession();
+	if (config.engine.EnableXR)
+		xr_interface::CreateSession();
+	
 	gApplication->OnInitialization();
 
 	// initialize engine built-in data

@@ -3,4 +3,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Android-arm64-v8a'">
     <AndroidDebugTarget>None</AndroidDebugTarget>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <AndroidDebugTarget>None</AndroidDebugTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|Android-arm64-v8a'">
+    <AndroidDebugTarget>Quest 2:1WMHH810XN0305:arm64-v8a</AndroidDebugTarget>
+  </PropertyGroup>
 </Project>
