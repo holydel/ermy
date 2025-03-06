@@ -9,6 +9,10 @@
 #include <sstream>
 #include "vk_utils.h"
 
+#ifdef ERMY_XR_OPENXR
+#include "../../xr/openxr/openxr_interface.h"
+#endif
+
 VkInstance gVKInstance = VK_NULL_HANDLE;
 VkAllocationCallbacks* gVKGlobalAllocationsCallbacks = nullptr;
 VkDebugUtilsMessengerEXT gVKDebugMessenger = nullptr;
@@ -16,6 +20,7 @@ VkPhysicalDevice gVKPhysicalDevice = VK_NULL_HANDLE;
 
 VkDevice gVKDevice = VK_NULL_HANDLE;
 VmaAllocator gVMA_Allocator = nullptr;
+int gVKMainQueueFamily = 0;
 VkQueue gVKMainQueue = VK_NULL_HANDLE;
 VkQueue gVKComputeAsyncQueue = VK_NULL_HANDLE;
 VkQueue gVKTransferAsyncQueue = VK_NULL_HANDLE;
@@ -161,7 +166,7 @@ struct ValidationSettings
 			{layerName, "syncval_message_extra_properties_pretty_print", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
 			{layerName, "printf_enable", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &falsePtr},
 			{layerName, "printf_verbose", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &falsePtr},
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(ERMY_XR_OPENXR)
 			{layerName, "gpuav_enable", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
 			{layerName, "gpuav_image_layout", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
 			{layerName, "gpuav_shader_instrumentation", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &truePtr},
@@ -284,7 +289,13 @@ void InitializeInstance()
 #ifdef ERMY_OS_MACOS
 	createInfo.flags |= VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
 #endif
+
+#ifdef ERMY_XR_OPENXR
+	VK_CALL(openXRCreateVulkanInstance(&createInfo, gVKGlobalAllocationsCallbacks, &gVKInstance));
+#else
 	VK_CALL(vkCreateInstance(&createInfo, gVKGlobalAllocationsCallbacks, &gVKInstance));
+#endif
+	
 
 	LoadVkInstanceLevelFuncs(gVKInstance);
 
@@ -324,7 +335,12 @@ static void ChoosePhysicalDevice()
 
 	auto selectedAdapterID = renderCfg.adapterID == -1 ? ChoosePhysicalDeviceByHeuristics(phys_devices) : renderCfg.adapterID;
 
+#ifdef ERMY_XR_OPENXR
+	openXRGetPhysicalDevice(&gVKPhysicalDevice);
+#else
 	gVKPhysicalDevice = phys_devices[selectedAdapterID];
+#endif
+	
 
 	if (vkGetPhysicalDeviceProperties2)
 	{
@@ -385,6 +401,8 @@ struct EnabledVKFeatures
 
 void* EnabledVKFeatures::BuildPChains()
 {
+	features11.multiview = true;
+
 	features12.timelineSemaphore = true;
 	timelineSemaphoreFeatures.timelineSemaphore = true;
 	sync2Features.synchronization2 = true;
@@ -394,7 +412,7 @@ void* EnabledVKFeatures::BuildPChains()
 	features12.vulkanMemoryModelDeviceScope = true;
 	features12.bufferDeviceAddress = true;
 	features12.uniformAndStorageBuffer8BitAccess = true;
-
+	
 	if (gVKConfig.useDynamicRendering)
 	{
 		features13.dynamicRendering = true;
@@ -572,6 +590,8 @@ void CreateDevice()
 
 	swapchain::RequestDeviceExtensions(device_extender);
 
+	device_extender.TryAddExtension(VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME, Ver11);
+
 	gVKDeviceEnabledExtensions.NvDecompressMemory = device_extender.TryAddExtension(VK_NV_MEMORY_DECOMPRESSION_EXTENSION_NAME);
 	gVKDeviceEnabledExtensions.KhrBufferDeviceAddress = device_extender.TryAddExtension(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME, Ver12);
 	gVKDeviceEnabledExtensions.KhrDedicatedAllocation = device_extender.TryAddExtension(VK_KHR_DEDICATED_ALLOCATION_EXTENSION_NAME, Ver11);
@@ -615,6 +635,10 @@ void CreateDevice()
 			ERMY_LOG("Geometry Shader enabled!");
 	}
 
+#ifdef ERMY_XR_OPENXR
+	enabledFeatures10.shaderStorageImageMultisample = supportedFeatures.shaderStorageImageMultisample;
+#endif
+
 #ifdef ERMY_OS_MACOS
 	device_extender.TryAddExtension(VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME);
 #endif
@@ -641,8 +665,11 @@ void CreateDevice()
 	//enabledFeatures.pNext = &pfeture;
 
 	//deviceCreateInfo.pNext = &enabledFeatures;
+#ifdef ERMY_XR_OPENXR
+	VK_CALL(openXRCreateVulkanDevice(gVKPhysicalDevice, &deviceCreateInfo, gVKGlobalAllocationsCallbacks, &gVKDevice));
+#else
 	VK_CALL(vkCreateDevice(gVKPhysicalDevice, &deviceCreateInfo, gVKGlobalAllocationsCallbacks, &gVKDevice));
-
+#endif
 	LoadVkDeviceLevelFuncs(gVKDevice);
 
 	vk_utils::debug::SetName(gVKDevice, "Main Device");

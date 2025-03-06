@@ -6,6 +6,7 @@
 #include "graphics/canvas_interface.h"
 #include "rendering.h"
 #include "scene/scene.h"
+#include "xr/xr_interface.h"
 
 using namespace ermy::rendering;
 
@@ -36,9 +37,14 @@ void framegraph::Process()
 {
 	auto& app = GetApplication();
 
+	xr_interface::WaitFrame();
+
 	app.OnUpdate();
 
 	void* finalCmdList = framegraph_interface::BeginFrame();
+
+	xr_interface::AcquireImage();
+
 	ermy::rendering::CommandList clist(finalCmdList);
 	
 	int finalPassWidth = swapchain::GetWidth();
@@ -50,20 +56,21 @@ void framegraph::Process()
 	gErmyFrameConstants.canvasClearColor.b = canvas_interface::BgColor[2];
 	gErmyFrameConstants.canvasClearColor.a = canvas_interface::BgColor[3];
 
-	gErmyFrameConstants.CameraViewDir[0].x = 2.0f;
-	gErmyFrameConstants.CameraViewDir[1].x = 3.0f;
-
-	gErmyFrameConstants.CameraWorldPos[0].x = 4.0f;
-	gErmyFrameConstants.CameraWorldPos[1].x = 5.0f;
-
-	gErmyFrameConstants.ViewProjMatrixInv[0][0].x = 6.0f;
-	gErmyFrameConstants.ViewProjMatrixInv[1][0].x = 7.0f;
-	gErmyFrameConstants.canvasPreRotate[0].x = 8.0f;
-	gErmyFrameConstants.canvasPreRotate[1].y = 9.0f;
-
 	scene_internal::UpdateUniforms();
 	UpdateBufferData(gFrameConstants, &gErmyFrameConstants);
 	app.OnBeginFrame(clist);
+
+	//xr_interface::Process();
+
+	bool shouldXRendering = xr_interface::BeginXRFinalRenderPass(clist);
+
+	if (shouldXRendering)
+	{
+		scene_internal::Render(clist, true);
+	}
+
+	xr_interface::EndXRFinalRenderPass(clist);
+
 
 	framegraph_interface::BeginFinalRenderPass();
 
@@ -72,7 +79,7 @@ void framegraph::Process()
 
 	imgui_interface::BeginFrame(finalCmdList);
 	//render scene
-	scene_internal::Render(clist);
+	//scene_internal::Render(clist,false);
 	//render canvas
 	canvas_interface::SetCommandList(&clist);
 
@@ -86,6 +93,9 @@ void framegraph::Process()
 	framegraph_interface::EndFrame();
 
 	framegraph_interface::Submit();
+
+	xr_interface::ReleaseImage();
+	xr_interface::SubmitXRFrame();
 
 	framegraph_interface::Present();
 

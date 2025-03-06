@@ -17,6 +17,10 @@ namespace ermy
 			{
 
 			}
+			void* GetNativeHandle()
+			{
+				return nativeHandle;
+			}
 
 			//GAPI_rendering - implementation
 			void SetPSO(PSOID pso);

@@ -212,6 +212,11 @@ VK_DECLARE_FUNCTION(vkQueueInsertDebugUtilsLabelEXT);
 VK_DECLARE_FUNCTION(vkSetDebugUtilsObjectNameEXT);
 VK_DECLARE_FUNCTION(vkSetDebugUtilsObjectTagEXT);
 
+VK_DECLARE_FUNCTION(vkCmdBeginRenderPass2);
+VK_DECLARE_FUNCTION(vkCmdEndRenderPass2);
+VK_DECLARE_FUNCTION(vkCmdNextSubpass2);
+VK_DECLARE_FUNCTION(vkCreateRenderPass2);
+
 VK_DECLARE_FUNCTION(vkCmdUpdateBuffer);
 #ifdef ERMY_OS_WINDOWS
 VK_DECLARE_FUNCTION(vkGetWinrtDisplayNV);

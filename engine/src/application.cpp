@@ -45,6 +45,8 @@ void ErmyApplicationStart()
 	os::CreateNativeWindow();
 	sound_interface::Initialize();
 	rendering::Initialize();
+
+	xr_interface::CreateSession();
 	gApplication->OnInitialization();
 
 	// initialize engine built-in data

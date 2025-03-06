@@ -3,6 +3,7 @@
 #include "../rendering/rendering.h"
 #include <ermy_shader_internal.h>
 #include "../rendering/framegraph.h"
+#include "../xr/openxr/openxr_interface.h"
 
 using namespace ermy;
 using namespace ermy::scene;
@@ -79,7 +80,6 @@ SceneID ermy::scene::Create(const SceneDesc& desc)
 	skyBox.SetShaderStage(ermy::shader_internal::skyboxFS());
 	skyBox.domain = rendering::PSODomain::Scene;
 	skyBox.topology = rendering::PrimitiveTopology::TriangleStrip;
-	scene.skyBoxPass = rendering::CreatePSO(skyBox);
 
 	rendering::PSODesc coloredPass;
 	coloredPass.debugName = "Colored Meshes";
@@ -99,7 +99,23 @@ SceneID ermy::scene::Create(const SceneDesc& desc)
 	coloredPass.testDepth = true;
 	coloredPass.writeDepth = true;
 
+	scene.skyBoxPass = rendering::CreatePSO(skyBox);
 	scene.internalColoredMeshesPass = rendering::CreatePSO(coloredPass);
+
+	skyBox.SetShaderStage(ermy::shader_internal::skyboxStereoVS());
+	coloredPass.SetShaderStage(ermy::shader_internal::sceneStaticMeshStereoVS());
+
+	skyBox.debugName = "SkyBox XR";
+	coloredPass.debugName = "Colored Meshes XR";
+
+	skyBox.specificRenderPass = gErmyXRRenderPassID;
+	coloredPass.specificRenderPass = gErmyXRRenderPassID;
+
+	skyBox.isStereo = true;
+	coloredPass.isStereo = true;
+
+	scene.skyBoxPassXR = rendering::CreatePSO(skyBox);
+	scene.internalColoredMeshesPassXR = rendering::CreatePSO(coloredPass);
 
 	ermy::rendering::DescriptorSetDesc dsDesc;
 	dsDesc.AddBindingUniformBuffer(gFrameConstants);
@@ -188,56 +204,106 @@ void scene_internal::UpdateUniforms()
 
 	auto& scene = gAllScenes3D[gCurrentSceneID.handle];
 
-	scene.cameraAspect = gErmyFrameConstants.canvasRepSizeHalf.y / gErmyFrameConstants.canvasRepSizeHalf.x;
-
-	//RH_ZO
-	scene.projMatrix = glm::perspectiveRH_ZO(scene.cameraVerticalFOV, scene.cameraAspect, scene.cameraNearZ, scene.cameraFarZ);
-
-	glm::mat3 rotation = glm::mat3_cast(scene.cameraOrientation);
-	glm::mat4 rotationMatrix = glm::mat4(rotation);
-	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), scene.cameraPosition);
-	scene.viewMatrix = glm::inverse(rotationMatrix * translationMatrix);
-
-	// Default forward direction in camera space (negative Z for right-handed system)
-	glm::vec3 defaultForward = glm::vec3(0.0f, 0.0f, -1.0f);
-
-	// Rotate the default forward vector by the camera orientation
-	scene.cameraViewDir = scene.cameraOrientation * defaultForward;
-
-	glm::mat4 viewProjMat = scene.projMatrix * scene.viewMatrix;
-	glm::mat4 viewProjMatInv = glm::inverse(viewProjMat);
-
-	glm::mat4 projMatInv = glm::inverse(scene.projMatrix);
-	glm::mat4 viewMatInv = glm::inverse(scene.viewMatrix);
-
-	for (int i = 0; i < 2; ++i)
+	if (scene.initialDesc.isXRScene)
 	{
-		gErmyFrameConstants.CameraWorldPos[i] = glm::vec4(scene.cameraPosition, 1.0);
-		gErmyFrameConstants.CameraViewDir[i] = glm::vec4(scene.cameraViewDir, 1.0);
+		// Process each view (left and right eye)
+		for (uint32_t i = 0; i < 2; ++i)
+		{
+			const XrView& view = gXRViews[i];
 
-		gErmyFrameConstants.ViewMatrix[i] = scene.viewMatrix;
-		gErmyFrameConstants.ProjMatrix[i] = scene.projMatrix;
-		gErmyFrameConstants.ViewMatrixInv[i] = viewMatInv;
-		gErmyFrameConstants.ProjMatrixInv[i] = projMatInv;
+			XrMatrix4x4f proj;
+			XrMatrix4x4f_CreateProjectionFov(&proj, GraphicsAPI::GRAPHICS_VULKAN, gXRViews[i].fov, scene.cameraNearZ, scene.cameraFarZ);
+			XrMatrix4x4f toView;
+			XrVector3f scale1m{ 1.0f, 1.0f, 1.0f };
+			XrMatrix4x4f_CreateTranslationRotationScale(&toView, &gXRViews[i].pose.position, &gXRViews[i].pose.orientation, &scale1m);
+			XrMatrix4x4f viewInv;
+			XrMatrix4x4f_InvertRigidBody(&viewInv, &toView);
+			
 
-		gErmyFrameConstants.ViewProjMatrix[i] = viewProjMat;
-		gErmyFrameConstants.ViewProjMatrixInv[i] = viewProjMatInv;
+			//XrMatrix4x4f_Multiply(&cameraConstants.viewProj, &proj, &viewInv);
+
+			glm::mat4 projMatrix = {};
+			glm::mat4 viewMatrix = {};
+			glm::quat orientation = {};
+			glm::vec3 position = {};
+			memcpy(&projMatrix, &proj, sizeof(projMatrix));
+			memcpy(&viewMatrix, &viewInv, sizeof(viewMatrix));
+			memcpy(&orientation, &gXRViews[i].pose.orientation, sizeof(orientation));
+			memcpy(&position, &gXRViews[i].pose.position, sizeof(position));
+
+			// Compute derived matrices
+			glm::mat4 viewProjMat = projMatrix * viewMatrix;
+			glm::mat4 viewProjMatInv = glm::inverse(viewProjMat);
+			glm::mat4 projMatInv = glm::inverse(projMatrix);
+			glm::mat4 viewMatInv = glm::inverse(viewMatrix);
+
+			// Compute view direction
+			glm::vec3 defaultForward = glm::vec3(0.0f, 0.0f, -1.0f); // Right-handed, ZO
+			glm::vec3 viewDir = orientation * defaultForward;
+
+			// Update frame constants for this view
+			gErmyFrameConstants.CameraWorldPos[i] = glm::vec4(position, 1.0f);
+			gErmyFrameConstants.CameraViewDir[i] = glm::vec4(viewDir, 1.0f);
+			gErmyFrameConstants.ViewMatrix[i] = viewMatrix;
+			gErmyFrameConstants.ProjMatrix[i] = projMatrix;
+			gErmyFrameConstants.ViewMatrixInv[i] = viewMatInv;
+			gErmyFrameConstants.ProjMatrixInv[i] = projMatInv;
+			gErmyFrameConstants.ViewProjMatrix[i] = viewProjMat;
+			gErmyFrameConstants.ViewProjMatrixInv[i] = viewProjMatInv;
+		}
 	}
+	else
+	{
+		scene.cameraAspect = gErmyFrameConstants.canvasRepSizeHalf.y / gErmyFrameConstants.canvasRepSizeHalf.x;
 
+		//RH_ZO
+		scene.projMatrix = glm::perspectiveRH_ZO(scene.cameraVerticalFOV, scene.cameraAspect, scene.cameraNearZ, scene.cameraFarZ);
+
+		glm::mat3 rotation = glm::mat3_cast(scene.cameraOrientation);
+		glm::mat4 rotationMatrix = glm::mat4(rotation);
+		glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), scene.cameraPosition);
+		scene.viewMatrix = glm::inverse(rotationMatrix * translationMatrix);
+
+		// Default forward direction in camera space (negative Z for right-handed system)
+		glm::vec3 defaultForward = glm::vec3(0.0f, 0.0f, -1.0f);
+
+		// Rotate the default forward vector by the camera orientation
+		scene.cameraViewDir = scene.cameraOrientation * defaultForward;
+
+		glm::mat4 viewProjMat = scene.projMatrix * scene.viewMatrix;
+		glm::mat4 viewProjMatInv = glm::inverse(viewProjMat);
+
+		glm::mat4 projMatInv = glm::inverse(scene.projMatrix);
+		glm::mat4 viewMatInv = glm::inverse(scene.viewMatrix);
+
+		for (int i = 0; i < 2; ++i)
+		{
+			gErmyFrameConstants.CameraWorldPos[i] = glm::vec4(scene.cameraPosition, 1.0);
+			gErmyFrameConstants.CameraViewDir[i] = glm::vec4(scene.cameraViewDir, 1.0);
+
+			gErmyFrameConstants.ViewMatrix[i] = scene.viewMatrix;
+			gErmyFrameConstants.ProjMatrix[i] = scene.projMatrix;
+			gErmyFrameConstants.ViewMatrixInv[i] = viewMatInv;
+			gErmyFrameConstants.ProjMatrixInv[i] = projMatInv;
+
+			gErmyFrameConstants.ViewProjMatrix[i] = viewProjMat;
+			gErmyFrameConstants.ViewProjMatrixInv[i] = viewProjMatInv;
+		}
+	}
 }
 
-void scene_internal::Render(ermy::rendering::CommandList& cl)
+void scene_internal::Render(ermy::rendering::CommandList& cl, bool isXRPass)
 {
 	if (!gCurrentSceneID.isValid())
 		return;
 
 	auto& scene = gAllScenes3D[gCurrentSceneID.handle];
 
-	cl.SetPSO(scene.skyBoxPass);
+	cl.SetPSO(isXRPass ? scene.skyBoxPassXR : scene.skyBoxPass);
 	cl.SetDescriptorSet(0, scene.sceneDescriptorSet);
 	cl.Draw(4);
 
-	cl.SetPSO(scene.internalColoredMeshesPass);
+	cl.SetPSO(isXRPass ? scene.internalColoredMeshesPassXR : scene.internalColoredMeshesPass);
 	cl.SetDescriptorSet(0, scene.sceneDescriptorSet);
 	cl.SetIndexStream(scene.staticIndices);
 	cl.SetVertexStream(scene.staticVertices);

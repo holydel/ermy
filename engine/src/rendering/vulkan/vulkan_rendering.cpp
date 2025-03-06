@@ -836,7 +836,9 @@ VkPipeline _createPipeline(const PSODesc& desc)
 	{
 		if (desc.specificRenderPass.isValid())
 		{
-			cinfo.renderPass = gAllRenderPasses[desc.specificRenderPass.handle].renderpass;
+			const auto& rpass = gAllRenderPasses[desc.specificRenderPass.handle];
+			cinfo.renderPass = rpass.renderpass;
+			pipMultisamplingState.rasterizationSamples = rpass.samples;
 		}
 		else
 		{

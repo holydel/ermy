@@ -13,9 +13,11 @@ struct SceneMeta
 	ermy::rendering::BufferID skinnedIndices;
 
 	ermy::rendering::PSOID skyBoxPass;
-
 	ermy::rendering::PSOID internalColoredMeshesPass;
 	
+	ermy::rendering::PSOID skyBoxPassXR;
+	ermy::rendering::PSOID internalColoredMeshesPassXR;
+
 	bool isLoaded = false;
 	bool isActive = false;
 
@@ -48,5 +50,5 @@ extern std::vector<SceneMeta> gAllScenes3D;
 namespace scene_internal
 {
 	void UpdateUniforms();
-	void Render(ermy::rendering::CommandList& cl);
+	void Render(ermy::rendering::CommandList& cl, bool isXRPass);
 }

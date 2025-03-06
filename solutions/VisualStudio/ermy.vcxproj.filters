@@ -207,6 +207,9 @@
     <ClCompile Include="..\..\engine\src\xr\openxr\ermy_openxr.cpp">
       <Filter>Source Files\xr\openxr</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\engine\src\rendering\vulkan\VulkanRenderPass.cpp">
+      <Filter>Source Files\rendering\vulkan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\engine\include\ermy.h">
@@ -373,6 +376,9 @@
     </ClInclude>
     <ClInclude Include="..\..\engine\src\xr\openxr\ermy_openxr.h">
       <Filter>Source Files\xr\openxr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\rendering\vulkan\VulkanRenderPass.h">
+      <Filter>Source Files\rendering\vulkan</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

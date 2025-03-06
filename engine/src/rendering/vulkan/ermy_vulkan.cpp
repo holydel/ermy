@@ -191,6 +191,10 @@ VK_DEFINE_FUNCTION(vkQueueInsertDebugUtilsLabelEXT);
 VK_DEFINE_FUNCTION(vkSetDebugUtilsObjectNameEXT);
 VK_DEFINE_FUNCTION(vkSetDebugUtilsObjectTagEXT);
 VK_DEFINE_FUNCTION(vkCmdUpdateBuffer);
+VK_DEFINE_FUNCTION(vkCmdBeginRenderPass2);
+VK_DEFINE_FUNCTION(vkCmdEndRenderPass2);
+VK_DEFINE_FUNCTION(vkCmdNextSubpass2);
+VK_DEFINE_FUNCTION(vkCreateRenderPass2);
 
 #ifdef ERMY_OS_WINDOWS
 VK_DEFINE_FUNCTION(vkGetWinrtDisplayNV);
@@ -406,6 +410,10 @@ void LoadVkDeviceLevelFuncs(VkDevice device)
 	VK_LOAD_DEVICE_FUNC(vkSetDebugUtilsObjectNameEXT);
 	VK_LOAD_DEVICE_FUNC(vkSetDebugUtilsObjectTagEXT);
 	VK_LOAD_DEVICE_FUNC(vkCmdUpdateBuffer);
+	VK_LOAD_DEVICE_FUNC(vkCmdBeginRenderPass2);
+	VK_LOAD_DEVICE_FUNC(vkCmdEndRenderPass2);
+	VK_LOAD_DEVICE_FUNC(vkCmdNextSubpass2);
+	VK_LOAD_DEVICE_FUNC(vkCreateRenderPass2);
 }
 
 const char* VkResultToString(VkResult res)

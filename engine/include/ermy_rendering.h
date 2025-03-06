@@ -170,6 +170,7 @@ namespace ermy
 
 			bool writeDepth : 1 = false;
 			bool testDepth : 1 = false;
+			bool isStereo : 1 = false;
 
 			void SetShaderStageInternal(const ShaderInfo& info)
 			{

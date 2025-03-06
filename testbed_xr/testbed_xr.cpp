@@ -34,7 +34,7 @@ public:
 		staticConfig.render.adapterID = 0;
 
 		staticConfig.swapchain.depthMode = ermy::Application::StaticConfig::SwapchainConfig::DepthMode::Depth32F;
-		staticConfig.swapchain.msaaMode = ermy::Application::StaticConfig::SwapchainConfig::MSAAMode::Samples8;
+		staticConfig.swapchain.msaaMode = ermy::Application::StaticConfig::SwapchainConfig::MSAAMode::Samples4;
 
 		//staticConfig.render.vkConfig.useDynamicRendering = false;
 	}
@@ -122,7 +122,10 @@ void TestBedXRApplication::OnLoad()
 	ermy::pak::MountPak("/sdcard/Android/data/com.hexcelltechvr.ermy.testbed/files/0.epak");
 #endif
 
-	sceneId = scene::Create();
+	scene::SceneDesc sdesc = {};
+	sdesc.isXRScene = true;
+
+	sceneId = scene::Create(sdesc);
 	scene::SetSkyBoxTexture(rendering::TextureID(1));
 
 	cubeGeom = scene::LoadSubmesh(geometry::CreateCubeGeometry(1.0f));

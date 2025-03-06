@@ -4,20 +4,32 @@
 
 #ifdef ERMY_XR_OPENXR
 
-#ifdef ERMY_OS_WINDOWS
-#define XR_USE_PLATFORM_WIN32
-#include <Windows.h>
-#endif
+extern XrDebugUtilsMessengerEXT gDebugUtilsMessenger;
 
-#ifdef ERMY_OS_ANDROID
-#define XR_USE_PLATFORM_ANDROID
-#endif
+struct XREnabledFeatures
+{
+	bool validationLayers : 1 = false;
+	bool debugUtils : 1 = false;
+	bool vulkan : 1 = false;
+	bool vulkan2 : 1 = false;
+};
+
+extern XREnabledFeatures gXREnabledFeatures;
+
+extern ermy::rendering::RenderPassID gErmyXRRenderPassID;
+extern std::vector<XrView> gXRViews;
 
 #ifdef ERMY_GAPI_VULKAN
-#define XR_USE_GRAPHICS_API_VULKAN
-#include "../../rendering/vulkan/ermy_vulkan.h"
-#endif
-#include <openxr/openxr_platform.h>
+VkResult openXRCreateVulkanInstance(const VkInstanceCreateInfo* pCreateInfo,
+	const VkAllocationCallbacks* pAllocator,
+	VkInstance* pInstance);
 
-extern XrInstance gXRInstance;
+VkResult openXRGetPhysicalDevice(VkPhysicalDevice* pPhysicalDevice);
+
+VkResult openXRCreateVulkanDevice(VkPhysicalDevice physicalDevice,
+	const VkDeviceCreateInfo* pCreateInfo,
+	const VkAllocationCallbacks* pAllocator,
+	VkDevice* pDevice);
+#endif
+
 #endif

@@ -107,6 +107,9 @@ float4 testTriangleFS(VOutTest input) : SV_Target
 [[vk::binding(0, 1)]]
 Sampler2D tex2D;
 
+[[vk::binding(0, 1)]]
+Sampler2DArray tex2DArray;
+
 [shader("fragment")]
 float4 dedicatedSpriteFS(VOutDedicatedSprite input) : SV_Target
 {
@@ -120,6 +123,39 @@ struct VSSkyBoxOutput
     float4 pos : SV_POSITION;
     float3 uv : TEXCOORD0;
 };
+
+// Vertex shader output structure
+struct VSFullScreenOutput
+{
+    float4 pos : SV_POSITION;
+    float2 uv : TEXCOORD0;
+};
+
+[shader("vertex")]
+VSFullScreenOutput fullscreenVS(uint vertexId: SV_VertexID)
+{
+    VSFullScreenOutput output;
+
+    float2 pos[3] = {
+        float2(-1.0, -1.0),
+        float2(3.0, -1.0),
+        float2(-1.0, 3.0) 
+    };
+
+    output.pos = float4(pos[vertexId], 0.0, 1.0);
+
+    output.uv = float2(vertexId == 1 ? 2.0 : 0.0, vertexId == 2 ? 2.0 : 0.0);
+
+    return output;
+}
+
+[shader("fragment")]
+float4 previewStereoSwapchain(VSFullScreenOutput input) : SV_Target
+{
+    float u = input.uv.x * 2.0f;
+
+    return tex2DArray.Sample(float3(fmod(u, 1.0f), input.uv.y, u < 1.0 ? 0.0 : 1.0));
+}
 
 [shader("vertex")]
 VSSkyBoxOutput skyboxVS(uint vertexId: SV_VertexID)
@@ -137,6 +173,27 @@ VSSkyBoxOutput skyboxVS(uint vertexId: SV_VertexID)
 
     float4 viewPos = mul(output.pos, frameConstants.ProjMatrixInv[0]);
     float3 worldDir = mul(float3x3(frameConstants.ViewMatrix[0][0].xyz, frameConstants.ViewMatrix[0][1].xyz, frameConstants.ViewMatrix[0][2].xyz), viewPos.xyz);
+    output.uv = -worldDir;
+
+    return output;
+}
+
+[shader("vertex")]
+VSSkyBoxOutput skyboxStereoVS(uint vertexId: SV_VertexID, uint viewID: SV_ViewID)
+{
+    VSSkyBoxOutput output;
+
+    float2 pos[4] = {
+        float2(-1.0, -1.0),
+        float2(1.0, -1.0),
+        float2(-1.0, 1.0),
+        float2(1.0, 1.0)
+    };
+
+    output.pos = float4(pos[vertexId], 0.0, 1.0);
+
+    float4 viewPos = mul(output.pos, frameConstants.ProjMatrixInv[viewID]);
+    float3 worldDir = mul(float3x3(frameConstants.ViewMatrix[viewID][0].xyz, frameConstants.ViewMatrix[viewID][1].xyz, frameConstants.ViewMatrix[viewID][2].xyz), viewPos.xyz);
     output.uv = -worldDir;
 
     return output;
@@ -190,6 +247,38 @@ OutStaticVertexDedicated sceneStaticMeshVS(StaticVertexDedicated vtx, uniform Sc
     float3 rotatedNormal = rotateVectorByQuaternion(vtx.normal, quat);
     //float3 rotatedTangent = rotateVectorByQuaternion(vtx.tangent, quat);
     //float3 rotatedBitangent = rotateVectorByQuaternion(vtx.bitangent, quat);
+
+    // Apply scaling and translation to position
+    float3 worldPos = position + rotatedPos * scale;
+
+    // Transform to clip space
+    output.position = mul(float4(worldPos, 1.0), viewProj);
+
+    // Pass through other attributes
+    output.uv = vtx.uv0;
+    output.color = vtx.color;
+    output.normal = rotatedNormal;
+
+    return output;
+}
+
+[shader("vertex")]
+OutStaticVertexDedicated sceneStaticMeshStereoVS(StaticVertexDedicated vtx, uint viewID: SV_ViewID, uniform SceneTransform transform)
+{
+    OutStaticVertexDedicated output;
+
+    float4x4 viewProj = frameConstants.ViewProjMatrix[viewID];
+
+    // Extract components from transform
+    float3 position = transform.position_uniform_scale.xyz;
+    float scale = transform.position_uniform_scale.w;
+    float4 quat = transform.orientation_unit_quaternion;
+
+    // Rotate position and normal
+    float3 rotatedPos = rotateVectorByQuaternion(vtx.pos, quat);
+    float3 rotatedNormal = rotateVectorByQuaternion(vtx.normal, quat);
+    // float3 rotatedTangent = rotateVectorByQuaternion(vtx.tangent, quat);
+    // float3 rotatedBitangent = rotateVectorByQuaternion(vtx.bitangent, quat);
 
     // Apply scaling and translation to position
     float3 worldPos = position + rotatedPos * scale;

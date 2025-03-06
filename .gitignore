@@ -40,3 +40,4 @@ solutions/VisualStudio/vcpkg_installed
 eproj_template/paks
 eproj_template/assets_cache.xml
 .vs
+solutions/VisualStudio/testbed_xr/x64

@@ -26,6 +26,8 @@ namespace ermy
 			u32 totalSkinnedVertices = 1_MB;
 			u32 totalStaticIndices = 4_MB;
 			u32 totalSkinnedIndices = 2_MB;
+
+			bool isXRScene = false;
 		};
 
 		void LoadFromPak(SceneID sceneId);

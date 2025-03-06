@@ -9,9 +9,13 @@ namespace ermy
 		ShaderInfo testTriangleVS();
 		ShaderInfo testTriangleFS();
 		ShaderInfo dedicatedSpriteFS();
+		ShaderInfo fullscreenVS();
+		ShaderInfo previewStereoSwapchain();
 		ShaderInfo skyboxVS();
+		ShaderInfo skyboxStereoVS();
 		ShaderInfo skyboxFS();
 		ShaderInfo sceneStaticMeshVS();
+		ShaderInfo sceneStaticMeshStereoVS();
 		ShaderInfo sceneStaticMeshColored();
 	}
 }

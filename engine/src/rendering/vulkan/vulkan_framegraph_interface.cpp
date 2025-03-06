@@ -102,7 +102,6 @@ namespace framegraph_interface
 
 		VK_CALL(vkResetCommandPool(gVKDevice, frame.cmdPool, 0));
 
-
 		VkCommandBuffer cmd = frame.cmdBuffer;
 		// Begin the command buffer recording for the frame
 		const VkCommandBufferBeginInfo beginInfo{ .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
