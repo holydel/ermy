@@ -65,12 +65,12 @@ void PropertyEditorScreen::Draw()
                     ImVec2 relative_mouse_pos = ImVec2((mouse_pos.x - image_pos.x)/image_size.x, (mouse_pos.y - image_pos.y)/image_size.y);
                     // Do something with the relative mouse position
 
-                    PreviewRenderer::Instance().MouseDown(relative_mouse_pos.x, relative_mouse_pos.y);
+                    PreviewRenderer::Instance().MouseDown(relative_mouse_pos.x, relative_mouse_pos.y,0);
                 }
 
                 if (ImGui::IsMouseReleased(0)) // Left mouse button up
                 {
-                    PreviewRenderer::Instance().MouseUp();
+                    PreviewRenderer::Instance().MouseUp(0);
                     // Handle mouse up event
                 }
 
@@ -79,13 +79,38 @@ void PropertyEditorScreen::Draw()
                     // Handle mouse move/drag event
                     ImVec2 drag_delta = ImGui::GetMouseDragDelta(0);
                     ImVec2 relative_mouse_drag = ImVec2(drag_delta.x / image_size.x, drag_delta.y / image_size.y);
-                    PreviewRenderer::Instance().MouseMove(relative_mouse_drag.x, relative_mouse_drag.y);
+                    PreviewRenderer::Instance().MouseMove(relative_mouse_drag.x, relative_mouse_drag.y,0);
+                    // Do something with the drag delta
+                }
+
+                if (ImGui::IsMouseClicked(1)) // Right mouse button down
+                {
+                    // Handle mouse down event
+                    ImVec2 mouse_pos = ImGui::GetMousePos();
+                    ImVec2 relative_mouse_pos = ImVec2((mouse_pos.x - image_pos.x) / image_size.x, (mouse_pos.y - image_pos.y) / image_size.y);
+                    // Do something with the relative mouse position
+
+                    PreviewRenderer::Instance().MouseDown(relative_mouse_pos.x, relative_mouse_pos.y,1);
+                }
+
+                if (ImGui::IsMouseReleased(1)) // Right mouse button up
+                {
+                    PreviewRenderer::Instance().MouseUp(1);
+                    // Handle mouse up event
+                }
+
+                if (ImGui::IsMouseDragging(1)) // Right mouse button drag
+                {
+                    // Handle mouse move/drag event
+                    ImVec2 drag_delta = ImGui::GetMouseDragDelta(1);
+                    ImVec2 relative_mouse_drag = ImVec2(drag_delta.x / image_size.x, drag_delta.y / image_size.y);
+                    PreviewRenderer::Instance().MouseMove(relative_mouse_drag.x, relative_mouse_drag.y,1);
                     // Do something with the drag delta
                 }
             }
             else
             {
-                PreviewRenderer::Instance().MouseUp();
+                PreviewRenderer::Instance().MouseUp(1);
             }
 		}
 

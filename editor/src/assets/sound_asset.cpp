@@ -191,7 +191,10 @@ void SoundAsset::MouseZoom(float dv)
 	volume *= dv;
 	ermy::sound::SetVolume(sound, volume);
 }
-void SoundAsset::MouseDown(float normalizedX, float normalizedY)
+void SoundAsset::MouseDown(float normalizedX, float normalizedY, int button)
 {
-	ermy::sound::SetPlayingOffset(sound, normalizedX * duration);
+	if (button == 0)
+	{
+		ermy::sound::SetPlayingOffset(sound, normalizedX * duration);
+	}	
 }

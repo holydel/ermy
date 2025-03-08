@@ -52,6 +52,7 @@ Format GetFormatFromDXGI(DXGI_FORMAT dxgiFormat)
 	case DXGI_FORMAT_BC6H_UF16:             return Format::BC6;
 	case DXGI_FORMAT_BC7_UNORM:             return Format::BC7;
 	case DXGI_FORMAT_R8_UNORM:				return Format::R8_UNORM;
+	case DXGI_FORMAT_R8G8_UNORM:			return Format::RG8_UNORM;
 	case DXGI_FORMAT_B8G8R8X8_UNORM:
 	case DXGI_FORMAT_B8G8R8A8_UNORM:		return Format::BGRA8_UNORM;
 	default:

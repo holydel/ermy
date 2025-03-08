@@ -13,12 +13,14 @@ struct TextureLivePreviewParams2D
 	glm::vec2 uv0;
 	glm::vec2 uv1;
 	int arrayLevel;
+	int mipLevel;
 };
 
 struct TextureLivePreviewParamsCube
 {
 	glm::vec4 dir_tanfov;	
 	int arrayLevel;
+	int mipLevel;
 };
 
 class TextureRenderPreview
@@ -241,27 +243,33 @@ void TextureAsset::MouseZoom(float value)
 {
 	previewZoom /= value;
 }
-void TextureAsset::MouseDown(float normalizedX, float normalizedY)
+void TextureAsset::MouseDown(float normalizedX, float normalizedY, int button)
 {
-	if (!isPreviewDragging)
+	if (button == 0)
 	{
-		isPreviewDragging = true;
-		oldPreviewDX = previewDX;
-		oldPreviewDY = previewDY;
+		if (!isPreviewDragging)
+		{
+			isPreviewDragging = true;
+			oldPreviewDX = previewDX;
+			oldPreviewDY = previewDY;
+		}
 	}
-	
 }
-void TextureAsset::MouseUp()
+void TextureAsset::MouseUp(int button)
 {
-	isPreviewDragging = false;
+	if(button == 0)
+		isPreviewDragging = false;
 }
 
-void TextureAsset::MouseMove(float normalizedDeltaX, float normalizedDeltaY)
+void TextureAsset::MouseMove(float normalizedDeltaX, float normalizedDeltaY, int button)
 {
-	if (isPreviewDragging)
+	if (button == 0)
 	{
-		previewDX = oldPreviewDX - (normalizedDeltaX * previewZoom);
-		previewDY = oldPreviewDY - (normalizedDeltaY * previewZoom);
+		if (isPreviewDragging)
+		{
+			previewDX = oldPreviewDX - (normalizedDeltaX * previewZoom);
+			previewDY = oldPreviewDY - (normalizedDeltaY * previewZoom);
+		}
 	}
 }
 
@@ -269,12 +277,28 @@ void TextureAsset::DrawPreview()
 {
 	ImGui::Text("Width: %d Height: %d",width,height);
 	ImGui::Text("Datasize: %s",ermy_utils::string::humanReadableFileSize(dataSize).c_str());
-
-	ImGui::Checkbox("IsStatic", &isStaticPreview);
+	
 	if (texType == rendering::TextureType::TexArrayCube || texType == rendering::TextureType::TexArray2D)
 	{
 		ImGui::SliderInt("Layer", &currentArrayLevel, 0, (isCubemap ? numLayers / 6 : numLayers) - 1);
 	}
+
+	if (numMips > 1)
+	{
+		ImGui::SliderInt("Mip", &currentMip, 0,numMips-1);
+	}
+
+	int curPurpose = (int)texturePurpose;
+	ImGui::Combo("Purpose:", &curPurpose, TexturePurposeNames,std::size(TexturePurposeNames));
+	texturePurpose = (TexturePurpose)curPurpose;
+
+	if (texturePurpose == TexturePurpose::TP_SOURCE)
+	{
+		int curCompression = (int)textureCompression;
+		ImGui::Combo("Compression:", &curCompression, TextureCompressionNames, std::size(TextureCompressionNames));
+		textureCompression = (TextureCompression)curCompression;
+	}
+
 }
 
 void TextureAsset::RegeneratePreview()
@@ -384,6 +408,7 @@ void TextureAsset::RenderPreview(ermy::rendering::CommandList& cl)
 			pass.uv0 = glm::vec2(baseU0, baseV0);
 			pass.uv1 = glm::vec2(baseU1, baseV1);
 			pass.arrayLevel = currentArrayLevel;
+			pass.mipLevel = currentMip;
 			if(!isStaticPreview)
 			cl.SetRootConstant(pass,ShaderStage::Fragment);
 			cl.SetDescriptorSet(0, assetPreviewTexLive);
@@ -402,6 +427,8 @@ void TextureAsset::RenderPreview(ermy::rendering::CommandList& cl)
 
 			pass.dir_tanfov = glm::vec4(dirx, diry, dirz, previewZoom);
 			pass.arrayLevel = currentArrayLevel;
+			pass.mipLevel = currentMip;
+
 			if(!isStaticPreview)
 			cl.SetRootConstant(pass, ShaderStage::Fragment);
 			cl.SetDescriptorSet(0, assetPreviewTexLive);

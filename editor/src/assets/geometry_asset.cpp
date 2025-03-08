@@ -2,8 +2,12 @@
 #include <ermy_log.h>
 #include <preview_renderer.h>
 #include <editor_shader_internal.h>
+
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/quaternion.hpp>
+
 #include <ermy_application.h>
 
 //Assimp::Importer* gAssetImporter = nullptr;
@@ -235,36 +239,121 @@ void GeometryAsset::RegeneratePreview()
 void GeometryAsset::ResetView()
 {
 	Zoom = 1.0f;
-	Yaw = Pitch = OldYaw = OldPitch = 0.0f;
-	isPreviewDragging = false;
+	rotationQuat = glm::quat(1.0f, 0.0f, 0.0f, 0.0f); // Identity quaternion
+	lastMousePos = glm::vec2(0.0f);
 }
 
 void GeometryAsset::MouseZoom(float value)
 {
 	Zoom *= value;
 }
-void GeometryAsset::MouseDown(float normalizedX, float normalizedY)
+void GeometryAsset::MouseDown(float normalizedX, float normalizedY, int button)
 {
-	if (!isPreviewDragging)
+	if (button == 0)
 	{
-		isPreviewDragging = true;
-		OldYaw = Yaw;
-		OldPitch = Pitch;
+		lastMousePos = glm::vec2(normalizedX, normalizedY);
+		lastRotationQuat = rotationQuat;
 	}
 
+	if (button == 1)
+	{
+		oldCamPosition = cameraPos;
+	}
 }
-void GeometryAsset::MouseUp()
+void GeometryAsset::MouseUp(int button)
 {
-	isPreviewDragging = false;
+
 }
 
-void GeometryAsset::MouseMove(float normalizedDeltaX, float normalizedDeltaY)
-{
-	if (isPreviewDragging)
-	{
-		Yaw = OldYaw - (normalizedDeltaX * 3.1415f);
-		Pitch = OldPitch - (normalizedDeltaY * 3.1415f);
+// Helper: Project 2D normalized coordinates onto a unit sphere
+glm::vec3 projectToSphere(glm::vec2 screenPos) {
+	// Convert normalized screen coordinates (-1 to 1 range expected)
+	float x = screenPos.x * 2.0f - 1.0f; // Map [0,1] to [-1,1]
+	float y = -(screenPos.y * 2.0f - 1.0f); // Flip Y for typical screen coords (top-left origin)
+
+	float radius = 1.0f; // Virtual sphere radius
+	float d = x * x + y * y;
+	float t = radius * radius;
+
+	// If point is outside the sphere, project onto the sphere surface
+	if (d > t) {
+		float s = radius / sqrt(d);
+		return glm::vec3(x * s, y * s, 0.0f);
 	}
+	// If inside, compute Z to lie on the sphere
+	else {
+		return glm::vec3(x, y, sqrt(t - d));
+	}
+}
+
+// Helper: Compute quaternion from arc between two points on a sphere
+glm::quat quatFromArc(glm::vec3 from, glm::vec3 to) {
+	from = glm::normalize(from);
+	to = glm::normalize(to);
+
+	float dot = glm::dot(from, to);
+	if (dot > 0.99999f) { // Nearly parallel, no rotation
+		return glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+	}
+	if (dot < -0.99999f) { // 180-degree rotation, pick an arbitrary axis
+		glm::vec3 axis = glm::cross(from, glm::vec3(0.0f, 1.0f, 0.0f));
+		if (glm::length(axis) < 0.0001f) axis = glm::vec3(1.0f, 0.0f, 0.0f);
+		return glm::angleAxis(glm::pi<float>(), glm::normalize(axis));
+	}
+
+	glm::vec3 axis = glm::cross(from, to);
+	float angle = acos(dot);
+	return glm::angleAxis(angle, glm::normalize(axis));
+}
+
+void GeometryAsset::MouseMove(float normalizedX, float normalizedY, int button)
+{
+	if (button == 0)
+	{
+		glm::vec2 delta(-normalizedX, normalizedY);
+		glm::vec2 currentMousePos = lastMousePos + delta;
+
+		if (glm::length(delta) > 0.001f) { // Avoid tiny movements
+			// Project 2D mouse positions onto a virtual sphere
+			glm::vec3 from = projectToSphere(lastMousePos);
+			glm::vec3 to = projectToSphere(currentMousePos);
+
+			// Compute the rotation quaternion
+			glm::quat deltaRot = quatFromArc(from, to);
+			rotationQuat = glm::normalize(deltaRot * lastRotationQuat); // Apply new rotation to current orientation
+			//rotationQuat = rotationQuat); // Ensure quaternion remains unit length
+
+			//lastMousePos = currentMousePos;
+		}
+	}
+
+	if (button == 1)
+	{
+		cameraPos = oldCamPosition + glm::vec3(normalizedX * 1.0f / Zoom, normalizedY * 1.0f / Zoom, 0);
+	}
+	//if (isPreviewDragging) {
+	//	// Scale deltas for sensitivity (adjust as needed)
+	//	float sensitivity = 2.0f; // Controls rotation speed
+	//	float dx = normalizedDeltaX * sensitivity;
+	//	float dy = normalizedDeltaY * sensitivity;
+
+	//	// Avoid tiny movements
+	//	if (fabs(dx) < 0.001f && fabs(dy) < 0.001f) {
+	//		return;
+	//	}
+
+	//	// Compute rotation axis and angle from deltas
+	//	// Horizontal delta (dx) rotates around Y-axis, vertical delta (dy) rotates around X-axis
+	//	glm::vec3 axis = glm::normalize(glm::vec3(-dy, dx, 0.0f)); // X from dy, Y from dx, Z stays 0
+	//	float angle = sqrt(dx * dx + dy * dy); // Magnitude of rotation
+
+	//	// Create quaternion for this frame's rotation
+	//	glm::quat deltaRot = glm::angleAxis(angle, axis);
+
+	//	// Apply to the current rotation
+	//	rotationQuat = deltaRot * rotationQuat;
+	//	rotationQuat = glm::normalize(rotationQuat); // Ensure unit length
+	//}
 }
 
 void GeometryAsset::RenderStaticPreview(ermy::rendering::CommandList& cl)
@@ -284,8 +373,6 @@ void GeometryAsset::RenderStaticPreview(ermy::rendering::CommandList& cl)
 
 	//glm::translate(glm::mat4(1.0f), C) 
 	glm::mat4 modelMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(scale));
-
-	glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.5f);
 
 	//glm::mat4 viewMatrix = glm::rotate(glm::mat4(1.0f), Pitch, glm::vec3(1.0f, 0.0f, 0.0f)) *
 	//	glm::rotate(glm::mat4(1.0f), Yaw, glm::vec3(0.0f, 1.0f, 0.0f)) *
@@ -323,10 +410,7 @@ void GeometryAsset::RenderPreview(ermy::rendering::CommandList& cl)
 	float scale = 1.0f / r; // Scale to fit the bounding sphere
 
 	//glm::translate(glm::mat4(1.0f), C) 
-	glm::mat4 modelMatrix = glm::rotate(glm::mat4(1.0f), Pitch, glm::vec3(1.0f, 0.0f, 0.0f)) *
-		glm::rotate(glm::mat4(1.0f), Yaw, glm::vec3(0.0f, 1.0f, 0.0f)) *glm::scale(glm::mat4(1.0f), glm::vec3(scale));
-
-	glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 5.0f);
+	glm::mat4 modelMatrix = glm::toMat4 (rotationQuat) * glm::scale(glm::mat4(1.0f), glm::vec3(scale));
 
 	//glm::mat4 viewMatrix = glm::rotate(glm::mat4(1.0f), Pitch, glm::vec3(1.0f, 0.0f, 0.0f)) *
 	//	glm::rotate(glm::mat4(1.0f), Yaw, glm::vec3(0.0f, 1.0f, 0.0f)) *

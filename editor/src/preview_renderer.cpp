@@ -20,22 +20,22 @@ void PreviewRenderer::MouseZoom(float value)
 		currentProps->MouseZoom(value);
 }
 
-void PreviewRenderer::MouseDown(float normalizedX, float normalizedY)
+void PreviewRenderer::MouseDown(float normalizedX, float normalizedY, int button)
 {
 	if (currentProps)
-		currentProps->MouseDown(normalizedX, normalizedY);
+		currentProps->MouseDown(normalizedX, normalizedY, button);
 }
 
-void PreviewRenderer::MouseUp()
+void PreviewRenderer::MouseUp(int button)
 {
 	if (currentProps)
-		currentProps->MouseUp();
+		currentProps->MouseUp(button);
 }
 
-void PreviewRenderer::MouseMove(float normalizedDeltaX, float normalizedDeltaY)
+void PreviewRenderer::MouseMove(float normalizedDeltaX, float normalizedDeltaY, int button)
 {
 	if (currentProps)
-		currentProps->MouseMove(normalizedDeltaX, normalizedDeltaY);
+		currentProps->MouseMove(normalizedDeltaX, normalizedDeltaY,button);
 }
 
 void PreviewRenderer::RenderPreview(ermy::rendering::CommandList& finalCL)

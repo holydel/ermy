@@ -323,13 +323,13 @@ TextureInfo _createTexture(const TextureDesc& desc)
 		allRegions.reserve(desc.numLayers * desc.numMips);
 		int  blockPixels = formatInfo.blockWidth * formatInfo.blockHeight * formatInfo.blockDepth;
 
-		for (int l = 0; l < desc.numLayers; ++l)
-		{
-			u32 mipWidth = desc.width;
-			u32 mipHeight = desc.height;
-			u32 mipDepth = desc.depth;
+		u32 mipWidth = desc.width;
+		u32 mipHeight = desc.height;
+		u32 mipDepth = desc.depth;
 
-			for (int m = 0; m < desc.numMips; ++m)
+		for (int m = 0; m < desc.numMips; ++m)
+		{
+			for (int l = 0; l < desc.numLayers; ++l)
 			{
 				VkBufferImageCopy& region = allRegions.emplace_back();
 				region.bufferOffset = bufferOffset;
@@ -344,20 +344,19 @@ TextureInfo _createTexture(const TextureDesc& desc)
 
 				int currentMipDataSize = mipWidth * mipHeight * mipDepth * formatInfo.blockSize / blockPixels;
 				bufferOffset += currentMipDataSize;
-
-				if(mipWidth > formatInfo.blockWidth)
-					mipWidth /= 2;
-
-				if (mipHeight > formatInfo.blockHeight)
-					mipHeight /= 2;
-
-				if (mipDepth > formatInfo.blockDepth)
-					mipDepth /= 2;
 			}
+
+			if (mipWidth > formatInfo.blockWidth)
+				mipWidth /= 2;
+
+			if (mipHeight > formatInfo.blockHeight)
+				mipHeight /= 2;
+
+			if (mipDepth > formatInfo.blockDepth)
+				mipDepth /= 2;
 		}
 
 		vkCmdCopyBufferToImage(c.cbuff, stagingBuffer, textureImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, static_cast<uint32_t>(allRegions.size()), allRegions.data());
-
 
 		vk_utils::ImageTransition(c.cbuff, textureImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, aspect, desc.numMips, desc.numLayers);
 	}

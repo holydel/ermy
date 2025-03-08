@@ -3,16 +3,19 @@
 #include <assets/asset.h>
 #include <ermy_rendering.h>
 #include <ermy_commandlist.h>
+#include <glm/gtc/quaternion.hpp>
 
 class GeometryAsset : public AssetData
 {
 	bool isStaticPreview = false;	
 	float Zoom = 1.0f;
-	float Pitch = 0.0f;
-	float Yaw = 0.0f;
-	float OldPitch = 0.0f;
-	float OldYaw = 0.0f;
-	bool isPreviewDragging = false;
+	glm::quat rotationQuat = glm::identity<glm::quat>(); // Quaternion for arcball rotation
+	glm::quat lastRotationQuat = glm::identity<glm::quat>(); // Quaternion for arcball rotation
+	glm::vec2 lastMousePos = glm::vec2(0,0); // Last mouse position for arcball dragging
+
+	glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.5f);
+	glm::vec3 oldCamPosition = cameraPos;
+	
 	void RecalculateBoundingSphere();
 	int currentMode = 0;
 public:
@@ -35,8 +38,8 @@ public:
 	void RenderPreview(ermy::rendering::CommandList& cl) override;
 	void RenderStaticPreview(ermy::rendering::CommandList& cl) override;
 	void MouseZoom(float) override;
-	void MouseDown(float normalizedX, float normalizedY) override;
-	void MouseUp() override;
-	void MouseMove(float normalizedDeltaX, float normalizedDeltaY) override;
+	void MouseDown(float normalizedX, float normalizedY, int button) override;
+	void MouseUp(int button) override;
+	void MouseMove(float normalizedDeltaX, float normalizedDeltaY, int button) override;
 	void ResetView() override;
 };

@@ -11,7 +11,7 @@ VkFormat vk_utils::VkFormatFromErmy(ermy::rendering::Format format)
 	switch (format)
 	{
 	case Format::RGBA8_UNORM:
-		return VK_FORMAT_R8G8B8A8_SRGB;
+		return VK_FORMAT_R8G8B8A8_UNORM;
 	case Format::RGBA16_UNORM:
 		return VK_FORMAT_R16G16B16A16_UNORM;
 	case Format::RGBA16_NORM:
@@ -54,6 +54,8 @@ VkFormat vk_utils::VkFormatFromErmy(ermy::rendering::Format format)
 		return VK_FORMAT_BC7_SRGB_BLOCK;
 	case  Format::R8_UNORM:
 		return VK_FORMAT_R8_UNORM;
+	case  Format::RG8_UNORM:
+		return VK_FORMAT_R8G8_UNORM;
 	case Format::BGRA8_UNORM:
 		return VK_FORMAT_B8G8R8A8_UNORM;
 	case Format::D32F:
@@ -62,6 +64,8 @@ VkFormat vk_utils::VkFormatFromErmy(ermy::rendering::Format format)
 		return VK_FORMAT_D16_UNORM;
 	case Format::D24_UNORM_S8_UINT:
 		return VK_FORMAT_D24_UNORM_S8_UINT;
+	case Format::RGBA8_SRGB:
+		return VK_FORMAT_R8G8B8A8_SRGB;
 	}
 
 	return VK_FORMAT_R8G8B8A8_SRGB;

@@ -16,15 +16,15 @@ public:
 	{
 
 	}
-	virtual void MouseDown(float normalizedX, float normalizedY)
+	virtual void MouseDown(float normalizedX, float normalized, int button)
 	{
 
 	}
-	virtual void MouseUp()
+	virtual void MouseUp(int button)
 	{
 
 	}
-	virtual void MouseMove(float normalizedDeltaX, float normalizedDeltaY)
+	virtual void MouseMove(float normalizedDeltaX, float normalizedDeltaY, int button)
 	{
 
 	}

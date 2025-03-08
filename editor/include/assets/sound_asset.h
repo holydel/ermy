@@ -25,5 +25,5 @@ public:
 	void RenderStaticPreview(ermy::rendering::CommandList& cl) override;
 
 	void MouseZoom(float) override;
-	void MouseDown(float normalizedX, float normalizedY) override;
+	void MouseDown(float normalizedX, float normalizedY, int button) override;
 };

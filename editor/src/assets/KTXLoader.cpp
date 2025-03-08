@@ -102,7 +102,7 @@ rendering::Format FromGLInternalFormat(u32 glInternalFormat)
 	constexpr u32 GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR = 0x93DC;
 	constexpr u32 GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR = 0x93DD;
 	constexpr u32 GL_R16 = 0x822A;
-
+	constexpr u32 GL_SRGB8_ALPHA8_EXT = 0x8C43;
 	switch (glInternalFormat)
 	{
 	case RGBA8_EXT:
@@ -115,6 +115,12 @@ rendering::Format FromGLInternalFormat(u32 glInternalFormat)
 		return Format::RGBA8_UINT;
 	case GL_R16:
 		return Format::R16_UNORM;
+	case GL_SRGB8_ALPHA8_EXT:
+		return Format::RGBA8_SRGB;
+	case R8_EXT:
+		return Format::R8_UNORM;
+	case RG8_EXT:
+		return Format::RG8_UNORM;
 	default:
 		assert(!"Unknown format");
 	}
@@ -163,6 +169,7 @@ AssetData* KTXLoader::Load(const std::filesystem::path& path)
 		result->data = ktxTex1->pData;
 		result->dataSize = static_cast<u32>(ktxTex1->dataSize);
 		result->numLayers = ktxTex1->numLayers * ktxTex1->numFaces;
+		result->numMips = ktxTex1->numLevels;
 		if (ktxTex1->numFaces == 6)
 			result->isCubemap = true;
 

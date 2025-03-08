@@ -3,12 +3,14 @@ struct PreviewTextureConstants2D
     float2 uv0;
     float2 uv1;
     int arrayLevel;
+    int mipLevel;
 };
 
 struct PreviewTextureConstantsCubemap
 {
     float4 dir_fov;
     int arrayLevel;
+    int mipLevel;
 };
 
 struct PreviewSoundConstants
@@ -16,6 +18,7 @@ struct PreviewSoundConstants
     int numChannels;
     float position;
     float volume;
+    int mipLevel;
 };
 
 
@@ -224,7 +227,7 @@ float4 fullscreenFS2D(VOutFS input, uniform PreviewTextureConstants2D transform)
 {
     float2 uv = lerp(transform.uv0, transform.uv1, input.uv);
 
-    float4 color = preview2D.Sample(uv);
+    float4 color = preview2D.SampleLevel(uv,transform.mipLevel);
     if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0)
         color.w = 0.0f;
     
@@ -253,7 +256,7 @@ float4 fullscreenFSCubemap(VOutFS input, uniform PreviewTextureConstantsCubemap 
 
     float3 worldRayDir = rayDir.x * right + rayDir.y * up + rayDir.z * forward;
 
-    return previewCube.Sample(worldRayDir);
+    return previewCube.SampleLevel(worldRayDir,transform.mipLevel);
 }
 
 [shader("fragment")]
@@ -261,7 +264,7 @@ float4 fullscreenFS2DArray(VOutFS input, uniform PreviewTextureConstants2D trans
 {
     float2 uv = lerp(transform.uv0, transform.uv1, input.uv);
 
-    float4 color = preview2DArray.Sample(float3(uv,transform.arrayLevel));
+    float4 color = preview2DArray.SampleLevel(float3(uv, transform.arrayLevel), transform.mipLevel);
     if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0)
         color.w = 0.0f;
 
@@ -290,7 +293,7 @@ float4 fullscreenFSCubemapArray(VOutFS input, uniform PreviewTextureConstantsCub
 
     float3 worldRayDir = rayDir.x * right + rayDir.y * up + rayDir.z * forward;
 
-    return previewCubeArray.Sample(float4(worldRayDir,transform.arrayLevel));
+    return previewCubeArray.SampleLevel(float4(worldRayDir, transform.arrayLevel), transform.mipLevel);
 }
 
 //static shaders
@@ -459,7 +462,7 @@ float4 fullscreenFSVolumetric(VOutFS input, uniform PreviewTextureConstantsCubem
             break;
 
         // Sample the volumetric texture at the current position
-        float4 voxelColor = preview3D.Sample(rayPos);
+        float4 voxelColor = preview3D.SampleLevel(rayPos,transform.mipLevel);
 
         // Accumulate the color (e.g., additive blending)
         accumulatedColor += voxelColor * rayStep;

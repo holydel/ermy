@@ -77,11 +77,13 @@ namespace ermy
 			,BC5
 			,BC6
 			,BC7
-			,R8_UNORM
+			, R8_UNORM
+			, RG8_UNORM
 			,BGRA8_UNORM
 			, D32F
 			, D16_UNORM			
 			, D24_UNORM_S8_UINT
+			, RGBA8_SRGB
 		};
 
 		struct FormatInfo
@@ -91,6 +93,7 @@ namespace ermy
 			u8 blockWidth;
 			u8 blockHeight;
 			u8 blockDepth;
+			u8 isSRGB;
 		};
 
 		enum class TextureType

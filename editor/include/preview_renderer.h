@@ -57,9 +57,9 @@ public:
 	}
 
 	void MouseZoom(float);
-	void MouseDown(float normalizedX, float normalizedY);
-	void MouseUp();
-	void MouseMove(float normalizedDeltaX, float normalizedDeltaY);
+	void MouseDown(float normalizedX, float normalizedY, int button);
+	void MouseUp(int button);
+	void MouseMove(float normalizedDeltaX, float normalizedDeltaY, int button);
 	void ResetView();
 
 	void EnqueueStaticPreviewGeneration(AssetData* asset)
