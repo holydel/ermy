@@ -294,8 +294,8 @@ bool ErmyProject::RebuildPAK()
 		texMeta[i].numMips = texAsset->numMips;
 		texMeta[i].numLayers = texAsset->numLayers;
 		texMeta[i].isCubemap = texAsset->isCubemap;
-		texMeta[i].texelFormat = texAsset->texelFormat;
-		texMeta[i].dataSize = texAsset->dataSize;
+		texMeta[i].texelSourceFormat = texAsset->texelSourceFormat;
+		texMeta[i].dataSize = texAsset->GetTargetMipSet().dwDataSize;
 	}
 
 	std::vector<pak::SoundRawInfo> soundMeta(collectedAssets.sounds.size());
@@ -317,7 +317,7 @@ bool ErmyProject::RebuildPAK()
 		auto tex = collectedAssets.textures[i];
 		auto texData = tex->GetData();
 		auto texAsset = static_cast<TextureAsset*>(texData); //guaranteed to be texture asset
-		pak.write((const char*)texAsset->data, texAsset->dataSize);
+		pak.write((const char*)texAsset->GetTargetMipSet().pData, texAsset->GetTargetMipSet().dwDataSize);
 	}
 	
 	for (int i = 0; i < collectedAssets.sounds.size(); ++i)

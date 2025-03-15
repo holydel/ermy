@@ -1,6 +1,7 @@
 #pragma once
-#include "../xr_interface.h"
 #include "ermy_openxr.h"
+#include "../xr_interface.h"
+
 
 #ifdef ERMY_XR_OPENXR
 

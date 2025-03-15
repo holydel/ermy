@@ -129,7 +129,7 @@ void SoundAsset::RegeneratePreview()
 	descLive.numMips = 1;
 	descLive.pixelsData = data;
 	descLive.isSparse = false;
-	descLive.texelFormat = ermy::rendering::Format::R8_UNORM;
+	descLive.texelSourceFormat = ermy::rendering::Format::R8_UNORM;
 	descLive.dataSize = 512 * channels;
 
 	previewTextureLive = ermy::rendering::CreateDedicatedTexture(descLive);
@@ -142,7 +142,7 @@ void SoundAsset::RegeneratePreview()
 	descStatic.numLayers = 1;
 	descStatic.numMips = 1;
 	descStatic.isSparse = false;
-	descStatic.texelFormat = ermy::rendering::Format::RGBA8_UNORM;
+	descStatic.texelSourceFormat = ermy::rendering::Format::RGBA8_UNORM;
 
 	descStatic.pixelsData = nullptr;
 	descStatic.dataSize = 0;

@@ -3,16 +3,42 @@
     "cmakeMinimumRequired": { "major": 3, "minor": 20 },
     "configurePresets": [
       {
-        "name": "windows-msvc",
+        "name": "windows-msvc-light",
         "generator": "Ninja",
-        "binaryDir": "${sourceDirName}/build/windows-msvc",
-        "toolchainFile": "",
+        "binaryDir": "${sourceDirName}/build/windows-msvc-light",
         "cacheVariables": {
           "CMAKE_C_COMPILER": "cl",
           "CMAKE_CXX_COMPILER": "cl",
           "CMAKE_BUILD_TYPE": "Debug"
         }
-        
+      },
+      {
+        "name": "windows-msvc-editor",
+        "generator": "Ninja",
+        "binaryDir": "${sourceDirName}/build/windows-msvc-editor",
+        "toolchainFile": "C:/Users/holyd/vcpkg/scripts/buildsystems/vcpkg.cmake",
+        "cacheVariables": {
+          "CMAKE_C_COMPILER": "cl",
+          "CMAKE_CXX_COMPILER": "cl",
+          "CMAKE_BUILD_TYPE": "Debug",
+          "VCPKG_TARGET_TRIPLET": "x64-windows",
+          "VCPKG_MANIFEST_MODE": "ON",
+          "VCPKG_MANIFEST_DIR": "${sourceDir}/editor"
+        }
+      },
+      {
+        "name": "windows-msvc",
+        "generator": "Ninja",
+        "binaryDir": "${sourceDirName}/build/windows-msvc",
+        "toolchainFile": "C:/Users/holyd/vcpkg/scripts/buildsystems/vcpkg.cmake",
+        "cacheVariables": {
+          "CMAKE_C_COMPILER": "cl",
+          "CMAKE_CXX_COMPILER": "cl",
+          "CMAKE_BUILD_TYPE": "Debug",
+          "VCPKG_TARGET_TRIPLET": "x64-windows",
+          "VCPKG_MANIFEST_MODE": "ON",
+          "VCPKG_MANIFEST_DIR": "${sourceDir}/editor"
+        }
       },
       {
         "name": "linux-gcc",
@@ -59,9 +85,14 @@
     ],
     "buildPresets": [
       {
-        "name": "windows",
-        "configurePreset": "windows-msvc",
+        "name": "windows-light",
+        "configurePreset": "windows-msvc-light",
         "targets": ["testbed"]
+      },
+      {
+        "name": "windows-editor",
+        "configurePreset": "windows-msvc-editor",
+        "targets": ["editor"]
       }
     ]
   }

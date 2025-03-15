@@ -225,7 +225,7 @@ void GeometryAsset::RegeneratePreview()
 	descStatic.numLayers = 1;
 	descStatic.numMips = 1;
 	descStatic.isSparse = false;
-	descStatic.texelFormat = ermy::rendering::Format::RGBA8_UNORM;
+	descStatic.texelSourceFormat = ermy::rendering::Format::RGBA8_UNORM;
 
 	descStatic.pixelsData = nullptr;
 	descStatic.dataSize = 0;

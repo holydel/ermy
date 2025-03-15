@@ -61,12 +61,18 @@ FormatInfo ermy::rendering::GetFormatInfo(Format format)
 		return FormatInfo{ 2,1,1,1,1,0 };
 	case Format::RGBA8_UNORM:
 		return FormatInfo{ 4,4,1,1,1,0 };
+	case Format::ARGB8_UNORM:
+		return FormatInfo{ 4,4,1,1,1,0 };
 	case Format::RGBA16_UNORM:
 		return FormatInfo{ 8,4,1,1,1,0 };
 	case Format::RGBA16_NORM:
 		return FormatInfo{ 8,4,1,1,1,0 };
 	case  Format::RGBA16F:
-		return FormatInfo{ 8,4,1,1,1,0 };
+		return FormatInfo{ 8,2,1,1,1,0 };
+	case  Format::RG16F:
+		return FormatInfo{ 4,1,1,1,1,0 };
+	case  Format::R16F:
+		return FormatInfo{ 2,4,1,1,1,0 };
 	case  Format::RGBA16_UINT:
 		return FormatInfo{ 8,4,1,1,1,0 };
 	case  Format::RG16_UINT:
@@ -107,6 +113,8 @@ FormatInfo ermy::rendering::GetFormatInfo(Format format)
 	case Format::BC5:
 		return FormatInfo{ 16, 2, 4, 4,1,0 }; // BC5 uses 16 bytes per 4x4 block (two channels)
 	case Format::BC6:
+		return FormatInfo{ 16, 3, 4, 4,1,0 }; // BC6 uses 16 bytes per 4x4 block (three channels, HDR)
+	case Format::BC6_SF:
 		return FormatInfo{ 16, 3, 4, 4,1,0 }; // BC6 uses 16 bytes per 4x4 block (three channels, HDR)
 	case Format::BC7:
 		return FormatInfo{ 16, 4, 4, 4,1,0 }; // BC7 uses 16 bytes per 4x4 block (four channels)

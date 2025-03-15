@@ -74,7 +74,7 @@ void canvas_interface::Initialize()
 	whiteTexDesc.numLayers = 1;
 	whiteTexDesc.numMips = 1;
 	whiteTexDesc.isSparse = false;
-	whiteTexDesc.texelFormat = Format::RGBA8_UNORM;
+	whiteTexDesc.texelSourceFormat = Format::RGBA8_UNORM;
 	whiteTexDesc.dataSize = 4;
 	u8 whiteData[4] = { 255,255,255,255 };
 	whiteTexDesc.pixelsData = whiteData;

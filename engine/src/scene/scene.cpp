@@ -1,9 +1,11 @@
+#include "../xr/openxr/openxr_interface.h"
+
 #include "scene.h"
 #include <glm/glm.hpp>
 #include "../rendering/rendering.h"
 #include <ermy_shader_internal.h>
 #include "../rendering/framegraph.h"
-#include "../xr/openxr/openxr_interface.h"
+
 
 using namespace ermy;
 using namespace ermy::scene;
@@ -70,7 +72,7 @@ SceneID ermy::scene::Create(const SceneDesc& desc)
 		{0.15,0.31,0.55,1.0f}, //-Z
 	};
 	dummySkyboxTexDesc.pixelsData = dummyData;
-	dummySkyboxTexDesc.texelFormat = ermy::rendering::Format::RGBA32F;
+	dummySkyboxTexDesc.texelSourceFormat = ermy::rendering::Format::RGBA32F;
 
 	scene.skyboxTex = rendering::CreateDedicatedTexture(dummySkyboxTexDesc);
 

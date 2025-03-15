@@ -50,6 +50,7 @@ Format GetFormatFromDXGI(DXGI_FORMAT dxgiFormat)
 	case DXGI_FORMAT_BC4_UNORM:             return Format::BC4;
 	case DXGI_FORMAT_BC5_UNORM:             return Format::BC5;
 	case DXGI_FORMAT_BC6H_UF16:             return Format::BC6;
+	case DXGI_FORMAT_BC6H_SF16:             return Format::BC6_SF;
 	case DXGI_FORMAT_BC7_UNORM:             return Format::BC7;
 	case DXGI_FORMAT_R8_UNORM:				return Format::R8_UNORM;
 	case DXGI_FORMAT_R8G8_UNORM:			return Format::RG8_UNORM;
@@ -73,13 +74,10 @@ AssetData* DDSLoader::Load(const std::filesystem::path& path)
 		return nullptr;
 
 	TextureAsset* result = new TextureAsset();
-	result->texelFormat = GetFormatFromDXGI(metadata.format);
-	auto finfo = rendering::GetFormatInfo(result->texelFormat);
+	result->texelSourceFormat = GetFormatFromDXGI(metadata.format);
+	auto finfo = rendering::GetFormatInfo(result->texelSourceFormat);
 
 	int texDataSize = scratchImg.GetPixelsSize();
-	result->data = malloc(texDataSize);
-	memcpy(result->data, scratchImg.GetPixels(), texDataSize);
-	result->dataSize = texDataSize;
 
 	result->width = metadata.width;
 	result->height = metadata.height;
@@ -88,6 +86,12 @@ AssetData* DDSLoader::Load(const std::filesystem::path& path)
 	result->numLayers = metadata.arraySize;
 	result->isSparse = false;
 	result->numMips = metadata.mipLevels;
+
+	result->SetSourceData(scratchImg.GetPixels(), texDataSize);
+
+	//result->data = malloc(texDataSize);
+	//memcpy(result->data, scratchImg.GetPixels(), texDataSize);
+	//result->dataSize = texDataSize;
 
 	//for (int i = 0; i < metadata.arraySize; ++i)
 	//{
@@ -120,7 +124,7 @@ AssetData* DDSLoader::Load(const std::filesystem::path& path)
 	//	if (ktxTex1->numFaces == 6)
 	//		result->isCubemap = true;
 
-	//	result->texelFormat = FromGLInternalFormat(ktxTex1->glInternalformat);
+	//	result->texelSourceFormat = FromGLInternalFormat(ktxTex1->glInternalformat);
 
 	//	//ktxTex1->
 	//	//result->numLayers = ktxTex1->numLay;

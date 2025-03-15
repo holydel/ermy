@@ -1,10 +1,15 @@
 #include <assets/texture_asset.h>
 #include <ermy_log.h>
-#include <compressonator.h>
 #include <imgui.h>
 #include <ermy_utils.h>
 #include "editor_shader_internal.h"
 #include "preview_renderer.h"
+
+#ifdef _NDEBUG
+#pragma comment(lib,"Compressonator_MD.lib")
+#else
+#pragma comment(lib,"Compressonator_MDd.lib")
+#endif
 
 using namespace ermy;
 
@@ -225,7 +230,7 @@ TextureRenderPreview::~TextureRenderPreview()
 
 TextureAsset::TextureAsset()
 {
-   
+	//CMP_InitializeBCLibrary(&mipSet);
 }
 
 TextureAsset::~TextureAsset()
@@ -237,6 +242,82 @@ void TextureAsset::ResetView()
 	previewZoom = 1.0f;
 	previewDX = previewDY = oldPreviewDX = oldPreviewDY = 0.0f;
 	isPreviewDragging = false;
+}
+
+void TextureAsset::CompressTexture()
+{
+	targetMipSet.m_format = CMPFormatFromErmyFormat(texelTargetFormat);
+}
+
+void TextureAsset::SetSourceData(const ermy::u8* data, ermy::u32 dataSize)
+{
+	if (sourceMipSet.m_pMipLevelTable) {
+		CMP_FreeMipSet(&sourceMipSet);
+	}
+	sourceMipSet = {};
+
+	sourceMipSet.m_nWidth = width;
+	sourceMipSet.m_nHeight = height;
+	sourceMipSet.m_nDepth = depth;
+	sourceMipSet.m_TextureType = isCubemap ? TT_CubeMap : (depth > 1 ? TT_VolumeTexture : TT_2D);
+	sourceMipSet.m_nMipLevels = numMips;
+	sourceMipSet.m_nMaxMipLevels = CMP_CalcMaxMipLevel(height,width,false);
+	sourceMipSet.m_format = CMPFormatFromErmyFormat(texelSourceFormat);
+
+	sourceMipSet.dwDataSize = dataSize;
+	sourceMipSet.pData = new ermy::u8[dataSize];
+	memcpy(sourceMipSet.pData, data, dataSize);
+
+	if (numMips > 0 && data && dataSize > 0) {
+		sourceMipSet.m_pMipLevelTable = new CMP_MipLevel*[sourceMipSet.m_nMaxMipLevels];
+		for (ermy::u32 i = 0; i < sourceMipSet.m_nMaxMipLevels; i++)
+		{
+			sourceMipSet.m_pMipLevelTable[i] = new CMP_MipLevel();
+		}
+		// Calculate total size of all MIP levels
+		ermy::u32 offset = 0;
+		ermy::u32 currentWidth = width;
+		ermy::u32 currentHeight = height;
+		auto blockInfo = ermy::rendering::GetFormatInfo(texelSourceFormat);
+
+		for (ermy::u32 i = 0; i < numMips && offset < dataSize; i++) {
+			// Create new MIP level
+			CMP_MipLevel* mipLevel = sourceMipSet.m_pMipLevelTable[i];
+
+			// Set MIP level dimensions
+			mipLevel->m_nWidth = currentWidth;
+			mipLevel->m_nHeight = currentHeight;
+
+			// Calculate data size for this MIP level
+			ermy::u32 mipSize = currentWidth * currentHeight * blockInfo.blockSize / (blockInfo.blockWidth * blockInfo.blockHeight);
+			if (depth > 1) {
+				mipSize *= depth;
+			}
+
+			// Ensure we don't exceed the data buffer
+			if (offset + mipSize > dataSize) {
+				delete mipLevel;
+				break;
+			}
+
+			// Allocate and copy data
+			mipLevel->m_pbData = sourceMipSet.pData + offset;
+			mipLevel->m_dwLinearSize = mipSize;
+
+			// Assign to MIP table
+			sourceMipSet.m_pMipLevelTable[i] = mipLevel;
+
+			// Update offset for next MIP
+			offset += mipSize;
+
+			// Reduce dimensions for next MIP level
+			currentWidth = std::max(1u, currentWidth / 2);
+			currentHeight = std::max(1u, currentHeight / 2);
+
+			// Update actual number of MIP levels processed
+			sourceMipSet.m_nMipLevels = std::min(numMips, (offset > 0 ? i : 0) + 1);
+		}
+	}
 }
 
 void TextureAsset::MouseZoom(float value)
@@ -276,8 +357,17 @@ void TextureAsset::MouseMove(float normalizedDeltaX, float normalizedDeltaY, int
 void TextureAsset::DrawPreview()
 {
 	ImGui::Text("Width: %d Height: %d",width,height);
-	ImGui::Text("Datasize: %s",ermy_utils::string::humanReadableFileSize(dataSize).c_str());
+	ImGui::Text("Datasize: %s",ermy_utils::string::humanReadableFileSize(sourceMipSet.dwDataSize).c_str());
 	
+	ImGui::Checkbox("sRGB", &isSRGBSpace);
+	ImGui::SameLine();
+	ImGui::Checkbox("Regen MIPs", &regenerateMips);
+
+	if (ImGui::Button("Regenrate MIPS"))
+	{
+		CompressonatorLib::Instance().RegenerateMips(sourceMipSet);
+	}
+
 	if (texType == rendering::TextureType::TexArrayCube || texType == rendering::TextureType::TexArray2D)
 	{
 		ImGui::SliderInt("Layer", &currentArrayLevel, 0, (isCubemap ? numLayers / 6 : numLayers) - 1);
@@ -290,15 +380,52 @@ void TextureAsset::DrawPreview()
 
 	int curPurpose = (int)texturePurpose;
 	ImGui::Combo("Purpose:", &curPurpose, TexturePurposeNames,std::size(TexturePurposeNames));
-	texturePurpose = (TexturePurpose)curPurpose;
+	
+	if (curPurpose != (int)texturePurpose)
+	{
+		texturePurpose = (TexturePurpose)curPurpose;
+		UpdateTextureSettings();
+	}
 
 	if (texturePurpose == TexturePurpose::TP_SOURCE)
 	{
 		int curCompression = (int)textureCompression;
 		ImGui::Combo("Compression:", &curCompression, TextureCompressionNames, std::size(TextureCompressionNames));
-		textureCompression = (TextureCompression)curCompression;
-	}
 
+		if (curCompression != (int)textureCompression)
+		{
+			textureCompression = (TextureCompression)curCompression;
+			UpdateTextureSettings();
+		}		
+	}
+}
+
+
+void TextureAsset::UpdateTextureSettings()
+{
+	switch (texturePurpose)
+	{
+	case TexturePurpose::TP_ALBEDO:
+		isSRGBSpace = true;
+		regenerateMips = true;
+		break;
+	case TexturePurpose::TP_HDR:
+		isSRGBSpace = false;
+		regenerateMips = true;
+		break;
+	case TexturePurpose::TP_NORMALMAP:
+		isSRGBSpace = false;
+		regenerateMips = true;
+		break;
+	case TexturePurpose::TP_UI:
+		isSRGBSpace = true;
+		regenerateMips = false;
+		break;
+	case TexturePurpose::TP_UTILITY:
+		isSRGBSpace = false;
+		regenerateMips = true;
+		break;
+	}
 }
 
 void TextureAsset::RegeneratePreview()
@@ -328,10 +455,10 @@ void TextureAsset::RegeneratePreview()
 	descLive.isCubemap = isCubemap;
 	descLive.numLayers = numLayers;
 	descLive.numMips = numMips;
-	descLive.pixelsData = data;
+	descLive.pixelsData = sourceMipSet.pData;
 	descLive.isSparse = false;
-	descLive.texelFormat = texelFormat;
-	descLive.dataSize = dataSize;
+	descLive.texelSourceFormat = texelSourceFormat;
+	descLive.dataSize = sourceMipSet.dwDataSize;
 
 	previewTextureLive = ermy::rendering::CreateDedicatedTexture(descLive);
 
@@ -343,7 +470,7 @@ void TextureAsset::RegeneratePreview()
 	descStatic.numLayers = 1;
 	descStatic.numMips = 1;
 	descStatic.isSparse = false;
-	descStatic.texelFormat = ermy::rendering::Format::RGBA8_UNORM;
+	descStatic.texelSourceFormat = ermy::rendering::Format::RGBA8_UNORM;
 
 	descStatic.pixelsData = nullptr;
 	descStatic.dataSize = 0;
@@ -436,4 +563,56 @@ void TextureAsset::RenderPreview(ermy::rendering::CommandList& cl)
 	}
 	
 	cl.Draw(3);
+}
+
+CMP_FORMAT CMPFormatFromErmyFormat(ermy::rendering::Format format)
+{
+	using namespace rendering;
+
+	switch (format) {
+		// Uncompressed Byte Formats (0x0nn0)
+	case Format::RGBA8_UNORM: return CMP_FORMAT_RGBA_8888;
+	case Format::ARGB8_UNORM: return CMP_FORMAT_ARGB_8888;
+	case Format::RGBA8_SRGB: return CMP_FORMAT_RGBA_8888; // Compressonator doesn't distinguish sRGB here; handle in pipeline
+	case Format::BGRA8_UNORM: return CMP_FORMAT_BGRA_8888;
+	case Format::R8_UNORM: return CMP_FORMAT_R_8;
+	case Format::RG8_UNORM: return CMP_FORMAT_RG_8;
+	case Format::RGBA8_UINT: return CMP_FORMAT_RGBA_8888; // UINT not directly supported, treat as UNORM
+	case Format::RGBA16_UNORM: return CMP_FORMAT_RGBA_16;
+	case Format::RGBA16_NORM: return CMP_FORMAT_RGBA_16; // Signed not distinguished, treat as UNORM
+	case Format::RG16_UNORM: return CMP_FORMAT_RG_16;
+	case Format::R16_UNORM: return CMP_FORMAT_R_16;
+	case Format::RGBA16_UINT: return CMP_FORMAT_RGBA_16; // UINT not directly supported, treat as UNORM
+	case Format::RG16_UINT: return CMP_FORMAT_RG_16;     // UINT not directly supported, treat as UNORM
+	case Format::R16_UINT: return CMP_FORMAT_R_16;       // UINT not directly supported, treat as UNORM
+
+		// Uncompressed Float Formats (0x1nn0)
+	case Format::RGBA16F: return CMP_FORMAT_RGBA_16F;
+	case Format::RG16F: return CMP_FORMAT_RG_16F;
+	case Format::R16F: return CMP_FORMAT_R_16F;
+	case Format::R32F: return CMP_FORMAT_R_32F;
+	case Format::RG32F: return CMP_FORMAT_RG_32F;
+	case Format::RGB32F: return CMP_FORMAT_RGB_32F;
+	case Format::RGBA32F: return CMP_FORMAT_RGBA_32F;
+
+		// Compressed Formats (0xSnn1..0xSnnF)
+	case Format::BC1: return CMP_FORMAT_BC1; // Assumed UNORM, use TC_BC1_SRGB for sRGB in TextureCompression
+	case Format::BC2: return CMP_FORMAT_BC2;
+	case Format::BC3: return CMP_FORMAT_BC3;
+	case Format::BC4: return CMP_FORMAT_BC4;
+	case Format::BC5: return CMP_FORMAT_BC5;
+	case Format::BC6: return CMP_FORMAT_BC6H; // Assuming BC6H UF16 (unsigned float)
+	case Format::BC6_SF: return CMP_FORMAT_BC6H_SF; // Assuming BC6H UF16 (unsigned float)
+	case Format::BC7: return CMP_FORMAT_BC7;
+
+		// Depth Formats (not directly supported in CMP_FORMAT, map to closest or unknown)
+	case Format::D32F: return CMP_FORMAT_R_32F; // Treat as single-channel float
+	case Format::D16_UNORM: return CMP_FORMAT_R_16; // Treat as single-channel UNORM
+	case Format::D24_UNORM_S8_UINT: return CMP_FORMAT_Unknown; // No direct equivalent
+
+		// Default case
+	default:
+		ERMY_ERROR("Unsupported ermy::rendering::Format: %d", static_cast<int>(format));
+		return CMP_FORMAT_Unknown;
+	}
 }

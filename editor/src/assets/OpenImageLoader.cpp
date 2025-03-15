@@ -88,44 +88,46 @@ AssetData* OpenImageLoader::Load(const std::filesystem::path& path)
 
    result->width = spec.width;
    result->height = spec.height;
-   result->numChannels = spec.nchannels;
+   int numChannels = spec.nchannels;
    int channelBytes = spec.channel_bytes();
 
-   if (result->numChannels == 3)
-       result->numChannels = 4;
+   if (numChannels == 3)
+       numChannels = 4;
 
-   result->dataSize = result->width * result->height * result->numChannels * channelBytes;
-   result->data = malloc(result->dataSize);
+   auto dataSize = result->width * result->height * numChannels * channelBytes;
+    
+   void* data = malloc(dataSize);
    
    //TODO: texFormat evristics
 
    if (spec.channel_bytes() == 2)
    {
-       result->texelFormat = ermy::rendering::Format::RGBA16F;
+       result->texelSourceFormat = ermy::rendering::Format::RGBA16F;
    }
    //direct loading for 1,2,4 channels
-   if (result->numChannels == spec.nchannels)
+   if (numChannels == spec.nchannels)
    {
-       in->read_image(0, 0, 0, result->numChannels, spec.format, result->data);       
+       in->read_image(0, 0, 0, numChannels, spec.format, data);       
    }
    else
    {
        int tempDataSize = result->width * result->height * channelBytes * spec.nchannels;
-       void* temp = malloc(result->dataSize);
+       void* temp = malloc(dataSize);
        in->read_image(0, 0, 0, spec.nchannels, spec.format, temp);
        
        if (channelBytes == 1)
-           ConvertRGBtoRGBA(static_cast<ermy::u8*>(result->data), static_cast<ermy::u8*>(temp), result->width, result->height);
+           ConvertRGBtoRGBA(static_cast<ermy::u8*>(data), static_cast<ermy::u8*>(temp), result->width, result->height);
 
        if (channelBytes == 2)
-           ConvertRGBtoRGBA(static_cast<ermy::u16*>(result->data), static_cast<ermy::u16*>(temp), result->width, result->height);
+           ConvertRGBtoRGBA(static_cast<ermy::u16*>(data), static_cast<ermy::u16*>(temp), result->width, result->height);
 
        if (channelBytes == 4)
-           ConvertRGBtoRGBA(static_cast<ermy::u32*>(result->data), static_cast<ermy::u32*>(temp), result->width, result->height);
+           ConvertRGBtoRGBA(static_cast<ermy::u32*>(data), static_cast<ermy::u32*>(temp), result->width, result->height);
 
        free(temp);
    }
 
+   result->SetSourceData(static_cast<ermy::u8*>(data), dataSize);
    result->RegeneratePreview();
 
 

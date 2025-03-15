@@ -14,7 +14,7 @@ namespace ermy
 			u16 depth = 1;
 			u16 numLayers = 1;
 			u8 numMips = 1;
-			rendering::Format texelFormat = rendering::Format::RGBA8_UNORM;
+			rendering::Format texelSourceFormat = rendering::Format::RGBA8_UNORM;
 
 			//flags
 			bool isCubemap : 1 = false;

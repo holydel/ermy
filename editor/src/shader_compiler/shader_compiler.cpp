@@ -5,6 +5,7 @@
 #include <fstream>
 #include <ermy_api.h>
 #include <ermy_rendering.h>
+#include <thread>
 
 using namespace ermy;
 
@@ -87,14 +88,14 @@ std::string TargetErmyHeader(SlangCompileTarget target)
 	return "unknown";
 }
 
-bool ShaderCompiler::Initialize()
+std::thread* shaderCompilerThread = nullptr;
+
+void InitializeSLANG()
 {
-	//SlangGlobalSessionDesc
-	//auto res1 = slang_createGlobalSessionWithoutCoreModule(SLANG_API_VERSION, &gSlangGlobalSession);
 	auto res1 = slang_createGlobalSession(SLANG_API_VERSION, &gSlangGlobalSession);
 
 	if (!gSlangGlobalSession)
-		return false;
+		return;
 
 	slang::TargetDesc TargetSPIRV;
 	slang::TargetDesc TargetDXIL;
@@ -143,6 +144,13 @@ bool ShaderCompiler::Initialize()
 
 
 	auto res3 = gSlangSession->createCompileRequest(&gSlangRequest);
+}
+
+bool ShaderCompiler::Initialize()
+{
+	//SlangGlobalSessionDesc
+	//auto res1 = slang_createGlobalSessionWithoutCoreModule(SLANG_API_VERSION, &gSlangGlobalSession);
+	shaderCompilerThread = new std::thread(&InitializeSLANG);
 	return true;
 }
 
@@ -269,6 +277,9 @@ void WriteStringStreamToFile(const std::ostringstream& stream, const std::string
 
 void ShaderCompiler::CompileAllShaders(ermy::ShaderDomainTag shaderTag, const std::string& moduleName, const std::filesystem::path& shadersFolder, const std::filesystem::path& outputHeader)
 {
+	if (!gSlangRequest) //not initialized yet
+		return;
+
 	AddInternalTranslationUnit(shadersFolder, moduleName);
 
 	auto res1 = gSlangRequest->compile();
@@ -384,6 +395,8 @@ void ShaderCompiler::CompileShaderFile(const std::filesystem::path& shaderPath)
 	//temprorary compile internal shaders
 	//"../../engine/engine/src/rendering/internal_shaders/spirv.h"
 	//"../../engine/engine/src/rendering/internal_shaders/dxil.h"
+	if (!gSlangRequest) //not initialized yet
+		return;
 
 	gSlangRequest->addTranslationUnit(SLANG_SOURCE_LANGUAGE_SLANG, "internal");
 	gSlangRequest->addTranslationUnitSourceFile(0, shaderPath.string().c_str());
@@ -480,3 +493,4 @@ void ShaderCompiler::CompileShaderFile(const std::filesystem::path& shaderPath)
 	//int entryPointCount = spGetEntryPointCount(gSlangRequest);
 
 }
+

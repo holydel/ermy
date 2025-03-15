@@ -8,6 +8,9 @@ target_include_directories(engine
     ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/Vulkan-Headers/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/VulkanMemoryAllocator/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/imgui
+    ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/miniaudio
+    ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/OpenXR-SDK/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/OpenXR-SDK/src/common
 )
 
 
@@ -49,21 +52,42 @@ src/rendering/internal_shaders/spirv.cpp
 src/sound/sound_interface_miniaudio.cpp
     )
     
+    set(OPENXR_BACKEND_SRC
+    src/xr/openxr/ermy_openxr.cpp
+    src/xr/openxr/openxr_interface.cpp
+    )
+
 target_sources(engine
-    PRIVATE
-    src/ermy.cpp
-    src/static_constraints.cpp
-    src/application.cpp
-    src/logger.cpp
-    src/logger.cpp
+    PRIVATE   
+    src/graphics/canvas_interface.cpp
+
+    src/imgui/ermy_imgui.cpp
+    src/imgui/imgui_interface.cpp
+
     src/rendering/framegraph.cpp
     src/rendering/rendering.cpp
     src/rendering/swapchain_interface.cpp
-    src/graphics/canvas_interface.cpp
-    src/imgui/ermy_imgui.cpp
-    src/imgui/imgui_interface.cpp
+    
+    src/scene/scene.cpp
+
+    src/sound/sound_interface.cpp
+
+    src/application.cpp
+    src/ermy_hash_utils.cpp
+    src/ermy_string_utils.cpp
+    src/ermy.cpp
+    src/geometry.cpp
+    src/logger.cpp
+    src/pak.cpp
+    src/profiler.cpp
+    src/static_constraints.cpp
+    src/application.cpp
+    
+
     ${PLATFORM_DEPENDENT_SRC}
     ${VULKAN_BACKEND_SRC}
+    ${OPENXR_BACKEND_SRC}
+    ${MINIAUDIO_BACKEND_SRC}
 
     ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/imgui/imgui.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/imgui/imgui_demo.cpp

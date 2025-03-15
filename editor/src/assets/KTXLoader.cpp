@@ -107,8 +107,14 @@ rendering::Format FromGLInternalFormat(u32 glInternalFormat)
 	{
 	case RGBA8_EXT:
 		return Format::RGBA8_UNORM;
+	//case ARGB8_EXT:
+	//	return Format::ARGB8_UNORM;
 	case RGBA16F_EXT:
 		return Format::RGBA16F;
+	case RG16F_EXT:
+		return Format::RG16F;
+	case R16F_EXT:
+		return Format::R16F;
 	case GL_R16UI:
 		return Format::R16_UINT;
 	case GL_RGBA8UI_EXT:
@@ -156,8 +162,7 @@ AssetData* KTXLoader::Load(const std::filesystem::path& path)
 
 		result->width = ktxTex2->baseWidth;
 		result->height = ktxTex2->baseHeight;
-		result->data = ktxTex2->pData;
-		result->dataSize = static_cast<u32>(ktxTex2->dataSize);
+		result->SetSourceData(ktxTex2->pData, ktxTex2->dataSize);
 	}
 
 	if (ktxTexture->classId == ktxTexture1_c)
@@ -166,14 +171,13 @@ AssetData* KTXLoader::Load(const std::filesystem::path& path)
 
 		result->width = ktxTex1->baseWidth;
 		result->height = ktxTex1->baseHeight;
-		result->data = ktxTex1->pData;
-		result->dataSize = static_cast<u32>(ktxTex1->dataSize);
+		result->SetSourceData(ktxTex1->pData, ktxTex1->dataSize);
 		result->numLayers = ktxTex1->numLayers * ktxTex1->numFaces;
 		result->numMips = ktxTex1->numLevels;
 		if (ktxTex1->numFaces == 6)
 			result->isCubemap = true;
 
-		result->texelFormat = FromGLInternalFormat(ktxTex1->glInternalformat);
+		result->texelSourceFormat = FromGLInternalFormat(ktxTex1->glInternalformat);
 
 		//ktxTex1->
 		//result->numLayers = ktxTex1->numLay;

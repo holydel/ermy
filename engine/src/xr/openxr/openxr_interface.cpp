@@ -210,6 +210,9 @@ void xr_interface::Shutdown()
 
 void xr_interface::WaitFrame()
 {
+	if(gXRInstance == nullptr)
+		return;
+
 	if (!gApplicationRunning || gXRSession == XR_NULL_HANDLE || gReferenceSpace == XR_NULL_HANDLE)
 	{
 		ERMY_ERROR("Cannot process: Session or reference space not initialized");

@@ -2,6 +2,9 @@
 
 #include <assets/asset.h>
 #include <ermy_rendering.h>
+#include "../compressonator_lib.h"
+
+CMP_FORMAT CMPFormatFromErmyFormat(ermy::rendering::Format format);
 
 class TextureAsset : public AssetData
 {
@@ -14,6 +17,9 @@ class TextureAsset : public AssetData
 	bool isStaticPreview = false;
 	int currentArrayLevel = 0;
 	int currentMip = 0;
+	bool regenerateMips = false;
+	bool isSRGBSpace = true;
+
 	ermy::rendering::TextureType texType = ermy::rendering::TextureType::Tex2D;
 
 	enum class TexturePurpose : ermy::u8
@@ -138,7 +144,8 @@ class TextureAsset : public AssetData
 	"PVRTC 2bpp (Linear RGBA)",
 	};
 
-	
+	CMP_MipSet sourceMipSet = {};
+	CMP_MipSet targetMipSet = {};
 public:
 	AssetDataType GetDataType() override { return AssetDataType::Texture; }
 	ermy::u32 width = 0;
@@ -146,12 +153,12 @@ public:
 	ermy::u32 depth = 1;
 	ermy::u32 numLayers = 1;
 	ermy::u32 numMips = 1;
-	ermy::u32 dataSize = 1;
-	ermy::u8 numChannels = 4;
 	bool isCubemap = 0;
 	bool isSparse = 0;
-	void* data = nullptr;
-	ermy::rendering::Format texelFormat;
+
+	ermy::rendering::Format texelSourceFormat = ermy::rendering::Format::RGBA8_SRGB;
+	ermy::rendering::Format texelTargetFormat = texelSourceFormat;
+
 	TexturePurpose texturePurpose = TexturePurpose::TP_ALBEDO;
 	TextureCompression textureCompression = TextureCompression::TC_NONE;
 	TextureAsset();
@@ -167,4 +174,24 @@ public:
 	void MouseUp(int button) override;
 	void MouseMove(float normalizedDeltaX, float normalizedDeltaY, int button) override;
 	void ResetView() override;
+	void CompressTexture();
+	void SetSourceData(const ermy::u8* data, ermy::u32 dataSize);
+
+	CMP_MipSet& GetSourceMipSet()
+	{
+		return sourceMipSet;
+	}
+
+	CMP_MipSet& GetTargetMipSet()
+	{
+		if (texelSourceFormat == texelTargetFormat)
+			return sourceMipSet;
+
+		if (targetMipSet.m_format != CMPFormatFromErmyFormat(texelTargetFormat))
+			CompressTexture();
+
+		return targetMipSet;
+	}
+
+	void UpdateTextureSettings();
 };

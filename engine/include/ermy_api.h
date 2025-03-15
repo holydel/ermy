@@ -41,8 +41,8 @@
 //#define ERMY_DEVICE_MOBILE
 //#define ERMY_DEVICE_HANDHELD
 
-#define ERMY_SOUND_NONE
-//#define ERMY_SOUND_MINIAUDIO
+//#define ERMY_SOUND_NONE
+#define ERMY_SOUND_MINIAUDIO
 //#define ERMY_SOUND_FMOD
 //#define ERMY_SOUND_WWISE
 
@@ -56,11 +56,11 @@
 //#define ERMY_XR_APPLE_REALITY_KIT
 
 #ifdef ERMY_OS_WINDOWS
-#include <xmmintrin.h>
+//#include <xmmintrin.h>
 #endif
 
 #ifdef ERMY_OS_ANDROID
-#include <arm_neon.h>
+//#include <arm_neon.h>
 #endif
 
 namespace ermy
@@ -81,11 +81,11 @@ namespace ermy
 	typedef	unsigned short			f16;
 
 #ifdef ERMY_OS_WINDOWS
-	typedef __m128					f32v4;
+	//typedef __m128					f32v4;
 #endif
 
 #ifdef ERMY_OS_ANDROID
-	typedef float32x4_t				f32v4;
+	//typedef float32x4_t				f32v4;
 #endif
 
 	inline constexpr unsigned long long operator ""_KB(unsigned long long v)

@@ -2,13 +2,16 @@
 #include <ermy_api.h>
 
 #ifdef ERMY_XR_OPENXR
-#include <vector>
-#include <ermy_log.h>
 
 #ifdef ERMY_OS_WINDOWS
 #define XR_USE_PLATFORM_WIN32
-#include <Windows.h>
+#include <ole2.h>
+#include <windows.h>
 #endif
+
+#include <vector>
+#include <ermy_log.h>
+
 
 #ifdef ERMY_OS_ANDROID
 #define XR_USE_PLATFORM_ANDROID

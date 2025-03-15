@@ -133,6 +133,7 @@
     <ClCompile Include="..\..\editor\src\assets\asset.cpp" />
     <ClCompile Include="..\..\editor\src\assets\assets_loader.cpp" />
     <ClCompile Include="..\..\editor\src\assets\AssimpLoader.cpp" />
+    <ClCompile Include="..\..\editor\src\assets\CompressonatorLoader.cpp" />
     <ClCompile Include="..\..\editor\src\assets\DDSLoader.cpp" />
     <ClCompile Include="..\..\editor\src\assets\FFMPEGLoader.cpp" />
     <ClCompile Include="..\..\editor\src\assets\geometry_asset.cpp" />
@@ -145,6 +146,7 @@
     <ClCompile Include="..\..\editor\src\assets_packed_cache.cpp" />
     <ClCompile Include="..\..\editor\src\assets_packer.cpp" />
     <ClCompile Include="..\..\editor\src\assets_preview_manager.cpp" />
+    <ClCompile Include="..\..\editor\src\compressonator_lib.cpp" />
     <ClCompile Include="..\..\editor\src\editor_main.cpp" />
     <ClCompile Include="..\..\editor\src\main_window.cpp" />
     <ClCompile Include="..\..\editor\src\preview_renderer.cpp" />
@@ -160,6 +162,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\editor\include\assets\assets_loader.h" />
     <ClInclude Include="..\..\editor\include\assets\AssimpLoader.h" />
+    <ClInclude Include="..\..\editor\include\assets\CompressonatorLoader.h" />
     <ClInclude Include="..\..\editor\include\assets\DDSLoader.h" />
     <ClInclude Include="..\..\editor\include\assets\FFMPEGLoader.h" />
     <ClInclude Include="..\..\editor\include\assets\KTXLoader.h" />
@@ -173,6 +176,7 @@
     <ClInclude Include="..\..\editor\include\assets\texture_asset.h" />
     <ClInclude Include="..\..\editor\include\assets\video_asset.h" />
     <ClInclude Include="..\..\editor\include\assets_preview_manager.h" />
+    <ClInclude Include="..\..\editor\include\compressonator_lib.h" />
     <ClInclude Include="..\..\editor\include\editor_main.h" />
     <ClInclude Include="..\..\editor\include\editor_shader_internal.h" />
     <ClInclude Include="..\..\editor\include\main_window.h" />

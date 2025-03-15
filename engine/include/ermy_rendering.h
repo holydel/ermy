@@ -56,10 +56,15 @@ namespace ermy
 
 		enum class Format : u8
 		{
-			RGBA8_UNORM
+			UNKNOWN = 0
+
+			, RGBA8_UNORM
+			, ARGB8_UNORM
 			,RGBA16_UNORM
 			,RGBA16_NORM
-			,RGBA16F
+			, RGBA16F
+			, RG16F
+			, R16F
 			, RGBA16_UINT
 			, RG16_UINT
 			, R16_UINT
@@ -75,7 +80,8 @@ namespace ermy
 			,BC3
 			,BC4
 			,BC5
-			,BC6
+			, BC6
+			, BC6_SF
 			,BC7
 			, R8_UNORM
 			, RG8_UNORM
@@ -219,7 +225,7 @@ namespace ermy
 			u16 depth = 1;
 			u16 numLayers =1;
 			u8 numMips = 1;
-			Format texelFormat = Format::RGBA8_UNORM;
+			Format texelSourceFormat = Format::RGBA8_UNORM;
 			bool isCubemap : 1 = false;
 			bool isSparse : 1 = false;
 		};

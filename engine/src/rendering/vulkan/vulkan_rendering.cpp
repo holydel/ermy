@@ -229,17 +229,24 @@ RenderpassInfo _createRenderPass(const RenderPassDesc& desc)
 	return result;
 }
 
-TextureInfo _createTexture(const TextureDesc& desc)
+TextureInfo _createTexture(const TextureDesc& descIn)
 {
+	//TODO: temporal workaround to load old paks
+	TextureDesc desc = descIn;
+	if(desc.texelSourceFormat == ermy::rendering::Format::UNKNOWN)
+	{
+		desc.texelSourceFormat = ermy::rendering::Format::RGBA8_UNORM;
+	}
+
 	//VkDeviceSize imageSize = desc.width * desc.height * 4; // 4 channels (RGBA) TODO: from format
 	VkBuffer stagingBuffer;
 	VmaAllocation stagingBufferAllocation;
 	void* pixelsCPUdata = nullptr;
 	ImageMeta meta;
-	auto formatInfo = ermy::rendering::GetFormatInfo(desc.texelFormat);
+	auto formatInfo = ermy::rendering::GetFormatInfo(desc.texelSourceFormat);
 
 	VkImageUsageFlags textureUsage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
-	bool isDepthFormat = ermy::rendering::IsDepthFormat(desc.texelFormat);
+	bool isDepthFormat = ermy::rendering::IsDepthFormat(desc.texelSourceFormat);
 
 	VkImageAspectFlags aspect = VK_IMAGE_ASPECT_COLOR_BIT;
 	if (isDepthFormat)
@@ -259,7 +266,7 @@ TextureInfo _createTexture(const TextureDesc& desc)
 
 	meta.width = static_cast<uint32_t>(desc.width);
 	meta.height = static_cast<uint32_t>(desc.height);
-	meta.format = vk_utils::VkFormatFromErmy(desc.texelFormat);
+	meta.format = vk_utils::VkFormatFromErmy(desc.texelSourceFormat);
 	meta.samples = VK_SAMPLE_COUNT_1_BIT;
 	meta.depth = static_cast<uint32_t>(desc.depth);
 

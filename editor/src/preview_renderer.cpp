@@ -80,11 +80,11 @@ PreviewRenderer::PreviewRenderer()
 		rendering::TextureDesc tdesc_color;
 		tdesc_color.width = 1024;
 		tdesc_color.height = 1024;
-		tdesc_color.texelFormat = rendering::Format::RGBA8_UNORM;
+		tdesc_color.texelSourceFormat = rendering::Format::RGBA8_UNORM;
 		rendering::TextureDesc tdesc_depth;
 		tdesc_depth.width = 1024;
 		tdesc_depth.height = 1024;
-		tdesc_depth.texelFormat = rendering::Format::D32F;
+		tdesc_depth.texelSourceFormat = rendering::Format::D32F;
 
 		RTT_Color = rendering::CreateDedicatedTexture(tdesc_color);
 		RTT_Depth = rendering::CreateDedicatedTexture(tdesc_depth);
@@ -110,7 +110,7 @@ PreviewRenderer::PreviewRenderer()
 		rendering::TextureDesc tdesc_depth;
 		tdesc_depth.width = 256;
 		tdesc_depth.height = 256;
-		tdesc_depth.texelFormat = rendering::Format::D32F;
+		tdesc_depth.texelSourceFormat = rendering::Format::D32F;
 
 		RTT_DepthStaticDoubleRes = rendering::CreateDedicatedTexture(tdesc_depth);
 

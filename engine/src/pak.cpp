@@ -44,7 +44,7 @@ bool ermy::pak::MountPak(const char* filePathUtf8)
 		tdesc.isCubemap = raw.isCubemap;
 		tdesc.numLayers = raw.numLayers;
 		tdesc.numMips = raw.numMips;
-		tdesc.texelFormat = raw.texelFormat;
+		tdesc.texelSourceFormat = raw.texelSourceFormat;
 		tdesc.width = raw.width;
 		tdesc.pixelsData = reader.CurrentPointer();
 
