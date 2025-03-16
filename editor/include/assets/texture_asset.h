@@ -81,6 +81,7 @@ class TextureAsset : public AssetData
 		TC_PVRTC_2BPP_UNORM_RGBA, // Linear RGBA, 2 bpp
 	};
 
+	static ermy::rendering::Format FormatFromTextureCompression(TextureCompression compression);
 	private:
 
 	float previewDX = 0.0f;
@@ -92,8 +93,7 @@ class TextureAsset : public AssetData
 	bool isStaticPreview = false;
 	int currentArrayLevel = 0;
 	int currentMip = 0;
-	bool regenerateMips = false;
-	bool isSRGBSpace = true;
+
 
 	ermy::rendering::TextureType texType = ermy::rendering::TextureType::Tex2D;
 
@@ -102,6 +102,9 @@ class TextureAsset : public AssetData
 	CMP_MipSet sourceMipSet = {};
 	CMP_MipSet targetMipSet = {};
 public:
+	bool regenerateMips = false;
+	bool isSRGBSpace = true;
+
 	AssetDataType GetDataType() override { return AssetDataType::Texture; }
 	ermy::u32 width = 0;
 	ermy::u32 height = 0;
@@ -149,4 +152,7 @@ public:
 	}
 
 	void UpdateTextureSettings();
+
+	void Save(pugi::xml_node& node) override;
+	void Load(pugi::xml_node& node) override;
 };

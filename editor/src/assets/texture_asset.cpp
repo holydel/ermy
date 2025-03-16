@@ -246,7 +246,44 @@ void TextureAsset::ResetView()
 
 void TextureAsset::CompressTexture()
 {
-	targetMipSet.m_format = CMPFormatFromErmyFormat(texelTargetFormat);
+	CompressonatorLib::Instance().CompressMips(sourceMipSet, targetMipSet, texelSourceFormat, texelTargetFormat);
+}
+
+ChannelFormat GetChannelFormatFromErmyFormat(ermy::rendering::Format format)
+{
+	using namespace ermy::rendering;
+	
+	switch(format)
+	{
+		case Format::R8_UNORM:
+		case Format::RG8_UNORM:
+		case Format::RGBA8_UNORM:
+		case Format::RGBA8_SRGB:
+			return CF_8bit;
+		case Format::R16F:
+		case Format::RG16F:
+		case Format::RGBA16F:
+			return CF_Float16;
+		case Format::RGBA16_UNORM:
+		case Format::RGBA16_NORM:
+			return CF_16bit;
+		case Format::R32F:
+		case Format::RG32F:
+		case Format::RGBA32F:
+			return CF_32bit;
+		case Format::BC1:
+		case Format::BC5:			
+		case Format::BC6:		
+		case Format::BC6_SF:			
+		case Format::BC7:			
+			return CF_Compressed;
+		case Format::D16_UNORM:
+		case Format::D24_UNORM_S8_UINT:
+		case Format::D32F:
+			assert(false);
+		default:
+			return CF_8bit;
+	}
 }
 
 void TextureAsset::SetSourceData(const ermy::u8* data, ermy::u32 dataSize)
@@ -255,7 +292,6 @@ void TextureAsset::SetSourceData(const ermy::u8* data, ermy::u32 dataSize)
 		CMP_FreeMipSet(&sourceMipSet);
 	}
 	sourceMipSet = {};
-
 	sourceMipSet.m_nWidth = width;
 	sourceMipSet.m_nHeight = height;
 	sourceMipSet.m_nDepth = depth;
@@ -264,6 +300,7 @@ void TextureAsset::SetSourceData(const ermy::u8* data, ermy::u32 dataSize)
 	sourceMipSet.m_nMaxMipLevels = CMP_CalcMaxMipLevel(height,width,false);
 	sourceMipSet.m_format = CMPFormatFromErmyFormat(texelSourceFormat);
 
+	sourceMipSet.m_ChannelFormat = GetChannelFormatFromErmyFormat(texelSourceFormat);
 	sourceMipSet.dwDataSize = dataSize;
 	sourceMipSet.pData = new ermy::u8[dataSize];
 	memcpy(sourceMipSet.pData, data, dataSize);
@@ -616,3 +653,43 @@ CMP_FORMAT CMPFormatFromErmyFormat(ermy::rendering::Format format)
 		return CMP_FORMAT_Unknown;
 	}
 }
+
+void TextureAsset::Save(pugi::xml_node& node)
+{
+	AssetData::Save(node);
+
+	node.append_attribute("isSRGBSpace").set_value(isSRGBSpace);
+	node.append_attribute("regenerateMips").set_value(regenerateMips);
+	node.append_attribute("texturePurpose").set_value(static_cast<int>(texturePurpose));
+	node.append_attribute("textureCompression").set_value(static_cast<int>(textureCompression));
+}
+
+void TextureAsset::Load(pugi::xml_node& node)	
+{
+	AssetData::Load(node);
+
+	isSRGBSpace = node.attribute("isSRGBSpace").as_bool();
+	regenerateMips = node.attribute("regenerateMips").as_bool();
+	texturePurpose = static_cast<TexturePurpose>(node.attribute("texturePurpose").as_int());
+	textureCompression = static_cast<TextureCompression>(node.attribute("textureCompression").as_int());
+}
+
+ermy::rendering::Format TextureAsset::FormatFromTextureCompression(TextureCompression compression)
+{
+	using namespace ermy::rendering;
+	
+	switch(compression)
+	{
+		case TextureCompression::TC_BC1_SRGB:
+			return ermy::rendering::Format::BC1;
+		case TextureCompression::TC_BC1_UNORM:
+			return ermy::rendering::Format::BC1;
+		case TextureCompression::TC_BC5_UNORM:
+			return ermy::rendering::Format::BC5;
+		case TextureCompression::TC_BC6H_UNORM:
+			return ermy::rendering::Format::BC6;
+		default:
+			return ermy::rendering::Format::UNKNOWN;
+	}
+}
+	

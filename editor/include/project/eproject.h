@@ -7,6 +7,8 @@
 #include "pugixml.hpp"
 #include "assets/asset.h"
 #include "assets/texture_asset.h"
+#include <thread>
+
 enum class ProjectShadersBackend
 {
 	SPIRV,
@@ -63,6 +65,29 @@ struct PlatformInfo
 	void Load(pugi::xml_node& node);
 };
 
+struct ProgressBuildingState
+{
+	enum class State
+	{
+		Idle,
+		Preprocessing,
+		Textures,
+		Geomertries,
+		Sounds,
+		Postprocessing
+	};
+
+	State state = State::Idle;
+
+	int currentTexture = 0;
+	int currentSound = 0;
+	int currentGeometry = 0;
+	int totalTextures = 0;
+	int totalSounds = 0;
+	int totalGeometries = 0;
+
+	float currentElementProgress = 0.0f;
+};
 class ErmyProject
 {	
 	pugi::xml_document xdoc;
@@ -82,6 +107,12 @@ class ErmyProject
 	bool showSettings = false;
 
 	std::vector<PlatformInfo> platformInfos;
+
+	int currentPlatformIndex = 0;
+	std::thread* buildingPakThread = nullptr;
+	std::atomic<bool> isPakBuildingInProgress = false;
+
+	ProgressBuildingState progressBuildingState;
 public:
 	ErmyProject();
 	~ErmyProject();
@@ -94,6 +125,7 @@ public:
 	bool RecompileAllShaders();
 	bool RecompileAllEditorShaders();
 	bool RebuildPAK(int platformIndex);
+	bool RebuildPAKImmediate(int platformIndex);
 	void Load();
 	void Save();
 	bool LoadAssetsCache();
@@ -108,4 +140,27 @@ public:
 	AssetFolder* GetRootAssets() {
 		return rootAssets;
 	}
+
+	const PlatformInfo& GetCurrentPlatformInfo() const {
+		return platformInfos[currentPlatformIndex];
+	}
+
+	int GetPlatformCount() const {
+		return platformInfos.size();
+	}	
+
+	const char* GetPlatformName(int index) const {
+		return platformInfos[index].platformName;
+	}
+
+	int GetCurrentPlatformIndex() const {
+		return currentPlatformIndex;
+	}
+	
+	void SetCurrentPlatform(int index) {
+		currentPlatformIndex = index;
+		UpdateWindowTitle();
+	}
+
+	void UpdateWindowTitle();
 };

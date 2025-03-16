@@ -424,3 +424,13 @@ void GeometryAsset::RenderPreview(ermy::rendering::CommandList& cl)
 	cl.SetRootConstant(currentMode, ShaderStage::Fragment,64);
 	cl.DrawDedicatedMesh(previewMesh, glm::transpose(MVP));
 }
+
+void GeometryAsset::Save(pugi::xml_node& node)
+{
+	AssetData::Save(node);
+}
+
+void GeometryAsset::Load(pugi::xml_node& node)
+{
+	AssetData::Load(node);
+}

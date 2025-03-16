@@ -332,4 +332,14 @@ namespace ermy::os_utils
 		CloseHandle(m->hFile);
 		delete m;
 	}
+
+	void SetNativeWindowTitle(const char* title)
+	{
+		if(gMainWindow)
+		{
+			wchar_t wTitle[256];
+			::os::UTF8ToWCS(title, wTitle);
+			SetWindowTextW(gMainWindow, wTitle);
+		}
+	}
 }

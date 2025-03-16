@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="TestTemplateProj3">
+<project name="TestTemplateProj3" current_platform="0">
 	<platform name="windows" pak_path="D:\Projects\ermy\eproj_template\paks\0.epak" post_build_cmd="" shaders_backend="0" platform_base="0">
 		<compression>
 			<purpose id="0" compression="3" />
@@ -9,12 +9,50 @@
 			<purpose id="4" compression="0" />
 		</compression>
 		<vertex_layouts>
-			<layout name="StaticTextured">
+			<layout name="StaticTexturedUnlit">
 				<positions>
 					<format type="2" />
 				</positions>
 				<fragments>
 					<format type="3" />
+				</fragments>
+			</layout>
+		</vertex_layouts>
+	</platform>
+	<platform name="android" pak_path="D:\Projects\ermy\eproj_template\paks\0_android.epak" post_build_cmd="" shaders_backend="0" platform_base="1">
+		<compression>
+			<purpose id="0" compression="3" />
+			<purpose id="1" compression="4" />
+			<purpose id="2" compression="6" />
+			<purpose id="3" compression="2" />
+			<purpose id="4" compression="0" />
+		</compression>
+		<vertex_layouts>
+			<layout name="StaticTexturedUnlit">
+				<positions>
+					<format type="6" />
+				</positions>
+				<fragments>
+					<format type="7" />
+				</fragments>
+			</layout>
+		</vertex_layouts>
+	</platform>
+	<platform name="oculus" pak_path="D:\Projects\ermy\eproj_template\paks\0_oculus.epak" post_build_cmd="" shaders_backend="0" platform_base="1">
+		<compression>
+			<purpose id="0" compression="3" />
+			<purpose id="1" compression="4" />
+			<purpose id="2" compression="6" />
+			<purpose id="3" compression="7" />
+			<purpose id="4" compression="0" />
+		</compression>
+		<vertex_layouts>
+			<layout name="StaticTexturedUnlit">
+				<positions>
+					<format type="6" />
+				</positions>
+				<fragments>
+					<format type="7" />
 				</fragments>
 			</layout>
 		</vertex_layouts>

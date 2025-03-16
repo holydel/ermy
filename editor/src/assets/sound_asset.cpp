@@ -198,3 +198,13 @@ void SoundAsset::MouseDown(float normalizedX, float normalizedY, int button)
 		ermy::sound::SetPlayingOffset(sound, normalizedX * duration);
 	}	
 }
+
+void SoundAsset::Save(pugi::xml_node& node)
+{
+	AssetData::Save(node);
+}
+
+void SoundAsset::Load(pugi::xml_node& node)
+{
+	AssetData::Load(node);
+}

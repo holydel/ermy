@@ -171,7 +171,7 @@ AssetData* KTXLoader::Load(const std::filesystem::path& path)
 
 		result->width = ktxTex1->baseWidth;
 		result->height = ktxTex1->baseHeight;
-		result->SetSourceData(ktxTex1->pData, ktxTex1->dataSize);
+		
 		result->numLayers = ktxTex1->numLayers * ktxTex1->numFaces;
 		result->numMips = ktxTex1->numLevels;
 		if (ktxTex1->numFaces == 6)
@@ -179,6 +179,7 @@ AssetData* KTXLoader::Load(const std::filesystem::path& path)
 
 		result->texelSourceFormat = result->texelTargetFormat = FromGLInternalFormat(ktxTex1->glInternalformat);
 
+		result->SetSourceData(ktxTex1->pData, ktxTex1->dataSize);
 		//ktxTex1->
 		//result->numLayers = ktxTex1->numLay;
 

@@ -42,4 +42,7 @@ public:
 	void MouseUp(int button) override;
 	void MouseMove(float normalizedDeltaX, float normalizedDeltaY, int button) override;
 	void ResetView() override;
+
+	void Save(pugi::xml_node& node) override;
+	void Load(pugi::xml_node& node) override;
 };

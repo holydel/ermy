@@ -36,19 +36,24 @@ namespace main_window
 				}
 				ImGui::EndMenu();
 			}
-			if (ImGui::BeginMenu("Edit"))
+			if (ImGui::BeginMenu("Project"))
 			{
-				if (ImGui::MenuItem("Copy"))
+				if (ImGui::MenuItem("Settings"))
 				{
-					//Copy
+					ErmyProject::Instance().ShowSettings();
 				}
-				if (ImGui::MenuItem("Cut"))
+
+				ImGui::Separator();
+				if (ImGui::BeginMenu("Platform"))
 				{
-					//Cut
-				}
-				if (ImGui::MenuItem("Paste"))
-				{
-					//Paste
+					for (int i = 0; i < ErmyProject::Instance().GetPlatformCount(); i++)
+					{
+						if (ImGui::MenuItem(ErmyProject::Instance().GetPlatformName(i), nullptr, ErmyProject::Instance().GetCurrentPlatformIndex() == i))
+						{
+							ErmyProject::Instance().SetCurrentPlatform(i);
+						}
+					}
+					ImGui::EndMenu();
 				}
 				ImGui::EndMenu();
 			}
@@ -87,10 +92,7 @@ namespace main_window
 				{
 					editor::screen::PropertyEditorScreen::Instance()->Show();
 				}
-				if (ImGui::MenuItem("Project Settings"))
-				{
-					ErmyProject::Instance().ShowSettings();
-				}
+
 				ImGui::EndMenu();
 			}
 			ImGui::EndMainMenuBar();

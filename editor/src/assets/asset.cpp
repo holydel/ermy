@@ -143,10 +143,14 @@ pugi::xml_node Asset::Save(pugi::xml_node& node, const std::filesystem::path& ro
 	if (GetData())
 	{
 		auto dataNode = assetNode.append_child("Data");
-		dataNode.append_attribute("type").set_value(static_cast<int>(GetData()->GetDataType()));
-		//GetData()->Save(dataNode);
+		GetData()->Save(dataNode);
 	}
 	return assetNode;
+}
+
+void AssetData::Save(pugi::xml_node& node)
+{
+	node.append_attribute("type").set_value(static_cast<int>(GetDataType()));
 }
 
 fs::file_time_type u64_to_file_time_type(uint64_t seconds_since_epoch) {
@@ -167,7 +171,6 @@ fs::file_time_type u64_to_file_time_type(uint64_t seconds_since_epoch) {
 
 void Asset::Load(pugi::xml_node& node, const std::filesystem::path& currentPath)
 {
-
 	std::filesystem::path localPath = node.attribute("path").as_string();	
 	source = currentPath / localPath;
 	includeInPAK = node.attribute("pak").as_bool();
@@ -175,6 +178,25 @@ void Asset::Load(pugi::xml_node& node, const std::filesystem::path& currentPath)
 	fileSize = node.attribute("size").as_ullong();
 	name = node.attribute("name").as_string();
 	CalculateAssetName();
+
+	auto dataNode = node.child("Data");
+	if (dataNode)
+	{
+		auto dataType = static_cast<AssetDataType>(dataNode.attribute("type").as_int());
+		
+		if(dataType != AssetDataType::UNKNOWN)
+		{
+			Import();
+
+			//data = AssetData::CreateFromType(dataType);
+			if(data)
+			{
+				data->Load(dataNode);
+				
+			}
+		}
+		
+	}
 }
 
 void BinaryAssetData::DrawPreview()
@@ -187,3 +209,20 @@ void AssetFolder::FolderData::DrawPreview()
 	ImGui::Text("Folder size: %s", ermy_utils::string::humanReadableFileSize(totalSize).c_str());
 	ImGui::Text("Folder files: %" PRIu32, numFiles);
 }
+
+AssetData* AssetData::CreateFromType(AssetDataType type)
+{
+	switch (type)
+	{
+		case AssetDataType::Texture:
+			return new TextureAsset();
+		case AssetDataType::Video:
+			return new VideoTextureAsset();
+		case AssetDataType::Sound:
+			return new SoundAsset();
+		case AssetDataType::Geometry:
+			return new GeometryAsset();
+	}
+
+	return nullptr;
+}	

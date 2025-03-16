@@ -12,5 +12,7 @@ namespace ermy
 
         void* GetPointer(MappedFileHandle mfile);
         void CloseMappedFile(MappedFileHandle mfile);
+
+        void SetNativeWindowTitle(const char* title);
     }
 }

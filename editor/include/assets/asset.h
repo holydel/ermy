@@ -46,7 +46,7 @@ protected:
 	ImTextureID assetPreviewTexLive = 0;
 	ImTextureID assetPreviewTexStatic = 0;
 public:
-	
+	static AssetData* CreateFromType(AssetDataType type);
 	virtual AssetDataType GetDataType() { return AssetDataType::UNKNOWN; }
 	struct MetaData
 	{
@@ -68,6 +68,9 @@ public:
 		return assetPreviewTexStatic;
 	}
 	virtual void RegeneratePreview() {}
+
+	virtual void Save(pugi::xml_node& node);
+	virtual void Load(pugi::xml_node& node) {}
 protected:
 	MetaData* metaData = nullptr;
 };

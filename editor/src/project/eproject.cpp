@@ -11,6 +11,8 @@
 #include <ermy_os_utils.h>
 #include <ermy_mapped_writer.h>
 
+float gCurrentTextureProgress = 0.0f;
+
 namespace fs = std::filesystem;
 using namespace ermy;
 
@@ -93,7 +95,16 @@ void ErmyProject::MountToLocalDirectory(const std::string& filePath)
         rootAssets = RescanAssets(rootAssetsPath);
     }
  
-    int a = 42;
+    UpdateWindowTitle();
+}
+
+void ErmyProject::UpdateWindowTitle()
+{
+    std::string title = projName;
+    title += " (";
+    title += platformInfos[currentPlatformIndex].platformName;
+    title += ")";
+    os_utils::SetNativeWindowTitle(title.c_str());
 }
 
 ErmyProject& ErmyProject::Instance()
@@ -162,6 +173,9 @@ void ErmyProject::Load()
         if(auto att = project.attribute("name"))        
             strcpy_s(projName, att.value());
 
+        if(auto att = project.attribute("current_platform"))
+			currentPlatformIndex = att.as_int();
+
         auto platformNode = project.child("platform");
         while (platformNode)
         {
@@ -170,6 +184,18 @@ void ErmyProject::Load()
             platformInfos.push_back(platform);
             platformNode = platformNode.next_sibling("platform");
         }   
+
+        //if no platfroms - create default one
+        if(platformInfos.size() == 0)
+        {
+            auto platform = PlatformInfo();
+            memcpy(platform.platformName,"Default",8);
+            memcpy(platform.pakPath ,"assets/pak",10);
+            platform.shadersBackend = ProjectShadersBackend::SPIRV;
+            platform.platformBase = PlatformBase::Windows;
+            platformInfos.push_back(platform);
+            currentPlatformIndex = 0;
+        }
     }
 }
 
@@ -178,7 +204,7 @@ void ErmyProject::Save()
     xdoc.reset();
     auto project = xdoc.append_child("project");
     project.append_attribute("name").set_value(projName);
-
+    project.append_attribute("current_platform").set_value(currentPlatformIndex);
     for (auto& platform : platformInfos)
     {
         auto platformNode = project.append_child("platform");
@@ -289,6 +315,46 @@ void VertexLayoutDescription::Load(pugi::xml_node& node)
 
 void ErmyProject::DrawProjectSettings()
 {
+    if(isPakBuildingInProgress)
+    {
+        static const char* buildingStateNames[] = {
+            "Idle",
+            "Preprocessing",
+            "Textures",
+            "Sounds",
+            "Geomertries",
+            "Postprocessing"
+        };
+        
+        ImGui::Begin("Building PAK", nullptr);
+        ImGui::Text("Building PAK...");
+        ImGui::Text("%s", buildingStateNames[(int)progressBuildingState.state]);
+
+        if(progressBuildingState.state == ProgressBuildingState::State::Textures)
+        {
+            ImGui::Text("Textures: %d/%d", progressBuildingState.currentTexture, progressBuildingState.totalTextures);
+            ImGui::ProgressBar((float)progressBuildingState.currentTexture / (float)progressBuildingState.totalTextures, ImVec2(0, 0));
+
+            ImGui::ProgressBar(gCurrentTextureProgress, ImVec2(0, 0));
+        }
+
+        if(progressBuildingState.state == ProgressBuildingState::State::Sounds)
+        {
+            ImGui::Text("Sounds: %d/%d", progressBuildingState.currentSound, progressBuildingState.totalSounds);
+            ImGui::ProgressBar((float)progressBuildingState.currentSound / (float)progressBuildingState.totalSounds, ImVec2(0, 0));
+        }
+        
+        if(progressBuildingState.state == ProgressBuildingState::State::Geomertries)
+        {
+            ImGui::Text("Geomertries: %d/%d", progressBuildingState.currentGeometry, progressBuildingState.totalGeometries);
+            ImGui::ProgressBar((float)progressBuildingState.currentGeometry / (float)progressBuildingState.totalGeometries, ImVec2(0, 0));
+        }
+        
+        
+        
+        ImGui::End();
+    }
+    
     if (showSettings)
     {
         if (ImGui::Begin("Ermy Project Settings", &showSettings))
@@ -569,8 +635,23 @@ void writeVector(std::ofstream& to, const std::vector<T>& vec)
 
 bool ErmyProject::RebuildPAK(int platformIndex)
 {
-    auto& platform = platformInfos[platformIndex];
-    std::string pakPath = std::string(platform.pakPath);
+    if (!isPakBuildingInProgress)
+    {
+        isPakBuildingInProgress = true;
+
+        buildingPakThread = new std::thread([this, platformIndex]() {
+            RebuildPAKImmediate(platformIndex);
+        });
+    }
+    return true;
+}
+
+bool ErmyProject::RebuildPAKImmediate(int platformIndex)
+{
+    progressBuildingState.state = ProgressBuildingState::State::Preprocessing;
+
+    auto& currentPlatform = platformInfos[platformIndex];
+    std::string pakPath = std::string(currentPlatform.pakPath);
     std::ofstream pak(pakPath, std::ios::binary);
     if (!pak.is_open())
     {
@@ -584,22 +665,56 @@ bool ErmyProject::RebuildPAK(int platformIndex)
     //Collect assets to pak
 	CollectAssets(rootAssets, collectedAssets);
     
+    progressBuildingState.totalTextures = collectedAssets.textures.size();
+    progressBuildingState.totalSounds = collectedAssets.sounds.size();
+
+    progressBuildingState.state = ProgressBuildingState::State::Textures;
+
+
     std::vector<pak::TextureRawInfo> texMeta(collectedAssets.textures.size());
 	for (int i = 0; i < collectedAssets.textures.size(); ++i)
 	{
+        progressBuildingState.currentTexture = i;
 		auto tex = collectedAssets.textures[i];
 		auto texData = tex->GetData();
-		auto texAsset = static_cast<TextureAsset*>(texData); //guaranteed to be texture asset
+		TextureAsset* texAsset = static_cast<TextureAsset*>(texData); //guaranteed to be texture asset
+        
+        //if need regerate mips and mips are not generated yet
+        if(texAsset->regenerateMips && texAsset->GetSourceMipSet().m_nMipLevels == 1)
+        {
+            CompressonatorLib::Instance().RegenerateMips(texAsset->GetSourceMipSet());
+        }
+
+        ermy::rendering::Format targetFormat = texAsset->texelTargetFormat;
+
+        //choose target format based on texture purpose and platform info
+
+        if(texAsset->texturePurpose == TextureAsset::TexturePurpose::TP_SOURCE)
+        {
+            targetFormat = texAsset->texelTargetFormat;
+        }
+        else
+        {
+            auto texComp = currentPlatform.compressionForPurpose[(int)texAsset->texturePurpose];
+
+            if(texComp != TextureAsset::TextureCompression::TC_NONE)
+            {
+                targetFormat = TextureAsset::FormatFromTextureCompression(texComp);
+                texAsset->texelTargetFormat = targetFormat;
+            }
+        }
+
 		texMeta[i].width = texAsset->width;
 		texMeta[i].height = texAsset->height;
 		texMeta[i].depth = texAsset->depth;
 		texMeta[i].numMips = texAsset->numMips;
 		texMeta[i].numLayers = texAsset->numLayers;
 		texMeta[i].isCubemap = texAsset->isCubemap;
-		texMeta[i].texelSourceFormat = texAsset->texelSourceFormat;
-		texMeta[i].dataSize = texAsset->GetTargetMipSet().dwDataSize;
+		texMeta[i].texelSourceFormat = targetFormat;
+		texMeta[i].dataSize = texAsset->GetTargetMipSet().dwDataSize; //compress mips if target format not euqal source fromat
 	}
-
+    progressBuildingState.state = ProgressBuildingState::State::Sounds;
+   
 	std::vector<pak::SoundRawInfo> soundMeta(collectedAssets.sounds.size());
 	for (int i = 0; i < collectedAssets.sounds.size(); ++i)
 	{
@@ -613,17 +728,20 @@ bool ErmyProject::RebuildPAK(int platformIndex)
 
     writeVector(pak, texMeta);
     writeVector(pak, soundMeta);
-
+    progressBuildingState.state = ProgressBuildingState::State::Postprocessing;
 	for (int i = 0; i < collectedAssets.textures.size(); ++i)
 	{
+       
 		auto tex = collectedAssets.textures[i];
 		auto texData = tex->GetData();
 		auto texAsset = static_cast<TextureAsset*>(texData); //guaranteed to be texture asset
 		pak.write((const char*)texAsset->GetTargetMipSet().pData, texAsset->GetTargetMipSet().dwDataSize);
 	}
 	
+
 	for (int i = 0; i < collectedAssets.sounds.size(); ++i)
 	{
+        progressBuildingState.currentSound = i;
 		auto sound = collectedAssets.sounds[i];
 		auto soundData = sound->GetData();
 		auto soundAsset = static_cast<SoundAsset*>(soundData); //guaranteed to be sound asset
@@ -631,5 +749,6 @@ bool ErmyProject::RebuildPAK(int platformIndex)
 	}
 	
 
+    isPakBuildingInProgress = false;
 	return true;
 }

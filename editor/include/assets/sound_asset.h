@@ -26,4 +26,7 @@ public:
 
 	void MouseZoom(float) override;
 	void MouseDown(float normalizedX, float normalizedY, int button) override;
+
+	void Save(pugi::xml_node& node) override;
+	void Load(pugi::xml_node& node) override;
 };

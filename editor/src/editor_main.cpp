@@ -37,9 +37,11 @@ public:
 	void OnLoad() override
 	{
 		ShaderCompiler::Instance().Initialize();
-		ErmyProject::Instance().MountToLocalDirectory("D:\\Projects\\ermy\\eproj_template");
 
 		editor::asset::loader::AssetsLoader::Initialize();
+
+		ErmyProject::Instance().MountToLocalDirectory("D:\\Projects\\ermy\\eproj_template");
+
 
 		editor::screen::AssetsBrowserScreen::Instance()->Show();
 		editor::screen::HierarchyScreen::Instance()->Show();
