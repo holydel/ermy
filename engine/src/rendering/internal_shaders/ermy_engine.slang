@@ -29,4 +29,17 @@ public float3 rotateVectorByQuaternion(float3 vec, float4 quat)
     float3 qvec = quat.xyz; // Vector part (x, y, z)
     float qw = quat.w;      // Scalar part (w)
     return vec + 2.0 * cross(qvec, cross(qvec, vec) + qw * vec);
-}
+};
+
+public struct RuntimeVertexStaticTexturedUnlit
+{
+    public float3 position;
+    public float2 uv0;
+};
+
+public struct RuntimeVertexStaticTexturedPhong
+{
+    public float3 position;
+    public float3 normal;
+    public float2 uv0;
+};

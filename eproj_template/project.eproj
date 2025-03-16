@@ -1,2 +1,22 @@
 <?xml version="1.0"?>
-<project name="TestTemplateProj3" pakPath="D:\Projects\ermy\eproj_template\paks\0.epak" postBuildCmd="" />
+<project name="TestTemplateProj3">
+	<platform name="windows" pak_path="D:\Projects\ermy\eproj_template\paks\0.epak" post_build_cmd="" shaders_backend="0" platform_base="0">
+		<compression>
+			<purpose id="0" compression="3" />
+			<purpose id="1" compression="4" />
+			<purpose id="2" compression="6" />
+			<purpose id="3" compression="7" />
+			<purpose id="4" compression="0" />
+		</compression>
+		<vertex_layouts>
+			<layout name="StaticTextured">
+				<positions>
+					<format type="2" />
+				</positions>
+				<fragments>
+					<format type="3" />
+				</fragments>
+			</layout>
+		</vertex_layouts>
+	</platform>
+</project>

@@ -15,4 +15,5 @@ public:
 	static ermy::rendering::Format ConvertCMPFormatToFormat(CMP_FORMAT cmpFormat);
 
 	void RegenerateMips(CMP_MipSet& mipSet);
+	void CompressMips(const CMP_MipSet& srcSet, CMP_MipSet& dstSet, ermy::rendering::Format targetFormat);
 };

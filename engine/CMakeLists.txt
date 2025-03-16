@@ -60,6 +60,7 @@ src/sound/sound_interface_miniaudio.cpp
 target_sources(engine
     PRIVATE   
     src/graphics/canvas_interface.cpp
+    src/rendering/format_names.cpp
 
     src/imgui/ermy_imgui.cpp
     src/imgui/imgui_interface.cpp

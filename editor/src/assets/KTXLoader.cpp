@@ -177,7 +177,7 @@ AssetData* KTXLoader::Load(const std::filesystem::path& path)
 		if (ktxTex1->numFaces == 6)
 			result->isCubemap = true;
 
-		result->texelSourceFormat = FromGLInternalFormat(ktxTex1->glInternalformat);
+		result->texelSourceFormat = result->texelTargetFormat = FromGLInternalFormat(ktxTex1->glInternalformat);
 
 		//ktxTex1->
 		//result->numLayers = ktxTex1->numLay;

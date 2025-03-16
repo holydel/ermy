@@ -16,6 +16,22 @@ using namespace ermy;
 
 ErmyProject gCurrentProject;
 
+const char* ProjectShadersBackendNames[] = {
+    "SPIRV",
+    "DXIL", 
+    "MSL",
+    "WGSL"
+};
+
+const char* PlatformBaseNames[] = {
+    "Windows",
+    "Android", 
+    "Linux",
+    "MacOS",
+    "Emscripten",
+    "iOS",
+    "VisionOS"
+};
 
 ErmyProject::ErmyProject()
 {
@@ -129,6 +145,7 @@ bool ErmyProject::LoadAssetsCache()
 
 void ErmyProject::SaveAssetsCache()
 {
+    
     xdoc_assets.reset();
     auto assets = xdoc_assets.append_child("assets");
 
@@ -144,10 +161,15 @@ void ErmyProject::Load()
     {
         if(auto att = project.attribute("name"))        
             strcpy_s(projName, att.value());
-        if (auto att = project.attribute("pakPath"))
-            strcpy_s(pakPath, att.value());
-        if (auto att = project.attribute("postBuildCmd"))
-            strcpy_s(postBuildCmd, att.value());
+
+        auto platformNode = project.child("platform");
+        while (platformNode)
+        {
+            PlatformInfo platform;  
+            platform.Load(platformNode);
+            platformInfos.push_back(platform);
+            platformNode = platformNode.next_sibling("platform");
+        }   
     }
 }
 
@@ -157,13 +179,113 @@ void ErmyProject::Save()
     auto project = xdoc.append_child("project");
     project.append_attribute("name").set_value(projName);
 
-    project.append_attribute("pakPath").set_value(pakPath);
-    project.append_attribute("postBuildCmd").set_value(postBuildCmd);
+    for (auto& platform : platformInfos)
+    {
+        auto platformNode = project.append_child("platform");
+        
+        platform.Save(platformNode);   
+    }
 
     xdoc.save_file(projPath.c_str());
-
     SaveAssetsCache();
 }
+
+void PlatformInfo::Save(pugi::xml_node& node)
+{
+    node.append_attribute("name").set_value(platformName);
+    node.append_attribute("pak_path").set_value(pakPath);
+    node.append_attribute("post_build_cmd").set_value(postBuildCmd);
+    node.append_attribute("shaders_backend").set_value((int)shadersBackend);
+    node.append_attribute("platform_base").set_value((int)platformBase);
+
+    auto compressionNode = node.append_child("compression");
+    for (int i = 0; i < (int)TextureAsset::TexturePurpose::TP_SOURCE; i++) {
+        auto purposeNode = compressionNode.append_child("purpose");
+        purposeNode.append_attribute("id").set_value(i);
+        purposeNode.append_attribute("compression").set_value((int)compressionForPurpose[i]);
+    }
+
+    auto layoutsNode = node.append_child("vertex_layouts");
+    for (auto& layout : vertexLayouts) {
+        auto layoutNode = layoutsNode.append_child("layout");
+        layout.Save(layoutNode);
+    }
+}
+
+void PlatformInfo::Load(pugi::xml_node& node)
+{
+    if (auto att = node.attribute("name"))
+        strcpy_s(platformName, att.value());
+    if (auto att = node.attribute("pak_path"))
+        strcpy_s(pakPath, att.value());
+    if (auto att = node.attribute("post_build_cmd"))
+        strcpy_s(postBuildCmd, att.value());
+    if (auto att = node.attribute("shaders_backend"))
+        shadersBackend = (ProjectShadersBackend)att.as_int();
+    if (auto att = node.attribute("platform_base"))
+        platformBase = (PlatformBase)att.as_int();
+
+    auto compressionNode = node.child("compression");
+    if (compressionNode) {
+        for (auto purposeNode : compressionNode.children("purpose")) {
+            int id = purposeNode.attribute("id").as_int();
+            if (id <= (int)TextureAsset::TexturePurpose::TP_SOURCE) {
+                compressionForPurpose[id] = (TextureAsset::TextureCompression)purposeNode.attribute("compression").as_int();
+            }
+        }
+    }
+
+    auto layoutsNode = node.child("vertex_layouts");
+    if (layoutsNode) {
+        vertexLayouts.clear();
+        for (auto layoutNode : layoutsNode.children("layout")) {
+            VertexLayoutDescription layout;
+            layout.Load(layoutNode);
+            vertexLayouts.push_back(layout);
+        }
+    }
+}
+
+void VertexLayoutDescription::Save(pugi::xml_node& node)
+{
+    node.append_attribute("name").set_value(vertexLayoutName);
+    
+    auto posNode = node.append_child("positions");
+    for (auto format : positionsStream) {
+        auto formatNode = posNode.append_child("format");
+        formatNode.append_attribute("type").set_value((int)format);
+    }
+
+    auto fragNode = node.append_child("fragments");
+    for (auto format : fragmentStream) {
+        auto formatNode = fragNode.append_child("format");
+        formatNode.append_attribute("type").set_value((int)format);
+    }
+}
+
+void VertexLayoutDescription::Load(pugi::xml_node& node)
+{
+    if (auto att = node.attribute("name"))
+        strcpy_s(vertexLayoutName, att.value());
+
+    positionsStream.clear();
+    fragmentStream.clear();
+
+    auto posNode = node.child("positions");
+    if (posNode) {
+        for (auto formatNode : posNode.children("format")) {
+            positionsStream.push_back((ermy::rendering::VertexFormat)formatNode.attribute("type").as_int());
+        }
+    }
+
+    auto fragNode = node.child("fragments");
+    if (fragNode) {
+        for (auto formatNode : fragNode.children("format")) {
+            fragmentStream.push_back((ermy::rendering::VertexFormat)formatNode.attribute("type").as_int());
+        }
+    }
+}
+
 
 void ErmyProject::DrawProjectSettings()
 {
@@ -172,10 +294,188 @@ void ErmyProject::DrawProjectSettings()
         if (ImGui::Begin("Ermy Project Settings", &showSettings))
         {
             ImGui::InputText("Project Name:", projName, sizeof(projName), ImGuiInputTextFlags_NoHorizontalScroll);
+  
+            if (ImGui::BeginTable("Platforms", 2))
+            {
+                ImGui::TableSetupColumn("Platforms List", ImGuiTableColumnFlags_WidthFixed, 200.0f);
+                ImGui::TableSetupColumn("Platform Settings", ImGuiTableColumnFlags_WidthStretch);
+                ImGui::TableHeadersRow();
 
-            ImGui::InputText("PAK path:", pakPath, sizeof(pakPath), ImGuiInputTextFlags_NoHorizontalScroll);
-            ImGui::InputText("Post Build command:", postBuildCmd, sizeof(postBuildCmd), ImGuiInputTextFlags_NoHorizontalScroll);
-            
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+
+                static int selectedPlatform = 0;
+                if (platformInfos.size() == 0)
+                {
+                    selectedPlatform = -1;
+                }
+                else
+                {
+                    selectedPlatform = std::min(selectedPlatform, (int)platformInfos.size() - 1);
+                }
+
+                if (ImGui::Button("Add Platform"))
+                {
+                    platformInfos.push_back(PlatformInfo());
+                    selectedPlatform = platformInfos.size() - 1;
+                }
+
+                for (int i = 0; i < platformInfos.size(); i++)
+                {
+                    if (ImGui::Selectable(platformInfos[i].platformName, selectedPlatform == i))
+                    {
+                        selectedPlatform = i;
+                    }
+                }
+
+                ImGui::TableNextColumn();
+
+                if (selectedPlatform >= 0)
+                {
+                    auto& platform = platformInfos[selectedPlatform];
+
+                    ImGui::InputText("Platform Name", platform.platformName, sizeof(platform.platformName));
+
+                    ImGui::InputText("PAK path:", platform.pakPath, sizeof(platform.pakPath), ImGuiInputTextFlags_NoHorizontalScroll);
+                    ImGui::InputText("Post Build command:", platform.postBuildCmd, sizeof(platform.postBuildCmd), ImGuiInputTextFlags_NoHorizontalScroll);
+
+                    int curBackend = (int)platform.shadersBackend;
+                    if (ImGui::Combo("Shaders Backend", &curBackend, ProjectShadersBackendNames, std::size(ProjectShadersBackendNames)))
+                    {
+                        platform.shadersBackend = (ProjectShadersBackend)curBackend;
+                    }
+
+                    int curBase = (int)platform.platformBase;
+                    if (ImGui::Combo("Platform Base", &curBase, PlatformBaseNames, std::size(PlatformBaseNames)))
+                    {
+                        platform.platformBase = (PlatformBase)curBase;
+                    }
+
+                    if (ImGui::CollapsingHeader("Texture Compression Settings"))
+                    {
+                        for (int i = 0; i < (int)TextureAsset::TexturePurpose::TP_SOURCE; i++) //TP_SOURCE is always TC_NONE
+                        {
+                            ImGui::Text("%s", TexturePurposeNames[i]);
+                            ImGui::SameLine();
+                            int curCompression = (int)platform.compressionForPurpose[i];
+                            char label[32];
+                            sprintf_s(label, "##compression%d", i);
+                            if (ImGui::Combo(label, &curCompression, TextureCompressionNames, std::size(TextureCompressionNames)))
+                            {
+                                platform.compressionForPurpose[i] = (TextureAsset::TextureCompression)curCompression;
+                            }
+                        }
+                    }
+
+                    if (ImGui::CollapsingHeader("Vertex Layouts"))
+                    {
+                        if (ImGui::BeginTable("VertexLayouts", 2))
+                        {
+                            ImGui::TableSetupColumn("Layouts List", ImGuiTableColumnFlags_WidthFixed, 200.0f);
+                            ImGui::TableSetupColumn("Layout Settings", ImGuiTableColumnFlags_WidthStretch);
+                            ImGui::TableHeadersRow();
+
+                            ImGui::TableNextRow();
+                            ImGui::TableNextColumn();
+
+                            if (ImGui::Button("Add Vertex Layout"))
+                            {
+                                platform.vertexLayouts.push_back(VertexLayoutDescription());
+                            }
+
+                            static int selectedLayout = -1;
+                            if (platform.vertexLayouts.size() == 0)
+                            {
+                                selectedLayout = -1;
+                            }
+                            else
+                            {
+                                selectedLayout = std::min(selectedLayout, (int)platform.vertexLayouts.size() - 1);
+                            }
+
+                            for (int i = 0; i < platform.vertexLayouts.size(); i++)
+                            {
+                                char label[32];
+                                sprintf_s(label, "Layout %d", i);
+                                if (ImGui::Selectable(platform.vertexLayouts[i].vertexLayoutName, selectedLayout == i))
+                                {
+                                    selectedLayout = i;
+                                }
+                            }
+
+                            ImGui::TableNextColumn();
+
+                            if (selectedLayout >= 0)
+                            {
+                                auto& layout = platform.vertexLayouts[selectedLayout];
+                                ImGui::InputText("Layout Name", layout.vertexLayoutName, sizeof(layout.vertexLayoutName));
+
+                                if (ImGui::CollapsingHeader("Position Stream"))
+                                {
+                                    if (ImGui::Button("Add Position Format"))
+                                        layout.positionsStream.push_back(ermy::rendering::VertexFormat::UNKNOWN);
+
+                                    for (int i = 0; i < layout.positionsStream.size(); i++)
+                                    {
+                                        char label[32];
+                                        sprintf_s(label, "Position %d##pos%d", i, i);
+                                        int format = (int)layout.positionsStream[i];
+                                        if (ImGui::Combo(label, &format, ermy::rendering::VertexFormatNames, std::size(ermy::rendering::VertexFormatNames)))
+                                        {
+                                            layout.positionsStream[i] = (ermy::rendering::VertexFormat)format;
+                                        }
+                                        ImGui::SameLine();
+                                        sprintf_s(label, "X##pos%d", i);
+                                        if (ImGui::Button(label))
+                                        {
+                                            layout.positionsStream.erase(layout.positionsStream.begin() + i);
+                                            i--;
+                                        }
+                                    }
+                                }
+
+                                if (ImGui::CollapsingHeader("Fragment Stream"))
+                                {
+                                    if (ImGui::Button("Add Fragment Format"))
+                                        layout.fragmentStream.push_back(ermy::rendering::VertexFormat::UNKNOWN);
+
+                                    for (int i = 0; i < layout.fragmentStream.size(); i++)
+                                    {
+                                        char label[32];
+                                        sprintf_s(label, "Fragment %d##frag%d", i, i);
+                                        int format = (int)layout.fragmentStream[i];
+                                        if (ImGui::Combo(label, &format, ermy::rendering::VertexFormatNames, std::size(ermy::rendering::VertexFormatNames)))
+                                        {
+                                            layout.fragmentStream[i] = (ermy::rendering::VertexFormat)format;
+                                        }
+                                        ImGui::SameLine();
+                                        sprintf_s(label, "X##frag%d", i);
+                                        if (ImGui::Button(label))
+                                        {
+                                            layout.fragmentStream.erase(layout.fragmentStream.begin() + i);
+                                            i--;
+                                        }
+                                    }
+                                }
+
+                                if (ImGui::Button("Delete Layout"))
+                                {
+                                    platform.vertexLayouts.erase(platform.vertexLayouts.begin() + selectedLayout);
+                                    selectedLayout = -1;
+                                }
+                            }
+                            ImGui::EndTable();
+                        }
+                    }
+
+                    if (ImGui::Button("Delete Platform"))
+                    {
+                        platformInfos.erase(platformInfos.begin() + selectedPlatform);
+                        selectedPlatform = -1;
+                    }
+                }
+            }
+            ImGui::EndTable();
         }
         ImGui::End();
     }
@@ -267,8 +567,10 @@ void writeVector(std::ofstream& to, const std::vector<T>& vec)
     to.write((const char*)vec.data(), vec.size() * sizeof(T));
 }
 
-bool ErmyProject::RebuildPAK()
+bool ErmyProject::RebuildPAK(int platformIndex)
 {
+    auto& platform = platformInfos[platformIndex];
+    std::string pakPath = std::string(platform.pakPath);
     std::ofstream pak(pakPath, std::ios::binary);
     if (!pak.is_open())
     {

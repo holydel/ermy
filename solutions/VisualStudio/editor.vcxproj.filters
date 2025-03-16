@@ -85,6 +85,9 @@
     <ClCompile Include="..\..\editor\src\assets\CompressonatorLoader.cpp">
       <Filter>src\assets</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\editor\src\assets\texture_names.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\editor\include\editor_main.h">

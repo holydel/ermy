@@ -236,6 +236,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\..\engine\src\rendering\format_names.cpp" />
     <ClCompile Include="..\..\engine\src\rendering\framegraph.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Android-arm64-v8a'">
       </PrecompiledHeader>

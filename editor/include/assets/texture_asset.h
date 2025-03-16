@@ -6,22 +6,17 @@
 
 CMP_FORMAT CMPFormatFromErmyFormat(ermy::rendering::Format format);
 
+// Define array sizes based on enum counts
+constexpr size_t TEXTURE_PURPOSE_COUNT = 6;  // matches TexturePurpose enum count
+constexpr size_t TEXTURE_COMPRESSION_COUNT = 44;  // matches TextureCompression enum count
+
+// Declare arrays with explicit sizes
+extern const char* TexturePurposeNames[TEXTURE_PURPOSE_COUNT];
+extern const char* TextureCompressionNames[TEXTURE_COMPRESSION_COUNT];
+
 class TextureAsset : public AssetData
 {
-	float previewDX = 0.0f;
-	float previewDY = 0.0f;
-	float previewZoom = 1.0f;	
-	bool isPreviewDragging = false;
-	float oldPreviewDX = 0.0f;
-	float oldPreviewDY = 0.0f;
-	bool isStaticPreview = false;
-	int currentArrayLevel = 0;
-	int currentMip = 0;
-	bool regenerateMips = false;
-	bool isSRGBSpace = true;
-
-	ermy::rendering::TextureType texType = ermy::rendering::TextureType::Tex2D;
-
+	public:
 	enum class TexturePurpose : ermy::u8
 	{
 		TP_ALBEDO //sRGB compressed
@@ -35,6 +30,8 @@ class TextureAsset : public AssetData
 	enum class TextureCompression : ermy::u8 {
 		TC_NONE,         
 
+		TC_HDR_R11G11B10F,
+		TC_HDR_RGB9E5,
 		// BC Formats
 		TC_BC1_SRGB,         // sRGB RGB, 4 bpp (DXT1, no alpha or 1-bit alpha)
 		TC_BC1_UNORM,        // Linear RGB, 4 bpp
@@ -84,65 +81,23 @@ class TextureAsset : public AssetData
 		TC_PVRTC_2BPP_UNORM_RGBA, // Linear RGBA, 2 bpp
 	};
 
-	inline static const char* TexturePurposeNames[] = { "Albedo (sRGB Compressed)",
-	"Utility (Linear Compressed)",
-	"Normal Map (Linear RG Compressed)",
-	"HDR (Linear)",
-	"UI (sRGB Uncompressed)",
-	"Source (User-Defined)" };
+	private:
 
+	float previewDX = 0.0f;
+	float previewDY = 0.0f;
+	float previewZoom = 1.0f;	
+	bool isPreviewDragging = false;
+	float oldPreviewDX = 0.0f;
+	float oldPreviewDY = 0.0f;
+	bool isStaticPreview = false;
+	int currentArrayLevel = 0;
+	int currentMip = 0;
+	bool regenerateMips = false;
+	bool isSRGBSpace = true;
 
-	inline static const char* TextureCompressionNames[] = {
-	"None (source)",
+	ermy::rendering::TextureType texType = ermy::rendering::TextureType::Tex2D;
 
-	// BC
-	"BC1 (sRGB RGB, 4 bpp)",
-	"BC1 (Linear RGB, 4 bpp)",
-	"BC4 (Linear R, 4 bpp)",
-	"BC5 (Linear RG, 8 bpp)",
-	"BC6H (HDR RGB, 8 bpp)",
-	"BC7 (sRGB RGBA, 8 bpp)",
-	"BC7 (Linear RGBA, 8 bpp)",
-
-	// ASTC LDR
-	"ASTC LDR 4x4 (sRGB RGB, 8 bpp)",
-	"ASTC LDR 4x4 (sRGB RGBA, 8 bpp)",
-	"ASTC LDR 4x4 (Linear RGB, 8 bpp)",
-	"ASTC LDR 4x4 (Linear RGBA, 8 bpp)",
-	"ASTC LDR 6x6 (sRGB RGB, 3.56 bpp)",
-	"ASTC LDR 6x6 (sRGB RGBA, 3.56 bpp)",
-	"ASTC LDR 6x6 (Linear RGB, 3.56 bpp)",
-	"ASTC LDR 6x6 (Linear RGBA, 3.56 bpp)",
-	"ASTC LDR 8x8 (sRGB RGB, 2 bpp)",
-	"ASTC LDR 8x8 (sRGB RGBA, 2 bpp)",
-	"ASTC LDR 8x8 (Linear RGB, 2 bpp)",
-	"ASTC LDR 8x8 (Linear RGBA, 2 bpp)",
-
-	// ASTC HDR
-	"ASTC HDR 4x4 (HDR RGB, 8 bpp)",
-	"ASTC HDR 4x4 (HDR RGBA, 8 bpp)",
-	"ASTC HDR 6x6 (HDR RGB, 3.56 bpp)",
-	"ASTC HDR 6x6 (HDR RGBA, 3.56 bpp)",
-	"ASTC HDR 8x8 (HDR RGB, 2 bpp)",
-	"ASTC HDR 8x8 (HDR RGBA, 2 bpp)",
-
-	// ETC
-	"ETC1 (sRGB RGB, 4 bpp)",
-	"ETC2 (sRGB RGB, 4 bpp)",
-	"ETC2 (sRGB RGBA, 4 bpp)",
-	"ETC2 (Linear RGB, 4 bpp)",
-	"ETC2 (Linear RGBA, 4 bpp)",
-
-	// PVRTC
-	"PVRTC 4bpp (sRGB RGB)",
-	"PVRTC 4bpp (sRGB RGBA)",
-	"PVRTC 4bpp (Linear RGB)",
-	"PVRTC 4bpp (Linear RGBA)",
-	"PVRTC 2bpp (sRGB RGB)",
-	"PVRTC 2bpp (sRGB RGBA)",
-	"PVRTC 2bpp (Linear RGB)",
-	"PVRTC 2bpp (Linear RGBA)",
-	};
+	
 
 	CMP_MipSet sourceMipSet = {};
 	CMP_MipSet targetMipSet = {};

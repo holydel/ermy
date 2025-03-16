@@ -29,9 +29,70 @@ void CompressonatorLib::RegenerateMips(CMP_MipSet& mipSet)
 {
     CMP_GenerateMIPLevels(&mipSet, 1);
 
-    printf("foo");
+    // Recreate mipset data for all mip levels
+    CMP_DWORD totalSize = 0;
+    for (CMP_INT mipLevel = 0; mipLevel < mipSet.m_nMipLevels; mipLevel++) {
+        CMP_MipLevel* level = nullptr;
+        CMP_GetMipLevel(&level, &mipSet, mipLevel, 0);
+        if (level) {
+            totalSize += level->m_dwLinearSize;
+        }
+    }
+
+    // Allocate new buffer for all mip data
+    CMP_BYTE* newData = (CMP_BYTE*)malloc(totalSize);
+    CMP_DWORD offset = 0;
+
+    // Copy data from each mip level
+    for (CMP_INT mipLevel = 0; mipLevel < mipSet.m_nMipLevels; mipLevel++) {
+        CMP_MipLevel* level = nullptr;
+        CMP_GetMipLevel(&level, &mipSet, mipLevel, 0);
+        if (level && level->m_pbData) {
+            memcpy(newData + offset, level->m_pbData, level->m_dwLinearSize);
+            offset += level->m_dwLinearSize;
+        }
+    }
+
+    // Free old data and update mipset
+    if (mipSet.pData) {
+        free(mipSet.pData);
+    }
+    mipSet.pData = newData;
+    mipSet.dwDataSize = totalSize;
+
 }
 
+void CompressonatorLib::CompressMips(const CMP_MipSet& srcSet, CMP_MipSet& dstSet, ermy::rendering::Format targetFormat)
+{
+    // Initialize destination mipset
+    memset(&dstSet, 0, sizeof(CMP_MipSet));
+    dstSet.m_nHeight = srcSet.m_nHeight;
+    dstSet.m_nWidth = srcSet.m_nWidth;
+    dstSet.m_nMipLevels = srcSet.m_nMipLevels;
+    dstSet.m_ChannelFormat = srcSet.m_ChannelFormat;
+    dstSet.m_TextureDataType = srcSet.m_TextureDataType;
+    dstSet.m_format = ConvertFormatToCMPFormat(targetFormat);
+
+    // Create destination mipset
+    if (CMP_CreateMipSet(&dstSet, 
+                         srcSet.m_nWidth, srcSet.m_nHeight, srcSet.m_nDepth
+                         , srcSet.m_ChannelFormat, srcSet.m_TextureType) != CMP_OK) {
+        return;
+    }
+
+    // Setup compression options
+    KernelOptions options;
+    memset(&options, 0, sizeof(KernelOptions));
+    options.format = dstSet.m_format;
+    options.fquality = 1.0f;
+    options.threads = 0; // Auto thread count
+
+    CMP_Feedback_Proc proc = [](float fProgress, CMP_DWORD_PTR pUser1, CMP_DWORD_PTR pUser2) -> bool {
+        return true; // Continue compression
+    };
+
+    CMP_CompressTexture(&options, srcSet, dstSet, proc);    
+}
 // Convert CMP_FORMAT to Format
 
 Format CompressonatorLib::ConvertCMPFormatToFormat(CMP_FORMAT cmpFormat) {

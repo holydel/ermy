@@ -74,7 +74,7 @@ AssetData* DDSLoader::Load(const std::filesystem::path& path)
 		return nullptr;
 
 	TextureAsset* result = new TextureAsset();
-	result->texelSourceFormat = GetFormatFromDXGI(metadata.format);
+	result->texelSourceFormat = result->texelTargetFormat = GetFormatFromDXGI(metadata.format);
 	auto finfo = rendering::GetFormatInfo(result->texelSourceFormat);
 
 	int texDataSize = scratchImg.GetPixelsSize();

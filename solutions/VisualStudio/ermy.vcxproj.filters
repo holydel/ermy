@@ -210,6 +210,9 @@
     <ClCompile Include="..\..\engine\src\rendering\vulkan\VulkanRenderPass.cpp">
       <Filter>Source Files\rendering\vulkan</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\engine\src\rendering\format_names.cpp">
+      <Filter>Source Files\rendering</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\engine\include\ermy.h">

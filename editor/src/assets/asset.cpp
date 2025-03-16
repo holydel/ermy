@@ -167,8 +167,9 @@ fs::file_time_type u64_to_file_time_type(uint64_t seconds_since_epoch) {
 
 void Asset::Load(pugi::xml_node& node, const std::filesystem::path& currentPath)
 {
-	auto path = node.attribute("path").as_string();
-	source = currentPath / path;
+
+	std::filesystem::path localPath = node.attribute("path").as_string();	
+	source = currentPath / localPath;
 	includeInPAK = node.attribute("pak").as_bool();
 	lastWriteTime = u64_to_file_time_type(node.attribute("date").as_ullong());
 	fileSize = node.attribute("size").as_ullong();

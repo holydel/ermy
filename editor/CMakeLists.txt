@@ -37,6 +37,7 @@ target_sources(editor
     src/assets/geometry_asset.cpp        
     src/assets/sound_asset.cpp
     src/assets/texture_asset.cpp
+    src/assets/texture_names.cpp
     src/assets/video_asset.cpp
     
     src/assets/AssimpLoader.cpp

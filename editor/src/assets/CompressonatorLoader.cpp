@@ -46,7 +46,7 @@ AssetData* CompressonatorLoader::Load(const std::filesystem::path& path)
 
 	result->width = mip.m_nWidth;
 	result->height = mip.m_nHeight;
-	result->texelSourceFormat = result->texelSourceFormat = CompressonatorLib::ConvertCMPFormatToFormat(mip.m_format);
+	result->texelSourceFormat = result->texelTargetFormat = CompressonatorLib::ConvertCMPFormatToFormat(mip.m_format);
 	result->isSparse = false;
 	result->depth = 1;
 	result->numLayers = 1;

@@ -54,6 +54,27 @@ namespace ermy
 			u32 boneIndices;
 		};
 
+		enum class VertexFormat : u8
+		{
+			UNKNOWN = 0,
+
+			XYZW_32F,
+			XYZ_32F,
+			XY_32F,
+			X_32F,
+			XYZW_16F,
+			XYZ_16F,
+			XY_16F,
+			X_16F,
+			XYZW_PACKED_32_UNORM,
+			XYZW_PACKED_32_SNORM,
+			XY_PACKED_32_UNORM,
+			XY_PACKED_32_SNORM,
+		};
+
+		constexpr size_t VERTEX_FORMAT_COUNT = 13;  // UNKNOWN + 12 formats
+		extern const char* VertexFormatNames[VERTEX_FORMAT_COUNT];
+
 		enum class Format : u8
 		{
 			UNKNOWN = 0
@@ -91,6 +112,9 @@ namespace ermy
 			, D24_UNORM_S8_UINT
 			, RGBA8_SRGB
 		};
+
+		constexpr size_t FORMAT_COUNT = 33;  // UNKNOWN + 32 formats
+		extern const char* FormatNames[FORMAT_COUNT];
 
 		struct FormatInfo
 		{

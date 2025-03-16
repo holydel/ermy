@@ -69,7 +69,7 @@ namespace main_window
 				ImGui::Separator();
 				if (ImGui::MenuItem("Rebuild PAK"))
 				{
-					ErmyProject::Instance().RebuildPAK();
+					ErmyProject::Instance().RebuildPAK(0);
 				}
 				ImGui::EndMenu();
 			}

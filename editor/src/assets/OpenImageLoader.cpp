@@ -79,7 +79,15 @@ void ConvertRGBtoRGBA(T* rgbDataOut, const T* rgbDataIn, int width, int height)
 AssetData* OpenImageLoader::Load(const std::filesystem::path& path)
 {
   //   Create an ImageInput object to read the image
-   auto in = ImageInput::open(path.c_str());
+   auto in = ImageInput::open((const char*)path.u8string().c_str());
+
+   if (!in)
+   {
+       in =ImageInput::open(path.wstring());
+   }
+
+   if (!in)
+       return nullptr;
 
    // Get the image specifications
    const ImageSpec& spec = in->spec();
@@ -102,7 +110,7 @@ AssetData* OpenImageLoader::Load(const std::filesystem::path& path)
 
    if (spec.channel_bytes() == 2)
    {
-       result->texelSourceFormat = ermy::rendering::Format::RGBA16F;
+       result->texelSourceFormat = result->texelTargetFormat = ermy::rendering::Format::RGBA16F;
    }
    //direct loading for 1,2,4 channels
    if (numChannels == spec.nchannels)

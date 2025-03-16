@@ -229,15 +229,8 @@ RenderpassInfo _createRenderPass(const RenderPassDesc& desc)
 	return result;
 }
 
-TextureInfo _createTexture(const TextureDesc& descIn)
+TextureInfo _createTexture(const TextureDesc& desc)
 {
-	//TODO: temporal workaround to load old paks
-	TextureDesc desc = descIn;
-	if(desc.texelSourceFormat == ermy::rendering::Format::UNKNOWN)
-	{
-		desc.texelSourceFormat = ermy::rendering::Format::RGBA8_UNORM;
-	}
-
 	//VkDeviceSize imageSize = desc.width * desc.height * 4; // 4 channels (RGBA) TODO: from format
 	VkBuffer stagingBuffer;
 	VmaAllocation stagingBufferAllocation;

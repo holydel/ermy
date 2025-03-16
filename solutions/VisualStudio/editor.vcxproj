@@ -142,6 +142,7 @@
     <ClCompile Include="..\..\editor\src\assets\SoundsLoader.cpp" />
     <ClCompile Include="..\..\editor\src\assets\sound_asset.cpp" />
     <ClCompile Include="..\..\editor\src\assets\texture_asset.cpp" />
+    <ClCompile Include="..\..\editor\src\assets\texture_names.cpp" />
     <ClCompile Include="..\..\editor\src\assets\video_asset.cpp" />
     <ClCompile Include="..\..\editor\src\assets_packed_cache.cpp" />
     <ClCompile Include="..\..\editor\src\assets_packer.cpp" />

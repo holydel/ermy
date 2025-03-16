@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        
+        {
+            "name": "Debug Editor",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "D:\\Projects\\ermy\\ermy\\build\\windows-msvc\\editor\\editor.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "D:\\Projects\\ermy\\ermy\\build\\windows-msvc\\editor",
+            "environment": [],
+            "console": "integratedTerminal",
+            "preLaunchTask": "C/C++: Build Debug"
+        }
+    ]
+}
