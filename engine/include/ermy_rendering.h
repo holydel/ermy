@@ -169,7 +169,9 @@ namespace ermy
 			Vertex,
 			Index,
 			Uniform,
-			Storage
+			Storage,
+			TransferSrc,
+			TransferDst
 		};
 
 		struct RootConstantRange
@@ -268,6 +270,7 @@ namespace ermy
 		{
 			TextureID colorAttachment;
 			TextureID depthStencilAttachment;
+			const char* debugName = nullptr;
 		};
 
 		struct DescriptorSetDesc
@@ -335,5 +338,8 @@ namespace ermy
 		void UpdateDescriptorSet(ermy::u64 ds, const DescriptorSetDesc::Binding& binding);
 
 		void WaitDeviceIdle();
+
+		void ReadbackTexture(TextureID tex, void* data);
+		void UpdateTexture(TextureID tex, const void* data);
 	}
 }

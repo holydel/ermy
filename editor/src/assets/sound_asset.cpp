@@ -87,7 +87,7 @@ void SoundAsset::DrawPreview()
 	}
 }
 
-void SoundAsset::RegeneratePreview()
+void SoundAsset::RegenerateLivePreview()
 {
 	u8* data = new u8[512 * channels];
 	float* maxGain = new float[channels];
@@ -147,9 +147,9 @@ void SoundAsset::RegeneratePreview()
 	descStatic.pixelsData = nullptr;
 	descStatic.dataSize = 0;
 
-	previewTextureStatic = ermy::rendering::CreateDedicatedTexture(descStatic);
+	//previewTextureStatic = ermy::rendering::CreateDedicatedTexture(descStatic);
 	assetPreviewTexLive = ermy::rendering::GetTextureDescriptor(previewTextureLive);
-	assetPreviewTexStatic = ermy::rendering::GetTextureDescriptor(previewTextureStatic);
+	//assetPreviewTexStatic = ermy::rendering::GetTextureDescriptor(previewTextureStatic);
 
 	PreviewRenderer::Instance().EnqueueStaticPreviewGeneration(this);
 }
@@ -170,7 +170,7 @@ void SoundAsset::RenderStaticPreview(ermy::rendering::CommandList& cl)
 	cl.EndRenderPass();
 
 	auto staticRTTTex = PreviewRenderer::Instance().GetStaticTexture();
-	cl.BlitTexture(staticRTTTex, previewTextureStatic);
+	//cl.BlitTexture(staticRTTTex, previewTextureStatic);
 	int a = 42;
 }
 

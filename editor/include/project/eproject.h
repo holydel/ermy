@@ -8,6 +8,30 @@
 #include "assets/asset.h"
 #include "assets/texture_asset.h"
 #include <thread>
+#include <atomic>
+
+class IncrementalID
+{
+	std::atomic<ermy::u64> id = 1;
+
+public:
+	IncrementalID(ermy::u64 startID = 1) : id(startID) {}
+	
+	ermy::u64 GetNext()
+	{
+		return id.fetch_add(1);
+	}
+
+	ermy::u64 GetCurrent()
+	{
+		return id.load();
+	}
+
+	void SetCurrent(ermy::u64 newID)
+	{
+		id.store(newID);
+	}
+};
 
 enum class ProjectShadersBackend
 {
@@ -113,6 +137,8 @@ class ErmyProject
 	std::atomic<bool> isPakBuildingInProgress = false;
 
 	ProgressBuildingState progressBuildingState;
+
+	IncrementalID assetsID;
 public:
 	ErmyProject();
 	~ErmyProject();
@@ -163,4 +189,9 @@ public:
 	}
 
 	void UpdateWindowTitle();
+
+	ermy::u64 GetNextAssetID()
+	{
+		return assetsID.GetNext();
+	}
 };

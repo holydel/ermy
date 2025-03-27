@@ -214,4 +214,10 @@ void CommandList::DrawDedicatedMesh(const DedicatedMesh& mesh, const glm::mat4& 
 	}
 }
 
+void CommandList::UpdateBuffer(BufferID buf, const void* data, u16 size, u32 offset)
+{
+	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
+	vkCmdUpdateBuffer(cbuff, gAllBuffers[buf.handle], offset, size, data);
+}
+
 #endif

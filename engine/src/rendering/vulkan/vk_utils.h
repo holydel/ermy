@@ -13,7 +13,10 @@ namespace vk_utils
 	VkFormat VkFormatFromErmy(ermy::rendering::Format format);
 	
 	void ImageTransition(VkCommandBuffer cbuff, VkImage image, VkImageLayout oldLayout, VkImageLayout newLayout, VkImageAspectFlags aspectMask, int numMips = 1, int numLayers = 1);
-	VkBufferUsageFlagBits VkBufferUsageFromErmy(ermy::rendering::BufferUsage busage);
+	VkBufferUsageFlags VkBufferUsageFromErmy(ermy::rendering::BufferUsage busage);
+	VkBufferImageCopy MakeBufferImageCopy(VkExtent3D extent, VkImageAspectFlags aspectMask, int numMips = 1, int numLayers = 1);
+	
+
 	namespace debug
 	{
 		void _setObjectName(ermy::u64 objHandle, VkObjectType objType, const char* name);

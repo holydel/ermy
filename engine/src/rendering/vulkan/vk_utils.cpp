@@ -79,7 +79,7 @@ VkFormat vk_utils::VkFormatFromErmy(ermy::rendering::Format format)
 	return VK_FORMAT_R8G8B8A8_SRGB;
 }
 
-VkBufferUsageFlagBits  vk_utils::VkBufferUsageFromErmy(ermy::rendering::BufferUsage busage)
+VkBufferUsageFlags  vk_utils::VkBufferUsageFromErmy(ermy::rendering::BufferUsage busage)
 {
 	switch (busage) {
 	case ermy::rendering::BufferUsage::Vertex:
@@ -90,9 +90,13 @@ VkBufferUsageFlagBits  vk_utils::VkBufferUsageFromErmy(ermy::rendering::BufferUs
 		return VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 	case ermy::rendering::BufferUsage::Storage:
 		return VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+	case ermy::rendering::BufferUsage::TransferDst:
+		return VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+	case ermy::rendering::BufferUsage::TransferSrc:
+		return VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 	default:
 		// Handle unknown or unsupported buffer usage
-		return VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+		return VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 	}
 }
 VkShaderStageFlagBits vk_utils::VkShaderStageFromErmy(ermy::ShaderStage stage)
@@ -187,6 +191,22 @@ void vk_utils::ImageTransition(VkCommandBuffer cbuff, VkImage image, VkImageLayo
 
 	vkCmdPipelineBarrier2(cbuff, &depInfo);
 }
+
+VkBufferImageCopy vk_utils::MakeBufferImageCopy(VkExtent3D extent, VkImageAspectFlags aspectMask, int numMips, int numLayers)
+{
+	VkBufferImageCopy copyRegion = {};
+	copyRegion.bufferOffset = 0;
+	copyRegion.bufferRowLength = 0;
+	copyRegion.bufferImageHeight = 0;
+	copyRegion.imageSubresource.aspectMask = aspectMask;
+	copyRegion.imageSubresource.mipLevel = 0;
+	copyRegion.imageSubresource.baseArrayLayer = 0;
+	copyRegion.imageSubresource.layerCount = 1;
+	copyRegion.imageOffset = { 0, 0, 0 };
+	copyRegion.imageExtent = extent;
+	return copyRegion;
+}
+
 #endif
 
 void vk_utils::debug::_setObjectName(u64 objHandle, VkObjectType objType, const char* name)

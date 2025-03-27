@@ -210,7 +210,7 @@ void DrawFolderContents(AssetFolder* folder)
 
 	// Use custom selection adapter: store ID in selection (recommended)
 	Selection.UserData = folder;
-	Selection.AdapterIndexToStorageId = [](ImGuiSelectionBasicStorage* self_, int idx) { return (ImGuiID)(gSelectedFolder->content[idx]->ID); };
+	Selection.AdapterIndexToStorageId = [](ImGuiSelectionBasicStorage* self_, int idx) { return (ImGuiID)(gSelectedFolder->content[idx]->GetID()); };
 	Selection.ApplyRequests(ms_io);
 
 	const bool want_delete = (ImGui::Shortcut(ImGuiKey_Delete, ImGuiInputFlags_Repeat) && (Selection.Size > 0)) || RequestDelete;
@@ -246,14 +246,14 @@ void DrawFolderContents(AssetFolder* folder)
 			for (int item_idx = item_min_idx_for_current_line; item_idx < item_max_idx_for_current_line; ++item_idx)
 			{
 				Asset* item_data = folder->content[item_idx];
-				ImGui::PushID((int)item_data->ID);
+				ImGui::PushID((int)item_data->GetID());
 
 				// Position item
 				ImVec2 pos = ImVec2(start_pos.x + (item_idx % column_count) * LayoutItemStep.x, start_pos.y + line_idx * LayoutItemStep.y);
 				ImGui::SetCursorScreenPos(pos);
 
 				ImGui::SetNextItemSelectionUserData(item_idx);
-				bool item_is_selected = Selection.Contains((ImGuiID)item_data->ID);
+				bool item_is_selected = Selection.Contains((ImGuiID)item_data->GetID());
 				bool item_is_visible = ImGui::IsRectVisible(LayoutItemSize);
 				ImGui::Selectable("", item_is_selected, ImGuiSelectableFlags_None, LayoutItemSize);
 
@@ -295,7 +295,7 @@ void DrawFolderContents(AssetFolder* folder)
 						void* it = NULL;
 						ImGuiID id = 0;
 						if (!item_is_selected)
-							payload_items.push_back(item_data->ID);
+							payload_items.push_back(item_data->GetID());
 						else
 							while (Selection.GetNextSelectedItem(&it, &id))
 								payload_items.push_back(id);
@@ -319,14 +319,13 @@ void DrawFolderContents(AssetFolder* folder)
 					ImVec2 box_max(box_min.x + LayoutItemSize.x + 2, box_min.y + LayoutItemSize.y + 2); // Dubious
 					draw_list->AddRectFilled(box_min, box_max, icon_bg_color); // Background color
 
-					if (item_data->GetData())
+
+					ImTextureID previewID = item_data->GetAssetPreviewStatic();
+					if (previewID)
 					{
-						ImTextureID previewID = item_data->GetData()->GetAssetPreviewStatic();
-						if (previewID)
-						{
-							draw_list->AddImage(previewID, box_min, box_max);
-						}
+						draw_list->AddImage(previewID, box_min, box_max);
 					}
+
 
 					//if (ShowTypeOverlay && item_data->Type != 0)
 					//{

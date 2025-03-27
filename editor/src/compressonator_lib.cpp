@@ -10,6 +10,7 @@ CompressonatorLib::CompressonatorLib()
 
 CompressonatorLib::~CompressonatorLib()
 {
+	CMP_DestroyComputeLibrary(true);
 }
 
 
@@ -26,9 +27,28 @@ CMP_MipSet CompressonatorLib::Load(const char* utf8_file)
 	return result;
 }
 
-void CompressonatorLib::RegenerateMips(CMP_MipSet& mipSet)
+CMP_ERROR CompressonatorLib::Save(const char* utf8_file, CMP_MipSet& mipSet)
 {
-	CMP_GenerateMIPLevels(&mipSet, 1);
+	return CMP_SaveTexture(utf8_file, &mipSet);
+}
+
+void CompressonatorLib::RegenerateMips(CMP_MipSet& mipSet, int minSize)
+{
+	if (mipSet.m_nMipLevels > 1 || mipSet.m_ChannelFormat == CF_Compressed)
+		return;
+
+	// Calculate max possible mip levels
+	int maxLevels = CMP_CalcMaxMipLevel(mipSet.m_nHeight, mipSet.m_nWidth, true);
+		
+	// Calculate minimum size for the requested mip levels
+	int adjustedMinSize = CMP_CalcMinMipSize(mipSet.m_nHeight, mipSet.m_nWidth, maxLevels);
+		
+	// Use the larger of the requested and adjusted minimum sizes
+	minSize = std::max(minSize, adjustedMinSize);
+		
+	// Generate mip levels
+	CMP_GenerateMIPLevels(&mipSet, minSize);
+	
 
 	// Recreate mipset data for all mip levels
 	CMP_DWORD totalSize = 0;
@@ -60,89 +80,95 @@ void CompressonatorLib::RegenerateMips(CMP_MipSet& mipSet)
 	}
 	mipSet.pData = newData;
 	mipSet.dwDataSize = totalSize;
-
 }
 
 extern float gCurrentTextureProgress;
 
-void CompressonatorLib::CompressMips(CMP_MipSet& srcSet, CMP_MipSet& dstSet, ermy::rendering::Format sourceFormat, ermy::rendering::Format targetFormat)
-{
+CMP_ERROR CompressonatorLib::SetupCompressionOptions(KernelOptions& options, 
+												   const CompressionSettings& settings,
+												   ermy::rendering::Format targetFormat) {
+	memset(&options, 0, sizeof(KernelOptions));
+	
+	options.format = ConvertFormatToCMPFormat(targetFormat);
+	options.fquality = settings.quality;
+	options.threads = settings.numThreads;
+	options.encodeWith = settings.computeType;
+	options.useSRGBFrames = settings.useSRGB;
+	
+	return CMP_OK;
+}
+
+CMP_ERROR CompressonatorLib::CompressMips(CMP_MipSet& srcSet, 
+										CMP_MipSet& dstSet,
+										ermy::rendering::Format sourceFormat,
+										ermy::rendering::Format targetFormat,
+										const CompressionSettings& settings) {
 	// Initialize destination mipset
 	memset(&dstSet, 0, sizeof(CMP_MipSet));
 	dstSet.m_nHeight = srcSet.m_nHeight;
 	dstSet.m_nWidth = srcSet.m_nWidth;
-	dstSet.m_nDepth = srcSet.m_nDepth;
+	dstSet.m_nDepth = settings.isArrayTexture ? settings.arraySize : srcSet.m_nDepth;
+	dstSet.m_TextureType = settings.isArrayTexture ? TT_VolumeTexture : srcSet.m_TextureType;
 	dstSet.m_nMipLevels = srcSet.m_nMipLevels;
 	dstSet.m_ChannelFormat = srcSet.m_ChannelFormat;
 	dstSet.m_TextureDataType = srcSet.m_TextureDataType;
 	dstSet.m_format = ConvertFormatToCMPFormat(targetFormat);
-	
 
-	int errCode0 = CMP_CreateCompressMipSet(&dstSet,&srcSet);
+	// Create compressed mipset structure
+	CMP_ERROR errCode = CMP_CreateCompressMipSet(&dstSet, &srcSet);
+	if (errCode != CMP_OK) return errCode;
 
 	// Setup compression options
 	KernelOptions options;
-	memset(&options, 0, sizeof(KernelOptions));
+	errCode = SetupCompressionOptions(options, settings, targetFormat);
+	if (errCode != CMP_OK) return errCode;
+
+	// Setup compute library if using GPU or HPC
+	if (settings.computeType != CMP_CPU) {
+		errCode = CMP_CreateComputeLibrary(&srcSet, &options, nullptr);
+		if (errCode != CMP_OK) {
+			// Fall back to CPU if compute library setup fails
+			options.encodeWith = CMP_CPU;
+		}
+	}
+
+	// Compress texture
+	errCode = CMP_CompressTexture(&options, srcSet, dstSet, nullptr);
 	
-	options.format = dstSet.m_format;
-	options.fquality = 1.0f;
-	options.threads = 0; // Auto thread count
-	options.srcformat = srcSet.m_format;
-	options.encodeWith = CMP_CPU;
-	options.width = srcSet.m_nWidth;
-	options.height = srcSet.m_nHeight;
-	options.useSRGBFrames = false;
-	options.size = srcSet.dwDataSize;
-	options.data = srcSet.pData;
-	gCurrentTextureProgress = 0.0f;
-	
-	//auto err2 = CMP_CreateComputeLibrary(&srcSet, &options, nullptr);
-
-	CMP_Feedback_Proc proc = [](float fProgress, CMP_DWORD_PTR pUser1, CMP_DWORD_PTR pUser2) -> bool {
-		gCurrentTextureProgress = fProgress * 0.01f;
-        return false; 
-	};
-
-	CMP_Texture sourceTexture = {};
-	CMP_Texture destinationTexture = {};
-
-	auto srcFormatInfo = ermy::rendering::GetFormatInfo(sourceFormat);
-	auto dstFormatInfo = ermy::rendering::GetFormatInfo(targetFormat);
-
-	sourceTexture.dwSize = sizeof(sourceTexture);
-	sourceTexture.pData = srcSet.pData;
-	sourceTexture.dwDataSize = srcSet.dwDataSize;
-	sourceTexture.dwHeight = srcSet.m_nHeight;
-	sourceTexture.dwWidth = srcSet.m_nWidth;
-	sourceTexture.pMipSet = &srcSet;
-	sourceTexture.dwPitch = srcSet.m_nWidth * srcFormatInfo.blockSize;
-	sourceTexture.format = srcSet.m_format;
-
-	destinationTexture.dwSize = sizeof(sourceTexture);
-	destinationTexture.dwHeight = dstSet.m_nHeight;
-	destinationTexture.dwWidth = dstSet.m_nWidth;
-	destinationTexture.pMipSet = &dstSet;
-	destinationTexture.dwPitch = 0;
-	destinationTexture.format = dstSet.m_format;
-
-	int compressedTextureSize = CMP_CalculateBufferSize(&destinationTexture);
-	destinationTexture.dwDataSize = compressedTextureSize;
-
-	destinationTexture.pData = (CMP_BYTE*)malloc(compressedTextureSize);
-
-	CMP_CompressOptions cmpOptions = { 0 };
-	cmpOptions.dwSize = sizeof(cmpOptions);
-	cmpOptions.fquality = 0.0f;
-	cmpOptions.dwnumThreads = 8;
-
-	auto errCod = CMP_ConvertTexture(& sourceTexture, &destinationTexture, & cmpOptions, proc);
-	//auto errCode = CMP_CompressTexture(&options, srcSet, dstSet, nullptr);    
-
-	dstSet.pData = destinationTexture.pData;
-	dstSet.dwDataSize = compressedTextureSize;
-
-	gCurrentTextureProgress = 1.0f;
+	return errCode;
 }
+
+CMP_ERROR CompressonatorLib::CreateBlockEncoder(void** encoder,
+											  ermy::rendering::Format format,
+											  const CompressionSettings& settings) {
+	CMP_EncoderSetting encodeSettings = {};
+	encodeSettings.format = ConvertFormatToCMPFormat(format);
+	encodeSettings.quality = settings.quality;
+	
+	return CMP_CreateBlockEncoder(encoder, encodeSettings);
+}
+
+CMP_ERROR CompressonatorLib::CompressBlock(void** encoder,
+										 void* srcBlock,
+										 unsigned int srcStride,
+										 void* dstBlock,
+										 unsigned int dstStride) {
+	return CMP_CompressBlock(encoder, srcBlock, srcStride, dstBlock, dstStride);
+}
+
+void CompressonatorLib::DestroyBlockEncoder(void** encoder) {
+	CMP_DestroyBlockEncoder(encoder);
+}
+
+CMP_ERROR CompressonatorLib::AnalyzeTexture(CMP_MipSet& src1,
+										  CMP_MipSet& src2,
+										  CMP_AnalysisData& analysis) {
+	analysis.analysisMode = CMP_ANALYSIS_MSEPSNR;
+	analysis.channelBitMap = 0xF; // RGBA
+	
+	return CMP_MipSetAnlaysis(&src1, &src2, 0, 0, &analysis);
+}
+
 // Convert CMP_FORMAT to Format
 
 Format CompressonatorLib::ConvertCMPFormatToFormat(CMP_FORMAT cmpFormat) {
@@ -209,4 +235,97 @@ CMP_FORMAT CompressonatorLib::ConvertFormatToCMPFormat(Format format) {
 
 	default:                        return CMP_FORMAT_Unknown;
 	}
+}
+
+CMP_ERROR CompressonatorLib::InitializeArrayMipSet(CMP_MipSet& mipSet,
+                                                  int width,
+                                                  int height,
+                                                  int arraySize,
+                                                  ChannelFormat channelFormat,
+                                                  CMP_FORMAT format) {
+    memset(&mipSet, 0, sizeof(CMP_MipSet));
+    
+    mipSet.m_nWidth = width;
+    mipSet.m_nHeight = height;
+    mipSet.m_nDepth = arraySize;  // For array textures, depth represents array size
+    mipSet.m_TextureType = TT_VolumeTexture;  // Use volume texture type for arrays
+    mipSet.m_ChannelFormat = channelFormat;
+    mipSet.m_format = format;
+    
+    return CMP_CreateMipSet(&mipSet, width, height, arraySize, channelFormat, TT_VolumeTexture);
+}
+
+CMP_ERROR CompressonatorLib::LoadArray(const char* utf8_file, CMP_MipSet& mipSet, int arraySize) {
+    CMP_ERROR result = CMP_LoadTexture(utf8_file, &mipSet);
+    if (result != CMP_OK) return result;
+    
+    // Validate and adjust for array texture
+    if (mipSet.m_TextureType != TT_VolumeTexture) {
+        mipSet.m_TextureType = TT_VolumeTexture;
+        mipSet.m_nDepth = arraySize;
+    }
+    
+    return CMP_OK;
+}
+
+CMP_ERROR CompressonatorLib::SaveArray(const char* utf8_file, const CMP_MipSet& mipSet) {
+    // Ensure it's an array texture
+    if (mipSet.m_TextureType != TT_VolumeTexture) {
+        return CMP_ERR_INVALID_SOURCE_TEXTURE;
+    }
+    
+    return CMP_SaveTexture(utf8_file, const_cast<CMP_MipSet*>(&mipSet));
+}
+
+void CompressonatorLib::RegenerateMipsForArray(CMP_MipSet& mipSet, int minSize) {
+    if (mipSet.m_TextureType != TT_VolumeTexture) return;
+    
+    if (mipSet.m_nMipLevels <= 1) {
+        // Calculate max possible mip levels (same for each array slice)
+        int maxLevels = CMP_CalcMaxMipLevel(mipSet.m_nHeight, mipSet.m_nWidth, true);
+        
+        // Calculate minimum size for the requested mip levels
+        int adjustedMinSize = CMP_CalcMinMipSize(mipSet.m_nHeight, mipSet.m_nWidth, maxLevels);
+        
+        // Use the larger of the requested and adjusted minimum sizes
+        minSize = std::max(minSize, adjustedMinSize);
+        
+        // Generate mip levels for each array slice
+        CMP_GenerateMIPLevels(&mipSet, minSize);
+    }
+
+    // Recreate mipset data for all mip levels and array slices
+    CMP_DWORD totalSize = 0;
+    for (CMP_INT arrayIndex = 0; arrayIndex < mipSet.m_nDepth; arrayIndex++) {
+        for (CMP_INT mipLevel = 0; mipLevel < mipSet.m_nMipLevels; mipLevel++) {
+            CMP_MipLevel* level = nullptr;
+            CMP_GetMipLevel(&level, &mipSet, mipLevel, arrayIndex);
+            if (level) {
+                totalSize += level->m_dwLinearSize;
+            }
+        }
+    }
+
+    // Allocate new buffer for all mip data
+    CMP_BYTE* newData = (CMP_BYTE*)malloc(totalSize);
+    CMP_DWORD offset = 0;
+
+    // Copy data from each mip level of each array slice
+    for (CMP_INT arrayIndex = 0; arrayIndex < mipSet.m_nDepth; arrayIndex++) {
+        for (CMP_INT mipLevel = 0; mipLevel < mipSet.m_nMipLevels; mipLevel++) {
+            CMP_MipLevel* level = nullptr;
+            CMP_GetMipLevel(&level, &mipSet, mipLevel, arrayIndex);
+            if (level && level->m_pbData) {
+                memcpy(newData + offset, level->m_pbData, level->m_dwLinearSize);
+                offset += level->m_dwLinearSize;
+            }
+        }
+    }
+
+    // Free old data and update mipset
+    if (mipSet.pData) {
+        free(mipSet.pData);
+    }
+    mipSet.pData = newData;
+    mipSet.dwDataSize = totalSize;
 }

@@ -10,6 +10,9 @@ namespace editor
 	{
 		namespace loader
 		{
+			/// <summary>
+			/// Load uncompressed raw data to AssetData
+			/// </summary>
 			class AssetsLoader
 			{
 			public:

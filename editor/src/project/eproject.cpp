@@ -176,6 +176,11 @@ void ErmyProject::Load()
         if(auto att = project.attribute("current_platform"))
 			currentPlatformIndex = att.as_int();
 
+		if (auto att = project.attribute("AssetLastID"))
+        {
+            assetsID.SetCurrent(att.as_ullong());
+        }
+
         auto platformNode = project.child("platform");
         while (platformNode)
         {
@@ -205,6 +210,9 @@ void ErmyProject::Save()
     auto project = xdoc.append_child("project");
     project.append_attribute("name").set_value(projName);
     project.append_attribute("current_platform").set_value(currentPlatformIndex);
+
+	project.append_attribute("AssetLastID").set_value(assetsID.GetCurrent());
+
     for (auto& platform : platformInfos)
     {
         auto platformNode = project.append_child("platform");
@@ -678,31 +686,7 @@ bool ErmyProject::RebuildPAKImmediate(int platformIndex)
 		auto tex = collectedAssets.textures[i];
 		auto texData = tex->GetData();
 		TextureAsset* texAsset = static_cast<TextureAsset*>(texData); //guaranteed to be texture asset
-        
-        //if need regerate mips and mips are not generated yet
-        if(texAsset->regenerateMips && texAsset->GetSourceMipSet().m_nMipLevels == 1)
-        {
-            CompressonatorLib::Instance().RegenerateMips(texAsset->GetSourceMipSet());
-        }
-
-        ermy::rendering::Format targetFormat = texAsset->texelTargetFormat;
-
-        //choose target format based on texture purpose and platform info
-
-        if(texAsset->texturePurpose == TextureAsset::TexturePurpose::TP_SOURCE)
-        {
-            targetFormat = texAsset->texelTargetFormat;
-        }
-        else
-        {
-            auto texComp = currentPlatform.compressionForPurpose[(int)texAsset->texturePurpose];
-
-            if(texComp != TextureAsset::TextureCompression::TC_NONE)
-            {
-                targetFormat = TextureAsset::FormatFromTextureCompression(texComp);
-                texAsset->texelTargetFormat = targetFormat;
-            }
-        }
+        texAsset->ProcessAssetToPak();
 
 		texMeta[i].width = texAsset->width;
 		texMeta[i].height = texAsset->height;
@@ -710,8 +694,8 @@ bool ErmyProject::RebuildPAKImmediate(int platformIndex)
 		texMeta[i].numMips = texAsset->numMips;
 		texMeta[i].numLayers = texAsset->numLayers;
 		texMeta[i].isCubemap = texAsset->isCubemap;
-		texMeta[i].texelSourceFormat = targetFormat;
-		texMeta[i].dataSize = texAsset->GetTargetMipSet().dwDataSize; //compress mips if target format not euqal source fromat
+		texMeta[i].texelSourceFormat = texAsset->texelTargetFormat;
+		texMeta[i].dataSize = texAsset->GetPakData().size_bytes(); //compress mips if target format not euqal source fromat
 	}
     progressBuildingState.state = ProgressBuildingState::State::Sounds;
    
@@ -735,7 +719,7 @@ bool ErmyProject::RebuildPAKImmediate(int platformIndex)
 		auto tex = collectedAssets.textures[i];
 		auto texData = tex->GetData();
 		auto texAsset = static_cast<TextureAsset*>(texData); //guaranteed to be texture asset
-		pak.write((const char*)texAsset->GetTargetMipSet().pData, texAsset->GetTargetMipSet().dwDataSize);
+		pak.write((const char*)texAsset->GetPakData().data(), texAsset->GetPakData().size_bytes());
 	}
 	
 

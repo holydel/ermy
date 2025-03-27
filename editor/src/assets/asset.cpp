@@ -12,6 +12,8 @@
 #include <ermy_utils.h>
 #include <chrono>
 
+#include "project/eproject.h"
+
 namespace fs = std::filesystem;
 using namespace ermy;
 
@@ -44,6 +46,8 @@ void AssetFolder::Scan(const std::filesystem::path& path)
 			folderData.totalSize += asset->FileSize();
 		}
 	}
+
+	ID = ErmyProject::Instance().GetNextAssetID();
 }
 
 pugi::xml_node AssetFolder::Save(pugi::xml_node& node, const std::filesystem::path& rootPath)
@@ -92,6 +96,7 @@ Asset* Asset::CreateFromPath(const std::filesystem::path path)
 	result->fileSize = fs::file_size(path);
 	result->lastWriteTime = fs::last_write_time(path);
 	result->CalculateAssetName();
+	result->ID = ErmyProject::Instance().GetNextAssetID();
 	return result;
 }
 
@@ -113,6 +118,43 @@ void Asset::CalculateAssetName()
 	else
 	{
 		assetName = name;
+	}
+}
+
+void Asset::RegenerateStaticPreviewTexture()
+{
+	if (assetPreviewTexStatic == 0)
+	{
+		if (data == nullptr)
+		{
+			Import();
+		}
+
+		if (data != nullptr)
+		{
+			std::vector<u8> bc1_data = GetData()->GetStaticPreviewData();
+
+			if (bc1_data.empty())
+			{
+				return;
+			}
+
+			ermy::rendering::TextureDesc descBC1;
+			descBC1.width = 128;
+			descBC1.height = 128;
+			descBC1.depth = 1;
+			descBC1.isCubemap = false;
+			descBC1.numLayers = 1;
+			descBC1.numMips = 1;
+			descBC1.isSparse = false;
+			descBC1.texelSourceFormat = ermy::rendering::Format::BC1;
+			descBC1.dataSize = (int)bc1_data.size();
+			descBC1.pixelsData = bc1_data.data();
+			descBC1.debugName = "StaticPreviewBC1";
+
+			previewTextureStatic = ermy::rendering::CreateDedicatedTexture(descBC1);
+			assetPreviewTexStatic = ermy::rendering::GetTextureDescriptor(previewTextureStatic);
+		}
 	}
 }
 
@@ -139,7 +181,7 @@ pugi::xml_node Asset::Save(pugi::xml_node& node, const std::filesystem::path& ro
 	assetNode.append_attribute("date").set_value(lastWriteTime.time_since_epoch().count());
 	assetNode.append_attribute("size").set_value(fileSize);
 	assetNode.append_attribute("name").set_value(name.c_str());
-
+	assetNode.append_attribute("ID").set_value(ID);
 	if (GetData())
 	{
 		auto dataNode = assetNode.append_child("Data");
@@ -153,20 +195,11 @@ void AssetData::Save(pugi::xml_node& node)
 	node.append_attribute("type").set_value(static_cast<int>(GetDataType()));
 }
 
-fs::file_time_type u64_to_file_time_type(uint64_t seconds_since_epoch) {
-	// Step 1: Convert u64 to a system_clock::time_point
-	auto sys_tp = std::chrono::system_clock::time_point(std::chrono::seconds(seconds_since_epoch));
-
-	// Step 2: Convert system_clock::time_point to file_time_type
-	// Calculate the difference between the epochs of system_clock and __file_clock
-	auto sys_now = std::chrono::system_clock::now();
-	auto file_now = fs::file_time_type::clock::now();
-
-	// Adjust the time point
-	auto duration_since_epoch = sys_tp - sys_now;
-	auto file_tp = file_now + duration_since_epoch;
-
-	return file_tp;
+fs::file_time_type u64_to_file_time_type(uint64_t ticks_since_epoch)
+{
+	std::filesystem::file_time_type::duration d(ticks_since_epoch);
+	fs::file_time_type lastWriteTime{ d };
+	return lastWriteTime;
 }
 
 void Asset::Load(pugi::xml_node& node, const std::filesystem::path& currentPath)
@@ -177,6 +210,7 @@ void Asset::Load(pugi::xml_node& node, const std::filesystem::path& currentPath)
 	lastWriteTime = u64_to_file_time_type(node.attribute("date").as_ullong());
 	fileSize = node.attribute("size").as_ullong();
 	name = node.attribute("name").as_string();
+	ID = node.attribute("ID").as_ullong();
 	CalculateAssetName();
 
 	auto dataNode = node.child("Data");

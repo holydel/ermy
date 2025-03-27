@@ -136,8 +136,6 @@ AssetData* OpenImageLoader::Load(const std::filesystem::path& path)
    }
 
    result->SetSourceData(static_cast<ermy::u8*>(data), dataSize);
-   result->RegeneratePreview();
-
 
    in->close();
 

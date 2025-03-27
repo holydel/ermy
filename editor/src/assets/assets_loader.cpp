@@ -86,10 +86,8 @@ void Asset::Import()
     data = new BinaryAssetData();
 }
 
-static ermy::u64 AssetID = 0;
-
 Asset::Asset()
 {
-    ID = ++AssetID;
+
 }
 

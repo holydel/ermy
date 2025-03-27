@@ -97,7 +97,7 @@ struct ValidationSettings
 	VkBool32 truePtr{ VK_TRUE };
 	VkBool32 falsePtr{ VK_FALSE };
 
-	std::vector<const char*> debug_action{ "VK_DBG_LAYER_ACTION_DEBUG_OUTPUT" };  // "VK_DBG_LAYER_ACTION_DEBUG_OUTPUT", "VK_DBG_LAYER_ACTION_BREAK"
+	std::vector<const char*> debug_action{ "VK_DBG_LAYER_ACTION_DEBUG_OUTPUT", "VK_DBG_LAYER_ACTION_LOG_MSG" };  // "VK_DBG_LAYER_ACTION_DEBUG_OUTPUT", "VK_DBG_LAYER_ACTION_BREAK"
 	std::vector<const char*> report_flags{ "warn", "perf", "error" }; //"info", "warn", "perf", "error", "debug"
 
 	uint32_t setting_duplicate_message_limit = 32;
@@ -915,7 +915,7 @@ void SingleTimeCommandBuffer::Sumbit()
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 	submitInfo.commandBufferCount = 1;
 	submitInfo.pCommandBuffers = &cbuff;
-	
+
 	vkQueueSubmit(gVKMainQueue, 1, &submitInfo, fence);
 }
 

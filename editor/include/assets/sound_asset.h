@@ -20,7 +20,7 @@ public:
 
 	void DrawPreview() override;
 
-	void RegeneratePreview() override;
+	void RegenerateLivePreview() override;
 	void RenderPreview(ermy::rendering::CommandList& cl) override;
 	void RenderStaticPreview(ermy::rendering::CommandList& cl) override;
 

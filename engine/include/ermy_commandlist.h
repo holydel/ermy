@@ -50,6 +50,26 @@ namespace ermy
 			void DrawDedicatedMesh(const DedicatedMesh& mesh, const glm::mat4& MVP);
 			void SetVertexStream(BufferID buf);
 			void SetIndexStream(BufferID buf);
+
+
+			void UpdateBuffer(BufferID buf, const void* data, u16 size, u32 offset = 0); //max 65536 bytes
+			void UpdateTexture(TextureID tex, const void* data);
+			void ReadbackTexture(TextureID tex, void* data);
+		};
+
+		class OneTimeSubmitCommandList
+		{
+			void* pGAPIImpl = nullptr;
+
+			OneTimeSubmitCommandList() = default;
+			public:
+				
+				~OneTimeSubmitCommandList() = default;
+			static OneTimeSubmitCommandList Allocate();
+			void Submit();
+			void WaitForCompletion();
+
+			CommandList GetCL();
 		};
 	}
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="TestTemplateProj3" current_platform="0">
+<project name="TestTemplateProj3" current_platform="0" AssetLastID="950">
 	<platform name="windows" pak_path="D:\Projects\ermy\eproj_template\paks\0.epak" post_build_cmd="" shaders_backend="0" platform_base="0">
 		<compression>
 			<purpose id="0" compression="3" />

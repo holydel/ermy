@@ -9,6 +9,7 @@
 #include <ermy_rendering.h>
 #include "preview_props.h"
 #include <pugixml.hpp>
+#include <span>
 
 enum class AssetType
 {
@@ -42,9 +43,23 @@ class AssetData : public PreviewProps
 {
 protected:
 	ermy::rendering::TextureID previewTextureLive;
-	ermy::rendering::TextureID previewTextureStatic;
 	ImTextureID assetPreviewTexLive = 0;
-	ImTextureID assetPreviewTexStatic = 0;
+
+	///uncompressed data from asset like RGBA8 / RGBA16F / BC7 for uncompressed/compressed textures
+	///or raw audio data for sound
+	///or 32bit float vertex data for geometry
+	std::vector<ermy::u8> rawData;
+
+	/// <summary>
+	/// lossy processed data for assets, like BC1/BC6 for textures (already compressed textures use raw data)
+	/// or half float vertex data for geometry
+	/// </summary>
+	std::vector<ermy::u8> compressedData;
+
+	/// <summary>
+	/// lossless packed compressed data. LZ4, GDeflate, Brotli, etc. Direct write to PAK file
+	/// </summary>
+	std::vector<ermy::u8> packedData;
 public:
 	static AssetData* CreateFromType(AssetDataType type);
 	virtual AssetDataType GetDataType() { return AssetDataType::UNKNOWN; }
@@ -63,14 +78,25 @@ public:
 	{
 		return previewTextureLive;
 	}
-	ImTextureID GetAssetPreviewStatic()
-	{
-		return assetPreviewTexStatic;
-	}
-	virtual void RegeneratePreview() {}
+
+	virtual void RegenerateLivePreview() {}
+	virtual std::vector<ermy::u8> GetStaticPreviewData() { return std::move(std::vector<ermy::u8>()); };
 
 	virtual void Save(pugi::xml_node& node);
 	virtual void Load(pugi::xml_node& node) {}
+
+	virtual void ProcessAssetToPak() {};
+
+	std::span<ermy::u8> GetPakData()	
+	{
+		if(!packedData.empty())
+			return packedData;
+
+		if (!compressedData.empty())
+			return compressedData;
+
+		return rawData;
+	}
 protected:
 	MetaData* metaData = nullptr;
 };
@@ -87,14 +113,29 @@ protected:
 	std::filesystem::file_time_type	lastWriteTime = {};
 	std::string assetName = "";
 	ermy::u8 assetNameRows = 0;
+	ermy::u64 ID = 0;
 	void CalculateAssetName();
+
+	ermy::rendering::TextureID previewTextureStatic;
+	ImTextureID assetPreviewTexStatic = 0;
+	void RegenerateStaticPreviewTexture();
 public:
+	ImTextureID GetAssetPreviewStatic()
+	{		
+		RegenerateStaticPreviewTexture();
+		return assetPreviewTexStatic;
+	}
+
 	std::filesystem::path GetSourcePath() const
 	{
 		return source;
 	}
 
-	ermy::u64 ID = 0;
+	ermy::u64 GetID() const
+	{
+		return ID;
+	}
+
 	AssetData* GetData()
 	{
 		return data;

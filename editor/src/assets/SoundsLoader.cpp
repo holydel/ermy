@@ -122,7 +122,7 @@ AssetData* SoundsLoader::Load(const std::filesystem::path& path)
 	// Clean up
 	ma_decoder_uninit(&decoder);
 	result->channels = channels;
-	result->RegeneratePreview();
+	result->RegenerateLivePreview();
 
 	return result;
 }

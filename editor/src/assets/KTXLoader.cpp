@@ -185,7 +185,7 @@ AssetData* KTXLoader::Load(const std::filesystem::path& path)
 
 	}
 
-	result->RegeneratePreview();
+	//result->RegenerateLivePreview();
 
 	return result;
 }

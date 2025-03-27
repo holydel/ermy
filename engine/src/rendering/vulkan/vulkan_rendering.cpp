@@ -469,9 +469,14 @@ BufferInfo _createBuffer(const BufferDesc& desc) {
 	if (desc.usage == BufferUsage::Uniform)
 	{
 		allocCreateInfo.flags |= VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT;
-
 		allocCreateInfo.requiredFlags = VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
 		allocCreateInfo.preferredFlags = VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+	}
+	
+	if(desc.usage == BufferUsage::TransferDst || desc.usage == BufferUsage::TransferSrc)
+	{
+		allocCreateInfo.flags |= VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT;
+		allocCreateInfo.requiredFlags = VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
 	}
 	
 	VkBuffer buffer = VK_NULL_HANDLE;
@@ -484,7 +489,7 @@ BufferInfo _createBuffer(const BufferDesc& desc) {
 	meta.bufferUsage = desc.usage;
 
 	// If initial data is provided, use a staging buffer to copy data to the GPU buffer
-	if (desc.initialData || desc.persistentMapped) {
+	if (desc.initialData) {
 		// Create a staging buffer in CPU-visible memory
 		VkBufferCreateInfo stagingBufferInfo{};
 		stagingBufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -523,6 +528,14 @@ BufferInfo _createBuffer(const BufferDesc& desc) {
 		// Clean up the staging buffer
 		//vmaDestroyBuffer(gVMA_Allocator, stagingBuffer, stagingBufferAllocation);
 	}
+	else
+	{
+		if (desc.persistentMapped)
+		{
+			vmaMapMemory(gVMA_Allocator, allocation, &meta.presistentMappedPtr);
+		}
+	}
+
 	VkDescriptorSet descriptor = VK_NULL_HANDLE;
 
 	if (desc.usage == BufferUsage::Uniform)
@@ -551,8 +564,6 @@ BufferInfo _createBuffer(const BufferDesc& desc) {
 		descriptorWrite.pBufferInfo = &bufferInfoDesc;
 
 		vkUpdateDescriptorSets(gVKDevice, 1, &descriptorWrite, 0, nullptr);
-
-		vmaMapMemory(gVMA_Allocator, allocation, &meta.presistentMappedPtr);
 	}
 	
 
@@ -1115,4 +1126,94 @@ void ermy::rendering::WaitDeviceIdle()
 	vkDeviceWaitIdle(gVKDevice);
 }
 
+void ermy::rendering::UpdateTexture(TextureID tex, const void* data)
+{
+	auto executeBuff = AllocateSingleTimeCommandBuffer();
+
+	VkCommandBuffer cbuff = executeBuff.cbuff;
+
+	auto img = gAllImages[tex.handle];
+	auto imgMeta = gAllImageMetas[tex.handle];
+
+	ermy::rendering::BufferDesc desc = {};
+	desc.size = imgMeta.width * imgMeta.height * 4; //TODO: handle other formats
+	desc.persistentMapped = true;
+	desc.usage = BufferUsage::TransferSrc;
+	desc.initialData = (void*)data;
+
+	auto bufferID = rendering::CreateDedicatedBuffer(desc);
+
+	auto vkbuff = gAllBuffers[bufferID.handle];
+
+	auto copyRegion = VkBufferImageCopy{};
+	copyRegion = vk_utils::MakeBufferImageCopy({ imgMeta.width, imgMeta.height, 1 }, VK_IMAGE_ASPECT_COLOR_BIT, 1, 1);
+
+	vk_utils::ImageTransition(cbuff, img, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_ASPECT_COLOR_BIT, 1, 1);
+	vkCmdCopyBufferToImage(cbuff, vkbuff, img, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyRegion);
+	vk_utils::ImageTransition(cbuff, img, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_ASPECT_COLOR_BIT, 1, 1);
+
+	executeBuff.Sumbit();
+	vkWaitForFences(gVKDevice, 1, &executeBuff.fence, VK_TRUE, UINT64_MAX);
+	//TODO: handle free temporal staging buffer
+}
+
+void ermy::rendering::ReadbackTexture(TextureID tex, void* data)
+{
+	auto executeBuff = AllocateSingleTimeCommandBuffer();
+
+	auto img = gAllImages[tex.handle];
+	auto imgMeta = gAllImageMetas[tex.handle];
+
+	ermy::rendering::BufferDesc desc = {};
+	desc.size = imgMeta.width * imgMeta.height * 4; //TODO: handle other formats
+	desc.persistentMapped = true;
+	desc.usage = BufferUsage::TransferDst;
+	
+	auto bufferID = rendering::CreateDedicatedBuffer(desc);
+	auto vkbuff = gAllBuffers[bufferID.handle];
+	vk_utils::debug::SetName(vkbuff, "ReadbackBuffer");
+
+	vk_utils::ImageTransition(executeBuff.cbuff, img, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_ASPECT_COLOR_BIT, 1, 1);
+
+	auto copyRegion = VkBufferImageCopy{};
+	copyRegion = vk_utils::MakeBufferImageCopy({ imgMeta.width, imgMeta.height, 1 }, VK_IMAGE_ASPECT_COLOR_BIT, 1, 1);
+	vkCmdCopyImageToBuffer(executeBuff.cbuff, img, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, vkbuff, 1, &copyRegion);
+
+	vk_utils::ImageTransition(executeBuff.cbuff, img, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_ASPECT_COLOR_BIT, 1, 1);
+
+	executeBuff.Sumbit();
+	vkWaitForFences(gVKDevice, 1, &executeBuff.fence, VK_TRUE, UINT64_MAX);
+
+	auto& meta = gAllBufferMetas[bufferID.handle];
+	memcpy(data, meta.presistentMappedPtr, meta.size);
+}
+
+
+OneTimeSubmitCommandList OneTimeSubmitCommandList::Allocate()
+{
+	auto stcb = AllocateSingleTimeCommandBuffer();
+	auto impl = new SingleTimeCommandBuffer();
+	impl->cbuff = stcb.cbuff;
+	impl->fence = stcb.fence;
+	OneTimeSubmitCommandList result;
+	result.pGAPIImpl = impl;
+
+	return result;
+}
+void OneTimeSubmitCommandList::Submit()
+{
+	auto* stcb = static_cast<SingleTimeCommandBuffer*>(pGAPIImpl);
+	stcb->Sumbit();
+}
+void OneTimeSubmitCommandList::WaitForCompletion()
+{
+	auto* stcb = static_cast<SingleTimeCommandBuffer*>(pGAPIImpl);
+	vkWaitForFences(gVKDevice, 1, &stcb->fence, VK_TRUE, UINT64_MAX);
+}
+
+ermy::rendering::CommandList OneTimeSubmitCommandList::GetCL()
+{
+	auto* stcb = static_cast<SingleTimeCommandBuffer*>(pGAPIImpl);
+	return ermy::rendering::CommandList{ stcb->cbuff };
+}
 #endif

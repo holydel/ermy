@@ -5,7 +5,7 @@
 #include "editor_shader_internal.h"
 #include "preview_renderer.h"
 
-#ifdef _NDEBUG
+#ifdef NDEBUG
 #pragma comment(lib,"Compressonator_MD.lib")
 #else
 #pragma comment(lib,"Compressonator_MDd.lib")
@@ -246,7 +246,11 @@ void TextureAsset::ResetView()
 
 void TextureAsset::CompressTexture()
 {
-	CompressonatorLib::Instance().CompressMips(sourceMipSet, targetMipSet, texelSourceFormat, texelTargetFormat);
+	//CompressonatorLib::Instance().CompressMips(sourceMipSet, targetMipSet, texelSourceFormat, texelTargetFormat);
+}
+
+void TextureAsset::RegenerateMips()
+{
 }
 
 ChannelFormat GetChannelFormatFromErmyFormat(ermy::rendering::Format format)
@@ -288,73 +292,9 @@ ChannelFormat GetChannelFormatFromErmyFormat(ermy::rendering::Format format)
 
 void TextureAsset::SetSourceData(const ermy::u8* data, ermy::u32 dataSize)
 {
-	if (sourceMipSet.m_pMipLevelTable) {
-		CMP_FreeMipSet(&sourceMipSet);
-	}
-	sourceMipSet = {};
-	sourceMipSet.m_nWidth = width;
-	sourceMipSet.m_nHeight = height;
-	sourceMipSet.m_nDepth = depth;
-	sourceMipSet.m_TextureType = isCubemap ? TT_CubeMap : (depth > 1 ? TT_VolumeTexture : TT_2D);
-	sourceMipSet.m_nMipLevels = numMips;
-	sourceMipSet.m_nMaxMipLevels = CMP_CalcMaxMipLevel(height,width,false);
-	sourceMipSet.m_format = CMPFormatFromErmyFormat(texelSourceFormat);
-
-	sourceMipSet.m_ChannelFormat = GetChannelFormatFromErmyFormat(texelSourceFormat);
-	sourceMipSet.dwDataSize = dataSize;
-	sourceMipSet.pData = new ermy::u8[dataSize];
-	memcpy(sourceMipSet.pData, data, dataSize);
-
-	if (numMips > 0 && data && dataSize > 0) {
-		sourceMipSet.m_pMipLevelTable = new CMP_MipLevel*[sourceMipSet.m_nMaxMipLevels];
-		for (ermy::u32 i = 0; i < sourceMipSet.m_nMaxMipLevels; i++)
-		{
-			sourceMipSet.m_pMipLevelTable[i] = new CMP_MipLevel();
-		}
-		// Calculate total size of all MIP levels
-		ermy::u32 offset = 0;
-		ermy::u32 currentWidth = width;
-		ermy::u32 currentHeight = height;
-		auto blockInfo = ermy::rendering::GetFormatInfo(texelSourceFormat);
-
-		for (ermy::u32 i = 0; i < numMips && offset < dataSize; i++) {
-			// Create new MIP level
-			CMP_MipLevel* mipLevel = sourceMipSet.m_pMipLevelTable[i];
-
-			// Set MIP level dimensions
-			mipLevel->m_nWidth = currentWidth;
-			mipLevel->m_nHeight = currentHeight;
-
-			// Calculate data size for this MIP level
-			ermy::u32 mipSize = currentWidth * currentHeight * blockInfo.blockSize / (blockInfo.blockWidth * blockInfo.blockHeight);
-			if (depth > 1) {
-				mipSize *= depth;
-			}
-
-			// Ensure we don't exceed the data buffer
-			if (offset + mipSize > dataSize) {
-				delete mipLevel;
-				break;
-			}
-
-			// Allocate and copy data
-			mipLevel->m_pbData = sourceMipSet.pData + offset;
-			mipLevel->m_dwLinearSize = mipSize;
-
-			// Assign to MIP table
-			sourceMipSet.m_pMipLevelTable[i] = mipLevel;
-
-			// Update offset for next MIP
-			offset += mipSize;
-
-			// Reduce dimensions for next MIP level
-			currentWidth = std::max(1u, currentWidth / 2);
-			currentHeight = std::max(1u, currentHeight / 2);
-
-			// Update actual number of MIP levels processed
-			sourceMipSet.m_nMipLevels = std::min(numMips, (offset > 0 ? i : 0) + 1);
-		}
-	}
+	rawData.resize(dataSize);
+	memcpy(rawData.data(), data, dataSize);
+	RegenerateLivePreview();
 }
 
 void TextureAsset::MouseZoom(float value)
@@ -394,7 +334,7 @@ void TextureAsset::MouseMove(float normalizedDeltaX, float normalizedDeltaY, int
 void TextureAsset::DrawPreview()
 {
 	ImGui::Text("Width: %d Height: %d",width,height);
-	ImGui::Text("Datasize: %s",ermy_utils::string::humanReadableFileSize(sourceMipSet.dwDataSize).c_str());
+	ImGui::Text("Datasize: %s",ermy_utils::string::humanReadableFileSize(rawData.size()).c_str());
 	
 	ImGui::Checkbox("sRGB", &isSRGBSpace);
 	ImGui::SameLine();
@@ -402,7 +342,7 @@ void TextureAsset::DrawPreview()
 
 	if (ImGui::Button("Regenrate MIPS"))
 	{
-		CompressonatorLib::Instance().RegenerateMips(sourceMipSet);
+		RegenerateMips();
 	}
 
 	if (texType == rendering::TextureType::TexArrayCube || texType == rendering::TextureType::TexArray2D)
@@ -465,7 +405,7 @@ void TextureAsset::UpdateTextureSettings()
 	}
 }
 
-void TextureAsset::RegeneratePreview()
+void TextureAsset::RegenerateLivePreview()
 {
 	if (isCubemap)
 	{
@@ -492,10 +432,10 @@ void TextureAsset::RegeneratePreview()
 	descLive.isCubemap = isCubemap;
 	descLive.numLayers = numLayers;
 	descLive.numMips = numMips;
-	descLive.pixelsData = sourceMipSet.pData;
+	descLive.pixelsData = rawData.data();
 	descLive.isSparse = false;
 	descLive.texelSourceFormat = texelSourceFormat;
-	descLive.dataSize = sourceMipSet.dwDataSize;
+	descLive.dataSize = rawData.size();
 
 	previewTextureLive = ermy::rendering::CreateDedicatedTexture(descLive);
 
@@ -512,18 +452,28 @@ void TextureAsset::RegeneratePreview()
 	descStatic.pixelsData = nullptr;
 	descStatic.dataSize = 0;
 
-	previewTextureStatic = ermy::rendering::CreateDedicatedTexture(descStatic);
-	assetPreviewTexLive = ermy::rendering::GetTextureDescriptor(previewTextureLive);
-	assetPreviewTexStatic = ermy::rendering::GetTextureDescriptor(previewTextureStatic);
 
-	PreviewRenderer::Instance().EnqueueStaticPreviewGeneration(this);
+	assetPreviewTexLive = ermy::rendering::GetTextureDescriptor(previewTextureLive);
+
+	//previewTextureStatic = ermy::rendering::CreateDedicatedTexture(descStatic);
+	//assetPreviewTexStatic = ermy::rendering::GetTextureDescriptor(previewTextureStatic);
+
+
+
+
+	//PreviewRenderer::Instance().EnqueueStaticPreviewGeneration(this);
+}
+
+std::vector<ermy::u8> TextureAsset::GetStaticPreviewData()
+{
+	return PreviewRenderer::Instance().GetPreviewDataBC1([&](ermy::rendering::CommandList& cl)
+	{
+		RenderStaticPreview(cl);
+	});
 }
 
 void TextureAsset::RenderStaticPreview(ermy::rendering::CommandList& cl)
-{
-	auto staticRTT = PreviewRenderer::Instance().GetStaticRTT();
-
-	cl.BeginRenderPass(staticRTT);
+{	
 	TextureRenderPreview::Instance().BindPSO(cl, texType, true);
 	cl.SetDescriptorSet(0, assetPreviewTexLive);
 
@@ -534,12 +484,7 @@ void TextureAsset::RenderStaticPreview(ermy::rendering::CommandList& cl)
 		cl.SetRootConstant(actualLayers, ShaderStage::Fragment);
 	}
 
-	cl.Draw(3);
-	cl.EndRenderPass();
-
-	auto staticRTTTex = PreviewRenderer::Instance().GetStaticTexture();
-	cl.BlitTexture(staticRTTTex, previewTextureStatic);
-	int a = 42;
+	cl.Draw(3);	
 }
 
 void TextureAsset::RenderPreview(ermy::rendering::CommandList& cl)

@@ -5,6 +5,7 @@
 #include "preview_props.h"
 #include "assets/asset.h"
 #include <queue>
+#include <functional>
 
 class PreviewRenderer
 {	
@@ -71,4 +72,6 @@ public:
 	{
 
 	}
+
+	std::vector<ermy::u8> GetPreviewDataBC1(std::function<void(ermy::rendering::CommandList&)> renderFunc);
 };

@@ -96,11 +96,6 @@ class TextureAsset : public AssetData
 
 
 	ermy::rendering::TextureType texType = ermy::rendering::TextureType::Tex2D;
-
-	
-
-	CMP_MipSet sourceMipSet = {};
-	CMP_MipSet targetMipSet = {};
 public:
 	bool regenerateMips = false;
 	bool isSRGBSpace = true;
@@ -124,7 +119,8 @@ public:
 
 	void DrawPreview() override;
 
-	void RegeneratePreview() override;
+	void RegenerateLivePreview() override;
+	std::vector<ermy::u8> GetStaticPreviewData() override;
 	void RenderPreview(ermy::rendering::CommandList& cl) override;
 	void RenderStaticPreview(ermy::rendering::CommandList& cl) override;
 	void MouseZoom(float) override;
@@ -132,24 +128,11 @@ public:
 	void MouseUp(int button) override;
 	void MouseMove(float normalizedDeltaX, float normalizedDeltaY, int button) override;
 	void ResetView() override;
+	
 	void CompressTexture();
+	void RegenerateMips();
+
 	void SetSourceData(const ermy::u8* data, ermy::u32 dataSize);
-
-	CMP_MipSet& GetSourceMipSet()
-	{
-		return sourceMipSet;
-	}
-
-	CMP_MipSet& GetTargetMipSet()
-	{
-		if (texelSourceFormat == texelTargetFormat)
-			return sourceMipSet;
-
-		if (targetMipSet.m_format != CMPFormatFromErmyFormat(texelTargetFormat))
-			CompressTexture();
-
-		return targetMipSet;
-	}
 
 	void UpdateTextureSettings();
 

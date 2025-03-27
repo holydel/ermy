@@ -1,0 +1,1232 @@
+<?xml version="1.0"?>
+<assets>
+	<Asset type="2" path="." pak="false" date="133866009944290548" size="0" name="assets" ID="949" files="880" totalSize="2147461005">
+		<Data type="0" />
+		<Folder>
+			<Asset type="0" path="1731267110259299715_2248b4ee_720x720.mp4" pak="false" date="133758177472733771" size="1968687" name="1731267110259299715_2248b4ee_720x720.mp4" ID="1" />
+			<Asset type="0" path="2d_rgba8.ktx2" pak="false" date="133841081179337315" size="19138" name="2d_rgba8.ktx2" ID="2" />
+			<Asset type="0" path="big_texture_alpha.png" pak="true" date="133841184175294811" size="4991806" name="big_texture_alpha.png" ID="3">
+				<Data type="1" isSRGBSpace="true" regenerateMips="false" texturePurpose="4" textureCompression="0" />
+			</Asset>
+			<Asset type="0" path="blue-paint-wall-background-texture.jpg" pak="true" date="133348593753771292" size="3206764" name="blue-paint-wall-background-texture.jpg" ID="4">
+				<Data type="1" isSRGBSpace="true" regenerateMips="true" texturePurpose="0" textureCompression="0" />
+			</Asset>
+			<Asset type="0" path="leavers.png" pak="false" date="133733195804780215" size="372630" name="leavers.png" ID="5" />
+			<Asset type="0" path="m92pjmfggseb1.webp" pak="false" date="133350880845036685" size="211782" name="m92pjmfggseb1.webp" ID="6" />
+			<Asset type="2" path="model1" pak="false" date="133838103756346356" size="0" name="model1" ID="7" files="0" totalSize="0">
+				<Data type="0" />
+				<Folder />
+			</Asset>
+			<Asset type="0" path="my_workspace_txt.png" pak="false" date="133148810896995342" size="41328" name="my_workspace_txt.png" ID="8" />
+			<Asset type="0" path="Quivira.otf" pak="false" date="133141247718454332" size="1549016" name="Quivira.otf" ID="9" />
+			<Asset type="2" path="RenderMonkeyMedia" pak="false" date="133842925741362662" size="0" name="RenderMonkeyMedia" ID="196" files="167" totalSize="152473844">
+				<Data type="0" />
+				<Folder>
+					<Asset type="2" path="Models" pak="false" date="133842925741967778" size="0" name="Models" ID="49" files="39" totalSize="16867364">
+						<Data type="0" />
+						<Folder>
+							<Asset type="0" path="bunny.obj" pak="false" date="128739601240000000" size="2196824" name="bunny.obj" ID="10" />
+							<Asset type="0" path="bunny_optimized.obj" pak="false" date="128739601240000000" size="2764649" name="bunny_optimized.obj" ID="11" />
+							<Asset type="0" path="ButterflyBody.3ds" pak="false" date="128739601240000000" size="20230" name="ButterflyBody.3ds" ID="12" />
+							<Asset type="0" path="ButterflyWings.3ds" pak="false" date="128739601240000000" size="7043" name="ButterflyWings.3ds" ID="13" />
+							<Asset type="0" path="Car.3ds" pak="false" date="128739601240000000" size="71400" name="Car.3ds" ID="14" />
+							<Asset type="0" path="CrackedQuad.3ds" pak="false" date="128739601240000000" size="27180" name="CrackedQuad.3ds" ID="15" />
+							<Asset type="0" path="Cube.3ds" pak="false" date="128739601240000000" size="1245" name="Cube.3ds" ID="16" />
+							<Asset type="0" path="Cube.x" pak="false" date="128739601240000000" size="4731" name="Cube.x" ID="17" />
+							<Asset type="0" path="Dino.3ds" pak="false" date="128739601240000000" size="48968" name="Dino.3ds" ID="18" />
+							<Asset type="0" path="Disc.3ds" pak="false" date="128739601240000000" size="207102" name="Disc.3ds" ID="19" />
+							<Asset type="0" path="Disc2.3ds" pak="false" date="128739601240000000" size="207102" name="Disc2.3ds" ID="20" />
+							<Asset type="0" path="ElephantBody.3ds" pak="false" date="128739601240000000" size="349602" name="ElephantBody.3ds" ID="21" />
+							<Asset type="0" path="ElephantTusks.3ds" pak="false" date="128739601240000000" size="61938" name="ElephantTusks.3ds" ID="22" />
+							<Asset type="0" path="Hair.obj" pak="false" date="128739601240000000" size="689064" name="Hair.obj" ID="23" />
+							<Asset type="0" path="HairPatch.3ds" pak="false" date="128739601240000000" size="36163" name="HairPatch.3ds" ID="24" />
+							<Asset type="0" path="Hebe.3ds" pak="false" date="128739601240000000" size="1582822" name="Hebe.3ds" ID="25" />
+							<Asset type="0" path="Light.3ds" pak="false" date="128739601240000000" size="4182" name="Light.3ds" ID="26" />
+							<Asset type="0" path="ninjaHead.obj" pak="false" date="128739601240000000" size="649882" name="ninjaHead.obj" ID="27" />
+							<Asset type="0" path="OceanSurface.3ds" pak="false" date="128739601260000000" size="364076" name="OceanSurface.3ds" ID="28" />
+							<Asset type="0" path="QuadArray.3ds" pak="false" date="128739601260000000" size="7447" name="QuadArray.3ds" ID="29" />
+							<Asset type="0" path="Radeon.3ds" pak="false" date="128739601260000000" size="676286" name="Radeon.3ds" ID="30" />
+							<Asset type="0" path="ScreenAlignedQuad-Ocean.3ds" pak="false" date="128739601260000000" size="1251" name="ScreenAlignedQuad-Ocean.3ds" ID="31" />
+							<Asset type="0" path="ScreenAlignedQuad.3ds" pak="false" date="128739601260000000" size="1504" name="ScreenAlignedQuad.3ds" ID="32" />
+							<Asset type="0" path="Skull.3ds" pak="false" date="128739601260000000" size="409798" name="Skull.3ds" ID="33" />
+							<Asset type="0" path="SkyDome.3ds" pak="false" date="128739601260000000" size="83982" name="SkyDome.3ds" ID="34" />
+							<Asset type="0" path="Sphere.3ds" pak="false" date="128739601260000000" size="23649" name="Sphere.3ds" ID="35" />
+							<Asset type="0" path="Sphere.x" pak="false" date="128739601260000000" size="90482" name="Sphere.x" ID="36" />
+							<Asset type="0" path="Sphere_EdgeQuad.x" pak="false" date="128739601260000000" size="849616" name="Sphere_EdgeQuad.x" ID="37" />
+							<Asset type="0" path="Teapot.3ds" pak="false" date="128739601260000000" size="1004218" name="Teapot.3ds" ID="38" />
+							<Asset type="0" path="Terrain.3ds" pak="false" date="128739601260000000" size="1477635" name="Terrain.3ds" ID="39" />
+							<Asset type="0" path="terrain.obj" pak="false" date="128739601280000000" size="831" name="terrain.obj" ID="40" />
+							<Asset type="0" path="Terrain2.3ds" pak="false" date="128739601280000000" size="1477635" name="Terrain2.3ds" ID="41" />
+							<Asset type="0" path="TesselatedCube.3ds" pak="false" date="128739601280000000" size="46834" name="TesselatedCube.3ds" ID="42" />
+							<Asset type="0" path="TesselatedPlane.obj" pak="false" date="128739601280000000" size="356089" name="TesselatedPlane.obj" ID="43" />
+							<Asset type="0" path="TexturedCube.3ds" pak="false" date="128739601280000000" size="33309" name="TexturedCube.3ds" ID="44" />
+							<Asset type="0" path="Torus.3ds" pak="false" date="128739601280000000" size="77621" name="Torus.3ds" ID="45" />
+							<Asset type="0" path="Torus2.obj" pak="false" date="128739601280000000" size="53681" name="Torus2.obj" ID="46" />
+							<Asset type="0" path="Torus2_FurFin.x" pak="false" date="128739601280000000" size="708063" name="Torus2_FurFin.x" ID="47" />
+							<Asset type="0" path="Vase.3ds" pak="false" date="128739601280000000" size="193230" name="Vase.3ds" ID="48" />
+						</Folder>
+					</Asset>
+					<Asset type="2" path="Textures" pak="false" date="133842925741102558" size="0" name="Textures" ID="195" files="128" totalSize="135606480">
+						<Data type="0" />
+						<Folder>
+							<Asset type="2" path="2Tone" pak="false" date="133842925739900226" size="0" name="2Tone" ID="52" files="2" totalSize="1585298">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="bumpnoisesemi64.tga" pak="false" date="128739601440000000" size="12306" name="bumpnoisesemi64.tga" ID="50" />
+									<Asset type="0" path="cubemap.dds" pak="false" date="128739601440000000" size="1572992" name="cubemap.dds" ID="51" />
+								</Folder>
+							</Asset>
+							<Asset type="0" path="AmbientOcclusion_1024.dds" pak="false" date="128739601280000000" size="1398229" name="AmbientOcclusion_1024.dds" ID="53" />
+							<Asset type="2" path="Anisotropic" pak="false" date="133842925739960211" size="0" name="Anisotropic" ID="56" files="2" totalSize="202852">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="AnisoStrand.tga" pak="false" date="128739601440000000" size="196652" name="AnisoStrand.tga" ID="54" />
+									<Asset type="0" path="RingGradient.bmp" pak="false" date="128739601440000000" size="6200" name="RingGradient.bmp" ID="55" />
+								</Folder>
+							</Asset>
+							<Asset type="0" path="ati.tga" pak="false" date="128739601280000000" size="786971" name="ati.tga" ID="57" />
+							<Asset type="0" path="base.tga" pak="false" date="128739601300000000" size="65580" name="base.tga" ID="58" />
+							<Asset type="2" path="Bubble" pak="false" date="133842925740010202" size="0" name="Bubble" ID="61" files="2" totalSize="590008">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="rainbowfilm_smooth.bmp" pak="false" date="128739601440000000" size="196664" name="rainbowfilm_smooth.bmp" ID="59" />
+									<Asset type="0" path="room-dxt5.dds" pak="false" date="128739601440000000" size="393344" name="room-dxt5.dds" ID="60" />
+								</Folder>
+							</Asset>
+							<Asset type="0" path="bump.png" pak="false" date="128739601300000000" size="4644" name="bump.png" ID="62" />
+							<Asset type="2" path="Butterfly" pak="false" date="133842925740080221" size="0" name="Butterfly" ID="66" files="3" totalSize="1049488">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="Iridescence-Base-OpacityMap.tga" pak="false" date="128739601440000000" size="524332" name="Iridescence-Base-OpacityMap.tga" ID="63" />
+									<Asset type="0" path="Iridescence-Bump-GlossMap.tga" pak="false" date="128739601440000000" size="524332" name="Iridescence-Bump-GlossMap.tga" ID="64" />
+									<Asset type="0" path="rainbowgradient.bmp" pak="false" date="128739601440000000" size="824" name="rainbowgradient.bmp" ID="65" />
+								</Folder>
+							</Asset>
+							<Asset type="2" path="Cheap Reflection" pak="false" date="133842925740130209" size="0" name="Cheap Reflection" ID="68" files="1" totalSize="4114">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="peachyReflect.tga" pak="false" date="128739601440000000" size="4114" name="peachyReflect.tga" ID="67" />
+								</Folder>
+							</Asset>
+							<Asset type="2" path="Chrome" pak="false" date="133842925740240217" size="0" name="Chrome" ID="73" files="4" totalSize="10223766">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="chrome.tga" pak="false" date="128739601440000000" size="786476" name="chrome.tga" ID="69" />
+									<Asset type="0" path="NHHH256k.tga" pak="false" date="128739601440000000" size="4194348" name="NHHH256k.tga" ID="70" />
+									<Asset type="0" path="NHHH_k256.tga" pak="false" date="128739601460000000" size="1048620" name="NHHH_k256.tga" ID="71" />
+									<Asset type="0" path="NHHH_k64.tga" pak="false" date="128739601460000000" size="4194322" name="NHHH_k64.tga" ID="72" />
+								</Folder>
+							</Asset>
+							<Asset type="0" path="cloud.tga" pak="false" date="128739601300000000" size="262188" name="cloud.tga" ID="74" />
+							<Asset type="2" path="Clouds" pak="false" date="133842925740310264" size="0" name="Clouds" ID="76" files="1" totalSize="1048620">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="Horizon.tga" pak="false" date="128739601480000000" size="1048620" name="Horizon.tga" ID="75" />
+								</Folder>
+							</Asset>
+							<Asset type="0" path="Coin.dds" pak="false" date="128739601300000000" size="43832" name="Coin.dds" ID="77" />
+							<Asset type="0" path="CoinDOT3.tga" pak="false" date="128739601300000000" size="196627" name="CoinDOT3.tga" ID="78" />
+							<Asset type="0" path="Corona.tga" pak="false" date="128739601300000000" size="786971" name="Corona.tga" ID="79" />
+							<Asset type="0" path="Cube4.png" pak="false" date="128739601300000000" size="13784" name="Cube4.png" ID="80" />
+							<Asset type="0" path="Diffuse_Mars.dds" pak="false" date="128739601300000000" size="524408" name="Diffuse_Mars.dds" ID="81" />
+							<Asset type="0" path="distortion.tga" pak="false" date="128739601300000000" size="262188" name="distortion.tga" ID="82" />
+							<Asset type="0" path="Distortion2.jpg" pak="false" date="128739601300000000" size="19325" name="Distortion2.jpg" ID="83" />
+							<Asset type="0" path="Earth.dds" pak="false" date="128739601300000000" size="49280" name="Earth.dds" ID="84" />
+							<Asset type="0" path="Earth.jpg" pak="false" date="128739601300000000" size="266599" name="Earth.jpg" ID="85" />
+							<Asset type="0" path="EarthClouds.jpg" pak="false" date="128739601300000000" size="491826" name="EarthClouds.jpg" ID="86" />
+							<Asset type="0" path="EarthNight.jpg" pak="false" date="128739601300000000" size="151783" name="EarthNight.jpg" ID="87" />
+							<Asset type="0" path="Fieldstone.tga" pak="false" date="128739601300000000" size="786476" name="Fieldstone.tga" ID="88" />
+							<Asset type="0" path="FieldstoneBumpDOT3.tga" pak="false" date="128739601300000000" size="786450" name="FieldstoneBumpDOT3.tga" ID="89" />
+							<Asset type="0" path="FieldstoneNoisy.tga" pak="false" date="128739601300000000" size="786971" name="FieldstoneNoisy.tga" ID="90" />
+							<Asset type="2" path="Film" pak="false" date="133842925740440331" size="0" name="Film" ID="98" files="7" totalSize="6336198">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="12x1PagedVerticalScratches.bmp" pak="false" date="128739601480000000" size="1049656" name="12x1PagedVerticalScratches.bmp" ID="91" />
+									<Asset type="0" path="1D_Noise.bmp" pak="false" date="128739601480000000" size="4152" name="1D_Noise.bmp" ID="92" />
+									<Asset type="0" path="1D_Noise2.bmp" pak="false" date="128739601480000000" size="4152" name="1D_Noise2.bmp" ID="93" />
+									<Asset type="0" path="8x8PagesSplotches2.bmp" pak="false" date="128739601480000000" size="1049656" name="8x8PagesSplotches2.bmp" ID="94" />
+									<Asset type="0" path="BunnyLakeIsMissing.bmp" pak="false" date="128739601480000000" size="689528" name="BunnyLakeIsMissing.bmp" ID="95" />
+									<Asset type="0" path="BunnyLakeIsMissing_Power2.bmp" pak="false" date="128739601480000000" size="393270" name="BunnyLakeIsMissing_Power2.bmp" ID="96" />
+									<Asset type="0" path="normalNoiseColor.bmp" pak="false" date="128739601480000000" size="3145784" name="normalNoiseColor.bmp" ID="97" />
+								</Folder>
+							</Asset>
+							<Asset type="0" path="FireBase.tga" pak="false" date="128739601300000000" size="786476" name="FireBase.tga" ID="99" />
+							<Asset type="0" path="FireDistortion.tga" pak="false" date="128739601300000000" size="262188" name="FireDistortion.tga" ID="100" />
+							<Asset type="0" path="FireOpacity.tga" pak="false" date="128739601300000000" size="226106" name="FireOpacity.tga" ID="101" />
+							<Asset type="0" path="Flame.tga" pak="false" date="128739601300000000" size="1307" name="Flame.tga" ID="102" />
+							<Asset type="2" path="Fur" pak="false" date="133842925740505432" size="0" name="Fur" ID="106" files="3" totalSize="293771">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="FurTexColor.JPG" pak="false" date="128739601500000000" size="10869" name="FurTexColor.JPG" ID="103" />
+									<Asset type="0" path="FurTexDensity.JPG" pak="false" date="128739601500000000" size="20714" name="FurTexDensity.JPG" ID="104" />
+									<Asset type="0" path="HeidrichAnisoStrand.tga" pak="false" date="128739601500000000" size="262188" name="HeidrichAnisoStrand.tga" ID="105" />
+								</Folder>
+							</Asset>
+							<Asset type="0" path="Fur.tga" pak="false" date="128739601300000000" size="1048620" name="Fur.tga" ID="107" />
+							<Asset type="0" path="grace_cube.dds" pak="false" date="128739601300000000" size="2097272" name="grace_cube.dds" ID="108" />
+							<Asset type="0" path="grace_diffuse_cube.dds" pak="false" date="128739601320000000" size="2097272" name="grace_diffuse_cube.dds" ID="109" />
+							<Asset type="2" path="Hair" pak="false" date="133842925740545425" size="0" name="Hair" ID="112" files="2" totalSize="1572972">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="HairStrand.bmp" pak="false" date="128739601500000000" size="786486" name="HairStrand.bmp" ID="110" />
+									<Asset type="0" path="HairStrandAlpha.bmp" pak="false" date="128739601500000000" size="786486" name="HairStrandAlpha.bmp" ID="111" />
+								</Folder>
+							</Asset>
+							<Asset type="0" path="Hatch0.dds" pak="false" date="128739601320000000" size="262016" name="Hatch0.dds" ID="113" />
+							<Asset type="0" path="Hatch1.dds" pak="false" date="128739601320000000" size="262016" name="Hatch1.dds" ID="114" />
+							<Asset type="0" path="Hatch2.dds" pak="false" date="128739601320000000" size="262016" name="Hatch2.dds" ID="115" />
+							<Asset type="0" path="Hatch3.dds" pak="false" date="128739601320000000" size="262016" name="Hatch3.dds" ID="116" />
+							<Asset type="0" path="Hatch4.dds" pak="false" date="128739601320000000" size="262016" name="Hatch4.dds" ID="117" />
+							<Asset type="0" path="Hatch5.dds" pak="false" date="128739601320000000" size="262016" name="Hatch5.dds" ID="118" />
+							<Asset type="0" path="HeadVolume.dds" pak="false" date="128739601320000000" size="8388736" name="HeadVolume.dds" ID="119" />
+							<Asset type="0" path="Hex.dds" pak="false" date="128739601340000000" size="87536" name="Hex.dds" ID="120" />
+							<Asset type="0" path="HSItoRGB.dds" pak="false" date="128739601340000000" size="131200" name="HSItoRGB.dds" ID="121" />
+							<Asset type="0" path="LightCube.dds" pak="false" date="128739601340000000" size="196736" name="LightCube.dds" ID="122" />
+							<Asset type="0" path="Mars.dds" pak="false" date="128739601340000000" size="786560" name="Mars.dds" ID="123" />
+							<Asset type="2" path="Motion-Blur Ball" pak="false" date="133842925740585504" size="0" name="Motion-Blur Ball" ID="125" files="1" totalSize="65744">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="Triple1.dds" pak="false" date="128739601500000000" size="65744" name="Triple1.dds" ID="124" />
+								</Folder>
+							</Asset>
+							<Asset type="0" path="mtnRange_CO.bmp" pak="false" date="128739601340000000" size="12582968" name="mtnRange_CO.bmp" ID="126" />
+							<Asset type="0" path="mtnRange_HT.bmp" pak="false" date="128739601360000000" size="4195382" name="mtnRange_HT.bmp" ID="127" />
+							<Asset type="0" path="N2d_000.tga" pak="false" date="128739601380000000" size="66086" name="N2d_000.tga" ID="128" />
+							<Asset type="0" path="nhk_16.tga" pak="false" date="128739601380000000" size="1048620" name="nhk_16.tga" ID="129" />
+							<Asset type="0" path="nhk_32.tga" pak="false" date="128739601380000000" size="1048620" name="nhk_32.tga" ID="130" />
+							<Asset type="0" path="ninja_head_AO.dds" pak="false" date="128739601380000000" size="2097280" name="ninja_head_AO.dds" ID="131" />
+							<Asset type="0" path="ninja_head_DM.dds" pak="false" date="128739601380000000" size="2097280" name="ninja_head_DM.dds" ID="132" />
+							<Asset type="0" path="ninja_head_NM.dds" pak="false" date="128739601380000000" size="11184936" name="ninja_head_NM.dds" ID="133" />
+							<Asset type="0" path="noise.tga" pak="false" date="128739601400000000" size="262188" name="noise.tga" ID="134" />
+							<Asset type="0" path="NoiseVolume.dds" pak="false" date="128739601400000000" size="2097280" name="NoiseVolume.dds" ID="135" />
+							<Asset type="0" path="NormalizerCubemap.dds" pak="false" date="128739601400000000" size="393344" name="NormalizerCubemap.dds" ID="136" />
+							<Asset type="0" path="NPR Metallic Outline.tga" pak="false" date="128739601400000000" size="812" name="NPR Metallic Outline.tga" ID="137" />
+							<Asset type="2" path="Ocean" pak="false" date="133842925740665430" size="0" name="Ocean" ID="142" files="4" totalSize="4719542">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="oceanBump.tga" pak="false" date="128739601500000000" size="786476" name="oceanBump.tga" ID="138" />
+									<Asset type="0" path="oceanEnvMap.tga" pak="false" date="128739601500000000" size="786476" name="oceanEnvMap.tga" ID="139" />
+									<Asset type="0" path="oceanGradient.tga" pak="false" date="128739601500000000" size="818" name="oceanGradient.tga" ID="140" />
+									<Asset type="0" path="OceanHorizon.tga" pak="false" date="128739601500000000" size="3145772" name="OceanHorizon.tga" ID="141" />
+								</Folder>
+							</Asset>
+							<Asset type="0" path="OpenGL.tga" pak="false" date="128739601400000000" size="4194322" name="OpenGL.tga" ID="143" />
+							<Asset type="2" path="Polynomial Texture Maps" pak="false" date="133842925740755493" size="0" name="Polynomial Texture Maps" ID="147" files="3" totalSize="2359350">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="tablet_a012.tga" pak="false" date="128739601520000000" size="786450" name="tablet_a012.tga" ID="144" />
+									<Asset type="0" path="tablet_a345.tga" pak="false" date="128739601520000000" size="786450" name="tablet_a345.tga" ID="145" />
+									<Asset type="0" path="tablet_rgb.tga" pak="false" date="128739601520000000" size="786450" name="tablet_rgb.tga" ID="146" />
+								</Folder>
+							</Asset>
+							<Asset type="0" path="PulseTrain.tga" pak="false" date="128739601420000000" size="4114" name="PulseTrain.tga" ID="148" />
+							<Asset type="0" path="quad2.tga" pak="false" date="128739601420000000" size="786971" name="quad2.tga" ID="149" />
+							<Asset type="0" path="Rainbow.tga" pak="false" date="128739601420000000" size="1307" name="Rainbow.tga" ID="150" />
+							<Asset type="0" path="Random3D.dds" pak="false" date="128739601420000000" size="262272" name="Random3D.dds" ID="151" />
+							<Asset type="0" path="RGBtoHSI.dds" pak="false" date="128739601420000000" size="131200" name="RGBtoHSI.dds" ID="152" />
+							<Asset type="2" path="RubyHair" pak="false" date="133842925740862486" size="0" name="RubyHair" ID="157" files="4" totalSize="3149018">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="HairAlpha.bmp" pak="false" date="128739601520000000" size="1049656" name="HairAlpha.bmp" ID="153" />
+									<Asset type="0" path="HairBase.bmp" pak="false" date="128739601520000000" size="786486" name="HairBase.bmp" ID="154" />
+									<Asset type="0" path="HairShift.bmp" pak="false" date="128739601520000000" size="1049654" name="HairShift.bmp" ID="155" />
+									<Asset type="0" path="HairSpecMask.bmp" pak="false" date="128739601520000000" size="263222" name="HairSpecMask.bmp" ID="156" />
+								</Folder>
+							</Asset>
+							<Asset type="2" path="Rusty Metal" pak="false" date="133842925740982543" size="0" name="Rusty Metal" ID="163" files="5" totalSize="13631708">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="NHk32.tga" pak="false" date="128739601520000000" size="3145772" name="NHk32.tga" ID="158" />
+									<Asset type="0" path="NHk64.tga" pak="false" date="128739601520000000" size="1048620" name="NHk64.tga" ID="159" />
+									<Asset type="0" path="rustymetal.tga" pak="false" date="128739601540000000" size="3145772" name="rustymetal.tga" ID="160" />
+									<Asset type="0" path="rustymetalBump.tga" pak="false" date="128739601540000000" size="3145772" name="rustymetalBump.tga" ID="161" />
+									<Asset type="0" path="rustymetalSpec.tga" pak="false" date="128739601560000000" size="3145772" name="rustymetalSpec.tga" ID="162" />
+								</Folder>
+							</Asset>
+							<Asset type="0" path="Snow.dds" pak="false" date="128739601420000000" size="2097440" name="Snow.dds" ID="164" />
+							<Asset type="0" path="Spotlight.jpg" pak="false" date="128739601420000000" size="12864" name="Spotlight.jpg" ID="165" />
+							<Asset type="2" path="Stones" pak="false" date="133842925741072556" size="0" name="Stones" ID="169" files="3" totalSize="16676">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="BlueSpline.tga" pak="false" date="128739601560000000" size="8236" name="BlueSpline.tga" ID="166" />
+									<Asset type="0" path="SaturnSpline.dds" pak="false" date="128739601560000000" size="4220" name="SaturnSpline.dds" ID="167" />
+									<Asset type="0" path="StrataSpline.dds" pak="false" date="128739601560000000" size="4220" name="StrataSpline.dds" ID="168" />
+								</Folder>
+							</Asset>
+							<Asset type="2" path="Terrain" pak="false" date="133842925741332629" size="0" name="Terrain" ID="184" files="14" totalSize="14842430">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="Bm.tga" pak="false" date="128739601560000000" size="4194322" name="Bm.tga" ID="170" />
+									<Asset type="0" path="Br.tga" pak="false" date="128739601560000000" size="4194322" name="Br.tga" ID="171" />
+									<Asset type="0" path="clouds.bmp" pak="false" date="128739601580000000" size="66616" name="clouds.bmp" ID="172" />
+									<Asset type="0" path="clouds2.bmp" pak="false" date="128739601580000000" size="66616" name="clouds2.bmp" ID="173" />
+									<Asset type="0" path="Fex.tga" pak="false" date="128739601580000000" size="4194322" name="Fex.tga" ID="174" />
+									<Asset type="0" path="nnh3.dds" pak="false" date="128739601580000000" size="1048704" name="nnh3.dds" ID="175" />
+									<Asset type="0" path="pnh3.dds" pak="false" date="128739601580000000" size="1048704" name="pnh3.dds" ID="176" />
+									<Asset type="0" path="rayleighSun.tga" pak="false" date="128739601580000000" size="4114" name="rayleighSun.tga" ID="177" />
+									<Asset type="0" path="rayleighSun_new2.tga" pak="false" date="128739601580000000" size="4114" name="rayleighSun_new2.tga" ID="178" />
+									<Asset type="0" path="rayleighSun_t2.tga" pak="false" date="128739601580000000" size="4140" name="rayleighSun_t2.tga" ID="179" />
+									<Asset type="0" path="sun_attenuation_turbidity2.tga" pak="false" date="128739601580000000" size="4114" name="sun_attenuation_turbidity2.tga" ID="180" />
+									<Asset type="0" path="sun_attenuation_turbidity3.tga" pak="false" date="128739601580000000" size="4114" name="sun_attenuation_turbidity3.tga" ID="181" />
+									<Asset type="0" path="sun_attenuation_turbidity4.tga" pak="false" date="128739601580000000" size="4114" name="sun_attenuation_turbidity4.tga" ID="182" />
+									<Asset type="0" path="sun_attenuation_turbidity6.tga" pak="false" date="128739601580000000" size="4114" name="sun_attenuation_turbidity6.tga" ID="183" />
+								</Folder>
+							</Asset>
+							<Asset type="0" path="Terrain.tga" pak="false" date="128739601420000000" size="786971" name="Terrain.tga" ID="185" />
+							<Asset type="0" path="TileColorRamp.tga" pak="false" date="128739601420000000" size="236" name="TileColorRamp.tga" ID="186" />
+							<Asset type="0" path="Tiles.dds" pak="false" date="128739601420000000" size="349680" name="Tiles.dds" ID="187" />
+							<Asset type="0" path="TilesDOT3.tga" pak="false" date="128739601420000000" size="196626" name="TilesDOT3.tga" ID="188" />
+							<Asset type="0" path="Toon.bmp" pak="false" date="128739601420000000" size="150" name="Toon.bmp" ID="189" />
+							<Asset type="0" path="tower_cube.dds" pak="false" date="128739601420000000" size="1572992" name="tower_cube.dds" ID="190" />
+							<Asset type="0" path="Triangle.tga" pak="false" date="128739601440000000" size="786971" name="Triangle.tga" ID="191" />
+							<Asset type="0" path="VariableSpecular.bmp" pak="false" date="128739601440000000" size="65592" name="VariableSpecular.bmp" ID="192" />
+							<Asset type="0" path="Venus.dds" pak="false" date="128739601440000000" size="49280" name="Venus.dds" ID="193" />
+							<Asset type="0" path="Wood.dds" pak="false" date="128739601440000000" size="174904" name="Wood.dds" ID="194" />
+						</Folder>
+					</Asset>
+				</Folder>
+			</Asset>
+			<Asset type="2" path="shaders" pak="false" date="133851934066075373" size="0" name="shaders" ID="197" files="0" totalSize="0">
+				<Data type="0" />
+				<Folder />
+			</Asset>
+			<Asset type="2" path="sounds" pak="false" date="133848121621200002" size="0" name="sounds" ID="201" files="3" totalSize="15684941">
+				<Data type="0" />
+				<Folder>
+					<Asset type="0" path="file_example_MP3_2MG.mp3" pak="false" date="133840310691412368" size="2158877" name="file_example_MP3_2MG.mp3" ID="198" />
+					<Asset type="0" path="file_example_WAV_1MG.wav" pak="false" date="133848121561345212" size="1048558" name="file_example_WAV_1MG.wav" ID="199" />
+					<Asset type="0" path="sample3.flac" pak="false" date="133840310977793246" size="12477506" name="sample3.flac" ID="200" />
+				</Folder>
+			</Asset>
+			<Asset type="2" path="subfolder" pak="false" date="133838103730500137" size="0" name="subfolder" ID="204" files="2" totalSize="11119153">
+				<Data type="0" />
+				<Folder>
+					<Asset type="0" path="DSC_7721.JPG" pak="false" date="133176282740000000" size="10625746" name="DSC_7721.JPG" ID="202" />
+					<Asset type="0" path="gamescope_2024-01-11_10-00-04.png" pak="false" date="133494264193775524" size="493407" name="gamescope_2024-01-11_10-00-04.png" ID="203" />
+				</Folder>
+			</Asset>
+			<Asset type="0" path="superJpeg.j2k" pak="false" date="133840314559710940" size="28107" name="superJpeg.j2k" ID="205" />
+			<Asset type="0" path="test.exr" pak="false" date="133359062428483357" size="24270057" name="test.exr" ID="206" />
+			<Asset type="0" path="transfer.png" pak="false" date="133143813525428862" size="43277" name="transfer.png" ID="207" />
+			<Asset type="0" path="UnGraphicBold.ttf" pak="false" date="133397011440898654" size="768906" name="UnGraphicBold.ttf" ID="208" />
+			<Asset type="2" path="videos" pak="false" date="133838105766424516" size="0" name="videos" ID="211" files="2" totalSize="21072806">
+				<Data type="0" />
+				<Folder>
+					<Asset type="0" path="Big_Buck_Bunny_1080_10s_10MB.mp4" pak="false" date="133838105248001448" size="10484984" name="Big_Buck_Bunny_1080_10s_10MB.mp4" ID="209" />
+					<Asset type="0" path="Jellyfish_1080_10s_10MB.mp4" pak="false" date="133838105536445995" size="10587822" name="Jellyfish_1080_10s_10MB.mp4" ID="210" />
+				</Folder>
+			</Asset>
+			<Asset type="0" path="vtks logic.ttf" pak="false" date="133397010653257893" size="351724" name="vtks logic.ttf" ID="212" />
+			<Asset type="2" path="Vulkan-Assets" pak="false" date="133838117206687601" size="0" name="Vulkan-Assets" ID="414" files="184" totalSize="847240258">
+				<Data type="0" />
+				<Folder>
+					<Asset type="0" path=".git" pak="false" date="133838117179188360" size="66" name=".git" ID="213" />
+					<Asset type="0" path="font.fnt" pak="false" date="133838117179341476" size="20228" name="font.fnt" ID="214" />
+					<Asset type="2" path="models" pak="false" date="133838117206637601" size="0" name="models" ID="366" files="137" totalSize="474062150">
+						<Data type="0" />
+						<Folder>
+							<Asset type="2" path="armor" pak="false" date="133838117182412925" size="0" name="armor" ID="219" files="4" totalSize="12360478">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="armor.gltf" pak="false" date="133838117181734620" size="1175303" name="armor.gltf" ID="215" />
+									<Asset type="0" path="colormap_rgba.ktx" pak="false" date="133838117182104614" size="5592544" name="colormap_rgba.ktx" ID="216" />
+									<Asset type="0" path="license.txt" pak="false" date="133838117182104614" size="87" name="license.txt" ID="217" />
+									<Asset type="0" path="normalmap_rgba.ktx" pak="false" date="133838117182472959" size="5592544" name="normalmap_rgba.ktx" ID="218" />
+								</Folder>
+							</Asset>
+							<Asset type="2" path="cerberus" pak="false" date="133838117186514073" size="0" name="cerberus" ID="227" files="7" totalSize="69482087">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="albedo.ktx" pak="false" date="133838117183853447" size="22369764" name="albedo.ktx" ID="220" />
+									<Asset type="0" path="ao.ktx" pak="false" date="133838117184183421" size="5592556" name="ao.ktx" ID="221" />
+									<Asset type="0" path="ao_b.ktx" pak="false" date="133838117184523420" size="5592556" name="ao_b.ktx" ID="222" />
+									<Asset type="0" path="cerberus.gltf" pak="false" date="133838117184653479" size="2372335" name="cerberus.gltf" ID="223" />
+									<Asset type="0" path="metallic.ktx" pak="false" date="133838117184988585" size="5592556" name="metallic.ktx" ID="224" />
+									<Asset type="0" path="normal.ktx" pak="false" date="133838117186174095" size="22369764" name="normal.ktx" ID="225" />
+									<Asset type="0" path="roughness.ktx" pak="false" date="133838117186534084" size="5592556" name="roughness.ktx" ID="226" />
+								</Folder>
+							</Asset>
+							<Asset type="2" path="CesiumMan" pak="false" date="133838117179480473" size="0" name="CesiumMan" ID="239" files="7" totalSize="2160524">
+								<Data type="0" />
+								<Folder>
+									<Asset type="2" path="glTF" pak="false" date="133838117179471515" size="0" name="glTF" ID="231" files="3" totalSize="517236">
+										<Data type="0" />
+										<Folder>
+											<Asset type="0" path="CesiumMan.gltf" pak="false" date="133838117179441464" size="54664" name="CesiumMan.gltf" ID="228" />
+											<Asset type="0" path="CesiumMan_data.bin" pak="false" date="133838117179461464" size="252664" name="CesiumMan_data.bin" ID="229" />
+											<Asset type="0" path="CesiumMan_img0.jpg" pak="false" date="133838117179471515" size="209908" name="CesiumMan_img0.jpg" ID="230" />
+										</Folder>
+									</Asset>
+									<Asset type="2" path="glTF-Binary" pak="false" date="133838117179381462" size="0" name="glTF-Binary" ID="233" files="1" totalSize="490956">
+										<Data type="0" />
+										<Folder>
+											<Asset type="0" path="CesiumMan.glb" pak="false" date="133838117179381462" size="490956" name="CesiumMan.glb" ID="232" />
+										</Folder>
+									</Asset>
+									<Asset type="2" path="glTF-Embedded" pak="false" date="133838117179411462" size="0" name="glTF-Embedded" ID="235" files="1" totalSize="687977">
+										<Data type="0" />
+										<Folder>
+											<Asset type="0" path="CesiumMan.gltf" pak="false" date="133838117179411462" size="687977" name="CesiumMan.gltf" ID="234" />
+										</Folder>
+									</Asset>
+									<Asset type="0" path="README.md" pak="false" date="133838117179351393" size="409" name="README.md" ID="236" />
+									<Asset type="2" path="screenshot" pak="false" date="133838117179510869" size="0" name="screenshot" ID="238" files="1" totalSize="463946">
+										<Data type="0" />
+										<Folder>
+											<Asset type="0" path="screenshot.gif" pak="false" date="133838117179510869" size="463946" name="screenshot.gif" ID="237" />
+										</Folder>
+									</Asset>
+								</Folder>
+							</Asset>
+							<Asset type="0" path="chinesedragon.gltf" pak="false" date="133838117186666882" size="2437285" name="chinesedragon.gltf" ID="240" />
+							<Asset type="0" path="color_teapot_spheres.gltf" pak="false" date="133838117186720325" size="1189519" name="color_teapot_spheres.gltf" ID="241" />
+							<Asset type="0" path="cube.gltf" pak="false" date="133838117186720325" size="4816" name="cube.gltf" ID="242" />
+							<Asset type="0" path="deer.gltf" pak="false" date="133838117186790363" size="1385970" name="deer.gltf" ID="243" />
+							<Asset type="0" path="deferred_box.gltf" pak="false" date="133838117186790363" size="3820" name="deferred_box.gltf" ID="244" />
+							<Asset type="0" path="deferred_floor.gltf" pak="false" date="133838117186790363" size="2988" name="deferred_floor.gltf" ID="245" />
+							<Asset type="0" path="displacement_plane.gltf" pak="false" date="133838117186800368" size="5176" name="displacement_plane.gltf" ID="246" />
+							<Asset type="0" path="fireplace.gltf" pak="false" date="133838117186800368" size="126823" name="fireplace.gltf" ID="247" />
+							<Asset type="2" path="FlightHelmet" pak="false" date="133838117181659326" size="0" name="FlightHelmet" ID="269" files="19" totalSize="54616570">
+								<Data type="0" />
+								<Folder>
+									<Asset type="2" path="glTF" pak="false" date="133838117181609408" size="0" name="glTF" ID="265" files="17" totalSize="54612395">
+										<Data type="0" />
+										<Folder>
+											<Asset type="0" path="FlightHelmet.bin" pak="false" date="133838117179726565" size="3465900" name="FlightHelmet.bin" ID="248" />
+											<Asset type="0" path="FlightHelmet.gltf" pak="false" date="133838117179737055" size="12038" name="FlightHelmet.gltf" ID="249" />
+											<Asset type="0" path="FlightHelmet_baseColor.png" pak="false" date="133838117179826967" size="2778518" name="FlightHelmet_baseColor.png" ID="250" />
+											<Asset type="0" path="FlightHelmet_baseColor1.png" pak="false" date="133838117180008731" size="5348302" name="FlightHelmet_baseColor1.png" ID="251" />
+											<Asset type="0" path="FlightHelmet_baseColor2.png" pak="false" date="133838117180038708" size="825327" name="FlightHelmet_baseColor2.png" ID="252" />
+											<Asset type="0" path="FlightHelmet_baseColor3.png" pak="false" date="133838117180138724" size="2990685" name="FlightHelmet_baseColor3.png" ID="253" />
+											<Asset type="0" path="FlightHelmet_baseColor4.png" pak="false" date="133838117180268726" size="3974850" name="FlightHelmet_baseColor4.png" ID="254" />
+											<Asset type="0" path="FlightHelmet_normal.png" pak="false" date="133838117180377372" size="3185146" name="FlightHelmet_normal.png" ID="255" />
+											<Asset type="0" path="FlightHelmet_normal1.png" pak="false" date="133838117180567452" size="5708074" name="FlightHelmet_normal1.png" ID="256" />
+											<Asset type="0" path="FlightHelmet_normal2.png" pak="false" date="133838117180567452" size="17805" name="FlightHelmet_normal2.png" ID="257" />
+											<Asset type="0" path="FlightHelmet_normal3.png" pak="false" date="133838117180722544" size="3713769" name="FlightHelmet_normal3.png" ID="258" />
+											<Asset type="0" path="FlightHelmet_normal4.png" pak="false" date="133838117180879181" size="3702691" name="FlightHelmet_normal4.png" ID="259" />
+											<Asset type="0" path="FlightHelmet_occlusionRoughnessMetallic.png" pak="false" date="133838117181069192" size="4591738" name="FlightHelmet_occlusionRoughnessMetallic.png" ID="260" />
+											<Asset type="0" path="FlightHelmet_occlusionRoughnessMetallic1.png" pak="false" date="133838117181269172" size="5304637" name="FlightHelmet_occlusionRoughnessMetallic1.png" ID="261" />
+											<Asset type="0" path="FlightHelmet_occlusionRoughnessMetallic2.png" pak="false" date="133838117181299251" size="755081" name="FlightHelmet_occlusionRoughnessMetallic2.png" ID="262" />
+											<Asset type="0" path="FlightHelmet_occlusionRoughnessMetallic3.png" pak="false" date="133838117181449171" size="3748216" name="FlightHelmet_occlusionRoughnessMetallic3.png" ID="263" />
+											<Asset type="0" path="FlightHelmet_occlusionRoughnessMetallic4.png" pak="false" date="133838117181659326" size="4489618" name="FlightHelmet_occlusionRoughnessMetallic4.png" ID="264" />
+										</Folder>
+									</Asset>
+									<Asset type="0" path="README.md" pak="false" date="133838117179520789" size="380" name="README.md" ID="266" />
+									<Asset type="2" path="screenshot" pak="false" date="133838117181669345" size="0" name="screenshot" ID="268" files="1" totalSize="3795">
+										<Data type="0" />
+										<Folder>
+											<Asset type="0" path="screenshot.jpg" pak="false" date="133838117181669345" size="3795" name="screenshot.jpg" ID="267" />
+										</Folder>
+									</Asset>
+								</Folder>
+							</Asset>
+							<Asset type="0" path="glowsphere.gltf" pak="false" date="133838117186810366" size="146670" name="glowsphere.gltf" ID="270" />
+							<Asset type="2" path="gltf" pak="false" date="133838117187360399" size="0" name="gltf" ID="276" files="3" totalSize="10746209">
+								<Data type="0" />
+								<Folder>
+									<Asset type="2" path="glTF-Embedded" pak="false" date="133838117187330378" size="0" name="glTF-Embedded" ID="272" files="1" totalSize="10727727">
+										<Data type="0" />
+										<Folder>
+											<Asset type="0" path="Buggy.gltf" pak="false" date="133838117187360399" size="10727727" name="Buggy.gltf" ID="271" />
+										</Folder>
+									</Asset>
+									<Asset type="0" path="README.md" pak="false" date="133838117186820375" size="265" name="README.md" ID="273" />
+									<Asset type="2" path="screenshot" pak="false" date="133838117187371889" size="0" name="screenshot" ID="275" files="1" totalSize="18217">
+										<Data type="0" />
+										<Folder>
+											<Asset type="0" path="screenshot.png" pak="false" date="133838117187371889" size="18217" name="screenshot.png" ID="274" />
+										</Folder>
+									</Asset>
+								</Folder>
+							</Asset>
+							<Asset type="0" path="lavaplanet.gltf" pak="false" date="133838117187381935" size="64969" name="lavaplanet.gltf" ID="277" />
+							<Asset type="0" path="oaktree.gltf" pak="false" date="133838117187490380" size="1707073" name="oaktree.gltf" ID="278" />
+							<Asset type="0" path="plane.gltf" pak="false" date="133838117187490380" size="2764" name="plane.gltf" ID="279" />
+							<Asset type="0" path="plane_circle.gltf" pak="false" date="133838117187490380" size="10981" name="plane_circle.gltf" ID="280" />
+							<Asset type="0" path="plane_z.gltf" pak="false" date="133838117187500431" size="4238" name="plane_z.gltf" ID="281" />
+							<Asset type="0" path="plants.gltf" pak="false" date="133838117187527704" size="503996" name="plants.gltf" ID="282" />
+							<Asset type="0" path="reflection_scene.gltf" pak="false" date="133838117187577768" size="1096277" name="reflection_scene.gltf" ID="283" />
+							<Asset type="0" path="retroufo.glb" pak="false" date="133838117187627779" size="952736" name="retroufo.glb" ID="284" />
+							<Asset type="0" path="retroufo.gltf" pak="false" date="133838117187667763" size="1102344" name="retroufo.gltf" ID="285" />
+							<Asset type="0" path="retroufo_glow.glb" pak="false" date="133838117187692802" size="953532" name="retroufo_glow.glb" ID="286" />
+							<Asset type="0" path="retroufo_glow.gltf" pak="false" date="133838117187732835" size="1109667" name="retroufo_glow.gltf" ID="287" />
+							<Asset type="0" path="retroufo_license.txt" pak="false" date="133838117187740371" size="1208" name="retroufo_license.txt" ID="288" />
+							<Asset type="0" path="retroufo_red_lowpoly.gltf" pak="false" date="133838117187760776" size="566709" name="retroufo_red_lowpoly.gltf" ID="289" />
+							<Asset type="0" path="rock01.gltf" pak="false" date="133838117187760776" size="13235" name="rock01.gltf" ID="290" />
+							<Asset type="0" path="samplebuilding.gltf" pak="false" date="133838117187800432" size="707918" name="samplebuilding.gltf" ID="291" />
+							<Asset type="0" path="samplebuilding_glass.gltf" pak="false" date="133838117187811368" size="34450" name="samplebuilding_glass.gltf" ID="292" />
+							<Asset type="0" path="sampleroom.gltf" pak="false" date="133838117187821415" size="141101" name="sampleroom.gltf" ID="293" />
+							<Asset type="0" path="samplescene.gltf" pak="false" date="133838117187821415" size="96437" name="samplescene.gltf" ID="294" />
+							<Asset type="0" path="shadowscene_fire.gltf" pak="false" date="133838117187831411" size="163247" name="shadowscene_fire.gltf" ID="295" />
+							<Asset type="0" path="sibenik.gltf" pak="false" date="133838117188525989" size="15662322" name="sibenik.gltf" ID="296" />
+							<Asset type="0" path="sphere.gltf" pak="false" date="133838117188546010" size="141580" name="sphere.gltf" ID="297" />
+							<Asset type="2" path="sponza" pak="false" date="133838117205839613" size="0" name="sponza" ID="350" files="52" totalSize="280416545">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="10381718147657362067.ktx" pak="false" date="133838117188981091" size="5592512" name="10381718147657362067.ktx" ID="298" />
+									<Asset type="0" path="10388182081421875623.ktx" pak="false" date="133838117189381070" size="5592512" name="10388182081421875623.ktx" ID="299" />
+									<Asset type="0" path="11474523244911310074.ktx" pak="false" date="133838117189856492" size="5592512" name="11474523244911310074.ktx" ID="300" />
+									<Asset type="0" path="11490520546946913238.ktx" pak="false" date="133838117190186474" size="5592512" name="11490520546946913238.ktx" ID="301" />
+									<Asset type="0" path="12501374198249454378.ktx" pak="false" date="133838117190711650" size="5592512" name="12501374198249454378.ktx" ID="302" />
+									<Asset type="0" path="13982482287905699490.ktx" pak="false" date="133838117191091652" size="5592512" name="13982482287905699490.ktx" ID="303" />
+									<Asset type="0" path="14118779221266351425.ktx" pak="false" date="133838117191471632" size="5592512" name="14118779221266351425.ktx" ID="304" />
+									<Asset type="0" path="14170708867020035030.ktx" pak="false" date="133838117191691664" size="5592512" name="14170708867020035030.ktx" ID="305" />
+									<Asset type="0" path="14267839433702832875.ktx" pak="false" date="133838117192041878" size="5592512" name="14267839433702832875.ktx" ID="306" />
+									<Asset type="0" path="14650633544276105767.ktx" pak="false" date="133838117192331865" size="5592512" name="14650633544276105767.ktx" ID="307" />
+									<Asset type="0" path="15295713303328085182.ktx" pak="false" date="133838117192651953" size="5592512" name="15295713303328085182.ktx" ID="308" />
+									<Asset type="0" path="15722799267630235092.ktx" pak="false" date="133838117192974573" size="5592512" name="15722799267630235092.ktx" ID="309" />
+									<Asset type="0" path="16275776544635328252.ktx" pak="false" date="133838117193244560" size="5592512" name="16275776544635328252.ktx" ID="310" />
+									<Asset type="0" path="16299174074766089871.ktx" pak="false" date="133838117193558954" size="5592512" name="16299174074766089871.ktx" ID="311" />
+									<Asset type="0" path="17876391417123941155.ktx" pak="false" date="133838117193984015" size="5592512" name="17876391417123941155.ktx" ID="312" />
+									<Asset type="0" path="2051777328469649772.ktx" pak="false" date="133838117194384038" size="5592512" name="2051777328469649772.ktx" ID="313" />
+									<Asset type="0" path="2185409758123873465.ktx" pak="false" date="133838117194790239" size="5592512" name="2185409758123873465.ktx" ID="314" />
+									<Asset type="0" path="2299742237651021498.ktx" pak="false" date="133838117194920246" size="5592512" name="2299742237651021498.ktx" ID="315" />
+									<Asset type="0" path="2374361008830720677.ktx" pak="false" date="133838117195250234" size="5592512" name="2374361008830720677.ktx" ID="316" />
+									<Asset type="0" path="2775690330959970771.ktx" pak="false" date="133838117195640258" size="5592512" name="2775690330959970771.ktx" ID="317" />
+									<Asset type="0" path="2969916736137545357.ktx" pak="false" date="133838117196005306" size="5592512" name="2969916736137545357.ktx" ID="318" />
+									<Asset type="0" path="332936164838540657.ktx" pak="false" date="133838117196336244" size="5592512" name="332936164838540657.ktx" ID="319" />
+									<Asset type="0" path="3628158980083700836.ktx" pak="false" date="133838117196676289" size="5592512" name="3628158980083700836.ktx" ID="320" />
+									<Asset type="0" path="3827035219084910048.ktx" pak="false" date="133838117197020361" size="5592512" name="3827035219084910048.ktx" ID="321" />
+									<Asset type="0" path="4477655471536070370.ktx" pak="false" date="133838117197220369" size="5592512" name="4477655471536070370.ktx" ID="322" />
+									<Asset type="0" path="4601176305987539675.ktx" pak="false" date="133838117197590531" size="5592512" name="4601176305987539675.ktx" ID="323" />
+									<Asset type="0" path="4675343432951571524.ktx" pak="false" date="133838117197995580" size="5592512" name="4675343432951571524.ktx" ID="324" />
+									<Asset type="0" path="4910669866631290573.ktx" pak="false" date="133838117198357897" size="5592512" name="4910669866631290573.ktx" ID="325" />
+									<Asset type="0" path="4975155472559461469.ktx" pak="false" date="133838117198654796" size="5592512" name="4975155472559461469.ktx" ID="326" />
+									<Asset type="0" path="5061699253647017043.ktx" pak="false" date="133838117199064860" size="5592512" name="5061699253647017043.ktx" ID="327" />
+									<Asset type="0" path="5792855332885324923.ktx" pak="false" date="133838117199381284" size="5592512" name="5792855332885324923.ktx" ID="328" />
+									<Asset type="0" path="5823059166183034438.ktx" pak="false" date="133838117199726960" size="5592512" name="5823059166183034438.ktx" ID="329" />
+									<Asset type="0" path="6047387724914829168.ktx" pak="false" date="133838117200037683" size="5592512" name="6047387724914829168.ktx" ID="330" />
+									<Asset type="0" path="6151467286084645207.ktx" pak="false" date="133838117200383356" size="5592512" name="6151467286084645207.ktx" ID="331" />
+									<Asset type="0" path="6593109234861095314.ktx" pak="false" date="133838117200731792" size="5592512" name="6593109234861095314.ktx" ID="332" />
+									<Asset type="0" path="6667038893015345571.ktx" pak="false" date="133838117201104397" size="5592512" name="6667038893015345571.ktx" ID="333" />
+									<Asset type="0" path="6772804448157695701.ktx" pak="false" date="133838117201434384" size="5592512" name="6772804448157695701.ktx" ID="334" />
+									<Asset type="0" path="7056944414013900257.ktx" pak="false" date="133838117201770322" size="5592512" name="7056944414013900257.ktx" ID="335" />
+									<Asset type="0" path="7268504077753552595.ktx" pak="false" date="133838117202095972" size="5592512" name="7268504077753552595.ktx" ID="336" />
+									<Asset type="0" path="7441062115984513793.ktx" pak="false" date="133838117202451177" size="5592512" name="7441062115984513793.ktx" ID="337" />
+									<Asset type="0" path="755318871556304029.ktx" pak="false" date="133838117202736285" size="5592512" name="755318871556304029.ktx" ID="338" />
+									<Asset type="0" path="759203620573749278.ktx" pak="false" date="133838117203075170" size="5592512" name="759203620573749278.ktx" ID="339" />
+									<Asset type="0" path="7645212358685992005.ktx" pak="false" date="133838117203186691" size="5592512" name="7645212358685992005.ktx" ID="340" />
+									<Asset type="0" path="8006627369776289000.ktx" pak="false" date="133838117203466689" size="5592512" name="8006627369776289000.ktx" ID="341" />
+									<Asset type="0" path="8481240838833932244.ktx" pak="false" date="133838117203786191" size="5592512" name="8481240838833932244.ktx" ID="342" />
+									<Asset type="0" path="8750083169368950601.ktx" pak="false" date="133838117204122504" size="5592512" name="8750083169368950601.ktx" ID="343" />
+									<Asset type="0" path="8773302468495022225.ktx" pak="false" date="133838117204496044" size="5592512" name="8773302468495022225.ktx" ID="344" />
+									<Asset type="0" path="9288698199695299068.ktx" pak="false" date="133838117204991156" size="5592512" name="9288698199695299068.ktx" ID="345" />
+									<Asset type="0" path="README.md" pak="false" date="133838117205001132" size="2247" name="README.md" ID="346" />
+									<Asset type="0" path="sponza.bin" pak="false" date="133838117205819609" size="11887940" name="sponza.bin" ID="347" />
+									<Asset type="0" path="sponza.gltf" pak="false" date="133838117205829680" size="85622" name="sponza.gltf" ID="348" />
+									<Asset type="0" path="white.ktx" pak="false" date="133838117205839613" size="160" name="white.ktx" ID="349" />
+								</Folder>
+							</Asset>
+							<Asset type="0" path="suzanne.gltf" pak="false" date="133838117205859600" size="383436" name="suzanne.gltf" ID="351" />
+							<Asset type="0" path="suzanne_lods.gltf" pak="false" date="133838117205889605" size="536443" name="suzanne_lods.gltf" ID="352" />
+							<Asset type="0" path="teapot.gltf" pak="false" date="133838117205910971" size="225934" name="teapot.gltf" ID="353" />
+							<Asset type="0" path="terrain_gridlines.gltf" pak="false" date="133838117205920278" size="152468" name="terrain_gridlines.gltf" ID="354" />
+							<Asset type="0" path="torusknot.gltf" pak="false" date="133838117205927925" size="93298" name="torusknot.gltf" ID="355" />
+							<Asset type="0" path="treasure_glow.gltf" pak="false" date="133838117205937965" size="287557" name="treasure_glow.gltf" ID="356" />
+							<Asset type="0" path="treasure_smooth.gltf" pak="false" date="133838117205947962" size="291216" name="treasure_smooth.gltf" ID="357" />
+							<Asset type="0" path="tunnel_cylinder.gltf" pak="false" date="133838117205957969" size="4218" name="tunnel_cylinder.gltf" ID="358" />
+							<Asset type="0" path="venus.gltf" pak="false" date="133838117206037962" size="1484246" name="venus.gltf" ID="359" />
+							<Asset type="0" path="voyager.gltf" pak="false" date="133838117206189103" size="3203798" name="voyager.gltf" ID="360" />
+							<Asset type="0" path="vulkanscenebackground.gltf" pak="false" date="133838117206317593" size="65068" name="vulkanscenebackground.gltf" ID="361" />
+							<Asset type="0" path="vulkanscenelogos.gltf" pak="false" date="133838117206347580" size="634482" name="vulkanscenelogos.gltf" ID="362" />
+							<Asset type="0" path="vulkanscenemodels.gltf" pak="false" date="133838117206687601" size="5236856" name="vulkanscenemodels.gltf" ID="363" />
+							<Asset type="0" path="vulkanscene_license.txt" pak="false" date="133838117206198862" size="273" name="vulkanscene_license.txt" ID="364" />
+							<Asset type="0" path="vulkanscene_shadow.gltf" pak="false" date="133838117206307586" size="1340593" name="vulkanscene_shadow.gltf" ID="365" />
+						</Folder>
+					</Asset>
+					<Asset type="0" path="README.md" pak="false" date="133838117179321447" size="1001" name="README.md" ID="367" />
+					<Asset type="0" path="Roboto-Medium-license.txt" pak="false" date="133838117179321447" size="113" name="Roboto-Medium-license.txt" ID="368" />
+					<Asset type="0" path="Roboto-Medium.ttf" pak="false" date="133838117179341476" size="162588" name="Roboto-Medium.ttf" ID="369" />
+					<Asset type="2" path="textures" pak="false" date="133838117230115037" size="0" name="textures" ID="413" files="42" totalSize="372994112">
+						<Data type="0" />
+						<Folder>
+							<Asset type="0" path="colored_glass_rgba.ktx" pak="false" date="133838117206745386" size="1398236" name="colored_glass_rgba.ktx" ID="370" />
+							<Asset type="0" path="crate01_color_height_rgba.ktx" pak="false" date="133838117206825381" size="1398236" name="crate01_color_height_rgba.ktx" ID="371" />
+							<Asset type="0" path="crate02_color_height_rgba.ktx" pak="false" date="133838117206916458" size="1398236" name="crate02_color_height_rgba.ktx" ID="372" />
+							<Asset type="0" path="cubemap_array.ktx" pak="false" date="133838117207359534" size="6291564" name="cubemap_array.ktx" ID="373" />
+							<Asset type="0" path="cubemap_space.ktx" pak="false" date="133838117207609680" size="6291556" name="cubemap_space.ktx" ID="374" />
+							<Asset type="0" path="cubemap_vulkan.ktx" pak="false" date="133838117208755271" size="25165924" name="cubemap_vulkan.ktx" ID="375" />
+							<Asset type="0" path="cubemap_yokohama_rgba.ktx" pak="false" date="133838117209275447" size="8388736" name="cubemap_yokohama_rgba.ktx" ID="376" />
+							<Asset type="0" path="fireplace_colormap_rgba.ktx" pak="false" date="133838117209565384" size="5592544" name="fireplace_colormap_rgba.ktx" ID="377" />
+							<Asset type="0" path="fireplace_normalmap_rgba.ktx" pak="false" date="133838117209635359" size="1398236" name="fireplace_normalmap_rgba.ktx" ID="378" />
+							<Asset type="0" path="font_bitmap_rgba.ktx" pak="false" date="133838117209860406" size="1048676" name="font_bitmap_rgba.ktx" ID="379" />
+							<Asset type="0" path="font_sdf_rgba.ktx" pak="false" date="133838117209920377" size="1398236" name="font_sdf_rgba.ktx" ID="380" />
+							<Asset type="0" path="gratefloor_rgba.ktx" pak="false" date="133838117210380386" size="5592540" name="gratefloor_rgba.ktx" ID="381" />
+							<Asset type="0" path="gridlines.ktx" pak="false" date="133838117210420385" size="1398236" name="gridlines.ktx" ID="382" />
+							<Asset type="0" path="ground_dry_rgba.ktx" pak="false" date="133838117210530387" size="1398236" name="ground_dry_rgba.ktx" ID="383" />
+							<Asset type="2" path="hdr" pak="false" date="133838117222500987" size="0" name="hdr" ID="387" files="3" totalSize="201326868">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="gcanyon_cube.ktx" pak="false" date="133838117215027990" size="67108956" name="gcanyon_cube.ktx" ID="384" />
+									<Asset type="0" path="pisa_cube.ktx" pak="false" date="133838117220141981" size="67108956" name="pisa_cube.ktx" ID="385" />
+									<Asset type="0" path="uffizi_cube.ktx" pak="true" date="133838117223646178" size="67108956" name="uffizi_cube.ktx" ID="386">
+										<Data type="1" isSRGBSpace="true" regenerateMips="false" texturePurpose="0" textureCompression="0" />
+									</Asset>
+								</Folder>
+							</Asset>
+							<Asset type="0" path="lavaplanet_rgba.ktx" pak="false" date="133838117223751338" size="1398236" name="lavaplanet_rgba.ktx" ID="388" />
+							<Asset type="0" path="matcap_array_rgba.ktx" pak="false" date="133838117223836229" size="1572964" name="matcap_array_rgba.ktx" ID="389" />
+							<Asset type="0" path="metalplate01_rgba.ktx" pak="false" date="133838117223926351" size="1398236" name="metalplate01_rgba.ktx" ID="390" />
+							<Asset type="0" path="metalplate_nomips_rgba.ktx" pak="false" date="133838117224005541" size="1048676" name="metalplate_nomips_rgba.ktx" ID="391" />
+							<Asset type="0" path="particle01_rgba.ktx" pak="false" date="133838117224010590" size="16484" name="particle01_rgba.ktx" ID="392" />
+							<Asset type="0" path="particle_fire.ktx" pak="false" date="133838117224026695" size="349656" name="particle_fire.ktx" ID="393" />
+							<Asset type="0" path="particle_gradient_rgba.ktx" pak="false" date="133838117224030050" size="1124" name="particle_gradient_rgba.ktx" ID="394" />
+							<Asset type="0" path="particle_smoke.ktx" pak="false" date="133838117224250472" size="349656" name="particle_smoke.ktx" ID="395" />
+							<Asset type="0" path="rocks_color_rgba.ktx" pak="false" date="133838117224603911" size="5592544" name="rocks_color_rgba.ktx" ID="396" />
+							<Asset type="0" path="rocks_normal_height_rgba.ktx" pak="false" date="133838117224829604" size="4194404" name="rocks_normal_height_rgba.ktx" ID="397" />
+							<Asset type="0" path="skysphere_rgba.ktx" pak="false" date="133838117224949602" size="5592544" name="skysphere_rgba.ktx" ID="398" />
+							<Asset type="0" path="stonefloor01_color_rgba.ktx" pak="false" date="133838117225309922" size="5592544" name="stonefloor01_color_rgba.ktx" ID="399" />
+							<Asset type="0" path="stonefloor01_normal_rgba.ktx" pak="false" date="133838117225619939" size="5592544" name="stonefloor01_normal_rgba.ktx" ID="400" />
+							<Asset type="0" path="stonefloor02_color_rgba.ktx" pak="false" date="133838117226004974" size="5592544" name="stonefloor02_color_rgba.ktx" ID="401" />
+							<Asset type="0" path="stonefloor02_normal_rgba.ktx" pak="false" date="133838117226335110" size="5592544" name="stonefloor02_normal_rgba.ktx" ID="402" />
+							<Asset type="0" path="stonefloor03_color_height_rgba.ktx" pak="false" date="133838117226747527" size="5592544" name="stonefloor03_color_height_rgba.ktx" ID="403" />
+							<Asset type="0" path="terrain_heightmap_r16.ktx" pak="false" date="133838117226950473" size="2097252" name="terrain_heightmap_r16.ktx" ID="404" />
+							<Asset type="0" path="terrain_texturearray_rgba.ktx" pak="false" date="133838117227490482" size="6291556" name="terrain_texturearray_rgba.ktx" ID="405" />
+							<Asset type="0" path="texturearray_plants_rgba.ktx" pak="false" date="133838117229179479" size="16777336" name="texturearray_plants_rgba.ktx" ID="406" />
+							<Asset type="0" path="texturearray_rgba.ktx" pak="false" date="133838117229279481" size="1835108" name="texturearray_rgba.ktx" ID="407" />
+							<Asset type="0" path="texturearray_rocks_rgba.ktx" pak="false" date="133838117229709616" size="6990636" name="texturearray_rocks_rgba.ktx" ID="408" />
+							<Asset type="0" path="texture_orientation_ccw_rgba.ktx" pak="false" date="133838117227765623" size="4426916" name="texture_orientation_ccw_rgba.ktx" ID="409" />
+							<Asset type="0" path="texture_orientation_cw_rgba.ktx" pak="false" date="133838117227951410" size="4426916" name="texture_orientation_cw_rgba.ktx" ID="410" />
+							<Asset type="0" path="vulkan_11_rgba.ktx" pak="false" date="133838117229944938" size="5592544" name="vulkan_11_rgba.ktx" ID="411" />
+							<Asset type="0" path="vulkan_cloth_rgba.ktx" pak="false" date="133838117230214951" size="5592544" name="vulkan_cloth_rgba.ktx" ID="412" />
+						</Folder>
+					</Asset>
+				</Folder>
+			</Asset>
+			<Asset type="2" path="Vulkan-Samples-Assets" pak="false" date="133842037225231877" size="0" name="Vulkan-Samples-Assets" ID="948" files="509" totalSize="1062046781">
+				<Data type="0" />
+				<Folder>
+					<Asset type="0" path=".git" pak="false" date="133842037178022880" size="74" name=".git" ID="415" />
+					<Asset type="2" path="fonts" pak="false" date="133842037178184804" size="0" name="fonts" ID="419" files="3" totalSize="285701">
+						<Data type="0" />
+						<Folder>
+							<Asset type="0" path="LICENSE.md" pak="false" date="133842037178152836" size="581" name="LICENSE.md" ID="416" />
+							<Asset type="0" path="Roboto-Regular.ttf" pak="false" date="133842037178172968" size="171676" name="Roboto-Regular.ttf" ID="417" />
+							<Asset type="0" path="RobotoMono-Regular.ttf" pak="false" date="133842037178184804" size="113444" name="RobotoMono-Regular.ttf" ID="418" />
+						</Folder>
+					</Asset>
+					<Asset type="2" path="gold" pak="false" date="133842037179213161" size="0" name="gold" ID="431" files="8" totalSize="23676959">
+						<Data type="0" />
+						<Folder>
+							<Asset type="2" path="bonza" pak="false" date="133842037178565271" size="0" name="bonza" ID="423" files="3" totalSize="5493981">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="1028x720.png" pak="false" date="133842037178264876" size="1121830" name="1028x720.png" ID="420" />
+									<Asset type="0" path="1280x720.png" pak="false" date="133842037178364872" size="1346500" name="1280x720.png" ID="421" />
+									<Asset type="0" path="2168x1080.png" pak="false" date="133842037178575329" size="3025651" name="2168x1080.png" ID="422" />
+								</Folder>
+							</Asset>
+							<Asset type="2" path="sanmiguel" pak="false" date="133842037179193107" size="0" name="sanmiguel" ID="426" files="2" totalSize="9064836">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="1280x720.png" pak="false" date="133842037178735195" size="2355500" name="1280x720.png" ID="424" />
+									<Asset type="0" path="2168x1080.png" pak="false" date="133842037179203166" size="6709336" name="2168x1080.png" ID="425" />
+								</Folder>
+							</Asset>
+							<Asset type="2" path="sponza" pak="false" date="133842037179865178" size="0" name="sponza" ID="430" files="3" totalSize="9118142">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="1028x720.png" pak="false" date="133842037179333173" size="1721345" name="1028x720.png" ID="427" />
+									<Asset type="0" path="1280x720.png" pak="false" date="133842037179493501" size="2143991" name="1280x720.png" ID="428" />
+									<Asset type="0" path="2168x1080.png" pak="false" date="133842037179875236" size="5252806" name="2168x1080.png" ID="429" />
+								</Folder>
+							</Asset>
+						</Folder>
+					</Asset>
+					<Asset type="0" path="README.md" pak="false" date="133842037178152836" size="2708" name="README.md" ID="432" />
+					<Asset type="2" path="scenes" pak="false" date="133842037210565789" size="0" name="scenes" ID="922" files="473" totalSize="935399240">
+						<Data type="0" />
+						<Folder>
+							<Asset type="2" path="bonza" pak="false" date="133842037198884078" size="0" name="bonza" ID="504" files="71" totalSize="376753381">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="Bonza.bin" pak="false" date="133842037181053914" size="21390444" name="Bonza.bin" ID="433" />
+									<Asset type="0" path="Bonza.gltf" pak="false" date="133842037181093918" size="1067953" name="Bonza.gltf" ID="434" />
+									<Asset type="0" path="Bonza4X.bin" pak="false" date="133842037183515480" size="52611652" name="Bonza4X.bin" ID="435" />
+									<Asset type="0" path="Bonza4X.gltf" pak="false" date="133842037183916418" size="3705786" name="Bonza4X.gltf" ID="436" />
+									<Asset type="0" path="LICENSE.md" pak="false" date="133842037183916418" size="634" name="LICENSE.md" ID="437" />
+									<Asset type="0" path="SM_1MPlane_DefaultMaterial_BaseColor.ktx" pak="false" date="133842037184111465" size="3590256" name="SM_1MPlane_DefaultMaterial_BaseColor.ktx" ID="438" />
+									<Asset type="0" path="SM_1MPlane_DefaultMaterial_Normal.ktx" pak="false" date="133842037184361971" size="3590272" name="SM_1MPlane_DefaultMaterial_Normal.ktx" ID="439" />
+									<Asset type="0" path="SM_1MPlane_DefaultMaterial_OcclusionRoughnessMetallic.ktx" pak="false" date="133842037184604292" size="3590256" name="SM_1MPlane_DefaultMaterial_OcclusionRoughnessMetallic.ktx" ID="440" />
+									<Asset type="0" path="T_AtriumCrossStruts_D.ktx" pak="false" date="133842037184674360" size="900640" name="T_AtriumCrossStruts_D.ktx" ID="441" />
+									<Asset type="0" path="T_AtriumCrossStruts_N.ktx" pak="false" date="133842037184724790" size="900640" name="T_AtriumCrossStruts_N.ktx" ID="442" />
+									<Asset type="0" path="T_AtriumCrossStruts_S.ktx" pak="false" date="133842037184784801" size="900640" name="T_AtriumCrossStruts_S.ktx" ID="443" />
+									<Asset type="0" path="T_Banner_D.ktx" pak="false" date="133842037184824964" size="1798064" name="T_Banner_D.ktx" ID="444" />
+									<Asset type="0" path="T_Carpet_D.ktx" pak="false" date="133842037185030748" size="3590256" name="T_Carpet_D.ktx" ID="445" />
+									<Asset type="0" path="T_Carpet_N.ktx" pak="false" date="133842037185271147" size="3590272" name="T_Carpet_N.ktx" ID="446" />
+									<Asset type="0" path="T_Carpet_S.ktx" pak="false" date="133842037185510761" size="3590256" name="T_Carpet_S.ktx" ID="447" />
+									<Asset type="0" path="T_CenterStatue_D.ktx" pak="false" date="133842037186326317" size="14348688" name="T_CenterStatue_D.ktx" ID="448" />
+									<Asset type="0" path="T_CenterStatue_N.ktx" pak="false" date="133842037187242305" size="14348688" name="T_CenterStatue_N.ktx" ID="449" />
+									<Asset type="0" path="T_CenterStatue_S.ktx" pak="false" date="133842037188158535" size="14348688" name="T_CenterStatue_S.ktx" ID="450" />
+									<Asset type="0" path="T_ConcreteFloor_D.ktx" pak="false" date="133842037188217192" size="900640" name="T_ConcreteFloor_D.ktx" ID="451" />
+									<Asset type="0" path="T_ConcreteFloor_S.ktx" pak="false" date="133842037188270637" size="900640" name="T_ConcreteFloor_S.ktx" ID="452" />
+									<Asset type="0" path="T_Door_D.ktx" pak="false" date="133842037188400730" size="3590256" name="T_Door_D.ktx" ID="453" />
+									<Asset type="0" path="T_Door_N.ktx" pak="false" date="133842037188530699" size="3590272" name="T_Door_N.ktx" ID="454" />
+									<Asset type="0" path="T_Door_S.ktx" pak="false" date="133842037188760697" size="3590256" name="T_Door_S.ktx" ID="455" />
+									<Asset type="0" path="T_FireEx_D.ktx" pak="false" date="133842037188935869" size="3590256" name="T_FireEx_D.ktx" ID="456" />
+									<Asset type="0" path="T_FireEx_N.ktx" pak="false" date="133842037189095917" size="3590272" name="T_FireEx_N.ktx" ID="457" />
+									<Asset type="0" path="T_FireEx_S.ktx" pak="false" date="133842037189305920" size="3590256" name="T_FireEx_S.ktx" ID="458" />
+									<Asset type="0" path="T_Gray01.ktx" pak="false" date="133842037189311424" size="4320" name="T_Gray01.ktx" ID="459" />
+									<Asset type="0" path="T_MetalBitsMerged_Part01_D.ktx" pak="false" date="133842037189671485" size="14348688" name="T_MetalBitsMerged_Part01_D.ktx" ID="460" />
+									<Asset type="0" path="T_MetalBitsMerged_Part01_N.ktx" pak="false" date="133842037190135025" size="14348688" name="T_MetalBitsMerged_Part01_N.ktx" ID="461" />
+									<Asset type="0" path="T_MetalBitsMerged_Part01_S.ktx" pak="false" date="133842037190525394" size="14348688" name="T_MetalBitsMerged_Part01_S.ktx" ID="462" />
+									<Asset type="0" path="T_Metal_Pillar_01_D.ktx" pak="false" date="133842037190735094" size="3590256" name="T_Metal_Pillar_01_D.ktx" ID="463" />
+									<Asset type="0" path="T_Metal_Pillar_01_N.ktx" pak="false" date="133842037190930114" size="3590272" name="T_Metal_Pillar_01_N.ktx" ID="464" />
+									<Asset type="0" path="T_Metal_Pillar_01_S.ktx" pak="false" date="133842037191140229" size="3590256" name="T_Metal_Pillar_01_S.ktx" ID="465" />
+									<Asset type="0" path="T_Normal.ktx" pak="false" date="133842037191150241" size="58448" name="T_Normal.ktx" ID="466" />
+									<Asset type="0" path="T_Panel02_D.ktx" pak="false" date="133842037191260617" size="3590256" name="T_Panel02_D.ktx" ID="467" />
+									<Asset type="0" path="T_Panel02_E.ktx" pak="false" date="133842037191320184" size="3590256" name="T_Panel02_E.ktx" ID="468" />
+									<Asset type="0" path="T_Panel02_N.ktx" pak="false" date="133842037191530193" size="3590272" name="T_Panel02_N.ktx" ID="469" />
+									<Asset type="0" path="T_Panel02_S.ktx" pak="false" date="133842037191714285" size="3590256" name="T_Panel02_S.ktx" ID="470" />
+									<Asset type="0" path="T_Pillar_Tall_D.ktx" pak="false" date="133842037191914691" size="3590256" name="T_Pillar_Tall_D.ktx" ID="471" />
+									<Asset type="0" path="T_Pillar_Tall_N.ktx" pak="false" date="133842037192120193" size="3590272" name="T_Pillar_Tall_N.ktx" ID="472" />
+									<Asset type="0" path="T_Pillar_Tall_S.ktx" pak="false" date="133842037192332120" size="3590256" name="T_Pillar_Tall_S.ktx" ID="473" />
+									<Asset type="0" path="T_Plant_D.ktx" pak="false" date="133842037192382110" size="900640" name="T_Plant_D.ktx" ID="474" />
+									<Asset type="0" path="T_Plant_N.ktx" pak="false" date="133842037192430481" size="900640" name="T_Plant_N.ktx" ID="475" />
+									<Asset type="0" path="T_Plant_S.ktx" pak="false" date="133842037192482242" size="900640" name="T_Plant_S.ktx" ID="476" />
+									<Asset type="0" path="T_Plate_D.ktx" pak="false" date="133842037192502225" size="900640" name="T_Plate_D.ktx" ID="477" />
+									<Asset type="0" path="T_Sofa_Long_D.ktx" pak="false" date="133842037192732203" size="3590256" name="T_Sofa_Long_D.ktx" ID="478" />
+									<Asset type="0" path="T_Sofa_Long_N.ktx" pak="false" date="133842037192957448" size="3590272" name="T_Sofa_Long_N.ktx" ID="479" />
+									<Asset type="0" path="T_Sofa_Long_S.ktx" pak="false" date="133842037193180484" size="3590256" name="T_Sofa_Long_S.ktx" ID="480" />
+									<Asset type="0" path="T_Spotlight_N.ktx" pak="false" date="133842037193227181" size="900640" name="T_Spotlight_N.ktx" ID="481" />
+									<Asset type="0" path="T_Statue_D.ktx" pak="false" date="133842037193447462" size="3590256" name="T_Statue_D.ktx" ID="482" />
+									<Asset type="0" path="T_Statue_N.ktx" pak="false" date="133842037193660937" size="3590272" name="T_Statue_N.ktx" ID="483" />
+									<Asset type="0" path="T_Statue_S.ktx" pak="false" date="133842037193851065" size="3590256" name="T_Statue_S.ktx" ID="484" />
+									<Asset type="0" path="T_Steel_D.ktx" pak="false" date="133842037194076173" size="3590256" name="T_Steel_D.ktx" ID="485" />
+									<Asset type="0" path="T_Steel_N.ktx" pak="false" date="133842037194276431" size="3590272" name="T_Steel_N.ktx" ID="486" />
+									<Asset type="0" path="T_Steel_S.ktx" pak="false" date="133842037194487092" size="3590256" name="T_Steel_S.ktx" ID="487" />
+									<Asset type="0" path="T_TrimAtlas01_D.ktx" pak="false" date="133842037195112233" size="14348688" name="T_TrimAtlas01_D.ktx" ID="488" />
+									<Asset type="0" path="T_TrimAtlas01_N.ktx" pak="false" date="133842037195882298" size="14348688" name="T_TrimAtlas01_N.ktx" ID="489" />
+									<Asset type="0" path="T_TrimAtlas01_S.ktx" pak="false" date="133842037196557838" size="14348688" name="T_TrimAtlas01_S.ktx" ID="490" />
+									<Asset type="0" path="T_Trim_01.ktx" pak="false" date="133842037196653321" size="3590256" name="T_Trim_01.ktx" ID="491" />
+									<Asset type="0" path="T_Trim_01_E.ktx" pak="false" date="133842037196753377" size="3590256" name="T_Trim_01_E.ktx" ID="492" />
+									<Asset type="0" path="T_Trim_01_N.ktx" pak="false" date="133842037196913407" size="3590272" name="T_Trim_01_N.ktx" ID="493" />
+									<Asset type="0" path="T_Trim_01_S.ktx" pak="false" date="133842037196968459" size="3590256" name="T_Trim_01_S.ktx" ID="494" />
+									<Asset type="0" path="T_Wall2_D.ktx" pak="false" date="133842037197168506" size="3590256" name="T_Wall2_D.ktx" ID="495" />
+									<Asset type="0" path="T_Wall2_N.ktx" pak="false" date="133842037197388503" size="3590272" name="T_Wall2_N.ktx" ID="496" />
+									<Asset type="0" path="T_Wall2_S.ktx" pak="false" date="133842037197628464" size="3590256" name="T_Wall2_S.ktx" ID="497" />
+									<Asset type="0" path="T_Wall_D.ktx" pak="false" date="133842037197838939" size="3590256" name="T_Wall_D.ktx" ID="498" />
+									<Asset type="0" path="T_Wall_N.ktx" pak="false" date="133842037198064075" size="3590272" name="T_Wall_N.ktx" ID="499" />
+									<Asset type="0" path="T_Wall_RandomCrossStruts_D.ktx" pak="false" date="133842037198254328" size="3590256" name="T_Wall_RandomCrossStruts_D.ktx" ID="500" />
+									<Asset type="0" path="T_Wall_RandomCrossStruts_N.ktx" pak="false" date="133842037198444109" size="3590272" name="T_Wall_RandomCrossStruts_N.ktx" ID="501" />
+									<Asset type="0" path="T_Wall_RandomCrossStruts_S.ktx" pak="false" date="133842037198644063" size="3590256" name="T_Wall_RandomCrossStruts_S.ktx" ID="502" />
+									<Asset type="0" path="T_Wall_S.ktx" pak="false" date="133842037198894092" size="3590256" name="T_Wall_S.ktx" ID="503" />
+								</Folder>
+							</Asset>
+							<Asset type="2" path="Buggy" pak="false" date="133842037180287268" size="0" name="Buggy" ID="510" files="3" totalSize="10746209">
+								<Data type="0" />
+								<Folder>
+									<Asset type="2" path="glTF-Embedded" pak="false" date="133842037180257532" size="0" name="glTF-Embedded" ID="506" files="1" totalSize="10727727">
+										<Data type="0" />
+										<Folder>
+											<Asset type="0" path="Buggy.gltf" pak="false" date="133842037180277508" size="10727727" name="Buggy.gltf" ID="505" />
+										</Folder>
+									</Asset>
+									<Asset type="0" path="README.md" pak="false" date="133842037179881080" size="265" name="README.md" ID="507" />
+									<Asset type="2" path="screenshot" pak="false" date="133842037180287268" size="0" name="screenshot" ID="509" files="1" totalSize="18217">
+										<Data type="0" />
+										<Folder>
+											<Asset type="0" path="screenshot.png" pak="false" date="133842037180287268" size="18217" name="screenshot.png" ID="508" />
+										</Folder>
+									</Asset>
+								</Folder>
+							</Asset>
+							<Asset type="0" path="cube.gltf" pak="false" date="133842037198904091" size="4132" name="cube.gltf" ID="511" />
+							<Asset type="0" path="geosphere.gltf" pak="false" date="133842037198904091" size="42777" name="geosphere.gltf" ID="512" />
+							<Asset type="2" path="morpheus_team" pak="false" date="133842037203005120" size="0" name="morpheus_team" ID="542" files="25" totalSize="141377939">
+								<Data type="0" />
+								<Folder>
+									<Asset type="2" path="lego_ball_phone" pak="false" date="133842037199815818" size="0" name="lego_ball_phone" ID="519" files="6" totalSize="22816254">
+										<Data type="0" />
+										<Folder>
+											<Asset type="0" path="mlp.json" pak="false" date="133842037198914165" size="18077" name="mlp.json" ID="513" />
+											<Asset type="0" path="shape0.gltf" pak="false" date="133842037199711644" size="19605210" name="shape0.gltf" ID="514" />
+											<Asset type="0" path="shape0.mtl" pak="false" date="133842037199711644" size="128" name="shape0.mtl" ID="515" />
+											<Asset type="0" path="shape0.obj" pak="false" date="133842037199721642" size="136" name="shape0.obj" ID="516" />
+											<Asset type="0" path="shape0.pngfeat0.png" pak="false" date="133842037199761625" size="1588741" name="shape0.pngfeat0.png" ID="517" />
+											<Asset type="0" path="shape0.pngfeat1.png" pak="false" date="133842037199815818" size="1603962" name="shape0.pngfeat1.png" ID="518" />
+										</Folder>
+									</Asset>
+									<Asset type="2" path="lego_boba_fett_phone" pak="false" date="133842037201627732" size="0" name="lego_boba_fett_phone" ID="526" files="6" totalSize="43611411">
+										<Data type="0" />
+										<Folder>
+											<Asset type="0" path="mlp.json" pak="false" date="133842037199815818" size="18077" name="mlp.json" ID="520" />
+											<Asset type="0" path="shape0.gltf" pak="false" date="133842037201517754" size="40394689" name="shape0.gltf" ID="521" />
+											<Asset type="0" path="shape0.mtl" pak="false" date="133842037201527430" size="128" name="shape0.mtl" ID="522" />
+											<Asset type="0" path="shape0.obj" pak="false" date="133842037201527430" size="136" name="shape0.obj" ID="523" />
+											<Asset type="0" path="shape0.pngfeat0.png" pak="false" date="133842037201577319" size="1452840" name="shape0.pngfeat0.png" ID="524" />
+											<Asset type="0" path="shape0.pngfeat1.png" pak="false" date="133842037201637399" size="1745541" name="shape0.pngfeat1.png" ID="525" />
+										</Folder>
+									</Asset>
+									<Asset type="2" path="lego_monster_truck_phone" pak="false" date="133842037203005120" size="0" name="lego_monster_truck_phone" ID="533" files="6" totalSize="32866126">
+										<Data type="0" />
+										<Folder>
+											<Asset type="0" path="mlp.json" pak="false" date="133842037201643024" size="18081" name="mlp.json" ID="527" />
+											<Asset type="0" path="shape0.gltf" pak="false" date="133842037202889417" size="29423899" name="shape0.gltf" ID="528" />
+											<Asset type="0" path="shape0.mtl" pak="false" date="133842037202899294" size="128" name="shape0.mtl" ID="529" />
+											<Asset type="0" path="shape0.obj" pak="false" date="133842037202899294" size="136" name="shape0.obj" ID="530" />
+											<Asset type="0" path="shape0.pngfeat0.png" pak="false" date="133842037202949504" size="1782575" name="shape0.pngfeat0.png" ID="531" />
+											<Asset type="0" path="shape0.pngfeat1.png" pak="false" date="133842037203005120" size="1641307" name="shape0.pngfeat1.png" ID="532" />
+										</Folder>
+									</Asset>
+									<Asset type="2" path="lego_tractor_phone" pak="false" date="133842037204756892" size="0" name="lego_tractor_phone" ID="540" files="6" totalSize="42082564">
+										<Data type="0" />
+										<Folder>
+											<Asset type="0" path="mlp.json" pak="false" date="133842037203005120" size="18072" name="mlp.json" ID="534" />
+											<Asset type="0" path="shape0.gltf" pak="false" date="133842037204660950" size="38822307" name="shape0.gltf" ID="535" />
+											<Asset type="0" path="shape0.mtl" pak="false" date="133842037204660950" size="128" name="shape0.mtl" ID="536" />
+											<Asset type="0" path="shape0.obj" pak="false" date="133842037204660950" size="136" name="shape0.obj" ID="537" />
+											<Asset type="0" path="shape0.pngfeat0.png" pak="false" date="133842037204716851" size="1621421" name="shape0.pngfeat0.png" ID="538" />
+											<Asset type="0" path="shape0.pngfeat1.png" pak="false" date="133842037204766897" size="1620500" name="shape0.pngfeat1.png" ID="539" />
+										</Folder>
+									</Asset>
+									<Asset type="0" path="LICENSE.txt" pak="false" date="133842037198914165" size="1584" name="LICENSE.txt" ID="541" />
+								</Folder>
+							</Asset>
+							<Asset type="2" path="pica_pica_robot" pak="false" date="133842037204928798" size="0" name="pica_pica_robot" ID="546" files="3" totalSize="2683368">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="license.txt" pak="false" date="133842037204766897" size="706" name="license.txt" ID="543" />
+									<Asset type="0" path="scene.bin" pak="false" date="133842037204918742" size="2646340" name="scene.bin" ID="544" />
+									<Asset type="0" path="scene.gltf" pak="false" date="133842037204928798" size="36322" name="scene.gltf" ID="545" />
+								</Folder>
+							</Asset>
+							<Asset type="0" path="planet.gltf" pak="false" date="133842037204928798" size="154960" name="planet.gltf" ID="547" />
+							<Asset type="2" path="primitives" pak="false" date="133842037204953925" size="0" name="primitives" ID="551" files="3" totalSize="165375">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="LICENSE.md" pak="false" date="133842037204943865" size="618" name="LICENSE.md" ID="548" />
+									<Asset type="0" path="primitives.gltf" pak="false" date="133842037204953925" size="164575" name="primitives.gltf" ID="549" />
+									<Asset type="0" path="README.md" pak="false" date="133842037204943865" size="182" name="README.md" ID="550" />
+								</Folder>
+							</Asset>
+							<Asset type="0" path="rock.gltf" pak="false" date="133842037204963907" size="12144" name="rock.gltf" ID="552" />
+							<Asset type="2" path="space_module" pak="false" date="133842037206799051" size="0" name="space_module" ID="570" files="17" totalSize="32262236">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="LICENSE.md" pak="false" date="133842037204963907" size="634" name="LICENSE.md" ID="553" />
+									<Asset type="0" path="phone_NORM.ktx" pak="false" date="133842037206438362" size="5592564" name="phone_NORM.ktx" ID="554" />
+									<Asset type="0" path="phone_SPEC.ktx" pak="false" date="133842037206819177" size="5592564" name="phone_SPEC.ktx" ID="555" />
+									<Asset type="0" path="PlaneCylinderRoom_M_CylinderRoom_Normal.ktx" pak="false" date="133842037205023994" size="1398256" name="PlaneCylinderRoom_M_CylinderRoom_Normal.ktx" ID="556" />
+									<Asset type="0" path="PlaneCylinderRoom_M_CylinderRoom_OcclusionRoughnessMetallic.ktx" pak="false" date="133842037205112079" size="1398256" name="PlaneCylinderRoom_M_CylinderRoom_OcclusionRoughnessMetallic.ktx" ID="557" />
+									<Asset type="0" path="SpaceModule.bin" pak="false" date="133842037205432525" size="7519376" name="SpaceModule.bin" ID="558" />
+									<Asset type="0" path="SpaceModule.gltf" pak="false" date="133842037205442462" size="98534" name="SpaceModule.gltf" ID="559" />
+									<Asset type="0" path="T_CircuitBoardV2_LowerRes.ktx" pak="false" date="133842037205482143" size="699216" name="T_CircuitBoardV2_LowerRes.ktx" ID="560" />
+									<Asset type="0" path="T_CylinderRoom.ktx" pak="false" date="133842037205566048" size="1398256" name="T_CylinderRoom.ktx" ID="561" />
+									<Asset type="0" path="T_Glass_D.ktx" pak="false" date="133842037205576103" size="349676" name="T_Glass_D.ktx" ID="562" />
+									<Asset type="0" path="T_Metal_D.ktx" pak="false" date="133842037205576103" size="87528" name="T_Metal_D.ktx" ID="563" />
+									<Asset type="0" path="T_Metal_S.ktx" pak="false" date="133842037205576103" size="87528" name="T_Metal_S.ktx" ID="564" />
+									<Asset type="0" path="T_Pedestal_D.ktx" pak="false" date="133842037205606092" size="349676" name="T_Pedestal_D.ktx" ID="565" />
+									<Asset type="0" path="T_Pedestal_N.ktx" pak="false" date="133842037205636094" size="349676" name="T_Pedestal_N.ktx" ID="566" />
+									<Asset type="0" path="T_Pedestal_S.ktx" pak="false" date="133842037205656089" size="349676" name="T_Pedestal_S.ktx" ID="567" />
+									<Asset type="0" path="T_Phone_D.ktx" pak="false" date="133842037206031175" size="5592564" name="T_Phone_D.ktx" ID="568" />
+									<Asset type="0" path="T_ScreenUIV2.ktx" pak="false" date="133842037206118262" size="1398256" name="T_ScreenUIV2.ktx" ID="569" />
+								</Folder>
+							</Asset>
+							<Asset type="2" path="sponza" pak="false" date="133842037210485799" size="0" name="sponza" ID="653" files="81" totalSize="85897384">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="background.ktx" pak="false" date="133842037207443872" size="349676" name="background.ktx" ID="571" />
+									<Asset type="0" path="chain_texture.ktx" pak="false" date="133842037207464289" size="87564" name="chain_texture.ktx" ID="572" />
+									<Asset type="2" path="ktx2" pak="false" date="133842037209682473" size="0" name="ktx2" ID="627" files="54" totalSize="64094741">
+										<Data type="0" />
+										<Folder>
+											<Asset type="0" path="background.ktx2" pak="false" date="133842037207494341" size="1081616" name="background.ktx2" ID="573" />
+											<Asset type="0" path="background_bump.ktx2" pak="false" date="133842037207524338" size="619220" name="background_bump.ktx2" ID="574" />
+											<Asset type="0" path="chain_texture.ktx2" pak="false" date="133842037207539840" size="323459" name="chain_texture.ktx2" ID="575" />
+											<Asset type="0" path="chain_texture_bump.ktx2" pak="false" date="133842037207549880" size="119518" name="chain_texture_bump.ktx2" ID="576" />
+											<Asset type="0" path="chain_texture_mask.ktx2" pak="false" date="133842037207549880" size="12509" name="chain_texture_mask.ktx2" ID="577" />
+											<Asset type="0" path="floor_gloss.ktx2" pak="false" date="133842037207589872" size="1262568" name="floor_gloss.ktx2" ID="578" />
+											<Asset type="0" path="lion.ktx2" pak="false" date="133842037207652236" size="1058277" name="lion.ktx2" ID="579" />
+											<Asset type="0" path="lion2_bump.ktx2" pak="false" date="133842037207682712" size="818785" name="lion2_bump.ktx2" ID="580" />
+											<Asset type="0" path="lion_bump.ktx2" pak="false" date="133842037207712724" size="813810" name="lion_bump.ktx2" ID="581" />
+											<Asset type="0" path="spnza_bricks_a_bump.ktx2" pak="false" date="133842037207752287" size="1099916" name="spnza_bricks_a_bump.ktx2" ID="582" />
+											<Asset type="0" path="spnza_bricks_a_diff.ktx2" pak="false" date="133842037207792285" size="1350999" name="spnza_bricks_a_diff.ktx2" ID="583" />
+											<Asset type="0" path="spnza_bricks_a_spec.ktx2" pak="false" date="133842037207832347" size="1253216" name="spnza_bricks_a_spec.ktx2" ID="584" />
+											<Asset type="0" path="sponza_arch_bump.ktx2" pak="false" date="133842037207842829" size="211611" name="sponza_arch_bump.ktx2" ID="585" />
+											<Asset type="0" path="sponza_arch_diff.ktx2" pak="false" date="133842037207872754" size="1072987" name="sponza_arch_diff.ktx2" ID="586" />
+											<Asset type="0" path="sponza_arch_spec.ktx2" pak="false" date="133842037207906922" size="910454" name="sponza_arch_spec.ktx2" ID="587" />
+											<Asset type="0" path="sponza_ceiling_a_diff.ktx2" pak="false" date="133842037207936962" size="1354132" name="sponza_ceiling_a_diff.ktx2" ID="588" />
+											<Asset type="0" path="sponza_ceiling_a_spec.ktx2" pak="false" date="133842037207986625" size="1147977" name="sponza_ceiling_a_spec.ktx2" ID="589" />
+											<Asset type="0" path="sponza_column_a_bump.ktx2" pak="false" date="133842037208016662" size="864542" name="sponza_column_a_bump.ktx2" ID="590" />
+											<Asset type="0" path="sponza_column_a_diff.ktx2" pak="false" date="133842037208056662" size="1360169" name="sponza_column_a_diff.ktx2" ID="591" />
+											<Asset type="0" path="sponza_column_a_spec.ktx2" pak="false" date="133842037208096663" size="1180682" name="sponza_column_a_spec.ktx2" ID="592" />
+											<Asset type="0" path="sponza_column_b_bump.ktx2" pak="false" date="133842037208136743" size="791766" name="sponza_column_b_bump.ktx2" ID="593" />
+											<Asset type="0" path="sponza_column_b_diff.ktx2" pak="false" date="133842037208176682" size="1372113" name="sponza_column_b_diff.ktx2" ID="594" />
+											<Asset type="0" path="sponza_column_b_spec.ktx2" pak="false" date="133842037208219827" size="1166428" name="sponza_column_b_spec.ktx2" ID="595" />
+											<Asset type="0" path="sponza_column_c_bump.ktx2" pak="false" date="133842037208249901" size="880166" name="sponza_column_c_bump.ktx2" ID="596" />
+											<Asset type="0" path="sponza_column_c_diff.ktx2" pak="false" date="133842037208300001" size="1371711" name="sponza_column_c_diff.ktx2" ID="597" />
+											<Asset type="0" path="sponza_column_c_spec.ktx2" pak="false" date="133842037208339924" size="1153339" name="sponza_column_c_spec.ktx2" ID="598" />
+											<Asset type="0" path="sponza_curtain_blue_diff.ktx2" pak="false" date="133842037208499770" size="5135765" name="sponza_curtain_blue_diff.ktx2" ID="599" />
+											<Asset type="0" path="sponza_curtain_diff.ktx2" pak="false" date="133842037208669804" size="5247571" name="sponza_curtain_diff.ktx2" ID="600" />
+											<Asset type="0" path="sponza_curtain_green_diff.ktx2" pak="false" date="133842037208829829" size="5176221" name="sponza_curtain_green_diff.ktx2" ID="601" />
+											<Asset type="0" path="sponza_details_diff.ktx2" pak="false" date="133842037208869813" size="1325971" name="sponza_details_diff.ktx2" ID="602" />
+											<Asset type="0" path="sponza_details_spec.ktx2" pak="false" date="133842037208915752" size="1172770" name="sponza_details_spec.ktx2" ID="603" />
+											<Asset type="0" path="sponza_fabric_blue_diff.ktx2" pak="false" date="133842037208950986" size="1241204" name="sponza_fabric_blue_diff.ktx2" ID="604" />
+											<Asset type="0" path="sponza_fabric_diff.ktx2" pak="false" date="133842037208993140" size="1283648" name="sponza_fabric_diff.ktx2" ID="605" />
+											<Asset type="0" path="sponza_fabric_green_diff.ktx2" pak="false" date="133842037209033134" size="1255169" name="sponza_fabric_green_diff.ktx2" ID="606" />
+											<Asset type="0" path="sponza_fabric_purple.ktx2" pak="false" date="133842037209102639" size="1865522" name="sponza_fabric_purple.ktx2" ID="607" />
+											<Asset type="0" path="sponza_fabric_spec.ktx2" pak="false" date="133842037209132679" size="912042" name="sponza_fabric_spec.ktx2" ID="608" />
+											<Asset type="0" path="sponza_flagpole_diff.ktx2" pak="false" date="133842037209172681" size="1085944" name="sponza_flagpole_diff.ktx2" ID="609" />
+											<Asset type="0" path="sponza_flagpole_spec.ktx2" pak="false" date="133842037209202700" size="991058" name="sponza_flagpole_spec.ktx2" ID="610" />
+											<Asset type="0" path="sponza_floor_a_diff.ktx2" pak="false" date="133842037209247671" size="1363727" name="sponza_floor_a_diff.ktx2" ID="611" />
+											<Asset type="0" path="sponza_floor_a_spec.ktx2" pak="false" date="133842037209287736" size="1206093" name="sponza_floor_a_spec.ktx2" ID="612" />
+											<Asset type="0" path="sponza_roof_diff.ktx2" pak="false" date="133842037209367739" size="1390122" name="sponza_roof_diff.ktx2" ID="613" />
+											<Asset type="0" path="sponza_thorn_bump.ktx2" pak="false" date="133842037209377757" size="76067" name="sponza_thorn_bump.ktx2" ID="614" />
+											<Asset type="0" path="sponza_thorn_diff.ktx2" pak="false" date="133842037209392258" size="258030" name="sponza_thorn_diff.ktx2" ID="615" />
+											<Asset type="0" path="sponza_thorn_mask.ktx2" pak="false" date="133842037209392258" size="150290" name="sponza_thorn_mask.ktx2" ID="616" />
+											<Asset type="0" path="sponza_thorn_spec.ktx2" pak="false" date="133842037209410898" size="282097" name="sponza_thorn_spec.ktx2" ID="617" />
+											<Asset type="0" path="vase_bump.ktx2" pak="false" date="133842037209450942" size="1068244" name="vase_bump.ktx2" ID="618" />
+											<Asset type="0" path="vase_dif.ktx2" pak="false" date="133842037209490944" size="1365018" name="vase_dif.ktx2" ID="619" />
+											<Asset type="0" path="vase_hanging.ktx2" pak="false" date="133842037209530936" size="1224218" name="vase_hanging.ktx2" ID="620" />
+											<Asset type="0" path="vase_plant.ktx2" pak="false" date="133842037209550932" size="625698" name="vase_plant.ktx2" ID="621" />
+											<Asset type="0" path="vase_plant_mask.ktx2" pak="false" date="133842037209560942" size="179086" name="vase_plant_mask.ktx2" ID="622" />
+											<Asset type="0" path="vase_plant_spec.ktx2" pak="false" date="133842037209582140" size="603549" name="vase_plant_spec.ktx2" ID="623" />
+											<Asset type="0" path="vase_round.ktx2" pak="false" date="133842037209622445" size="1301038" name="vase_round.ktx2" ID="624" />
+											<Asset type="0" path="vase_round_bump.ktx2" pak="false" date="133842037209642482" size="368639" name="vase_round_bump.ktx2" ID="625" />
+											<Asset type="0" path="vase_round_spec.ktx2" pak="false" date="133842037209682473" size="1287970" name="vase_round_spec.ktx2" ID="626" />
+										</Folder>
+									</Asset>
+									<Asset type="0" path="LICENSE.md" pak="false" date="133842037206830890" size="355" name="LICENSE.md" ID="628" />
+									<Asset type="0" path="lion.ktx" pak="false" date="133842037209710519" size="349676" name="lion.ktx" ID="629" />
+									<Asset type="0" path="spnza_bricks_a_diff.ktx" pak="false" date="133842037209730561" size="349676" name="spnza_bricks_a_diff.ktx" ID="630" />
+									<Asset type="0" path="Sponza01.bin" pak="false" date="133842037207423876" size="10714740" name="Sponza01.bin" ID="631" />
+									<Asset type="0" path="Sponza01.gltf" pak="false" date="133842037207423876" size="73844" name="Sponza01.gltf" ID="632" />
+									<Asset type="0" path="sponza_arch_diff.ktx" pak="false" date="133842037209750562" size="349676" name="sponza_arch_diff.ktx" ID="633" />
+									<Asset type="0" path="sponza_ceiling_a_diff.ktx" pak="false" date="133842037209770560" size="349676" name="sponza_ceiling_a_diff.ktx" ID="634" />
+									<Asset type="0" path="sponza_column_a_diff.ktx" pak="false" date="133842037209800559" size="349676" name="sponza_column_a_diff.ktx" ID="635" />
+									<Asset type="0" path="sponza_column_b_diff.ktx" pak="false" date="133842037209830600" size="349676" name="sponza_column_b_diff.ktx" ID="636" />
+									<Asset type="0" path="sponza_column_c_diff.ktx" pak="false" date="133842037209850611" size="349676" name="sponza_column_c_diff.ktx" ID="637" />
+									<Asset type="0" path="sponza_curtain_blue_diff.ktx" pak="false" date="133842037209950610" size="1398256" name="sponza_curtain_blue_diff.ktx" ID="638" />
+									<Asset type="0" path="sponza_curtain_diff.ktx" pak="false" date="133842037210071535" size="1398256" name="sponza_curtain_diff.ktx" ID="639" />
+									<Asset type="0" path="sponza_curtain_green_diff.ktx" pak="false" date="133842037210191587" size="1398256" name="sponza_curtain_green_diff.ktx" ID="640" />
+									<Asset type="0" path="sponza_details_diff.ktx" pak="false" date="133842037210221605" size="349676" name="sponza_details_diff.ktx" ID="641" />
+									<Asset type="0" path="sponza_fabric_blue_diff.ktx" pak="false" date="133842037210252263" size="349676" name="sponza_fabric_blue_diff.ktx" ID="642" />
+									<Asset type="0" path="sponza_fabric_diff.ktx" pak="false" date="133842037210285744" size="349676" name="sponza_fabric_diff.ktx" ID="643" />
+									<Asset type="0" path="sponza_fabric_green_diff.ktx" pak="false" date="133842037210315792" size="349676" name="sponza_fabric_green_diff.ktx" ID="644" />
+									<Asset type="0" path="sponza_flagpole_diff.ktx" pak="false" date="133842037210335810" size="349676" name="sponza_flagpole_diff.ktx" ID="645" />
+									<Asset type="0" path="sponza_floor_a_diff.ktx" pak="false" date="133842037210365784" size="349676" name="sponza_floor_a_diff.ktx" ID="646" />
+									<Asset type="0" path="sponza_roof_diff.ktx" pak="false" date="133842037210385785" size="349676" name="sponza_roof_diff.ktx" ID="647" />
+									<Asset type="0" path="sponza_thorn_diff.ktx" pak="false" date="133842037210395789" size="87528" name="sponza_thorn_diff.ktx" ID="648" />
+									<Asset type="0" path="vase_dif.ktx" pak="false" date="133842037210415780" size="349676" name="vase_dif.ktx" ID="649" />
+									<Asset type="0" path="vase_hanging.ktx" pak="false" date="133842037210445803" size="349676" name="vase_hanging.ktx" ID="650" />
+									<Asset type="0" path="vase_plant.ktx" pak="false" date="133842037210465781" size="349676" name="vase_plant.ktx" ID="651" />
+									<Asset type="0" path="vase_round.ktx" pak="false" date="133842037210485799" size="349676" name="vase_round.ktx" ID="652" />
+								</Folder>
+							</Asset>
+							<Asset type="0" path="subpass_scene_opaque.gltf" pak="false" date="133842037210515780" size="711919" name="subpass_scene_opaque.gltf" ID="654" />
+							<Asset type="0" path="subpass_scene_transparent.gltf" pak="false" date="133842037210525805" size="28761" name="subpass_scene_transparent.gltf" ID="655" />
+							<Asset type="0" path="teapot.gltf" pak="false" date="133842037210535801" size="225382" name="teapot.gltf" ID="656" />
+							<Asset type="2" path="terrain" pak="false" date="133842037210555790" size="0" name="terrain" ID="660" files="3" totalSize="489196">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="LICENSE.md" pak="false" date="133842037210535801" size="618" name="LICENSE.md" ID="657" />
+									<Asset type="0" path="README.md" pak="false" date="133842037210545791" size="153" name="README.md" ID="658" />
+									<Asset type="0" path="terrain.gltf" pak="false" date="133842037210565789" size="488425" name="terrain.gltf" ID="659" />
+								</Folder>
+							</Asset>
+							<Asset type="0" path="textured_unit_cube.gltf" pak="false" date="133842037210565789" size="4275" name="textured_unit_cube.gltf" ID="661" />
+							<Asset type="0" path="torusknot.gltf" pak="false" date="133842037210565789" size="92828" name="torusknot.gltf" ID="662" />
+							<Asset type="0" path="tunnel_cylinder.gltf" pak="false" date="133842037210565789" size="5008" name="tunnel_cylinder.gltf" ID="663" />
+							<Asset type="2" path="vokselia" pak="false" date="133842037225042048" size="0" name="vokselia" ID="921" files="257" totalSize="283741966">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="0000_0000.ktx" pak="false" date="133842037210635800" size="1048672" name="0000_0000.ktx" ID="664" />
+									<Asset type="0" path="0000_0001.ktx" pak="false" date="133842037210715810" size="1048672" name="0000_0001.ktx" ID="665" />
+									<Asset type="0" path="0000_0002.ktx" pak="false" date="133842037210765804" size="1048672" name="0000_0002.ktx" ID="666" />
+									<Asset type="0" path="0000_0003.ktx" pak="false" date="133842037210815873" size="1048672" name="0000_0003.ktx" ID="667" />
+									<Asset type="0" path="0000_0004.ktx" pak="false" date="133842037210885847" size="1048672" name="0000_0004.ktx" ID="668" />
+									<Asset type="0" path="0000_0005.ktx" pak="false" date="133842037210935852" size="1048672" name="0000_0005.ktx" ID="669" />
+									<Asset type="0" path="0000_0006.ktx" pak="false" date="133842037210990961" size="1048672" name="0000_0006.ktx" ID="670" />
+									<Asset type="0" path="0000_0007.ktx" pak="false" date="133842037211030948" size="1048672" name="0000_0007.ktx" ID="671" />
+									<Asset type="0" path="0000_0008.ktx" pak="false" date="133842037211080952" size="1048672" name="0000_0008.ktx" ID="672" />
+									<Asset type="0" path="0000_0009.ktx" pak="false" date="133842037211150957" size="1048672" name="0000_0009.ktx" ID="673" />
+									<Asset type="0" path="0000_0010.ktx" pak="false" date="133842037211210954" size="1048672" name="0000_0010.ktx" ID="674" />
+									<Asset type="0" path="0000_0011.ktx" pak="false" date="133842037211320959" size="1048672" name="0000_0011.ktx" ID="675" />
+									<Asset type="0" path="0000_0012.ktx" pak="false" date="133842037211428259" size="1048672" name="0000_0012.ktx" ID="676" />
+									<Asset type="0" path="0000_0013.ktx" pak="false" date="133842037211571092" size="1048672" name="0000_0013.ktx" ID="677" />
+									<Asset type="0" path="0000_0014.ktx" pak="false" date="133842037211691058" size="1048672" name="0000_0014.ktx" ID="678" />
+									<Asset type="0" path="0000_0015.ktx" pak="false" date="133842037211751060" size="1048672" name="0000_0015.ktx" ID="679" />
+									<Asset type="0" path="0001_0000.ktx" pak="false" date="133842037211791055" size="1048672" name="0001_0000.ktx" ID="680" />
+									<Asset type="0" path="0001_0001.ktx" pak="false" date="133842037211831549" size="1048672" name="0001_0001.ktx" ID="681" />
+									<Asset type="0" path="0001_0002.ktx" pak="false" date="133842037211871096" size="1048672" name="0001_0002.ktx" ID="682" />
+									<Asset type="0" path="0001_0003.ktx" pak="false" date="133842037211921105" size="1048672" name="0001_0003.ktx" ID="683" />
+									<Asset type="0" path="0001_0004.ktx" pak="false" date="133842037211986168" size="1048672" name="0001_0004.ktx" ID="684" />
+									<Asset type="0" path="0001_0005.ktx" pak="false" date="133842037212026148" size="1048672" name="0001_0005.ktx" ID="685" />
+									<Asset type="0" path="0001_0006.ktx" pak="false" date="133842037212126155" size="1048672" name="0001_0006.ktx" ID="686" />
+									<Asset type="0" path="0001_0007.ktx" pak="false" date="133842037212196171" size="1048672" name="0001_0007.ktx" ID="687" />
+									<Asset type="0" path="0001_0008.ktx" pak="false" date="133842037212226173" size="1048672" name="0001_0008.ktx" ID="688" />
+									<Asset type="0" path="0001_0009.ktx" pak="false" date="133842037212286175" size="1048672" name="0001_0009.ktx" ID="689" />
+									<Asset type="0" path="0001_0010.ktx" pak="false" date="133842037212359521" size="1048672" name="0001_0010.ktx" ID="690" />
+									<Asset type="0" path="0001_0011.ktx" pak="false" date="133842037212382707" size="1048672" name="0001_0011.ktx" ID="691" />
+									<Asset type="0" path="0001_0012.ktx" pak="false" date="133842037212405912" size="1048672" name="0001_0012.ktx" ID="692" />
+									<Asset type="0" path="0001_0013.ktx" pak="false" date="133842037212425948" size="1048672" name="0001_0013.ktx" ID="693" />
+									<Asset type="0" path="0001_0014.ktx" pak="false" date="133842037212465947" size="1048672" name="0001_0014.ktx" ID="694" />
+									<Asset type="0" path="0001_0015.ktx" pak="false" date="133842037212515947" size="1048672" name="0001_0015.ktx" ID="695" />
+									<Asset type="0" path="0002_0000.ktx" pak="false" date="133842037212559493" size="1048672" name="0002_0000.ktx" ID="696" />
+									<Asset type="0" path="0002_0001.ktx" pak="false" date="133842037212609541" size="1048672" name="0002_0001.ktx" ID="697" />
+									<Asset type="0" path="0002_0002.ktx" pak="false" date="133842037212639555" size="1048672" name="0002_0002.ktx" ID="698" />
+									<Asset type="0" path="0002_0003.ktx" pak="false" date="133842037212679540" size="1048672" name="0002_0003.ktx" ID="699" />
+									<Asset type="0" path="0002_0004.ktx" pak="false" date="133842037212730130" size="1048672" name="0002_0004.ktx" ID="700" />
+									<Asset type="0" path="0002_0005.ktx" pak="false" date="133842037212779644" size="1048672" name="0002_0005.ktx" ID="701" />
+									<Asset type="0" path="0002_0006.ktx" pak="false" date="133842037212842999" size="1048672" name="0002_0006.ktx" ID="702" />
+									<Asset type="0" path="0002_0007.ktx" pak="false" date="133842037212913057" size="1048672" name="0002_0007.ktx" ID="703" />
+									<Asset type="0" path="0002_0008.ktx" pak="false" date="133842037212953063" size="1048672" name="0002_0008.ktx" ID="704" />
+									<Asset type="0" path="0002_0009.ktx" pak="false" date="133842037213011981" size="1048672" name="0002_0009.ktx" ID="705" />
+									<Asset type="0" path="0002_0010.ktx" pak="false" date="133842037213051954" size="1048672" name="0002_0010.ktx" ID="706" />
+									<Asset type="0" path="0002_0011.ktx" pak="false" date="133842037213121963" size="1048672" name="0002_0011.ktx" ID="707" />
+									<Asset type="0" path="0002_0012.ktx" pak="false" date="133842037213161957" size="1048672" name="0002_0012.ktx" ID="708" />
+									<Asset type="0" path="0002_0013.ktx" pak="false" date="133842037213211960" size="1048672" name="0002_0013.ktx" ID="709" />
+									<Asset type="0" path="0002_0014.ktx" pak="false" date="133842037213265596" size="1048672" name="0002_0014.ktx" ID="710" />
+									<Asset type="0" path="0002_0015.ktx" pak="false" date="133842037213295594" size="1048672" name="0002_0015.ktx" ID="711" />
+									<Asset type="0" path="0003_0000.ktx" pak="false" date="133842037213395592" size="1048672" name="0003_0000.ktx" ID="712" />
+									<Asset type="0" path="0003_0001.ktx" pak="false" date="133842037213413067" size="1048672" name="0003_0001.ktx" ID="713" />
+									<Asset type="0" path="0003_0002.ktx" pak="false" date="133842037213453112" size="1048672" name="0003_0002.ktx" ID="714" />
+									<Asset type="0" path="0003_0003.ktx" pak="false" date="133842037213513111" size="1048672" name="0003_0003.ktx" ID="715" />
+									<Asset type="0" path="0003_0004.ktx" pak="false" date="133842037213623113" size="1048672" name="0003_0004.ktx" ID="716" />
+									<Asset type="0" path="0003_0005.ktx" pak="false" date="133842037213683112" size="1048672" name="0003_0005.ktx" ID="717" />
+									<Asset type="0" path="0003_0006.ktx" pak="false" date="133842037213713117" size="1048672" name="0003_0006.ktx" ID="718" />
+									<Asset type="0" path="0003_0007.ktx" pak="false" date="133842037213742643" size="1048672" name="0003_0007.ktx" ID="719" />
+									<Asset type="0" path="0003_0008.ktx" pak="false" date="133842037213793542" size="1048672" name="0003_0008.ktx" ID="720" />
+									<Asset type="0" path="0003_0009.ktx" pak="false" date="133842037213863648" size="1048672" name="0003_0009.ktx" ID="721" />
+									<Asset type="0" path="0003_0010.ktx" pak="false" date="133842037213923637" size="1048672" name="0003_0010.ktx" ID="722" />
+									<Asset type="0" path="0003_0011.ktx" pak="false" date="133842037214008775" size="1048672" name="0003_0011.ktx" ID="723" />
+									<Asset type="0" path="0003_0012.ktx" pak="false" date="133842037214067014" size="1048672" name="0003_0012.ktx" ID="724" />
+									<Asset type="0" path="0003_0013.ktx" pak="false" date="133842037214096996" size="1048672" name="0003_0013.ktx" ID="725" />
+									<Asset type="0" path="0003_0014.ktx" pak="false" date="133842037214126997" size="1048672" name="0003_0014.ktx" ID="726" />
+									<Asset type="0" path="0003_0015.ktx" pak="false" date="133842037214207007" size="1048672" name="0003_0015.ktx" ID="727" />
+									<Asset type="0" path="0004_0000.ktx" pak="false" date="133842037214226997" size="1048672" name="0004_0000.ktx" ID="728" />
+									<Asset type="0" path="0004_0001.ktx" pak="false" date="133842037214266992" size="1048672" name="0004_0001.ktx" ID="729" />
+									<Asset type="0" path="0004_0002.ktx" pak="false" date="133842037214286991" size="1048672" name="0004_0002.ktx" ID="730" />
+									<Asset type="0" path="0004_0003.ktx" pak="false" date="133842037214316981" size="1048672" name="0004_0003.ktx" ID="731" />
+									<Asset type="0" path="0004_0004.ktx" pak="false" date="133842037214360379" size="1048672" name="0004_0004.ktx" ID="732" />
+									<Asset type="0" path="0004_0005.ktx" pak="false" date="133842037214450422" size="1048672" name="0004_0005.ktx" ID="733" />
+									<Asset type="0" path="0004_0006.ktx" pak="false" date="133842037214500439" size="1048672" name="0004_0006.ktx" ID="734" />
+									<Asset type="0" path="0004_0007.ktx" pak="false" date="133842037214563986" size="1048672" name="0004_0007.ktx" ID="735" />
+									<Asset type="0" path="0004_0008.ktx" pak="false" date="133842037214627886" size="1048672" name="0004_0008.ktx" ID="736" />
+									<Asset type="0" path="0004_0009.ktx" pak="false" date="133842037214677931" size="1048672" name="0004_0009.ktx" ID="737" />
+									<Asset type="0" path="0004_0010.ktx" pak="false" date="133842037214777926" size="1048672" name="0004_0010.ktx" ID="738" />
+									<Asset type="0" path="0004_0011.ktx" pak="false" date="133842037214907998" size="1048672" name="0004_0011.ktx" ID="739" />
+									<Asset type="0" path="0004_0012.ktx" pak="false" date="133842037215010387" size="1048672" name="0004_0012.ktx" ID="740" />
+									<Asset type="0" path="0004_0013.ktx" pak="false" date="133842037215040426" size="1048672" name="0004_0013.ktx" ID="741" />
+									<Asset type="0" path="0004_0014.ktx" pak="false" date="133842037215120430" size="1048672" name="0004_0014.ktx" ID="742" />
+									<Asset type="0" path="0004_0015.ktx" pak="false" date="133842037215150432" size="1048672" name="0004_0015.ktx" ID="743" />
+									<Asset type="0" path="0005_0000.ktx" pak="false" date="133842037215264784" size="1048672" name="0005_0000.ktx" ID="744" />
+									<Asset type="0" path="0005_0001.ktx" pak="false" date="133842037215334768" size="1048672" name="0005_0001.ktx" ID="745" />
+									<Asset type="0" path="0005_0002.ktx" pak="false" date="133842037215384781" size="1048672" name="0005_0002.ktx" ID="746" />
+									<Asset type="0" path="0005_0003.ktx" pak="false" date="133842037215454769" size="1048672" name="0005_0003.ktx" ID="747" />
+									<Asset type="0" path="0005_0004.ktx" pak="false" date="133842037215502489" size="1048672" name="0005_0004.ktx" ID="748" />
+									<Asset type="0" path="0005_0005.ktx" pak="false" date="133842037215532480" size="1048672" name="0005_0005.ktx" ID="749" />
+									<Asset type="0" path="0005_0006.ktx" pak="false" date="133842037215572484" size="1048672" name="0005_0006.ktx" ID="750" />
+									<Asset type="0" path="0005_0007.ktx" pak="false" date="133842037215632483" size="1048672" name="0005_0007.ktx" ID="751" />
+									<Asset type="0" path="0005_0008.ktx" pak="false" date="133842037215702509" size="1048672" name="0005_0008.ktx" ID="752" />
+									<Asset type="0" path="0005_0009.ktx" pak="false" date="133842037215842580" size="1048672" name="0005_0009.ktx" ID="753" />
+									<Asset type="0" path="0005_0010.ktx" pak="false" date="133842037215902593" size="1048672" name="0005_0010.ktx" ID="754" />
+									<Asset type="0" path="0005_0011.ktx" pak="false" date="133842037215957611" size="1048672" name="0005_0011.ktx" ID="755" />
+									<Asset type="0" path="0005_0012.ktx" pak="false" date="133842037216027667" size="1048672" name="0005_0012.ktx" ID="756" />
+									<Asset type="0" path="0005_0013.ktx" pak="false" date="133842037216147665" size="1048672" name="0005_0013.ktx" ID="757" />
+									<Asset type="0" path="0005_0014.ktx" pak="false" date="133842037216177665" size="1048672" name="0005_0014.ktx" ID="758" />
+									<Asset type="0" path="0005_0015.ktx" pak="false" date="133842037216207665" size="1048672" name="0005_0015.ktx" ID="759" />
+									<Asset type="0" path="0006_0000.ktx" pak="false" date="133842037216222669" size="1048672" name="0006_0000.ktx" ID="760" />
+									<Asset type="0" path="0006_0001.ktx" pak="false" date="133842037216252719" size="1048672" name="0006_0001.ktx" ID="761" />
+									<Asset type="0" path="0006_0002.ktx" pak="false" date="133842037216302713" size="1048672" name="0006_0002.ktx" ID="762" />
+									<Asset type="0" path="0006_0003.ktx" pak="false" date="133842037216322712" size="1048672" name="0006_0003.ktx" ID="763" />
+									<Asset type="0" path="0006_0004.ktx" pak="false" date="133842037216389805" size="1048672" name="0006_0004.ktx" ID="764" />
+									<Asset type="0" path="0006_0005.ktx" pak="false" date="133842037216469864" size="1048672" name="0006_0005.ktx" ID="765" />
+									<Asset type="0" path="0006_0006.ktx" pak="false" date="133842037216529880" size="1048672" name="0006_0006.ktx" ID="766" />
+									<Asset type="0" path="0006_0007.ktx" pak="false" date="133842037216659861" size="1048672" name="0006_0007.ktx" ID="767" />
+									<Asset type="0" path="0006_0008.ktx" pak="false" date="133842037216727502" size="1048672" name="0006_0008.ktx" ID="768" />
+									<Asset type="0" path="0006_0009.ktx" pak="false" date="133842037216757479" size="1048672" name="0006_0009.ktx" ID="769" />
+									<Asset type="0" path="0006_0010.ktx" pak="false" date="133842037216787486" size="1048672" name="0006_0010.ktx" ID="770" />
+									<Asset type="0" path="0006_0011.ktx" pak="false" date="133842037216817526" size="1048672" name="0006_0011.ktx" ID="771" />
+									<Asset type="0" path="0006_0012.ktx" pak="false" date="133842037216849793" size="1048672" name="0006_0012.ktx" ID="772" />
+									<Asset type="0" path="0006_0013.ktx" pak="false" date="133842037216869783" size="1048672" name="0006_0013.ktx" ID="773" />
+									<Asset type="0" path="0006_0014.ktx" pak="false" date="133842037216985019" size="1048672" name="0006_0014.ktx" ID="774" />
+									<Asset type="0" path="0006_0015.ktx" pak="false" date="133842037217014962" size="1048672" name="0006_0015.ktx" ID="775" />
+									<Asset type="0" path="0007_0000.ktx" pak="false" date="133842037217044962" size="1048672" name="0007_0000.ktx" ID="776" />
+									<Asset type="0" path="0007_0001.ktx" pak="false" date="133842037217094985" size="1048672" name="0007_0001.ktx" ID="777" />
+									<Asset type="0" path="0007_0002.ktx" pak="false" date="133842037217144971" size="1048672" name="0007_0002.ktx" ID="778" />
+									<Asset type="0" path="0007_0003.ktx" pak="false" date="133842037217194982" size="1048672" name="0007_0003.ktx" ID="779" />
+									<Asset type="0" path="0007_0004.ktx" pak="false" date="133842037217221423" size="1048672" name="0007_0004.ktx" ID="780" />
+									<Asset type="0" path="0007_0005.ktx" pak="false" date="133842037217251467" size="1048672" name="0007_0005.ktx" ID="781" />
+									<Asset type="0" path="0007_0006.ktx" pak="false" date="133842037217301465" size="1048672" name="0007_0006.ktx" ID="782" />
+									<Asset type="0" path="0007_0007.ktx" pak="false" date="133842037217328131" size="1048672" name="0007_0007.ktx" ID="783" />
+									<Asset type="0" path="0007_0008.ktx" pak="false" date="133842037217402396" size="1048672" name="0007_0008.ktx" ID="784" />
+									<Asset type="0" path="0007_0009.ktx" pak="false" date="133842037217432438" size="1048672" name="0007_0009.ktx" ID="785" />
+									<Asset type="0" path="0007_0010.ktx" pak="false" date="133842037217552433" size="1048672" name="0007_0010.ktx" ID="786" />
+									<Asset type="0" path="0007_0011.ktx" pak="false" date="133842037217582436" size="1048672" name="0007_0011.ktx" ID="787" />
+									<Asset type="0" path="0007_0012.ktx" pak="false" date="133842037217613639" size="1048672" name="0007_0012.ktx" ID="788" />
+									<Asset type="0" path="0007_0013.ktx" pak="false" date="133842037217643651" size="1048672" name="0007_0013.ktx" ID="789" />
+									<Asset type="0" path="0007_0014.ktx" pak="false" date="133842037217673643" size="1048672" name="0007_0014.ktx" ID="790" />
+									<Asset type="0" path="0007_0015.ktx" pak="false" date="133842037217703631" size="1048672" name="0007_0015.ktx" ID="791" />
+									<Asset type="0" path="0008_0000.ktx" pak="false" date="133842037217723698" size="1048672" name="0008_0000.ktx" ID="792" />
+									<Asset type="0" path="0008_0001.ktx" pak="false" date="133842037217783749" size="1048672" name="0008_0001.ktx" ID="793" />
+									<Asset type="0" path="0008_0002.ktx" pak="false" date="133842037217833771" size="1048672" name="0008_0002.ktx" ID="794" />
+									<Asset type="0" path="0008_0003.ktx" pak="false" date="133842037217903778" size="1048672" name="0008_0003.ktx" ID="795" />
+									<Asset type="0" path="0008_0004.ktx" pak="false" date="133842037217938555" size="1048672" name="0008_0004.ktx" ID="796" />
+									<Asset type="0" path="0008_0005.ktx" pak="false" date="133842037217973710" size="1048672" name="0008_0005.ktx" ID="797" />
+									<Asset type="0" path="0008_0006.ktx" pak="false" date="133842037218033720" size="1048672" name="0008_0006.ktx" ID="798" />
+									<Asset type="0" path="0008_0007.ktx" pak="false" date="133842037218063709" size="1048672" name="0008_0007.ktx" ID="799" />
+									<Asset type="0" path="0008_0008.ktx" pak="false" date="133842037218115079" size="1048672" name="0008_0008.ktx" ID="800" />
+									<Asset type="0" path="0008_0009.ktx" pak="false" date="133842037218175132" size="1048672" name="0008_0009.ktx" ID="801" />
+									<Asset type="0" path="0008_0010.ktx" pak="false" date="133842037218195130" size="1048672" name="0008_0010.ktx" ID="802" />
+									<Asset type="0" path="0008_0011.ktx" pak="false" date="133842037218225127" size="1048672" name="0008_0011.ktx" ID="803" />
+									<Asset type="0" path="0008_0012.ktx" pak="false" date="133842037218265133" size="1048672" name="0008_0012.ktx" ID="804" />
+									<Asset type="0" path="0008_0013.ktx" pak="false" date="133842037218323046" size="1048672" name="0008_0013.ktx" ID="805" />
+									<Asset type="0" path="0008_0014.ktx" pak="false" date="133842037218393041" size="1048672" name="0008_0014.ktx" ID="806" />
+									<Asset type="0" path="0008_0015.ktx" pak="false" date="133842037218493063" size="1048672" name="0008_0015.ktx" ID="807" />
+									<Asset type="0" path="0009_0000.ktx" pak="false" date="133842037218553049" size="1048672" name="0009_0000.ktx" ID="808" />
+									<Asset type="0" path="0009_0001.ktx" pak="false" date="133842037218612424" size="1048672" name="0009_0001.ktx" ID="809" />
+									<Asset type="0" path="0009_0002.ktx" pak="false" date="133842037218672437" size="1048672" name="0009_0002.ktx" ID="810" />
+									<Asset type="0" path="0009_0003.ktx" pak="false" date="133842037218792414" size="1048672" name="0009_0003.ktx" ID="811" />
+									<Asset type="0" path="0009_0004.ktx" pak="false" date="133842037218832517" size="1048672" name="0009_0004.ktx" ID="812" />
+									<Asset type="0" path="0009_0005.ktx" pak="false" date="133842037218914712" size="1048672" name="0009_0005.ktx" ID="813" />
+									<Asset type="0" path="0009_0006.ktx" pak="false" date="133842037218976702" size="1048672" name="0009_0006.ktx" ID="814" />
+									<Asset type="0" path="0009_0007.ktx" pak="false" date="133842037219026696" size="1048672" name="0009_0007.ktx" ID="815" />
+									<Asset type="0" path="0009_0008.ktx" pak="false" date="133842037219106708" size="1048672" name="0009_0008.ktx" ID="816" />
+									<Asset type="0" path="0009_0009.ktx" pak="false" date="133842037219146686" size="1048672" name="0009_0009.ktx" ID="817" />
+									<Asset type="0" path="0009_0010.ktx" pak="false" date="133842037219166693" size="1048672" name="0009_0010.ktx" ID="818" />
+									<Asset type="0" path="0009_0011.ktx" pak="false" date="133842037219236711" size="1048672" name="0009_0011.ktx" ID="819" />
+									<Asset type="0" path="0009_0012.ktx" pak="false" date="133842037219326704" size="1048672" name="0009_0012.ktx" ID="820" />
+									<Asset type="0" path="0009_0013.ktx" pak="false" date="133842037219364534" size="1048672" name="0009_0013.ktx" ID="821" />
+									<Asset type="0" path="0009_0014.ktx" pak="false" date="133842037219404524" size="1048672" name="0009_0014.ktx" ID="822" />
+									<Asset type="0" path="0009_0015.ktx" pak="false" date="133842037219474533" size="1048672" name="0009_0015.ktx" ID="823" />
+									<Asset type="0" path="0010_0000.ktx" pak="false" date="133842037219554547" size="1048672" name="0010_0000.ktx" ID="824" />
+									<Asset type="0" path="0010_0001.ktx" pak="false" date="133842037219624522" size="1048672" name="0010_0001.ktx" ID="825" />
+									<Asset type="0" path="0010_0002.ktx" pak="false" date="133842037219674523" size="1048672" name="0010_0002.ktx" ID="826" />
+									<Asset type="0" path="0010_0003.ktx" pak="false" date="133842037219731438" size="1048672" name="0010_0003.ktx" ID="827" />
+									<Asset type="0" path="0010_0004.ktx" pak="false" date="133842037219781446" size="1048672" name="0010_0004.ktx" ID="828" />
+									<Asset type="0" path="0010_0005.ktx" pak="false" date="133842037219851520" size="1048672" name="0010_0005.ktx" ID="829" />
+									<Asset type="0" path="0010_0006.ktx" pak="false" date="133842037219891495" size="1048672" name="0010_0006.ktx" ID="830" />
+									<Asset type="0" path="0010_0007.ktx" pak="false" date="133842037219966579" size="1048672" name="0010_0007.ktx" ID="831" />
+									<Asset type="0" path="0010_0008.ktx" pak="false" date="133842037220018065" size="1048672" name="0010_0008.ktx" ID="832" />
+									<Asset type="0" path="0010_0009.ktx" pak="false" date="133842037220092766" size="1048672" name="0010_0009.ktx" ID="833" />
+									<Asset type="0" path="0010_0010.ktx" pak="false" date="133842037220162791" size="1048672" name="0010_0010.ktx" ID="834" />
+									<Asset type="0" path="0010_0011.ktx" pak="false" date="133842037220192778" size="1048672" name="0010_0011.ktx" ID="835" />
+									<Asset type="0" path="0010_0012.ktx" pak="false" date="133842037220252777" size="1048672" name="0010_0012.ktx" ID="836" />
+									<Asset type="0" path="0010_0013.ktx" pak="false" date="133842037220312801" size="1048672" name="0010_0013.ktx" ID="837" />
+									<Asset type="0" path="0010_0014.ktx" pak="false" date="133842037220382772" size="1048672" name="0010_0014.ktx" ID="838" />
+									<Asset type="0" path="0010_0015.ktx" pak="false" date="133842037220402775" size="1048672" name="0010_0015.ktx" ID="839" />
+									<Asset type="0" path="0011_0000.ktx" pak="false" date="133842037220422770" size="1048672" name="0011_0000.ktx" ID="840" />
+									<Asset type="0" path="0011_0001.ktx" pak="false" date="133842037220492778" size="1048672" name="0011_0001.ktx" ID="841" />
+									<Asset type="0" path="0011_0002.ktx" pak="false" date="133842037220542779" size="1048672" name="0011_0002.ktx" ID="842" />
+									<Asset type="0" path="0011_0003.ktx" pak="false" date="133842037220662774" size="1048672" name="0011_0003.ktx" ID="843" />
+									<Asset type="0" path="0011_0004.ktx" pak="false" date="133842037220697958" size="1048672" name="0011_0004.ktx" ID="844" />
+									<Asset type="0" path="0011_0005.ktx" pak="false" date="133842037220747944" size="1048672" name="0011_0005.ktx" ID="845" />
+									<Asset type="0" path="0011_0006.ktx" pak="false" date="133842037220777939" size="1048672" name="0011_0006.ktx" ID="846" />
+									<Asset type="0" path="0011_0007.ktx" pak="false" date="133842037220827989" size="1048672" name="0011_0007.ktx" ID="847" />
+									<Asset type="0" path="0011_0008.ktx" pak="false" date="133842037220887980" size="1048672" name="0011_0008.ktx" ID="848" />
+									<Asset type="0" path="0011_0009.ktx" pak="false" date="133842037220917986" size="1048672" name="0011_0009.ktx" ID="849" />
+									<Asset type="0" path="0011_0010.ktx" pak="false" date="133842037220981594" size="1048672" name="0011_0010.ktx" ID="850" />
+									<Asset type="0" path="0011_0011.ktx" pak="false" date="133842037221031579" size="1048672" name="0011_0011.ktx" ID="851" />
+									<Asset type="0" path="0011_0012.ktx" pak="false" date="133842037221071597" size="1048672" name="0011_0012.ktx" ID="852" />
+									<Asset type="0" path="0011_0013.ktx" pak="false" date="133842037221124476" size="1048672" name="0011_0013.ktx" ID="853" />
+									<Asset type="0" path="0011_0014.ktx" pak="false" date="133842037221184477" size="1048672" name="0011_0014.ktx" ID="854" />
+									<Asset type="0" path="0011_0015.ktx" pak="false" date="133842037221216746" size="1048672" name="0011_0015.ktx" ID="855" />
+									<Asset type="0" path="0012_0000.ktx" pak="false" date="133842037221266741" size="1048672" name="0012_0000.ktx" ID="856" />
+									<Asset type="0" path="0012_0001.ktx" pak="false" date="133842037221336745" size="1048672" name="0012_0001.ktx" ID="857" />
+									<Asset type="0" path="0012_0002.ktx" pak="false" date="133842037221406731" size="1048672" name="0012_0002.ktx" ID="858" />
+									<Asset type="0" path="0012_0003.ktx" pak="false" date="133842037221436740" size="1048672" name="0012_0003.ktx" ID="859" />
+									<Asset type="0" path="0012_0004.ktx" pak="false" date="133842037221476769" size="1048672" name="0012_0004.ktx" ID="860" />
+									<Asset type="0" path="0012_0005.ktx" pak="false" date="133842037221526742" size="1048672" name="0012_0005.ktx" ID="861" />
+									<Asset type="0" path="0012_0006.ktx" pak="false" date="133842037221566751" size="1048672" name="0012_0006.ktx" ID="862" />
+									<Asset type="0" path="0012_0007.ktx" pak="false" date="133842037221616762" size="1048672" name="0012_0007.ktx" ID="863" />
+									<Asset type="0" path="0012_0008.ktx" pak="false" date="133842037221669400" size="1048672" name="0012_0008.ktx" ID="864" />
+									<Asset type="0" path="0012_0009.ktx" pak="false" date="133842037221749398" size="1048672" name="0012_0009.ktx" ID="865" />
+									<Asset type="0" path="0012_0010.ktx" pak="false" date="133842037221779379" size="1048672" name="0012_0010.ktx" ID="866" />
+									<Asset type="0" path="0012_0011.ktx" pak="false" date="133842037221809375" size="1048672" name="0012_0011.ktx" ID="867" />
+									<Asset type="0" path="0012_0012.ktx" pak="false" date="133842037221849433" size="1048672" name="0012_0012.ktx" ID="868" />
+									<Asset type="0" path="0012_0013.ktx" pak="false" date="133842037221879432" size="1048672" name="0012_0013.ktx" ID="869" />
+									<Asset type="0" path="0012_0014.ktx" pak="false" date="133842037221959447" size="1048672" name="0012_0014.ktx" ID="870" />
+									<Asset type="0" path="0012_0015.ktx" pak="false" date="133842037221989670" size="1048672" name="0012_0015.ktx" ID="871" />
+									<Asset type="0" path="0013_0000.ktx" pak="false" date="133842037222049638" size="1048672" name="0013_0000.ktx" ID="872" />
+									<Asset type="0" path="0013_0001.ktx" pak="false" date="133842037222109664" size="1048672" name="0013_0001.ktx" ID="873" />
+									<Asset type="0" path="0013_0002.ktx" pak="false" date="133842037222139628" size="1048672" name="0013_0002.ktx" ID="874" />
+									<Asset type="0" path="0013_0003.ktx" pak="false" date="133842037222179653" size="1048672" name="0013_0003.ktx" ID="875" />
+									<Asset type="0" path="0013_0004.ktx" pak="false" date="133842037222239708" size="1048672" name="0013_0004.ktx" ID="876" />
+									<Asset type="0" path="0013_0005.ktx" pak="false" date="133842037222299776" size="1048672" name="0013_0005.ktx" ID="877" />
+									<Asset type="0" path="0013_0006.ktx" pak="false" date="133842037222329777" size="1048672" name="0013_0006.ktx" ID="878" />
+									<Asset type="0" path="0013_0007.ktx" pak="false" date="133842037222409783" size="1048672" name="0013_0007.ktx" ID="879" />
+									<Asset type="0" path="0013_0008.ktx" pak="false" date="133842037222451310" size="1048672" name="0013_0008.ktx" ID="880" />
+									<Asset type="0" path="0013_0009.ktx" pak="false" date="133842037222471363" size="1048672" name="0013_0009.ktx" ID="881" />
+									<Asset type="0" path="0013_0010.ktx" pak="false" date="133842037222531372" size="1048672" name="0013_0010.ktx" ID="882" />
+									<Asset type="0" path="0013_0011.ktx" pak="false" date="133842037222581359" size="1048672" name="0013_0011.ktx" ID="883" />
+									<Asset type="0" path="0013_0012.ktx" pak="false" date="133842037222631364" size="1048672" name="0013_0012.ktx" ID="884" />
+									<Asset type="0" path="0013_0013.ktx" pak="false" date="133842037222661375" size="1048672" name="0013_0013.ktx" ID="885" />
+									<Asset type="0" path="0013_0014.ktx" pak="false" date="133842037222686478" size="1048672" name="0013_0014.ktx" ID="886" />
+									<Asset type="0" path="0013_0015.ktx" pak="false" date="133842037222706466" size="1048672" name="0013_0015.ktx" ID="887" />
+									<Asset type="0" path="0014_0000.ktx" pak="false" date="133842037222756486" size="1048672" name="0014_0000.ktx" ID="888" />
+									<Asset type="0" path="0014_0001.ktx" pak="false" date="133842037222806492" size="1048672" name="0014_0001.ktx" ID="889" />
+									<Asset type="0" path="0014_0002.ktx" pak="false" date="133842037222856541" size="1048672" name="0014_0002.ktx" ID="890" />
+									<Asset type="0" path="0014_0003.ktx" pak="false" date="133842037222896536" size="1048672" name="0014_0003.ktx" ID="891" />
+									<Asset type="0" path="0014_0004.ktx" pak="false" date="133842037222946525" size="1048672" name="0014_0004.ktx" ID="892" />
+									<Asset type="0" path="0014_0005.ktx" pak="false" date="133842037222991612" size="1048672" name="0014_0005.ktx" ID="893" />
+									<Asset type="0" path="0014_0006.ktx" pak="false" date="133842037223061616" size="1048672" name="0014_0006.ktx" ID="894" />
+									<Asset type="0" path="0014_0007.ktx" pak="false" date="133842037223081597" size="1048672" name="0014_0007.ktx" ID="895" />
+									<Asset type="0" path="0014_0008.ktx" pak="false" date="133842037223131607" size="1048672" name="0014_0008.ktx" ID="896" />
+									<Asset type="0" path="0014_0009.ktx" pak="false" date="133842037223189855" size="1048672" name="0014_0009.ktx" ID="897" />
+									<Asset type="0" path="0014_0010.ktx" pak="false" date="133842037223239846" size="1048672" name="0014_0010.ktx" ID="898" />
+									<Asset type="0" path="0014_0011.ktx" pak="false" date="133842037223269838" size="1048672" name="0014_0011.ktx" ID="899" />
+									<Asset type="0" path="0014_0012.ktx" pak="false" date="133842037223319852" size="1048672" name="0014_0012.ktx" ID="900" />
+									<Asset type="0" path="0014_0013.ktx" pak="false" date="133842037223369865" size="1048672" name="0014_0013.ktx" ID="901" />
+									<Asset type="0" path="0014_0014.ktx" pak="false" date="133842037223389913" size="1048672" name="0014_0014.ktx" ID="902" />
+									<Asset type="0" path="0014_0015.ktx" pak="false" date="133842037223429859" size="1048672" name="0014_0015.ktx" ID="903" />
+									<Asset type="0" path="0015_0000.ktx" pak="false" date="133842037223469859" size="1048672" name="0015_0000.ktx" ID="904" />
+									<Asset type="0" path="0015_0001.ktx" pak="false" date="133842037223549851" size="1048672" name="0015_0001.ktx" ID="905" />
+									<Asset type="0" path="0015_0002.ktx" pak="false" date="133842037223619837" size="1048672" name="0015_0002.ktx" ID="906" />
+									<Asset type="0" path="0015_0003.ktx" pak="false" date="133842037223649842" size="1048672" name="0015_0003.ktx" ID="907" />
+									<Asset type="0" path="0015_0004.ktx" pak="false" date="133842037223689840" size="1048672" name="0015_0004.ktx" ID="908" />
+									<Asset type="0" path="0015_0005.ktx" pak="false" date="133842037223724527" size="1048672" name="0015_0005.ktx" ID="909" />
+									<Asset type="0" path="0015_0006.ktx" pak="false" date="133842037223754518" size="1048672" name="0015_0006.ktx" ID="910" />
+									<Asset type="0" path="0015_0007.ktx" pak="false" date="133842037223794520" size="1048672" name="0015_0007.ktx" ID="911" />
+									<Asset type="0" path="0015_0008.ktx" pak="false" date="133842037223834561" size="1048672" name="0015_0008.ktx" ID="912" />
+									<Asset type="0" path="0015_0009.ktx" pak="false" date="133842037223864882" size="1048672" name="0015_0009.ktx" ID="913" />
+									<Asset type="0" path="0015_0010.ktx" pak="false" date="133842037223894880" size="1048672" name="0015_0010.ktx" ID="914" />
+									<Asset type="0" path="0015_0011.ktx" pak="false" date="133842037223944878" size="1048672" name="0015_0011.ktx" ID="915" />
+									<Asset type="0" path="0015_0012.ktx" pak="false" date="133842037223986763" size="1048672" name="0015_0012.ktx" ID="916" />
+									<Asset type="0" path="0015_0013.ktx" pak="false" date="133842037224026761" size="1048672" name="0015_0013.ktx" ID="917" />
+									<Asset type="0" path="0015_0014.ktx" pak="false" date="133842037224076775" size="1048672" name="0015_0014.ktx" ID="918" />
+									<Asset type="0" path="0015_0015.ktx" pak="false" date="133842037224106788" size="1048672" name="0015_0015.ktx" ID="919" />
+									<Asset type="0" path="vokselia.gltf" pak="false" date="133842037225202050" size="15281934" name="vokselia.gltf" ID="920" />
+								</Folder>
+							</Asset>
+						</Folder>
+					</Asset>
+					<Asset type="2" path="textures" pak="false" date="133842037230337278" size="0" name="textures" ID="947" files="23" totalSize="102682099">
+						<Data type="0" />
+						<Folder>
+							<Asset type="2" path="basisu" pak="false" date="133842037225310409" size="0" name="basisu" ID="931" files="8" totalSize="1867299">
+								<Data type="0" />
+								<Folder>
+									<Asset type="0" path="kodim03_ETC1S.ktx2" pak="false" date="133842037225231877" size="65301" name="kodim03_ETC1S.ktx2" ID="923" />
+									<Asset type="0" path="kodim03_UASTC.ktx2" pak="false" date="133842037225251986" size="377210" name="kodim03_UASTC.ktx2" ID="924" />
+									<Asset type="0" path="kodim05_ETC1S.ktx2" pak="false" date="133842037225260361" size="84595" name="kodim05_ETC1S.ktx2" ID="925" />
+									<Asset type="0" path="kodim05_UASTC.ktx2" pak="false" date="133842037225280394" size="485944" name="kodim05_UASTC.ktx2" ID="926" />
+									<Asset type="0" path="kodim20_ETC1S.ktx2" pak="false" date="133842037225280394" size="60341" name="kodim20_ETC1S.ktx2" ID="927" />
+									<Asset type="0" path="kodim20_UASTC.ktx2" pak="false" date="133842037225300405" size="337327" name="kodim20_UASTC.ktx2" ID="928" />
+									<Asset type="0" path="kodim23_ETC1S.ktx2" pak="false" date="133842037225300405" size="70941" name="kodim23_ETC1S.ktx2" ID="929" />
+									<Asset type="0" path="kodim23_UASTC.ktx2" pak="false" date="133842037225320405" size="385640" name="kodim23_UASTC.ktx2" ID="930" />
+								</Folder>
+							</Asset>
+							<Asset type="0" path="checkerboard_rgba.ktx" pak="false" date="133842037225730405" size="1048676" name="checkerboard_rgba.ktx" ID="932" />
+							<Asset type="0" path="crate01_color_height_rgba.ktx" pak="false" date="133842037225810485" size="1398236" name="crate01_color_height_rgba.ktx" ID="933" />
+							<Asset type="0" path="crate02_color_height_rgba.ktx" pak="false" date="133842037225910158" size="1398236" name="crate02_color_height_rgba.ktx" ID="934" />
+							<Asset type="0" path="generated_flame.ktx" pak="false" date="133842037225930156" size="377264" name="generated_flame.ktx" ID="935" />
+							<Asset type="0" path="lavaplanet_color_rgba.ktx" pak="false" date="133842037226025271" size="1398236" name="lavaplanet_color_rgba.ktx" ID="936" />
+							<Asset type="0" path="metalplate01_rgba.ktx" pak="false" date="133842037226135284" size="1398236" name="metalplate01_rgba.ktx" ID="937" />
+							<Asset type="0" path="particle_gradient_rgba.ktx" pak="false" date="133842037226145326" size="1124" name="particle_gradient_rgba.ktx" ID="938" />
+							<Asset type="0" path="particle_rgba.ktx" pak="false" date="133842037226145326" size="16484" name="particle_rgba.ktx" ID="939" />
+							<Asset type="0" path="skysphere_rgba.ktx" pak="false" date="133842037226405272" size="5592544" name="skysphere_rgba.ktx" ID="940" />
+							<Asset type="0" path="terrain_heightmap_r16.ktx" pak="false" date="133842037226475328" size="2097252" name="terrain_heightmap_r16.ktx" ID="941" />
+							<Asset type="0" path="terrain_texturearray_rgba.ktx" pak="false" date="133842037226845304" size="8388736" name="terrain_texturearray_rgba.ktx" ID="942" />
+							<Asset type="0" path="texturearray_rocks_color_rgba.ktx" pak="false" date="133842037227250387" size="6990636" name="texturearray_rocks_color_rgba.ktx" ID="943" />
+							<Asset type="0" path="transparent_glass_rgba.ktx" pak="false" date="133842037227320381" size="1398236" name="transparent_glass_rgba.ktx" ID="944" />
+							<Asset type="0" path="uffizi_rgba16f_cube.ktx" pak="false" date="133842037228640964" size="16777304" name="uffizi_rgba16f_cube.ktx" ID="945" />
+							<Asset type="0" path="vulkan_logo_full.ktx" pak="false" date="133842037231322453" size="52533600" name="vulkan_logo_full.ktx" ID="946" />
+						</Folder>
+					</Asset>
+				</Folder>
+			</Asset>
+		</Folder>
+	</Asset>
+</assets>

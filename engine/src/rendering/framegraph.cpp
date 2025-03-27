@@ -20,6 +20,7 @@ void framegraph::Initialize(ermy::u8 numFrames)
 	frameConstDesc.debugName = "Frame Constants";
 	frameConstDesc.size = sizeof(ErmyFrame);
 	frameConstDesc.usage = BufferUsage::Uniform;
+	frameConstDesc.persistentMapped = true;
 
 	gFrameConstants = CreateDedicatedBuffer(frameConstDesc);
 

@@ -194,7 +194,7 @@ void GeometryAsset::DrawPreview()
 	ImGui::Combo("Mode", &currentMode, modes, std::size(modes));
 }
 
-void GeometryAsset::RegeneratePreview()
+void GeometryAsset::RegenerateLivePreview()
 {
 	RecalculateBoundingSphere();
 
@@ -230,8 +230,8 @@ void GeometryAsset::RegeneratePreview()
 	descStatic.pixelsData = nullptr;
 	descStatic.dataSize = 0;
 
-	previewTextureStatic = ermy::rendering::CreateDedicatedTexture(descStatic);
-	assetPreviewTexStatic = ermy::rendering::GetTextureDescriptor(previewTextureStatic);
+	//previewTextureStatic = ermy::rendering::CreateDedicatedTexture(descStatic);
+	//assetPreviewTexStatic = ermy::rendering::GetTextureDescriptor(previewTextureStatic);
 
 	PreviewRenderer::Instance().EnqueueStaticPreviewGeneration(this);
 }
@@ -391,7 +391,7 @@ void GeometryAsset::RenderStaticPreview(ermy::rendering::CommandList& cl)
 	cl.EndRenderPass();
 
 	auto staticRTTTex = PreviewRenderer::Instance().GetStaticTexture();
-	cl.BlitTexture(staticRTTTex, previewTextureStatic);
+	//cl.BlitTexture(staticRTTTex, previewTextureStatic);
 	int a = 42;
 
 

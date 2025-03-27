@@ -174,7 +174,7 @@ AssetData* AssimpLoader::Load(const std::filesystem::path& path)
 		//mesh->HasTextureCoordsName();
 	}
 
-	result->RegeneratePreview();
+	result->RegenerateLivePreview();
 
 	return result;
 }
