@@ -252,6 +252,7 @@ void TextureAsset::CompressTexture()
 
 void TextureAsset::RegenerateMips()
 {
+	printf("foo");
 }
 
 ChannelFormat GetChannelFormatFromErmyFormat(ermy::rendering::Format format)
@@ -341,7 +342,7 @@ void TextureAsset::DrawPreview()
 	ImGui::SameLine();
 	ImGui::Checkbox("Regen MIPs", &regenerateMips);
 
-	if (ImGui::Button("Regenrate MIPS"))
+	if (regenerateMips && numMips == 1)
 	{
 		RegenerateMips();
 	}

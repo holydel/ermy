@@ -26,43 +26,6 @@ DDSLoader::~DDSLoader()
 
 }
 
-Format GetFormatFromDXGI(DXGI_FORMAT dxgiFormat)
-{
-	switch (dxgiFormat)
-	{
-	case DXGI_FORMAT_R8G8B8A8_UNORM:        return Format::RGBA8_UNORM;
-	case DXGI_FORMAT_R16G16B16A16_UNORM:    return Format::RGBA16_UNORM;
-	case DXGI_FORMAT_R16G16B16A16_SNORM:    return Format::RGBA16_NORM;
-	case DXGI_FORMAT_R16G16B16A16_FLOAT:    return Format::RGBA16F;
-	case DXGI_FORMAT_R16G16B16A16_UINT:     return Format::RGBA16_UINT;
-	case DXGI_FORMAT_R16G16_UINT:           return Format::RG16_UINT;
-	case DXGI_FORMAT_R16_UINT:              return Format::R16_UINT;
-	case DXGI_FORMAT_R16G16_UNORM:          return Format::RG16_UNORM;
-	case DXGI_FORMAT_R16_UNORM:             return Format::R16_UNORM;
-	case DXGI_FORMAT_R8G8B8A8_UINT:         return Format::RGBA8_UINT;
-	case DXGI_FORMAT_R32_FLOAT:             return Format::R32F;
-	case DXGI_FORMAT_R32G32_FLOAT:          return Format::RG32F;
-	case DXGI_FORMAT_R32G32B32_FLOAT:       return Format::RGB32F;
-	case DXGI_FORMAT_R32G32B32A32_FLOAT:    return Format::RGBA32F;
-	case DXGI_FORMAT_BC1_UNORM:             return Format::BC1;
-	case DXGI_FORMAT_BC2_UNORM:             return Format::BC2;
-	case DXGI_FORMAT_BC3_UNORM:             return Format::BC3;
-	case DXGI_FORMAT_BC4_UNORM:             return Format::BC4;
-	case DXGI_FORMAT_BC5_UNORM:             return Format::BC5;
-	case DXGI_FORMAT_BC6H_UF16:             return Format::BC6;
-	case DXGI_FORMAT_BC6H_SF16:             return Format::BC6_SF;
-	case DXGI_FORMAT_BC7_UNORM:             return Format::BC7;
-	case DXGI_FORMAT_R8_UNORM:				return Format::R8_UNORM;
-	case DXGI_FORMAT_R8G8_UNORM:			return Format::RG8_UNORM;
-	case DXGI_FORMAT_B8G8R8X8_UNORM:
-	case DXGI_FORMAT_B8G8R8A8_UNORM:		return Format::BGRA8_UNORM;
-	default:
-		assert(!"add  missed format");
-	}
-
-	return Format::RGBA8_UNORM;
-}
-
 AssetData* DDSLoader::Load(const std::filesystem::path& path)
 {
 	TexMetadata metadata;
@@ -74,7 +37,7 @@ AssetData* DDSLoader::Load(const std::filesystem::path& path)
 		return nullptr;
 
 	TextureAsset* result = new TextureAsset();
-	result->texelSourceFormat = result->texelTargetFormat = GetFormatFromDXGI(metadata.format);
+	result->texelSourceFormat = result->texelTargetFormat = ermy::rendering::GetFormatFromDXGIFormat(metadata.format);
 	auto finfo = rendering::GetFormatInfo(result->texelSourceFormat);
 
 	int texDataSize = scratchImg.GetPixelsSize();

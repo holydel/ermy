@@ -111,10 +111,17 @@ namespace ermy
 			, D16_UNORM			
 			, D24_UNORM_S8_UINT
 			, RGBA8_SRGB
+
+			,MAX
 		};
 
-		constexpr size_t FORMAT_COUNT = 33;  // UNKNOWN + 32 formats
+		constexpr size_t FORMAT_COUNT = (size_t)Format::MAX;
 		extern const char* FormatNames[FORMAT_COUNT];
+
+		Format GetFormatFromName(const char* name);
+		Format GetFormatFromGLInternalFormat(u32 glInternalFormat);
+		Format GetFormatFromVKFormat(u32 vkFormat);
+		Format GetFormatFromDXGIFormat(u32 dxgiFormat);
 
 		struct FormatInfo
 		{
