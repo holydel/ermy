@@ -2,6 +2,8 @@
 #include <imgui.h>
 #include <preview_renderer.h>
 #include <editor_shader_internal.h>
+#include <editor_file_utils.h>
+
 using namespace ermy;
 
 struct SoundLivePreviewParams
@@ -87,9 +89,46 @@ void SoundAsset::DrawPreview()
 	}
 }
 
+void SoundAsset::LoadFromCachedRaw(std::ifstream& file, const std::filesystem::path& path)
+{
+	sound = ermy::sound::LoadFromFile(path.string().c_str());
+
+	duration = readBinary<double>(file);
+	channels = readBinary<int>(file);
+	samplesPreviewRaw = readVector<u8>(file);
+
+	_createLivePreviewTexture();
+}
+
+void SoundAsset::SaveToCachedRaw(std::ofstream& file)
+{
+	writeBinary(file, duration);
+	writeBinary(file, channels);
+	writeVector(file, samplesPreviewRaw);
+}
+
+void SoundAsset::_createLivePreviewTexture()
+{
+	ermy::rendering::TextureDesc descLive;
+	descLive.width = 512;
+	descLive.height = channels;
+	descLive.depth = 1;
+	descLive.isCubemap = false;
+	descLive.numLayers = 1;
+	descLive.numMips = 1;
+	descLive.pixelsData = samplesPreviewRaw.data();
+	descLive.isSparse = false;
+	descLive.texelSourceFormat = ermy::rendering::Format::R8_UNORM;
+	descLive.dataSize = samplesPreviewRaw.size();
+
+	previewTextureLive = ermy::rendering::CreateDedicatedTexture(descLive);
+	assetPreviewTexLive = ermy::rendering::GetTextureDescriptor(previewTextureLive);
+}
+
 void SoundAsset::RegenerateLivePreview()
 {
-	u8* data = new u8[512 * channels];
+	samplesPreviewRaw.resize(512 * channels);
+
 	float* maxGain = new float[channels];
 	float* avgGain = new float[channels];
 
@@ -115,50 +154,16 @@ void SoundAsset::RegenerateLivePreview()
 		{
 			avgGain[c] /= samplesInBar;
 
-			data[s + c * 512] = std::min((int)((avgGain[c]) * 512.0f),255);
+			samplesPreviewRaw.data()[s + c * 512] = std::min((int)((avgGain[c]) * 512.0f),255);
 			int a = 2;
 		}
 	}
 
-	ermy::rendering::TextureDesc descLive;
-	descLive.width = 512;
-	descLive.height = channels;
-	descLive.depth = 1;
-	descLive.isCubemap = false;
-	descLive.numLayers = 1;
-	descLive.numMips = 1;
-	descLive.pixelsData = data;
-	descLive.isSparse = false;
-	descLive.texelSourceFormat = ermy::rendering::Format::R8_UNORM;
-	descLive.dataSize = 512 * channels;
-
-	previewTextureLive = ermy::rendering::CreateDedicatedTexture(descLive);
-
-	ermy::rendering::TextureDesc descStatic;
-	descStatic.width = 128;
-	descStatic.height = 128;
-	descStatic.depth = 1;
-	descStatic.isCubemap = false;
-	descStatic.numLayers = 1;
-	descStatic.numMips = 1;
-	descStatic.isSparse = false;
-	descStatic.texelSourceFormat = ermy::rendering::Format::RGBA8_UNORM;
-
-	descStatic.pixelsData = nullptr;
-	descStatic.dataSize = 0;
-
-	//previewTextureStatic = ermy::rendering::CreateDedicatedTexture(descStatic);
-	assetPreviewTexLive = ermy::rendering::GetTextureDescriptor(previewTextureLive);
-	//assetPreviewTexStatic = ermy::rendering::GetTextureDescriptor(previewTextureStatic);
-
-	PreviewRenderer::Instance().EnqueueStaticPreviewGeneration(this);
+	_createLivePreviewTexture();
 }
 
 void SoundAsset::RenderStaticPreview(ermy::rendering::CommandList& cl)
 {
-	auto staticRTT = PreviewRenderer::Instance().GetStaticRTT();
-
-	cl.BeginRenderPass(staticRTT);
 	SoundRenderPreview::Instance().BindPSO(cl);
 	cl.SetDescriptorSet(0, assetPreviewTexLive);
 	SoundLivePreviewParams pass;
@@ -167,11 +172,14 @@ void SoundAsset::RenderStaticPreview(ermy::rendering::CommandList& cl)
 	pass.volume = 1.0f;
 	cl.SetRootConstant(pass, ShaderStage::Fragment);
 	cl.Draw(3);
-	cl.EndRenderPass();
+}
 
-	auto staticRTTTex = PreviewRenderer::Instance().GetStaticTexture();
-	//cl.BlitTexture(staticRTTTex, previewTextureStatic);
-	int a = 42;
+std::vector<ermy::u8> SoundAsset::GetStaticPreviewData()
+{
+	return PreviewRenderer::Instance().GetPreviewDataBC1([&](ermy::rendering::CommandList& cl)
+	{
+		RenderStaticPreview(cl);
+	});
 }
 
 void SoundAsset::RenderPreview(ermy::rendering::CommandList& cl)

@@ -11,7 +11,7 @@
 #include <pugixml.hpp>
 #include <span>
 
-enum class AssetType
+enum class AssetType : ermy::u8
 {
 	UNKNOWN,
 	AUTO,
@@ -19,7 +19,7 @@ enum class AssetType
 	General,
 };
 
-enum class AssetDataType
+enum class AssetDataType : ermy::u8
 {
 	UNKNOWN,
 	Texture,
@@ -29,7 +29,7 @@ enum class AssetDataType
 	Video,
 };
 
-enum class AssetLoaderType
+enum class AssetLoaderType : ermy::u8
 {
 	UNKNOWN,
 	FFMPEG,
@@ -84,7 +84,8 @@ public:
 
 	virtual void Save(pugi::xml_node& node);
 	virtual void Load(pugi::xml_node& node) {}
-
+	virtual void LoadFromCachedRaw(std::ifstream& file, const std::filesystem::path& path) {}
+	virtual void SaveToCachedRaw(std::ofstream& file) {}
 	virtual void ProcessAssetToPak() {};
 
 	std::span<ermy::u8> GetPakData()	
@@ -118,6 +119,7 @@ protected:
 
 	ermy::rendering::TextureID previewTextureStatic;
 	ImTextureID assetPreviewTexStatic = 0;
+	bool needRegenerateStaticPreview = true;
 	void RegenerateStaticPreviewTexture();
 public:
 	ImTextureID GetAssetPreviewStatic()

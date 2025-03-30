@@ -18,7 +18,6 @@ struct PreviewSoundConstants
     int numChannels;
     float position;
     float volume;
-    int mipLevel;
 };
 
 

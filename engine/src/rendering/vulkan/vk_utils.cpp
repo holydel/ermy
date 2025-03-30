@@ -45,7 +45,7 @@ VkFormat vk_utils::VkFormatFromErmy(ermy::rendering::Format format)
 	case  Format::RGBA32F:
 		return VK_FORMAT_R32G32B32A32_SFLOAT;
 	case  Format::BC1:
-		return VK_FORMAT_BC1_RGB_SRGB_BLOCK;
+		return VK_FORMAT_BC1_RGB_UNORM_BLOCK;
 	case  Format::BC2:
 		return VK_FORMAT_BC2_SRGB_BLOCK;
 	case  Format::BC3:
@@ -190,6 +190,19 @@ void vk_utils::ImageTransition(VkCommandBuffer cbuff, VkImage image, VkImageLayo
 	const VkDependencyInfo depInfo{ .sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO, .imageMemoryBarrierCount = 1, .pImageMemoryBarriers = &barrier };
 
 	vkCmdPipelineBarrier2(cbuff, &depInfo);
+}
+
+void vk_utils::BufferMemoryBarrier(VkCommandBuffer cbuff, VkBuffer buffer, VkAccessFlags srcAccess, VkAccessFlags dstAccess, VkPipelineStageFlags srcStage, VkPipelineStageFlags dstStage)
+{
+	VkBufferMemoryBarrier bufferBarrier = {};
+	bufferBarrier.sType = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
+	bufferBarrier.srcAccessMask = srcAccess;
+	bufferBarrier.dstAccessMask = dstAccess;
+	bufferBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	bufferBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	bufferBarrier.buffer = buffer;
+	bufferBarrier.size = VK_WHOLE_SIZE;
+	vkCmdPipelineBarrier(cbuff, srcStage, dstStage, 0, 0, nullptr, 1, &bufferBarrier, 0, nullptr);
 }
 
 VkBufferImageCopy vk_utils::MakeBufferImageCopy(VkExtent3D extent, VkImageAspectFlags aspectMask, int numMips, int numLayers)

@@ -45,4 +45,9 @@ public:
 
 	void Save(pugi::xml_node& node) override;
 	void Load(pugi::xml_node& node) override;
+
+	std::vector<ermy::u8> GetStaticPreviewData() override;
+
+	void LoadFromCachedRaw(std::ifstream& file, const std::filesystem::path& path) override;
+	void SaveToCachedRaw(std::ofstream& file) override;
 };

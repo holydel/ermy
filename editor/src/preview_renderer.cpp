@@ -57,21 +57,6 @@ void PreviewRenderer::RenderPreview(ermy::rendering::CommandList& finalCL)
 
 		needUpdatePreview = false;
 	}	
-
-	if (!staticPreviewList.empty())
-	{
-		finalCL.BeginDebugScope("Render Static Preview");
-
-		while (!staticPreviewList.empty())
-		{
-			AssetData* toGenPreview = staticPreviewList.front();
-			toGenPreview->RenderStaticPreview(finalCL);
-			staticPreviewList.pop();
-		}
-
-		finalCL.EndDebugScope();
-
-	}
 }
 
 

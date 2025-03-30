@@ -118,7 +118,7 @@ rendering::Format FromGLInternalFormat(u32 glInternalFormat)
 	case GL_R16UI:
 		return Format::R16_UINT;
 	case GL_RGBA8UI_EXT:
-		return Format::RGBA8_UINT;
+		return Format::RGBA8_UNORM; //RGBA8_UINT
 	case GL_R16:
 		return Format::R16_UNORM;
 	case GL_SRGB8_ALPHA8_EXT:

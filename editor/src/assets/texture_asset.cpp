@@ -4,6 +4,7 @@
 #include <ermy_utils.h>
 #include "editor_shader_internal.h"
 #include "preview_renderer.h"
+#include <editor_file_utils.h>
 
 #ifdef NDEBUG
 #pragma comment(lib,"Compressonator_MD.lib")
@@ -405,6 +406,48 @@ void TextureAsset::UpdateTextureSettings()
 	}
 }
 
+void TextureAsset::LoadFromCachedRaw(std::ifstream& file, const std::filesystem::path& path)
+{
+	width = readBinary<u32>(file);
+	height = readBinary<u32>(file);
+	depth = readBinary<u32>(file);
+	numLayers = readBinary<u32>(file);
+	numMips = readBinary<u32>(file);
+	isCubemap = readBinary<bool>(file);
+	isSparse = readBinary<bool>(file);
+	texelSourceFormat = readBinary<rendering::Format>(file);
+	texelTargetFormat = readBinary<rendering::Format>(file);
+	texturePurpose = readBinary<TexturePurpose>(file);
+	texType = readBinary<rendering::TextureType>(file);
+	textureCompression = readBinary<TextureCompression>(file);
+	isSRGBSpace = readBinary<bool>(file);
+	regenerateMips = readBinary<bool>(file);
+
+	rawData = readVector<u8>(file);
+	RegenerateLivePreview();
+
+}
+
+void TextureAsset::SaveToCachedRaw(std::ofstream& file)
+{
+	writeBinary(file, width);
+	writeBinary(file, height);
+	writeBinary(file, depth);
+	writeBinary(file, numLayers);
+	writeBinary(file, numMips);
+	writeBinary(file, isCubemap);
+	writeBinary(file, isSparse);
+	writeBinary(file, texelSourceFormat);
+	writeBinary(file, texelTargetFormat);
+	writeBinary(file, texturePurpose);
+	writeBinary(file, texType);
+	writeBinary(file, textureCompression);
+	writeBinary(file, isSRGBSpace);
+	writeBinary(file, regenerateMips);
+
+	writeVector(file, rawData);
+}
+
 void TextureAsset::RegenerateLivePreview()
 {
 	if (isCubemap)
@@ -438,30 +481,7 @@ void TextureAsset::RegenerateLivePreview()
 	descLive.dataSize = rawData.size();
 
 	previewTextureLive = ermy::rendering::CreateDedicatedTexture(descLive);
-
-	ermy::rendering::TextureDesc descStatic;
-	descStatic.width = 128;
-	descStatic.height = 128;
-	descStatic.depth = 1;
-	descStatic.isCubemap = false;
-	descStatic.numLayers = 1;
-	descStatic.numMips = 1;
-	descStatic.isSparse = false;
-	descStatic.texelSourceFormat = ermy::rendering::Format::RGBA8_UNORM;
-
-	descStatic.pixelsData = nullptr;
-	descStatic.dataSize = 0;
-
-
 	assetPreviewTexLive = ermy::rendering::GetTextureDescriptor(previewTextureLive);
-
-	//previewTextureStatic = ermy::rendering::CreateDedicatedTexture(descStatic);
-	//assetPreviewTexStatic = ermy::rendering::GetTextureDescriptor(previewTextureStatic);
-
-
-
-
-	//PreviewRenderer::Instance().EnqueueStaticPreviewGeneration(this);
 }
 
 std::vector<ermy::u8> TextureAsset::GetStaticPreviewData()

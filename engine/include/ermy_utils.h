@@ -19,4 +19,11 @@ namespace ermy_utils
 	{
 		ermy::u64 CalculateCRC64(const ermy::u8* data, const ermy::u32 size);
 	}
+
+	namespace file
+	{
+		std::vector<ermy::u8> ReadFile(const std::filesystem::path& path);
+		bool WriteFile(const std::filesystem::path& path, const std::vector<ermy::u8>& data);
+		
+	}
 }

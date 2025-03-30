@@ -123,38 +123,57 @@ void Asset::CalculateAssetName()
 
 void Asset::RegenerateStaticPreviewTexture()
 {
+	if (!needRegenerateStaticPreview)
+		return;
+
+	needRegenerateStaticPreview = false;
+
 	if (assetPreviewTexStatic == 0)
 	{
-		if (data == nullptr)
+
+		fs::path cachedPreviewPath = ErmyProject::Instance().GetProjectCachePath() / (std::to_string(ID) + ".preview.bc1");
+		std::vector<u8> bc1_data;
+
+		if (fs::exists(cachedPreviewPath))
 		{
-			Import();
+			bc1_data = ermy_utils::file::ReadFile(cachedPreviewPath);
 		}
-
-		if (data != nullptr)
+		else
 		{
-			std::vector<u8> bc1_data = GetData()->GetStaticPreviewData();
-
-			if (bc1_data.empty())
+			if (data == nullptr)
 			{
-				return;
+				Import();
 			}
 
-			ermy::rendering::TextureDesc descBC1;
-			descBC1.width = 128;
-			descBC1.height = 128;
-			descBC1.depth = 1;
-			descBC1.isCubemap = false;
-			descBC1.numLayers = 1;
-			descBC1.numMips = 1;
-			descBC1.isSparse = false;
-			descBC1.texelSourceFormat = ermy::rendering::Format::BC1;
-			descBC1.dataSize = (int)bc1_data.size();
-			descBC1.pixelsData = bc1_data.data();
-			descBC1.debugName = "StaticPreviewBC1";
+			if (data != nullptr)
+			{
+				bc1_data = GetData()->GetStaticPreviewData();
 
-			previewTextureStatic = ermy::rendering::CreateDedicatedTexture(descBC1);
-			assetPreviewTexStatic = ermy::rendering::GetTextureDescriptor(previewTextureStatic);
+				if (!bc1_data.empty())
+					ermy_utils::file::WriteFile(cachedPreviewPath, bc1_data);
+			}
 		}
+
+		if (bc1_data.empty())
+		{
+			return;
+		}
+
+		ermy::rendering::TextureDesc descBC1;
+		descBC1.width = 128;
+		descBC1.height = 128;
+		descBC1.depth = 1;
+		descBC1.isCubemap = false;
+		descBC1.numLayers = 1;
+		descBC1.numMips = 1;
+		descBC1.isSparse = false;
+		descBC1.texelSourceFormat = ermy::rendering::Format::BC1;
+		descBC1.dataSize = (int)bc1_data.size();
+		descBC1.pixelsData = bc1_data.data();
+		descBC1.debugName = "StaticPreviewBC1";
+
+		previewTextureStatic = ermy::rendering::CreateDedicatedTexture(descBC1);
+		assetPreviewTexStatic = ermy::rendering::GetTextureDescriptor(previewTextureStatic);
 	}
 }
 

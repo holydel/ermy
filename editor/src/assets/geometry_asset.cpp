@@ -9,6 +9,8 @@
 #include <glm/gtx/quaternion.hpp>
 
 #include <ermy_application.h>
+#include <ermy_utils.h>
+#include <editor_file_utils.h>
 
 //Assimp::Importer* gAssetImporter = nullptr;
 using namespace ermy;
@@ -194,6 +196,28 @@ void GeometryAsset::DrawPreview()
 	ImGui::Combo("Mode", &currentMode, modes, std::size(modes));
 }
 
+void GeometryAsset::LoadFromCachedRaw(std::ifstream& file, const std::filesystem::path& path)
+{
+	numIndices = readBinary<ermy::u32>(file);
+	numVertices = readBinary<ermy::u32>(file);
+
+	allVertices = readVector<ermy::rendering::StaticVertexDedicated>(file);
+	allIndices = readVector<ermy::u16>(file);
+	subMeshes = readVector<ermy::rendering::SubMesh>(file);
+
+	RegenerateLivePreview();
+}
+
+void GeometryAsset::SaveToCachedRaw(std::ofstream& file)
+{
+	writeBinary(file, numIndices);
+	writeBinary(file, numVertices);
+
+	writeVector(file, allVertices);
+	writeVector(file, allIndices);
+	writeVector(file, subMeshes);
+}
+
 void GeometryAsset::RegenerateLivePreview()
 {
 	RecalculateBoundingSphere();
@@ -216,24 +240,6 @@ void GeometryAsset::RegenerateLivePreview()
 	}
 	
 	previewMesh.subMeshes = subMeshes;
-
-	ermy::rendering::TextureDesc descStatic;
-	descStatic.width = 128;
-	descStatic.height = 128;
-	descStatic.depth = 1;
-	descStatic.isCubemap = false;
-	descStatic.numLayers = 1;
-	descStatic.numMips = 1;
-	descStatic.isSparse = false;
-	descStatic.texelSourceFormat = ermy::rendering::Format::RGBA8_UNORM;
-
-	descStatic.pixelsData = nullptr;
-	descStatic.dataSize = 0;
-
-	//previewTextureStatic = ermy::rendering::CreateDedicatedTexture(descStatic);
-	//assetPreviewTexStatic = ermy::rendering::GetTextureDescriptor(previewTextureStatic);
-
-	PreviewRenderer::Instance().EnqueueStaticPreviewGeneration(this);
 }
 
 void GeometryAsset::ResetView()
@@ -358,9 +364,6 @@ void GeometryAsset::MouseMove(float normalizedX, float normalizedY, int button)
 
 void GeometryAsset::RenderStaticPreview(ermy::rendering::CommandList& cl)
 {
-	auto staticRTT = PreviewRenderer::Instance().GetStaticRTT();
-
-	cl.BeginRenderPass(staticRTT);
 	GeometryRenderPreview::Instance().BindCheckerPSO(cl);
 	cl.Draw(3);
 
@@ -387,14 +390,14 @@ void GeometryAsset::RenderStaticPreview(ermy::rendering::CommandList& cl)
 	const int UVMode = 0;
 	cl.SetRootConstant(UVMode, ShaderStage::Fragment, 64);
 	cl.DrawDedicatedMesh(previewMesh, glm::transpose(MVP));
-	
-	cl.EndRenderPass();
+}
 
-	auto staticRTTTex = PreviewRenderer::Instance().GetStaticTexture();
-	//cl.BlitTexture(staticRTTTex, previewTextureStatic);
-	int a = 42;
-
-
+std::vector<ermy::u8> GeometryAsset::GetStaticPreviewData()
+{
+	return PreviewRenderer::Instance().GetPreviewDataBC1([&](ermy::rendering::CommandList& cl)
+	{
+		RenderStaticPreview(cl);
+	});
 }
 
 void GeometryAsset::RenderPreview(ermy::rendering::CommandList& cl)

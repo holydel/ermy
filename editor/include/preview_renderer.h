@@ -27,8 +27,6 @@ class PreviewRenderer
 	ermy::rendering::TextureID RTT_ColorStaticDoubleRes;
 	ermy::rendering::TextureID RTT_DepthStaticDoubleRes;
 	ermy::rendering::TextureID RTT_ColorStaticFinal;
-
-	std::queue<AssetData*> staticPreviewList;
 public:
 	static PreviewRenderer& Instance();
 
@@ -62,11 +60,6 @@ public:
 	void MouseUp(int button);
 	void MouseMove(float normalizedDeltaX, float normalizedDeltaY, int button);
 	void ResetView();
-
-	void EnqueueStaticPreviewGeneration(AssetData* asset)
-	{
-		staticPreviewList.push(asset);
-	}
 
 	void UpdateStaticPreviews()
 	{

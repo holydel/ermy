@@ -49,6 +49,7 @@ target_sources(editor
     src/assets/SoundsLoader.cpp
 
     src/project/eproject.cpp
+    src/editor_file_utils.cpp
     
     src/screens/assets_browser_screen.cpp
     src/screens/editor_screen.cpp

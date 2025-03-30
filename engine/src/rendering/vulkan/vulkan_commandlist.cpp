@@ -14,7 +14,8 @@ void CommandList::SetPSO(PSOID pso)
 {
 	VkCommandBuffer cbuff = static_cast<VkCommandBuffer>(nativeHandle);
 	assert(pso.handle >= 0 && pso.handle < gAllPipelines.size());
-
+	if (gCurrentPSOID.handle == pso.handle)
+		return;
 	vkCmdBindPipeline(cbuff, VkPipelineBindPoint::VK_PIPELINE_BIND_POINT_GRAPHICS, gAllPipelines[pso.handle]);
 	gCurrentPSOID = pso;
 }
@@ -141,6 +142,8 @@ void CommandList::BeginRenderPass(RenderPassID rtt, glm::vec4 clearColor)
 
 	SetViewport(0, 0, currentRPass.defaultWidth, currentRPass.defaultHeight);
 	SetScissor(0, 0, currentRPass.defaultWidth, currentRPass.defaultHeight);
+
+	gCurrentPSOID.handle = -1;
 }
 
 void CommandList::EndRenderPass()

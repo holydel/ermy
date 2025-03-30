@@ -76,6 +76,7 @@ target_sources(engine
     src/application.cpp
     src/ermy_hash_utils.cpp
     src/ermy_string_utils.cpp
+    src/ermy_file_utils.cpp
     src/ermy.cpp
     src/geometry.cpp
     src/logger.cpp

@@ -11,6 +11,7 @@
 #include <ermy_os_utils.h>
 #include <ermy_mapped_writer.h>
 
+#include "editor_file_utils.h"
 float gCurrentTextureProgress = 0.0f;
 
 namespace fs = std::filesystem;
@@ -90,8 +91,16 @@ void ErmyProject::MountToLocalDirectory(const std::string& filePath)
 
     rootAssetsPath = rootPath / fs::path("assets");
 
+    rootProjectCachePath = rootPath / fs::path("cache");
+
     if (!LoadAssetsCache())
     {
+		//if (fs::exists(rootProjectCachePath))
+		//{
+		//	fs::remove_all(rootProjectCachePath);
+		//}
+        fs::create_directories(rootProjectCachePath);
+
         rootAssets = RescanAssets(rootAssetsPath);
     }
  
@@ -598,47 +607,6 @@ void CollectAssets(AssetFolder* folder, AssetsToPak& out)
             }            
         }
 	}
-}
-
-bool copyFile(const std::filesystem::path& sourcePath, std::ofstream& destinationStream) {
-    std::ifstream sourceFile(sourcePath, std::ios::binary);
-    if (!sourceFile) {
-        return false;
-    }
-
-
-    if (!destinationStream) {
-        sourceFile.close();
-        return false;
-    }
-
-
-    char buffer[4096]; 
-    while (sourceFile.read(buffer, sizeof(buffer))) {
-        destinationStream.write(buffer, sourceFile.gcount());
-    }
-
-    if (sourceFile.eof() && sourceFile.gcount() > 0) {
-        destinationStream.write(buffer, sourceFile.gcount());
-    }
-
-    sourceFile.close();
-
-    return true;
-}
-
-
-template <typename T>
-void writeBinary(std::ofstream& to, const T& value)
-{
-    to.write((const char*)&value, sizeof(value));
-}
-
-template <typename T>
-void writeVector(std::ofstream& to, const std::vector<T>& vec)
-{
-    writeBinary(to, vec.size());
-    to.write((const char*)vec.data(), vec.size() * sizeof(T));
 }
 
 bool ErmyProject::RebuildPAK(int platformIndex)

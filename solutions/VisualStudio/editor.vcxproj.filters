@@ -88,6 +88,9 @@
     <ClCompile Include="..\..\editor\src\assets\texture_names.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\editor\src\editor_file_utils.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\editor\include\editor_main.h">
@@ -179,6 +182,9 @@
     </ClInclude>
     <ClInclude Include="..\..\editor\include\assets\CompressonatorLoader.h">
       <Filter>include\assets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editor\include\editor_file_utils.h">
+      <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

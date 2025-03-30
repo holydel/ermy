@@ -138,4 +138,7 @@ public:
 
 	void Save(pugi::xml_node& node) override;
 	void Load(pugi::xml_node& node) override;
+
+	void LoadFromCachedRaw(std::ifstream& file, const std::filesystem::path& path) override;
+	void SaveToCachedRaw(std::ofstream& file) override;
 };

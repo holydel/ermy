@@ -115,6 +115,7 @@ struct ValidationSettings
 		//	[0]  0x2cadaeb1900, type: 6, name : Frame Command Buffer(2)
 //Validation Performance Warning : [BestPractices - vkCmdEndRenderPass - redundant - attachment - on - tile] Object 0 : handle = 0x2cadaeb1900, name = Frame Command Buffer(2), type = VK_OBJECT_TYPE_COMMAND_BUFFER; | MessageID = 0x58a102d7 | vkCmdEndRenderPass() : [Arm] [IMG] : Render pass was ended, but attachment #0 (format: VK_FORMAT_R8G8B8A8_UNORM, untouched aspects VK_IMAGE_ASPECT_COLOR_BIT) was never accessed by a pipeline or clear command.On tile - based architectures, LOAD_OP_LOAD and STORE_OP_STORE consume bandwidth and should not be part of the render pass if the attachments are not intended to be accessed.
 //BestPractices - vkCmdEndRenderPass - redundant - attachment - on - tile(WARN / PERF) : msgNum: 1486947031 - Validation Performance Warning : [BestPractices - vkCmdEndRenderPass - redundant - attachment - on - tile] Object 0 : handle = 0x2cadaea6700, name = Frame Command Buffer(0), type = VK_OBJECT_TYPE_COMMAND_BUFFER; | MessageID = 0x58a102d7 | vkCmdEndRenderPass() : [Arm] [IMG] : Render pass was ended, but attachment #0 (format: VK_FORMAT_R8G8B8A8_UNORM, untouched aspects VK_IMAGE_ASPECT_COLOR_BIT) was never accessed by a pipeline or clear command.On tile - based architectures, LOAD_OP_LOAD and STORE_OP_STORE consume bandwidth and should not be part of the render pass if the attachments are not intended to be accessed.
+		0x8adbf7e3, //BestPractices - Arm - vkCmdDrawIndexed - sparse - index - buffer(WARN / PERF) : msgNum: -1965295645 - Validation Performance Warning : [BestPractices - Arm - vkCmdDrawIndexed - sparse - index - buffer] | MessageID = 0x8adbf7e3 | vkCmdDrawIndexed() : [Arm] The indices which were specified for the draw call only utilise approximately 0.07 % of index buffer value range.Arm Mali architectures before G71 do not have IDVS(Index - Driven Vertex Shading), meaning all vertices corresponding to indices between the minimum and maximum would be loaded, and possibly shaded, whether or not they are used.
 
 	};
 	//ATION - SETTINGS ] | MessageID = 0x7f1922d7 | Both GPU Assisted Validation and Normal Core Check Validation are enabled, this is not recommend as it  will be very slow.Once all errors in Core Check are solved, please disable, then only use GPU - AV for best performance.
@@ -299,10 +300,10 @@ void InitializeInstance()
 
 	LoadVkInstanceLevelFuncs(gVKInstance);
 
-	//if (vkCreateDebugUtilsMessengerEXT != nullptr)
-	//{
-	//	vkCreateDebugUtilsMessengerEXT(gVKInstance, &debugCreateInfo, gVKGlobalAllocationsCallbacks, &gVKDebugMessenger);
-	//}
+	if (vkCreateDebugUtilsMessengerEXT != nullptr)
+	{
+		vkCreateDebugUtilsMessengerEXT(gVKInstance, &debugCreateInfo, gVKGlobalAllocationsCallbacks, &gVKDebugMessenger);
+	}
 }
 
 static i8 ChoosePhysicalDeviceByHeuristics(const std::vector<VkPhysicalDevice>& allDevices)

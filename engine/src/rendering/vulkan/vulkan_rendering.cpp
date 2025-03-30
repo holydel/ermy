@@ -479,6 +479,12 @@ BufferInfo _createBuffer(const BufferDesc& desc) {
 		allocCreateInfo.requiredFlags = VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
 	}
 	
+	if (desc.persistentMapped)
+	{
+		allocCreateInfo.flags |= VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT;
+		allocCreateInfo.requiredFlags = VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
+	}
+
 	VkBuffer buffer = VK_NULL_HANDLE;
 	VmaAllocation allocation = VK_NULL_HANDLE;
 	VmaAllocationInfo allocationInfo;
@@ -522,6 +528,24 @@ BufferInfo _createBuffer(const BufferDesc& desc) {
 		copyRegion.dstOffset = 0;
 		copyRegion.size = desc.size;
 		vkCmdCopyBuffer(c.cbuff, meta.stagingBuffer, buffer, 1, &copyRegion);
+
+		//add vulkan memory barrier
+		//vk_utils::BufferTransition(c.cbuff, buffer, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+		//VK_ACCESS_INDEX_READ_BIT = 0x00000002,
+		//	VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT = 0x00000004,
+		
+		VkAccessFlagBits dstAccess = VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT;
+
+		if (desc.usage == BufferUsage::Index)
+			dstAccess = VK_ACCESS_INDEX_READ_BIT;
+		else if (desc.usage == BufferUsage::Uniform)
+			dstAccess = VK_ACCESS_UNIFORM_READ_BIT;
+		else if (desc.usage == BufferUsage::TransferDst)
+			dstAccess = VK_ACCESS_TRANSFER_READ_BIT;
+		else if (desc.usage == BufferUsage::TransferSrc)
+			dstAccess = VK_ACCESS_TRANSFER_WRITE_BIT;
+
+		vk_utils::BufferMemoryBarrier(c.cbuff, buffer, VK_ACCESS_TRANSFER_WRITE_BIT, dstAccess, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_VERTEX_INPUT_BIT);
 
 		c.Sumbit();
 

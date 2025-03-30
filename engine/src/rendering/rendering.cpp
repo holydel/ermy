@@ -11,7 +11,7 @@ namespace rendering
 		rendering_interface::Initialize();
 		auto& config = ermy::Application::GetApplication()->staticConfig;
 
-		if(config.HasOutputWindow())
+		if (config.HasOutputWindow())
 			swapchain::Initialize();
 
 		framegraph::Initialize(swapchain::GetNumFrames());
@@ -61,6 +61,8 @@ FormatInfo ermy::rendering::GetFormatInfo(Format format)
 		return FormatInfo{ 2,1,1,1,1,0 };
 	case Format::RGBA8_UNORM:
 		return FormatInfo{ 4,4,1,1,1,0 };
+	case Format::RGBA8_SRGB:
+		return FormatInfo{ 4, 1, 1, 1,1,1 };
 	case Format::ARGB8_UNORM:
 		return FormatInfo{ 4,4,1,1,1,0 };
 	case Format::RGBA16_UNORM:
@@ -118,8 +120,6 @@ FormatInfo ermy::rendering::GetFormatInfo(Format format)
 		return FormatInfo{ 16, 3, 4, 4,1,0 }; // BC6 uses 16 bytes per 4x4 block (three channels, HDR)
 	case Format::BC7:
 		return FormatInfo{ 16, 4, 4, 4,1,0 }; // BC7 uses 16 bytes per 4x4 block (four channels)
-	case Format::RGBA8_SRGB:
-		return FormatInfo{ 4, 1, 1, 1,1,1 }; // BC7 uses 16 bytes per 4x4 block (four channels)
 	}
 
 	return FormatInfo{ 4,1,1,1 };
