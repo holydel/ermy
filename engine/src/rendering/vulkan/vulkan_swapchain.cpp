@@ -1,4 +1,4 @@
-#include "vulkan_swapchain.h"
+﻿#include "vulkan_swapchain.h"
 #ifdef ERMY_GAPI_VULKAN
 
 #include "../../os/os_utils.h"
@@ -6,6 +6,7 @@
 #include "vk_utils.h"
 #include <array>
 #include <application.h>
+#include <algorithm>
 
 using namespace ermy;
 
@@ -15,12 +16,14 @@ VkSurfaceKHR gVKSurface = VK_NULL_HANDLE;
 VkSurfaceCapabilitiesKHR gVKSurfaceCaps;
 VkFormat gVKSurfaceFormat = VK_FORMAT_UNDEFINED;
 VkSampleCountFlagBits gVKSurfaceSamples = VK_SAMPLE_COUNT_1_BIT;
+VkPresentModeKHR gVKPresentMode = VK_PRESENT_MODE_FIFO_KHR;
+
 VkFormat gVKSurfaceDepthFormat = VK_FORMAT_UNDEFINED;
 
 u32 gAcquiredNextImageIndex = 0;
 VkSemaphore gSwapchainSemaphore = VK_NULL_HANDLE;
 int gSwapchainCurrentFrame = 0;
-int gNumberOfSwapchainFrames = 3;
+int gNumberOfSwapchainFrames = 2;
 bool gSwapchainNeedRebuild = false;
 
 struct FrameInFlight
@@ -282,17 +285,16 @@ void swapchain::InitSwapchain()
 	createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
 	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 	createInfo.minImageCount = gNumberOfSwapchainFrames;
-	createInfo.presentMode = VK_PRESENT_MODE_FIFO_KHR;
+	createInfo.presentMode = gVKPresentMode;
 	createInfo.surface = gVKSurface;
 	createInfo.preTransform = gVKSurfaceCaps.currentTransform;
 	createInfo.oldSwapchain = gVKOldSwapchain;
 	createInfo.clipped = VK_TRUE;
 	createInfo.compositeAlpha = CalculateCompositeAlphaFlag();
 
-	VkPresentModeKHR presentMode = VK_PRESENT_MODE_FIFO_KHR;
 	VkSwapchainPresentModesCreateInfoEXT presentationModesEnabled = { VK_STRUCTURE_TYPE_SWAPCHAIN_PRESENT_MODES_CREATE_INFO_EXT };
 	presentationModesEnabled.presentModeCount = 1;
-	presentationModesEnabled.pPresentModes = &presentMode;
+	presentationModesEnabled.pPresentModes = &gVKPresentMode;
 
 	if (gSwapchainEXT.hasMaintenance1)
 	{
@@ -374,6 +376,146 @@ void swapchain::RequestDeviceExtensions(VKDeviceExtender& device_extender)
 #endif
 }
 
+void CalculateSwapChainHeuristics(const std::vector<VkSurfaceFormatKHR>& supportFormats, const std::vector<VkPresentModeKHR>& supportedPresentModes)
+{
+	const auto& swapСhainSettings = GetApplication().staticConfig.swapchain;
+
+	const VkPhysicalDeviceSurfaceInfo2KHR surfaceInfo2{ .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SURFACE_INFO_2_KHR,
+											   .surface = gVKSurface };
+	VkSurfaceCapabilities2KHR             capabilities2{ .sType = VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_2_KHR };
+	vkGetPhysicalDeviceSurfaceCapabilities2KHR(gVKPhysicalDevice, &surfaceInfo2, &capabilities2);
+
+	gNumberOfSwapchainFrames = std::max(swapСhainSettings.tripleBuffering ? 3u : 2u, capabilities2.surfaceCapabilities.minImageCount);
+
+	VkPresentModeKHR preferredModes[3][7] = {
+		{	//NoVSync
+			VK_PRESENT_MODE_MAILBOX_KHR,
+			VK_PRESENT_MODE_FIFO_LATEST_READY_EXT,
+			VK_PRESENT_MODE_IMMEDIATE_KHR,
+			VK_PRESENT_MODE_FIFO_RELAXED_KHR,
+			VK_PRESENT_MODE_FIFO_KHR,
+			VK_PRESENT_MODE_SHARED_CONTINUOUS_REFRESH_KHR,
+			VK_PRESENT_MODE_SHARED_DEMAND_REFRESH_KHR
+		},
+		{ //AdaptiveVSync
+			VK_PRESENT_MODE_FIFO_LATEST_READY_EXT,
+			VK_PRESENT_MODE_FIFO_RELAXED_KHR,
+			VK_PRESENT_MODE_MAILBOX_KHR,
+			VK_PRESENT_MODE_FIFO_KHR,
+			VK_PRESENT_MODE_IMMEDIATE_KHR,
+			VK_PRESENT_MODE_SHARED_CONTINUOUS_REFRESH_KHR,
+			VK_PRESENT_MODE_SHARED_DEMAND_REFRESH_KHR
+		},
+		{ //AlwaysVSync
+			VK_PRESENT_MODE_FIFO_KHR,
+			VK_PRESENT_MODE_FIFO_LATEST_READY_EXT,
+			VK_PRESENT_MODE_FIFO_RELAXED_KHR,
+			VK_PRESENT_MODE_MAILBOX_KHR,
+			VK_PRESENT_MODE_IMMEDIATE_KHR,
+			VK_PRESENT_MODE_SHARED_CONTINUOUS_REFRESH_KHR,
+			VK_PRESENT_MODE_SHARED_DEMAND_REFRESH_KHR
+		},
+	};
+
+	std::vector<VkFormat> formatsFor16Bit = {
+		VK_FORMAT_R5G6B5_UNORM_PACK16,
+		VK_FORMAT_B5G6R5_UNORM_PACK16,
+		VK_FORMAT_R5G5B5A1_UNORM_PACK16,
+		VK_FORMAT_B5G5R5A1_UNORM_PACK16,
+		VK_FORMAT_A1R5G5B5_UNORM_PACK16,
+		VK_FORMAT_R4G4B4A4_UNORM_PACK16,
+		VK_FORMAT_B4G4R4A4_UNORM_PACK16,
+	};
+
+	std::vector<VkFormat> formatsFor32Bit = {
+		VK_FORMAT_A2R10G10B10_UNORM_PACK32,
+		VK_FORMAT_A2B10G10R10_UNORM_PACK32 ,
+		VK_FORMAT_R8G8B8A8_UNORM,
+		VK_FORMAT_R8G8B8A8_SRGB,
+		VK_FORMAT_B8G8R8A8_UNORM,
+		VK_FORMAT_B8G8R8A8_SRGB,
+	};
+
+	std::vector<VkFormat> formatsForHDR = {
+		VK_FORMAT_E5B9G9R9_UFLOAT_PACK32,
+		VK_FORMAT_B10G11R11_UFLOAT_PACK32,
+		VK_FORMAT_R16G16B16A16_SFLOAT,
+		VK_FORMAT_R16G16B16A16_UNORM,
+		VK_FORMAT_R32G32B32A32_SFLOAT
+	};
+
+	for (int i = 0; i < 7; ++i)
+	{
+		auto desiredPresentMode = preferredModes[(int)swapСhainSettings.vsync][i];
+		if (std::find(supportedPresentModes.begin(), supportedPresentModes.end(), desiredPresentMode) != supportedPresentModes.end())
+		{
+			gVKPresentMode = desiredPresentMode;
+			break;
+		}
+	}
+
+	std::vector<std::vector<VkFormat>> formatsForBitDepths;
+	formatsForBitDepths.reserve(3);
+
+	if (swapСhainSettings.colorWidth == ermy::Application::StaticConfig::SwapchainConfig::ColorWidth::Prefer16bit)
+	{
+		formatsForBitDepths.push_back(formatsFor16Bit);
+		formatsForBitDepths.push_back(formatsFor32Bit);
+		formatsForBitDepths.push_back(formatsForHDR);
+	}
+
+	if (swapСhainSettings.colorWidth == ermy::Application::StaticConfig::SwapchainConfig::ColorWidth::Prefer32bit)
+	{
+		formatsForBitDepths.push_back(formatsFor32Bit);
+		formatsForBitDepths.push_back(formatsForHDR);
+		formatsForBitDepths.push_back(formatsFor16Bit);		
+	}
+
+	if (swapСhainSettings.colorWidth == ermy::Application::StaticConfig::SwapchainConfig::ColorWidth::PreferHDR)
+	{
+		formatsForBitDepths.push_back(formatsForHDR);
+		formatsForBitDepths.push_back(formatsFor32Bit);
+		formatsForBitDepths.push_back(formatsFor16Bit);
+	}
+
+	gVKSurfaceFormat = VK_FORMAT_UNDEFINED;
+
+
+	for(auto& formatList : formatsForBitDepths)
+	{
+		for (auto& format : formatList)
+		{
+			auto it = std::find_if(supportFormats.begin(), supportFormats.end(), [format](const VkSurfaceFormatKHR& supportedFormat) {
+				return supportedFormat.format == format;
+			});
+
+			if (it != supportFormats.end())
+			{
+				gVKSurfaceFormat = it->format;
+				break;
+			}
+		}
+		if (gVKSurfaceFormat != VK_FORMAT_UNDEFINED)
+			break;
+	}
+
+	auto preferredMSAAMode = swapСhainSettings.msaaMode;
+	auto preferredDepthMode = swapСhainSettings.depthMode;
+	gVKSurfaceSamples = (VkSampleCountFlagBits)preferredMSAAMode;
+
+	{
+		using mode = ermy::Application::StaticConfig::SwapchainConfig::DepthMode;
+		if (preferredDepthMode == mode::Depth16)
+			gVKSurfaceDepthFormat = VK_FORMAT_D16_UNORM;
+		if (preferredDepthMode == mode::Depth24_Stencil8)
+			gVKSurfaceDepthFormat = VK_FORMAT_D24_UNORM_S8_UINT;
+		if (preferredDepthMode == mode::Depth32F)
+			gVKSurfaceDepthFormat = VK_FORMAT_D32_SFLOAT;
+		if (preferredDepthMode == mode::Depth32F_Stencil8)
+			gVKSurfaceDepthFormat = VK_FORMAT_D32_SFLOAT_S8_UINT;
+	}
+}
+
 void swapchain::Initialize()
 {
 #ifdef ERMY_OS_WINDOWS
@@ -421,44 +563,17 @@ void swapchain::Initialize()
 
 	auto support_formats = EnumerateVulkanObjects(gVKPhysicalDevice, gVKSurface, vkGetPhysicalDeviceSurfaceFormatsKHR);
 	auto support_present_modes = EnumerateVulkanObjects(gVKPhysicalDevice, gVKSurface, vkGetPhysicalDeviceSurfacePresentModesKHR);
-	gVKSurfaceFormat = support_formats[0].format; //TODO: selection heuristics
-	//gVKSurfaceFormat = VK_FORMAT_A2B10G10R10_UNORM_PACK32;
+
 	VK_CALL(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(gVKPhysicalDevice, gVKSurface, &gVKSurfaceCaps));
-	//support_formats[4].format
-	//gNativeExtent = gSurfaceCaps.currentExtent;
+
 	ERMY_LOG("Supported surface alpha modes: %s %s %s %s"
 		, (gVKSurfaceCaps.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR) ? " Opaque |" : ""
 		, (gVKSurfaceCaps.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR) ? " Inherit |" : ""
 		, (gVKSurfaceCaps.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR) ? " Post Multiplied |" : ""
 		, (gVKSurfaceCaps.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR) ? " Pre Multiplied |" : "");
 
+	CalculateSwapChainHeuristics(support_formats, support_present_modes);
 
-	const VkPhysicalDeviceSurfaceInfo2KHR surfaceInfo2{ .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SURFACE_INFO_2_KHR,
-												   .surface = gVKSurface };
-	VkSurfaceCapabilities2KHR             capabilities2{ .sType = VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_2_KHR };
-	vkGetPhysicalDeviceSurfaceCapabilities2KHR(gVKPhysicalDevice, &surfaceInfo2, &capabilities2);
-
-	gNumberOfSwapchainFrames = std::max(3u, capabilities2.surfaceCapabilities.minImageCount);
-
-	const auto& swapchainSettings = GetApplication().staticConfig.swapchain;
-
-	auto preferredMSAAMode = swapchainSettings.msaaMode;
-	auto preferredDepthMode = swapchainSettings.depthMode;
-	gVKSurfaceSamples = (VkSampleCountFlagBits)preferredMSAAMode;
-
-	{
-		using mode = ermy::Application::StaticConfig::SwapchainConfig::DepthMode;
-		if (preferredDepthMode == mode::Depth16)
-			gVKSurfaceDepthFormat = VK_FORMAT_D16_UNORM;
-		if (preferredDepthMode == mode::Depth24_Stencil8)
-			gVKSurfaceDepthFormat = VK_FORMAT_D24_UNORM_S8_UINT;
-		if (preferredDepthMode == mode::Depth32F)
-			gVKSurfaceDepthFormat = VK_FORMAT_D32_SFLOAT;
-		if (preferredDepthMode == mode::Depth32F_Stencil8)
-			gVKSurfaceDepthFormat = VK_FORMAT_D32_SFLOAT_S8_UINT;
-	}
-
-	//if(preferredMSAAMode == )
 	if (!gVKConfig.useDynamicRendering)
 	{
 		VkRenderPassCreateInfo renderPassInfo{ VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO };
@@ -521,7 +636,7 @@ void swapchain::Initialize()
 		finalAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
 		VkAttachmentReference msaaColorAttachmentRef{};
-		msaaColorAttachmentRef.attachment = msaaAttachmentIndex; 
+		msaaColorAttachmentRef.attachment = msaaAttachmentIndex;
 		msaaColorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
 		VkAttachmentReference depthAttachmentRef{};
@@ -531,7 +646,7 @@ void swapchain::Initialize()
 		VkSubpassDescription subpass{};
 		subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
 		subpass.colorAttachmentCount = 1;
-		
+
 
 		if (depthAttachmentIndex >= 0)
 		{

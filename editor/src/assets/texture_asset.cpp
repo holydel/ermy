@@ -252,7 +252,17 @@ void TextureAsset::CompressTexture()
 
 void TextureAsset::RegenerateMips()
 {
-	printf("foo");
+	auto generatedMips = CompressonatorLib::Instance().GenerateMipTexels2D(rawData.data(), width, height, texelSourceFormat, numLayers);
+	if (generatedMips.size > 0)
+	{		
+		rawData.resize(generatedMips.size);
+		memcpy(rawData.data(), generatedMips.data, generatedMips.size);
+
+		numMips = generatedMips.mipLevels;
+
+		RegenerateLivePreview();		
+	}
+	
 }
 
 ChannelFormat GetChannelFormatFromErmyFormat(ermy::rendering::Format format)
@@ -342,7 +352,8 @@ void TextureAsset::DrawPreview()
 	ImGui::SameLine();
 	ImGui::Checkbox("Regen MIPs", &regenerateMips);
 
-	if (regenerateMips && numMips == 1)
+	//if (regenerateMips && numMips == 1)
+	if (ImGui::Button("Regenerate Mips"))
 	{
 		RegenerateMips();
 	}
@@ -426,7 +437,6 @@ void TextureAsset::LoadFromCachedRaw(std::ifstream& file, const std::filesystem:
 
 	rawData = readVector<u8>(file);
 	RegenerateLivePreview();
-
 }
 
 void TextureAsset::SaveToCachedRaw(std::ofstream& file)
@@ -481,6 +491,7 @@ void TextureAsset::RegenerateLivePreview()
 	descLive.texelSourceFormat = texelSourceFormat;
 	descLive.dataSize = rawData.size();
 
+	//TODO: remove previous if exists or think about ReCreateDedciatedTexture on exists slot
 	previewTextureLive = ermy::rendering::CreateDedicatedTexture(descLive);
 	assetPreviewTexLive = ermy::rendering::GetTextureDescriptor(previewTextureLive);
 }

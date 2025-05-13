@@ -11,7 +11,13 @@
 #include <ermy_os_utils.h>
 #include <ermy_mapped_writer.h>
 
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
+#include <pcl/compression/octree_pointcloud_compression.h>
+#include <pcl/io/ply_io.h>
+
 #include "editor_file_utils.h"
+#include <ermy_log.h>
 float gCurrentTextureProgress = 0.0f;
 
 namespace fs = std::filesystem;
@@ -119,6 +125,98 @@ void ErmyProject::UpdateWindowTitle()
 ErmyProject& ErmyProject::Instance()
 {
 	return gCurrentProject;
+}
+
+void ErmyProject::TestPCL()
+{
+    std::filesystem::path rootOutputPath = "D:\\temp\\pcm_folder_1";
+
+    //grab all filenames in folder and subfolders with *.ply extension
+	std::vector<fs::path> allFiles;
+
+	ReadAllFilesFromDirectory(rootOutputPath, allFiles);
+
+	std::array<std::vector<fs::path>, 100> allFilesByName;
+
+	//for each file create a new folder with the same name as the file and copy the file to that folder
+	for (const auto& file : allFiles)
+	{
+		if (file.extension() == ".ply")
+		{
+            //have files like 001.ply need put it in allFilesByName
+
+			std::string fileName = file.stem().string();
+			int fileIndex = std::stoi(fileName);
+			if (fileIndex >= 0 && fileIndex < allFilesByName.size())
+			{
+				allFilesByName[fileIndex].push_back(file);
+			}
+		}
+	}
+
+	printf("Found %d files\n", allFiles.size());
+
+    //load pointcloud data from each ply file. add it to pcl quadtree compressor 4d
+	//compress it and save to disk
+
+	for (int i = 0; i < allFilesByName.size(); i++)
+	{
+		if (allFilesByName[i].size() > 0)
+		{
+            size_t totalPlySize = 0;
+
+            for (auto& fp : allFilesByName[i])
+            {
+				totalPlySize += fs::file_size(fp);
+            }
+
+			ERMY_LOG("Compressing %d files for %d cam\n Total ply size: %d \n", allFilesByName[i].size(), i, totalPlySize);
+
+            pcl::io::compression_Profiles_e compressionProfile = pcl::io::MANUAL_CONFIGURATION;
+            // instantiate point cloud compression for encoding and decoding
+
+            bool showStatistics_arg = false;
+            const double pointResolution_arg = 0.001;
+            const double octreeResolution_arg = 0.01;
+            bool doVoxelGridDownDownSampling_arg = true;
+            const unsigned int iFrameRate_arg = 25;
+            bool doColorEncoding_arg = true;
+            const unsigned char colorBitResolution_arg = 5;
+
+            auto PointCloudEncoder = new pcl::io::OctreePointCloudCompression<pcl::PointXYZRGBA>(compressionProfile
+                , showStatistics_arg
+                , pointResolution_arg
+                , octreeResolution_arg
+                , doVoxelGridDownDownSampling_arg
+                , iFrameRate_arg
+                , doColorEncoding_arg
+                , colorBitResolution_arg);
+			
+			std::filesystem::path compressedOutputForCam = allFilesByName[i][0].parent_path().parent_path().parent_path().parent_path() / fs::path("compressed_cam"+std::to_string(i)+".data");
+            std::ofstream compressedStream(compressedOutputForCam, std::ios::binary);
+            int numProcessed = 0;
+            for (auto& fp : allFilesByName[i])
+            {
+                // Temporary 3D point cloud for the current file
+                pcl::PointCloud<pcl::PointXYZRGBA>::Ptr temp_cloud(new pcl::PointCloud<pcl::PointXYZRGBA>);
+
+				// Load the PLY file into the temporary point cloud
+				if (pcl::io::loadPLYFile(fp.string(), *temp_cloud) == -1)
+				{
+					std::cerr << "Error loading file: " << fp.string() << std::endl;
+					continue;
+				}
+				// Create a new point cloud to hold the compressed data
+				pcl::PointCloud<pcl::PointXYZRGBA>::Ptr compressed_cloud(new pcl::PointCloud<pcl::PointXYZRGBA>);
+				// Compress the point cloud
+				PointCloudEncoder->encodePointCloud(temp_cloud, compressedStream);
+
+                numProcessed++;
+                ERMY_LOG("Processing %d \ %d\n", numProcessed, allFilesByName[i].size());
+            }
+		}
+	}
+
 }
 
 bool ErmyProject::RecompileAllShaders()

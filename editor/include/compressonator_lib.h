@@ -29,6 +29,25 @@ struct CompressionSettings {
 	int arraySize = 1;              // Number of array layers (depth)
 };
 
+struct GeneratedMipData {
+	ermy::u8* data = nullptr;
+	size_t size = 0;
+	int minWidth = 0;
+	int minHeight = 0;
+	int minDepth = 0;
+	int mipLevels = 0;
+
+	void Free()
+	{
+		if (data)
+		{
+			free(data);
+			data = nullptr;
+			size = 0;
+		}
+	}
+};
+
 class CompressonatorLib
 {
 	CompressonatorLib();
@@ -43,7 +62,11 @@ public:
 	static CMP_FORMAT ConvertFormatToCMPFormat(ermy::rendering::Format format);
 	static ermy::rendering::Format ConvertCMPFormatToFormat(CMP_FORMAT cmpFormat);
 
+	GeneratedMipData GenerateMipTexels2D(const ermy::u8* srcTexelData, ermy::u32 width, ermy::u32 height, ermy::rendering::Format format, ermy::u32 numLayers = 1);
+	GeneratedMipData GenerateMipTexels3D(const ermy::u8* srcTexelData, ermy::u32 width, ermy::u32 height, ermy::u32 depth, ermy::rendering::Format format);
+
 	void RegenerateMips(CMP_MipSet& mipSet, int minSize = 1);
+
 	CMP_ERROR CompressMips(CMP_MipSet& srcSet, 
 						  CMP_MipSet& dstSet, 
 						  ermy::rendering::Format sourceFormat, 

@@ -76,6 +76,12 @@ namespace main_window
 				{
 					ErmyProject::Instance().RebuildPAK(0);
 				}
+				ImGui::Separator();
+				if (ImGui::MenuItem("Test PCL"))
+				{
+					ErmyProject::Instance().TestPCL();
+
+				}
 				ImGui::EndMenu();
 			}
 			if (ImGui::BeginMenu("Windows"))
@@ -129,7 +135,7 @@ void main_window::Draw()
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 
-	ImGui::Begin("DockSpace Demo", &p_true, window_flags);
+	ImGui::Begin("DockSpaceMain", &p_true, window_flags);
 	ImGui::PopStyleVar();
 	ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None);
 	ImGui::PopStyleVar(2);

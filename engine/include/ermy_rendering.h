@@ -131,6 +131,16 @@ namespace ermy
 			u8 blockHeight;
 			u8 blockDepth;
 			u8 isSRGB;
+
+			u32 GetDataSize2D(u32 width, u32 height)
+			{
+				return blockSize * width * height / blockWidth / blockHeight;
+			}
+
+			u32 GetDataSize3D(u32 width, u32 height, u32 depth)
+			{
+				return blockSize * width * height * depth / blockWidth / blockHeight / blockDepth;
+			}
 		};
 
 		enum class TextureType

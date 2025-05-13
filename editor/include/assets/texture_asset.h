@@ -97,7 +97,11 @@ class TextureAsset : public AssetData
 
 	ermy::rendering::TextureType texType = ermy::rendering::TextureType::Tex2D;
 public:
-	bool regenerateMips = false;
+	TexturePurpose texturePurpose = TexturePurpose::TP_ALBEDO;
+	TextureCompression textureCompression = TextureCompression::TC_NONE;
+
+	//default texturePurpose / textureCompression settings
+	bool regenerateMips = true;
 	bool isSRGBSpace = true;
 
 	AssetDataType GetDataType() override { return AssetDataType::Texture; }
@@ -112,8 +116,7 @@ public:
 	ermy::rendering::Format texelSourceFormat = ermy::rendering::Format::RGBA8_SRGB;
 	ermy::rendering::Format texelTargetFormat = texelSourceFormat;
 
-	TexturePurpose texturePurpose = TexturePurpose::TP_ALBEDO;
-	TextureCompression textureCompression = TextureCompression::TC_NONE;
+
 	TextureAsset();
 	virtual ~TextureAsset();
 

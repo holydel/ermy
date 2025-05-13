@@ -43,7 +43,8 @@ void framegraph::Process()
 
 	xr_interface::WaitFrame();
 
-	app.OnUpdate();
+	
+	app.OnRender();
 
 	void* finalCmdList = framegraph_interface::BeginFrame();
 

@@ -65,6 +65,8 @@ bool ErmyApplicationStep()
 {
 	os::Update();
 
+	gApplication->OnUpdate();
+
 	rendering::BeginFrame();
 	//gApplication->OnBeginFrame();
 

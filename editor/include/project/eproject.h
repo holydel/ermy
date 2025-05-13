@@ -203,4 +203,6 @@ public:
 	std::filesystem::path GetProjectCachePath() const {
 		return rootProjectCachePath;
 	}
+
+	void TestPCL();
 };

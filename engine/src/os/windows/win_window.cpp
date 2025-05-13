@@ -12,6 +12,44 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 constexpr const wchar_t* winClassName = L"ErmyWindow";
 
+void RegisterRawInputDevices(bool isFullScreen)
+{
+	RAWINPUTDEVICE rid[2] = {};
+
+	constexpr USHORT UsagePageGenericDesktop = 0x01;
+	constexpr USHORT UsagePageSimulationControls = 0x02;
+	constexpr USHORT UsagePageVRControls = 0x03;
+	constexpr USHORT UsagePageSportControls = 0x04;
+	constexpr USHORT UsagePageGameControls = 0x05;
+
+	constexpr USHORT UsageMouse = 0x02;
+	constexpr USHORT UsageJoystick = 0x04;
+	constexpr USHORT UsageGamepad = 0x05;
+	constexpr USHORT UsageKeyboard = 0x06;
+	constexpr USHORT UsageTablet = 0x08;
+	constexpr USHORT UsageTouch = 0x01;
+	constexpr USHORT UsageTouchPad = 0x0D;
+	//RIDEV_NOLEGACY
+	rid[0].usUsagePage = UsagePageGenericDesktop;
+	rid[0].usUsage = UsageMouse;
+	rid[0].dwFlags = RIDEV_INPUTSINK;
+	rid[0].hwndTarget = gMainWindow;
+
+	rid[1].usUsagePage = UsagePageGenericDesktop;
+	rid[1].usUsage = UsageKeyboard;
+	rid[1].dwFlags = RIDEV_INPUTSINK;
+	rid[1].hwndTarget = gMainWindow;
+
+	if(isFullScreen)
+	{
+		rid[0].dwFlags |= RIDEV_NOLEGACY;
+		rid[1].dwFlags |= RIDEV_NOLEGACY;
+	}
+
+	if (!RegisterRawInputDevices(rid, std::size(rid), sizeof(rid[0]))) {
+		ERMY_ERROR("Failed to register raw input devices: %d", GetLastError());
+	}
+}
 
 void* os::CreateNativeWindow()
 {
@@ -56,17 +94,29 @@ void* os::CreateNativeWindow()
 	UTF8ToWCS(utf8WinCaption, winTitleBuff);
 
 	DWORD exFlags = 0;
+	DWORD dwStyle = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
 
 	if (winCfg.supportTransparent)
 	{
-		exFlags |= WS_EX_LAYERED | WS_EX_TRANSPARENT;
+		exFlags |= (WS_EX_LAYERED | WS_EX_TRANSPARENT);
+	}
+
+	if (winCfg.isFullScreen())
+	{
+		//exFlags |= WS_EX_TOPMOST;
+		dwStyle = WS_VISIBLE | WS_POPUP;
+
+		windowX = 0;
+		windowY = 0;
+		windowWidth = screenWidth - 0;
+		windowHeight = screenHeight - 0;
 	}
 
 	HWND hWnd = ::CreateWindowExW(
 		exFlags,
 		winClassName,
 		winTitleBuff,
-		WS_OVERLAPPEDWINDOW,
+		dwStyle,
 		windowX,
 		windowY,
 		windowWidth,
@@ -91,19 +141,67 @@ void* os::CreateNativeWindow()
 		::ShowWindow(hWnd, SW_SHOW);
 	}
 
+	::UpdateWindow(hWnd);
+
+
 	gMainWindow = hWnd;
+
+	RegisterRawInputDevices(winCfg.isFullScreen());
 
 	return static_cast<void*>(gMainWindow);
 }
 
+LONG mouseRawDeltaX = 0;
+LONG mouseRawDeltaY = 0;
+
 bool os::Update()
 {
+
+
+	mouseRawDeltaX = 0;
+	mouseRawDeltaY = 0;
+
+	// Process raw input using GetRawInputBuffer
+	BYTE buffer[1024];
+	UINT cbSize = sizeof(buffer);
+	while (true) {
+		UINT nInput = GetRawInputBuffer((PRAWINPUT)buffer, &cbSize, sizeof(RAWINPUTHEADER));
+		if (nInput == 0) break;  // No more input
+		if (nInput == (UINT)-1) {
+			// Handle error (for simplicity, just break)
+			break;
+		}
+
+		PRAWINPUT pRawInput = (PRAWINPUT)buffer;
+		for (UINT i = 0; i < nInput; i++) {
+			if (pRawInput->header.dwType == RIM_TYPEMOUSE) {
+				mouseRawDeltaX = pRawInput->data.mouse.lLastX;
+				mouseRawDeltaY = pRawInput->data.mouse.lLastY;
+
+				ERMY_LOG("Mouse raw X: %d Y: %d\n", mouseRawDeltaX, mouseRawDeltaY);
+				// Add mouse movement handling here (e.g., update camera or cursor)
+			}
+			else if (pRawInput->header.dwType == RIM_TYPEKEYBOARD) {
+				USHORT keyCode = pRawInput->data.keyboard.VKey;
+				USHORT flags = pRawInput->data.keyboard.Flags;
+				// Add keyboard press/release handling here (e.g., check flags for key state)
+			}
+			// Move to the next RAWINPUT structure
+			pRawInput = (PRAWINPUT)((PBYTE)pRawInput + pRawInput->header.dwSize);
+		}
+	}
+
 	MSG msg = {};
 
-	if (::PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+	//Process buffered raw input messages
+
+	for (int i = 0; i < 4; ++i)
 	{
-		::TranslateMessage(&msg);
-		::DispatchMessage(&msg);
+		if (::PeekMessage(&msg, gMainWindow, 0, 0, PM_REMOVE))
+		{
+			::TranslateMessage(&msg);
+			::DispatchMessage(&msg);
+		}
 	}
 
 	return true;
@@ -114,7 +212,163 @@ int gMouseGlobalY = 0;
 
 glm::ivec2 ermy::input::mouse::GetCurrentPosition()
 {
-	return { gMouseGlobalX ,gMouseGlobalY };
+	POINT currentPos;
+	GetCursorPos(&currentPos);
+	ScreenToClient(gMainWindow, &currentPos);
+	return { currentPos.x, currentPos.y };
+}
+
+glm::vec2 ermy::input::mouse::GetDeltaPosition()
+{
+	//POINT currentPos;
+	//GetCursorPos(&currentPos);
+	//MOUSEMOVEPOINT mmptIn;
+	//mmptIn.x = currentPos.x;
+	//mmptIn.y = currentPos.y;
+	//mmptIn.time = GetTickCount();
+
+	//// Buffer for up to 64 mouse points
+	//MOUSEMOVEPOINT mmptOut[64];
+	//UINT pointsReturned = 0;
+
+	//// Call GetMouseMovePointsEx with high-resolution points
+	//DWORD result = GetMouseMovePointsEx(
+	//	sizeof(MOUSEMOVEPOINT),
+	//	&mmptIn,
+	//	mmptOut,
+	//	64,
+	//	GMMP_USE_HIGH_RESOLUTION_POINTS
+	//);
+
+	//if (result == 0) { // Success
+	//	pointsReturned = 64; // Full buffer returned
+	//}
+	//else if (result == (DWORD)-1) {
+	//	// Error occurred
+	//	//char buffer[256];
+	//	//sprintf_s(buffer, "GetMouseMovePointsEx failed: %lu\n", GetLastError());
+	//	//OutputDebugStringA(buffer);
+	//}
+	//else {
+	//	pointsReturned = result; // Partial buffer returned
+	//}
+
+	//if (pointsReturned < 2)
+	//{
+	//	return { 0, 0 };
+	//}
+
+	//MOUSEMOVEPOINT* latest = &mmptOut[0];
+	//MOUSEMOVEPOINT* previous = &mmptOut[1];
+
+	//float deltaX = (latest->x - previous->x) / 65536.0f;
+	//float deltaY = (latest->y - previous->y) / 65536.0f;
+
+	//return { deltaX, deltaY };
+
+	return { (float)mouseRawDeltaX / 4096.0f, (float)mouseRawDeltaY / 4096.0f };
+}
+
+int _ermyKeyCodeToVK(input::keyboard::KeyCode keyCode)
+{
+	int vkeys[] = { 0,
+		'A'
+		,'B'
+		,'C'
+		,'D'
+		,'E'
+		,'F'
+		,'G'
+		,'H'
+		,'I'
+		,'J'
+		,'K'
+		,'L'
+		,'M'
+		,'N'
+		,'O'
+		,'P'
+		,'Q'
+		,'R'
+		,'S'
+		,'T'
+		,'U'
+		,'V'
+		,'W'
+		,'X'
+		,'Y'
+		,'Z'
+		,VK_NUMPAD0
+		,VK_NUMPAD1
+		,VK_NUMPAD2
+		,VK_NUMPAD3
+		,VK_NUMPAD4
+		,VK_NUMPAD5
+		,VK_NUMPAD6
+		,VK_NUMPAD7
+		,VK_NUMPAD8
+		,VK_NUMPAD9
+		,VK_SPACE
+		,VK_RETURN
+		,VK_BACK
+		,VK_TAB
+		,VK_LSHIFT
+		,VK_LCONTROL
+		,VK_LMENU
+		,VK_LWIN
+		,VK_RSHIFT
+		,VK_RCONTROL
+		,VK_RMENU
+		,VK_RWIN
+		,VK_LEFT
+		,VK_RIGHT
+		,VK_UP
+		,VK_DOWN
+		,VK_INSERT
+		,VK_DELETE
+		,VK_HOME
+		,VK_END
+		,VK_PRIOR
+		,VK_NEXT
+		,VK_SCROLL
+		,VK_SNAPSHOT
+		,VK_PAUSE
+		,VK_F1
+		,VK_F2
+		,VK_F3
+		,VK_F4
+		,VK_F5
+		,VK_F6
+		,VK_F7
+		,VK_F8
+		,VK_F9
+		,VK_F10
+		,VK_F11
+		,VK_F12
+		,VK_F13
+		,VK_F14
+		,VK_F15
+		,VK_ESCAPE
+	};
+
+	return vkeys[(int)keyCode];
+}
+
+bool input::keyboard::IsKeyDown(input::keyboard::KeyCode keyCode)
+{
+	//map vkey to KeyCode
+
+	return GetAsyncKeyState(_ermyKeyCodeToVK(keyCode)) & 0x8000;
+}
+
+bool input::keyboard::IsKeyPressed(input::keyboard::KeyCode keyCode)
+{
+	return GetAsyncKeyState(_ermyKeyCodeToVK(keyCode)) & 0x1;
+}
+
+bool input::keyboard::IsKeyReleased(input::keyboard::KeyCode keyCode)
+{
+	return false;
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -125,6 +379,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	switch (message)
 	{
+	case WM_INPUT_DEVICE_CHANGE:
+	{
+		int c = 42;
+	}
+	break;
 	case WM_MOUSEMOVE:
 	case WM_LBUTTONDOWN:
 	case WM_RBUTTONDOWN:
@@ -209,12 +468,12 @@ namespace ermy::os_utils
 		MappedFileInfoWin* m = new MappedFileInfoWin();
 
 		m->hFile = CreateFileA(
-			pathUtf8,              
-			GENERIC_READ,                   
-			FILE_SHARE_READ,                
+			pathUtf8,
+			GENERIC_READ,
+			FILE_SHARE_READ,
 			NULL,                           // Default security
-			OPEN_EXISTING,                  
-			FILE_ATTRIBUTE_NORMAL,          
+			OPEN_EXISTING,
+			FILE_ATTRIBUTE_NORMAL,
 			NULL                            // No template
 		);
 
@@ -228,7 +487,7 @@ namespace ermy::os_utils
 		}
 
 		HANDLE hMapping = CreateFileMappingA(
-			m->hFile,                       
+			m->hFile,
 			NULL,                           // Default security
 			PAGE_READONLY,                  // Read-only access
 			0,                              // High-order size
@@ -242,8 +501,8 @@ namespace ermy::os_utils
 		}
 
 		m->pData = MapViewOfFile(
-			hMapping,                       
-			FILE_MAP_READ,                  
+			hMapping,
+			FILE_MAP_READ,
 			0,                              // High-order offset
 			0,                              // Low-order offset
 			m->fileSize.QuadPart            // Whole file
@@ -268,8 +527,8 @@ namespace ermy::os_utils
 			GENERIC_READ | GENERIC_WRITE,  // Read and write access
 			0,                              // No sharing
 			NULL,                           // Default security
-			CREATE_ALWAYS,                  
-			FILE_ATTRIBUTE_NORMAL,          
+			CREATE_ALWAYS,
+			FILE_ATTRIBUTE_NORMAL,
 			NULL                            // No template
 		);
 
@@ -335,7 +594,7 @@ namespace ermy::os_utils
 
 	void SetNativeWindowTitle(const char* title)
 	{
-		if(gMainWindow)
+		if (gMainWindow)
 		{
 			wchar_t wTitle[256];
 			::os::UTF8ToWCS(title, wTitle);

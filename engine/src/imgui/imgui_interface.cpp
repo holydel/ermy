@@ -3,7 +3,7 @@
 #ifdef ERMY_GAPI_VULKAN
 #include "../rendering/vulkan/vulkan_interface.h"
 #include "../rendering/vulkan/vulkan_swapchain.h"
-static void mercury_check_vk_result(VkResult err)
+static void ermy_check_vk_result(VkResult err)
 {
 }
 #endif
@@ -29,6 +29,8 @@ void imgui_interface::Initialize()
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
+	//io.ConfigFlags |= ImGuiConfigFlags_NoKeyboard;
+	//io.ConfigFlags |= ImGuiConfigFlags_NoMouse;
 	if (app.staticConfig.imgui.enableDocking)
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch	
 
@@ -47,7 +49,7 @@ void imgui_interface::Initialize()
 	init_info.Allocator = nullptr;
 	init_info.MinImageCount = 3;
 	init_info.ImageCount = 3;
-	init_info.CheckVkResultFn = mercury_check_vk_result;
+	init_info.CheckVkResultFn = ermy_check_vk_result;
 	init_info.MSAASamples = gVKSurfaceSamples;
 	init_info.RenderPass = gVKRenderPass;
 	init_info.MinAllocationSize = 1024 * 1024;
@@ -199,7 +201,7 @@ void imgui_interface::BeginFrame(void* cmdList)
 
 void imgui_interface::EndFrame(void* cmdList)
 {
-	//ImGui::ShowDemoWindow(); // Show demo window! :)
+	ImGui::ShowDemoWindow(); // Show demo window! :)
 	ImGui::Render();
 
 #ifdef ERMY_GAPI_VULKAN

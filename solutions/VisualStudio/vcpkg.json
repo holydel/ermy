@@ -8,6 +8,8 @@
     "ffmpeg",
     "usd",
     "ktx",
-    "directxtex"
+    "directxtex",
+    "pcl",
+    "tinyply"
   ]
 }

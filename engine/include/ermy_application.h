@@ -39,11 +39,16 @@ namespace ermy
 
 				int width = 800;
 				int height = 600;
-				std::string title = ""; //when e,pty - get name from AppConfig
+				std::string title = ""; //when empty - get name from AppConfig
 				WindowMode mode = WindowMode::Windowed;
 				InitialState initialState = InitialState::Normal;
 
 				bool supportTransparent = false;
+
+				bool isFullScreen() const
+				{
+					return mode == WindowMode::ExclusiveFullscreen || mode == WindowMode::BorderlessFullscreen;
+				}
 			};
 
 			struct SwapchainConfig
@@ -87,6 +92,7 @@ namespace ermy
 				VSyncMode vsync = VSyncMode::AlwaysVSync;
 
 				bool useAlpha : 1 = false;
+				bool tripleBuffering : 1 = true; //for VR - use double buffering
 			};
 
 			struct ImguiConfig
@@ -213,6 +219,8 @@ namespace ermy
 		virtual void OnLoad() {}
 
 		virtual void OnUpdate() {}
+
+		virtual void OnRender() {}
 		/// <summary>
 		/// Begin Frame (after acquire frame from swapchain)
 		/// </summary>

@@ -8,6 +8,8 @@
 #include <ermy_geometry.h>
 #include <random>
 
+#include <Windows.h>
+
 using namespace ermy;
 
 class TestBedApplication : public ermy::Application
@@ -19,9 +21,10 @@ class TestBedApplication : public ermy::Application
 
 	std::vector<scene::EntityID> allCubes;
 	std::vector<glm::quat> allCubesDeltaRotation;
-	const int numCubes = 1000;
+	const int numCubes = 100;
 
 	glm::quat currentCameraOrient = glm::identity<glm::quat>();
+	bool isRunningValue = true;
 public:
 	void OnConfigure() override
 	{
@@ -30,14 +33,17 @@ public:
 
 		staticConfig.appName = "TestBed";
 
-		staticConfig.render.enableDebugLayers = true;
+		staticConfig.render.enableDebugLayers = false;
 		staticConfig.render.adapterID = 0;
 
 		staticConfig.window.supportTransparent = false;
+		staticConfig.window.mode = ermy::Application::StaticConfig::WindowConfig::WindowMode::BorderlessFullscreen;
 
-		staticConfig.swapchain.depthMode = ermy::Application::StaticConfig::SwapchainConfig::DepthMode::Depth32F;
-		staticConfig.swapchain.msaaMode = ermy::Application::StaticConfig::SwapchainConfig::MSAAMode::Samples8;
+		staticConfig.swapchain.depthMode = ermy::Application::StaticConfig::SwapchainConfig::DepthMode::Depth16;
+		staticConfig.swapchain.msaaMode = ermy::Application::StaticConfig::SwapchainConfig::MSAAMode::Samples4;
+		staticConfig.swapchain.vsync = ermy::Application::StaticConfig::SwapchainConfig::VSyncMode::AlwaysVSync;
 
+		staticConfig.swapchain.tripleBuffering = false;
 		//staticConfig.render.vkConfig.useDynamicRendering = false;
 	}
 
@@ -46,6 +52,11 @@ public:
 	void OnUpdate() override;
 	void OnBeginFinalPass(rendering::CommandList& finalCL) override;
 	void OnEndFrame() override;
+
+	bool IsRunning() override
+	{
+		return isRunningValue;
+	}
 };
 
 static TestBedApplication myTestBedApp;
@@ -63,13 +74,20 @@ void TestBedApplication::OnUpdate()
 {
 	//currentCameraOrient *= glm::quat(glm::vec3(0.01f, 0.000f, 0.000f));
 	auto mpos = input::mouse::GetCurrentPosition();
+	auto mdelta = input::mouse::GetDeltaPosition();
 
-	currentCameraOrient = glm::quat(glm::vec3((float)mpos.y * 0.01f, (float)mpos.x * 0.01f, 0.0f));
+	//currentCameraOrient = glm::quat(glm::vec3((float)mpos.y * 0.01f, (float)mpos.x * 0.01f, 0.0f));
+	currentCameraOrient *= glm::quat(glm::vec3(mdelta.y * -64.0f, mdelta.x * -64.0f, 0.0f));
 	scene::SetCameraOrientation(currentCameraOrient);
 
 	for (int i = 0; i < numCubes; ++i)
 	{
 		scene::GetTransform(scene::EntityID(i)).orientation = allCubesDeltaRotation[i] * scene::GetTransform(scene::EntityID(i)).orientation;
+	}
+
+	if(input::keyboard::IsKeyPressed(input::keyboard::KeyCode::Escape))
+	{
+		isRunningValue = false;
 	}
 }
 
@@ -135,9 +153,9 @@ void TestBedApplication::OnLoad()
 	for (int i = 0; i < numCubes; ++i)
 	{
 		scene::Transform transform;
-		transform.position_uniform_scale.x = (((float)(rand() % RAND_MAX) / (float)RAND_MAX) - 0.5f) * 100.0f;
-		transform.position_uniform_scale.y = (((float)(rand() % RAND_MAX) / (float)RAND_MAX) - 0.5f) * 100.0f;
-		transform.position_uniform_scale.z = (((float)(rand() % RAND_MAX) / (float)RAND_MAX) - 0.5f) * 100.0f;
+		transform.position_uniform_scale.x = (((float)(rand() % RAND_MAX) / (float)RAND_MAX) - 0.5f) * 200.0f;
+		transform.position_uniform_scale.y = (((float)(rand() % RAND_MAX) / (float)RAND_MAX) - 0.5f) * 200.0f;
+		transform.position_uniform_scale.z = (((float)(rand() % RAND_MAX) / (float)RAND_MAX) - 0.5f) * 200.0f;
 
 		transform.orientation = randomUnitQuaternionAxisAngle();
 		allCubesDeltaRotation[i] = glm::slerp(identityQuat, randomUnitQuaternionAxisAngle(), 0.01f);

@@ -23,7 +23,7 @@ void* os::GetNativeWindowHandle()
 extern int androidCursorX;
 extern int androidCursorY;
 
-glm::ivec2 ermy::input::mouse::GetCurrentPosition()
+glm::vec2 ermy::input::mouse::GetCurrentPosition()
 {
 	return { androidCursorX ,androidCursorY };
 }
