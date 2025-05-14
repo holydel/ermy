@@ -103,7 +103,20 @@ namespace ermy
 
 		namespace gamepad
 		{
+			struct GamePadState
+			{
+				glm::vec2 leftStick;
+				glm::vec2 rightStick;
+				float leftTrigger;
+				float rightTrigger;
+				bool A, B, X, Y, LB, RB, Back, Start, LS, RS, Up, Down, Left, Right;
+			};
 
+			bool IsConnected(int controllerIndex);
+			ermy::u8 GetControllerBatteryLevel(int controllerIndex);
+			const GamePadState& GetState(int controllerIndex);
+
+			constexpr int MAX_CONTROLLERS = 4;
 		}
 
 		namespace joystick

@@ -7,4 +7,6 @@ namespace rendering_interface
     void Shutdown();
 
     void Process();
+
+    const char* GetName();
 }

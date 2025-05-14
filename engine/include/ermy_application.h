@@ -125,6 +125,11 @@ namespace ermy
 				bool useDebugLayers = true;
 			};
 
+			struct InputConfig
+			{
+				u16 checkGamepadIntervalMS = 250; //for one gamepad per tick
+			};
+
 			struct RendererConfig
 			{
 #ifdef ERMY_GAPI_VULKAN
@@ -158,6 +163,7 @@ namespace ermy
 			RendererConfig render;
 			ImguiConfig imgui;
 			SwapchainConfig swapchain;
+			InputConfig inputConfig;
 			XRConfig xr;
 			struct Version
 			{

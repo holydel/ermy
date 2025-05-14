@@ -2,7 +2,8 @@
 #include "win_utils.h"
 #include "application.h"
 #include <windowsx.h>
-#include <ermy_input.h>
+#include "win_gamepads.h"
+
 using namespace ermy;
 
 HWND gMainWindow = nullptr;
@@ -11,6 +12,8 @@ HINSTANCE gWinSystemInstance = nullptr;
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 constexpr const wchar_t* winClassName = L"ErmyWindow";
+
+std::array<ermy::input::gamepad::GamePadState, ermy::input::gamepad::MAX_CONTROLLERS> gGamePadStates = {};
 
 void RegisterRawInputDevices(bool isFullScreen)
 {
@@ -42,8 +45,8 @@ void RegisterRawInputDevices(bool isFullScreen)
 
 	if(isFullScreen)
 	{
-		rid[0].dwFlags |= RIDEV_NOLEGACY;
-		rid[1].dwFlags |= RIDEV_NOLEGACY;
+		//rid[0].dwFlags |= RIDEV_NOLEGACY;
+		//rid[1].dwFlags |= RIDEV_NOLEGACY;
 	}
 
 	if (!RegisterRawInputDevices(rid, std::size(rid), sizeof(rid[0]))) {
@@ -154,14 +157,12 @@ void* os::CreateNativeWindow()
 LONG mouseRawDeltaX = 0;
 LONG mouseRawDeltaY = 0;
 
-bool os::Update()
+void ProcessKeyboardAndMouseRAW()
 {
-
-
 	mouseRawDeltaX = 0;
 	mouseRawDeltaY = 0;
 
-	// Process raw input using GetRawInputBuffer
+	// Process raw input using GetRawInputBuffer keyboad and mouse
 	BYTE buffer[1024];
 	UINT cbSize = sizeof(buffer);
 	while (true) {
@@ -175,10 +176,10 @@ bool os::Update()
 		PRAWINPUT pRawInput = (PRAWINPUT)buffer;
 		for (UINT i = 0; i < nInput; i++) {
 			if (pRawInput->header.dwType == RIM_TYPEMOUSE) {
-				mouseRawDeltaX = pRawInput->data.mouse.lLastX;
-				mouseRawDeltaY = pRawInput->data.mouse.lLastY;
+				mouseRawDeltaX += pRawInput->data.mouse.lLastX;
+				mouseRawDeltaY += pRawInput->data.mouse.lLastY;
 
-				ERMY_LOG("Mouse raw X: %d Y: %d\n", mouseRawDeltaX, mouseRawDeltaY);
+				//ERMY_LOG("Mouse raw X: %d Y: %d\n", mouseRawDeltaX, mouseRawDeltaY);
 				// Add mouse movement handling here (e.g., update camera or cursor)
 			}
 			else if (pRawInput->header.dwType == RIM_TYPEKEYBOARD) {
@@ -190,6 +191,76 @@ bool os::Update()
 			pRawInput = (PRAWINPUT)((PBYTE)pRawInput + pRawInput->header.dwSize);
 		}
 	}
+}
+
+void ProcessGamepadsXINPUT()
+{
+	for(int i=0;i<input::gamepad::MAX_CONTROLLERS;i++)
+	{
+		if (gXInputConnected[i])
+		{
+			XINPUT_STATE state;
+			ZeroMemory(&state, sizeof(XINPUT_STATE));
+
+			if (XInputGetState(i, &state) == ERROR_SUCCESS)
+			{
+				auto& s = gGamePadStates[i];
+
+				// Thumbsticks
+				s.leftStick.x = state.Gamepad.sThumbLX / 32767.0f;
+				s.leftStick.y = state.Gamepad.sThumbLY / 32767.0f;
+				s.rightStick.x = state.Gamepad.sThumbRX / 32767.0f;
+				s.rightStick.y = state.Gamepad.sThumbRY / 32767.0f;
+
+				// Triggers
+				s.leftTrigger = state.Gamepad.bLeftTrigger / 255.0f;
+				s.rightTrigger = state.Gamepad.bRightTrigger / 255.0f;
+
+				// Buttons
+				s.A = (state.Gamepad.wButtons & XINPUT_GAMEPAD_A) != 0;
+				s.B = (state.Gamepad.wButtons & XINPUT_GAMEPAD_B) != 0;
+				s.X = (state.Gamepad.wButtons & XINPUT_GAMEPAD_X) != 0;
+				s.Y = (state.Gamepad.wButtons & XINPUT_GAMEPAD_Y) != 0;
+				s.LB = (state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) != 0;
+				s.RB = (state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) != 0;
+				s.Back = (state.Gamepad.wButtons & XINPUT_GAMEPAD_BACK) != 0;
+				s.Start = (state.Gamepad.wButtons & XINPUT_GAMEPAD_START) != 0;
+				s.LS = (state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB) != 0;
+				s.RS = (state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB) != 0;
+				s.Up = (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP) != 0;
+				s.Down = (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN) != 0;
+				s.Left = (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT) != 0;
+				s.Right = (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT) != 0;
+			}
+			else
+			{
+				gXInputConnected[i] = false;
+				continue;
+			}
+		}
+	}
+}
+
+bool ermy::input::gamepad::IsConnected(int controllerIndex)
+{
+	return gXInputConnected[controllerIndex];
+}
+
+const ermy::input::gamepad::GamePadState& ermy::input::gamepad::GetState(int controllerIndex)
+{
+	return gGamePadStates[controllerIndex];
+}
+
+ermy::u8 ermy::input::gamepad::GetControllerBatteryLevel(int controllerIndex)
+{
+	return gControllerBatteryLevel[controllerIndex];
+}
+
+bool os::Update()
+{
+	
+	ProcessKeyboardAndMouseRAW();
+	ProcessGamepadsXINPUT();
 
 	MSG msg = {};
 
@@ -600,5 +671,10 @@ namespace ermy::os_utils
 			::os::UTF8ToWCS(title, wTitle);
 			SetWindowTextW(gMainWindow, wTitle);
 		}
+	}
+
+	const char* GetOSName()
+	{
+		return "Windows";
 	}
 }

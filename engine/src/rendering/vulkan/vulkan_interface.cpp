@@ -883,6 +883,11 @@ void CreateDevice()
 	//VK_CALL(vkCreateCommandPool(gDevice, &poolInfo, gGlobalAllocationsCallbacks, &gOneTimeSubmitCommandPool));
 }
 
+const char* rendering_interface::GetName()
+{
+	return "Vulkan";
+}
+
 void rendering_interface::Initialize()
 {
 	ERMY_LOG("VULKAN Initialize");

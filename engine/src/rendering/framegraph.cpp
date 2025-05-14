@@ -91,6 +91,8 @@ void framegraph::Process()
 
 		app.OnBeginFinalPass(clist);
 		app.OnIMGUI();
+
+
 		imgui_interface::EndFrame(finalCmdList);
 
 		framegraph_interface::EndFinalRenderPass();

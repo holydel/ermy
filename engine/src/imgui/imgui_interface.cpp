@@ -18,7 +18,7 @@ static ID3D12DescriptorHeap* gImgui_pd3dSrvDescHeap = nullptr;
 #include "../os/os.h"
 #include "application.h"
 #include "../os/os.h"
-
+#include <ermy_input.h>
 void imgui_interface::Initialize()
 {
 	auto& app = GetApplication();
@@ -199,9 +199,222 @@ void imgui_interface::BeginFrame(void* cmdList)
 	ImGui::NewFrame();
 }
 
+void DrawGamePad(ImDrawList* draw_list, const ermy::input::gamepad::GamePadState& state, bool enabled, float battery_fraction) {
+	float x = ImGui::GetCursorScreenPos().x;
+	float y = ImGui::GetCursorScreenPos().y;
+
+	// Define positions for gamepad elements
+	// Shoulder buttons (LB and RB)
+	ImVec2 lb_min = ImVec2(x + 20, y + 10);
+	ImVec2 lb_max = ImVec2(x + 60, y + 20);
+	ImVec2 rb_min = ImVec2(x + 140, y + 10);
+	ImVec2 rb_max = ImVec2(x + 180, y + 20);
+
+	// D-pad (Up, Down, Left, Right)
+	ImVec2 dpad_up_min = ImVec2(x + 40, y + 40);
+	ImVec2 dpad_up_max = ImVec2(x + 60, y + 60);
+	ImVec2 dpad_down_min = ImVec2(x + 40, y + 60);
+	ImVec2 dpad_down_max = ImVec2(x + 60, y + 80);
+	ImVec2 dpad_left_min = ImVec2(x + 20, y + 60);
+	ImVec2 dpad_left_max = ImVec2(x + 40, y + 80);
+	ImVec2 dpad_right_min = ImVec2(x + 60, y + 60);
+	ImVec2 dpad_right_max = ImVec2(x + 80, y + 80);
+
+	// Face buttons (X, Y, A, B)
+	float button_radius = 5.0f;
+	ImVec2 face_x_center = ImVec2(x + 140, y + 60); // Left
+	ImVec2 face_y_center = ImVec2(x + 150, y + 50); // Top
+	ImVec2 face_a_center = ImVec2(x + 150, y + 70); // Bottom
+	ImVec2 face_b_center = ImVec2(x + 160, y + 60); // Right
+
+	// Analog sticks
+	float stick_radius = 20.0f;
+	ImVec2 left_stick_base = ImVec2(x + 50, y + 100);
+	ImVec2 right_stick_base = ImVec2(x + 150, y + 100);
+
+	// Triggers
+	ImVec2 lt_bar_min = ImVec2(x + 20, y + 130);
+	ImVec2 lt_bar_max = ImVec2(x + 80, y + 140);
+	ImVec2 rt_bar_min = ImVec2(x + 120, y + 130);
+	ImVec2 rt_bar_max = ImVec2(x + 180, y + 140);
+
+	// Back and Start buttons
+	ImVec2 back_min = ImVec2(x + 80, y + 50);
+	ImVec2 back_max = ImVec2(x + 90, y + 60);
+	ImVec2 start_min = ImVec2(x + 110, y + 50);
+	ImVec2 start_max = ImVec2(x + 120, y + 60);
+
+	// Stick press buttons (LS and RS)
+	ImVec2 ls_center = ImVec2(x + 50, y + 120);
+	ImVec2 rs_center = ImVec2(x + 150, y + 120);
+
+	// Define colors
+	ImU32 color_button_normal = IM_COL32(100, 100, 100, 255);   // Dark gray
+	ImU32 color_button_pressed = IM_COL32(0, 255, 0, 255);      // Green
+	ImU32 color_stick_base = IM_COL32(50, 50, 50, 255);         // Medium gray
+	ImU32 color_stick_position = IM_COL32(255, 0, 0, 255);      // Red
+	ImU32 color_trigger_bar = IM_COL32(200, 200, 200, 255);     // Light gray
+	ImU32 color_trigger_fill = IM_COL32(0, 0, 255, 255);        // Blue
+	ImU32 color_disabled = IM_COL32(50, 50, 50, 255);           // Dark gray for disabled
+
+	// Adjust state based on enabled flag
+	ermy::input::gamepad::GamePadState draw_state = state;
+	if (!enabled) {
+		draw_state.leftStick = glm::vec2(0, 0);
+		draw_state.rightStick = glm::vec2(0, 0);
+		draw_state.leftTrigger = 0.0f;
+		draw_state.rightTrigger = 0.0f;
+		draw_state.A = draw_state.B = draw_state.X = draw_state.Y = false;
+		draw_state.LB = draw_state.RB = draw_state.Back = draw_state.Start = false;
+		draw_state.LS = draw_state.RS = draw_state.Up = draw_state.Down = false;
+		draw_state.Left = draw_state.Right = false;
+	}
+
+	// Draw shoulder buttons
+	draw_list->AddRectFilled(lb_min, lb_max, enabled && draw_state.LB ? color_button_pressed : (enabled ? color_button_normal : color_disabled));
+	draw_list->AddRectFilled(rb_min, rb_max, enabled && draw_state.RB ? color_button_pressed : (enabled ? color_button_normal : color_disabled));
+
+	// Draw D-pad
+	draw_list->AddRectFilled(dpad_up_min, dpad_up_max, enabled && draw_state.Up ? color_button_pressed : (enabled ? color_button_normal : color_disabled));
+	draw_list->AddRectFilled(dpad_down_min, dpad_down_max, enabled && draw_state.Down ? color_button_pressed : (enabled ? color_button_normal : color_disabled));
+	draw_list->AddRectFilled(dpad_left_min, dpad_left_max, enabled && draw_state.Left ? color_button_pressed : (enabled ? color_button_normal : color_disabled));
+	draw_list->AddRectFilled(dpad_right_min, dpad_right_max, enabled && draw_state.Right ? color_button_pressed : (enabled ? color_button_normal : color_disabled));
+
+	// Draw face buttons
+	draw_list->AddCircleFilled(face_x_center, button_radius, enabled && draw_state.X ? color_button_pressed : (enabled ? color_button_normal : color_disabled));
+	draw_list->AddCircleFilled(face_y_center, button_radius, enabled && draw_state.Y ? color_button_pressed : (enabled ? color_button_normal : color_disabled));
+	draw_list->AddCircleFilled(face_a_center, button_radius, enabled && draw_state.A ? color_button_pressed : (enabled ? color_button_normal : color_disabled));
+	draw_list->AddCircleFilled(face_b_center, button_radius, enabled && draw_state.B ? color_button_pressed : (enabled ? color_button_normal : color_disabled));
+
+	// Draw analog sticks
+	draw_list->AddCircleFilled(left_stick_base, stick_radius, color_stick_base);
+	ImVec2 left_stick_pos = ImVec2(left_stick_base.x + draw_state.leftStick.x * (stick_radius - 5), left_stick_base.y - draw_state.leftStick.y * (stick_radius - 5));
+	draw_list->AddCircleFilled(left_stick_pos, 5.0f, color_stick_position);
+
+	draw_list->AddCircleFilled(right_stick_base, stick_radius, color_stick_base);
+	ImVec2 right_stick_pos = ImVec2(right_stick_base.x + draw_state.rightStick.x * (stick_radius - 5), right_stick_base.y - draw_state.rightStick.y * (stick_radius - 5));
+	draw_list->AddCircleFilled(right_stick_pos, 5.0f, color_stick_position);
+
+	// Draw triggers
+	draw_list->AddRect(lt_bar_min, lt_bar_max, color_trigger_bar);
+	float lt_fill_width = (lt_bar_max.x - lt_bar_min.x) * draw_state.leftTrigger;
+	draw_list->AddRectFilled(lt_bar_min, ImVec2(lt_bar_min.x + lt_fill_width, lt_bar_max.y), color_trigger_fill);
+
+	draw_list->AddRect(rt_bar_min, rt_bar_max, color_trigger_bar);
+	float rt_fill_width = (rt_bar_max.x - rt_bar_min.x) * draw_state.rightTrigger;
+	draw_list->AddRectFilled(rt_bar_min, ImVec2(rt_bar_min.x + rt_fill_width, rt_bar_max.y), color_trigger_fill);
+
+	// Draw Back and Start buttons
+	draw_list->AddRectFilled(back_min, back_max, enabled && draw_state.Back ? color_button_pressed : (enabled ? color_button_normal : color_disabled));
+	draw_list->AddRectFilled(start_min, start_max, enabled && draw_state.Start ? color_button_pressed : (enabled ? color_button_normal : color_disabled));
+
+	// Draw stick press buttons (LS and RS)
+	draw_list->AddCircleFilled(ls_center, button_radius, enabled && draw_state.LS ? color_button_pressed : (enabled ? color_button_normal : color_disabled));
+	draw_list->AddCircleFilled(rs_center, button_radius, enabled && draw_state.RS ? color_button_pressed : (enabled ? color_button_normal : color_disabled));
+	
+	// Draw battery progress bar
+	ImVec2 progress_bar_min = ImVec2(x + 50, y + 150);
+	ImVec2 progress_bar_max = ImVec2(x + 150, y + 160);
+	draw_list->AddRectFilled(progress_bar_min, progress_bar_max, IM_COL32(200, 200, 200, 255)); // Light gray background
+
+	if (enabled) {
+		float fill_width = (progress_bar_max.x - progress_bar_min.x) * battery_fraction;
+		ImVec2 fill_max = ImVec2(progress_bar_min.x + fill_width, progress_bar_max.y);
+		ImU32 fill_color;
+		if (battery_fraction > 0.75f) {
+			fill_color = IM_COL32(0, 255, 0, 255); // Green for high battery
+		}
+		else if (battery_fraction > 0.25f) {
+			fill_color = IM_COL32(255, 255, 0, 255); // Yellow for medium battery
+		}
+		else {
+			fill_color = IM_COL32(255, 0, 0, 255); // Red for low battery
+		}
+		draw_list->AddRectFilled(progress_bar_min, fill_max, fill_color);
+
+		// Add battery level text
+		const char* level_str;
+		if (battery_fraction >= 1.0f) {
+			level_str = "Full";
+		}
+		else if (battery_fraction >= 0.5f) {
+			level_str = "Medium";
+		}
+		else if (battery_fraction >= 0.25f) {
+			level_str = "Low";
+		}
+		else {
+			level_str = "Empty";
+		}
+		draw_list->AddText(ImVec2(x + 155, y + 150), IM_COL32(255, 255, 255, 255), level_str);
+	}
+	else {
+		draw_list->AddText(ImVec2(x + 155, y + 150), IM_COL32(255, 255, 255, 255), "N/A");
+	}
+	
+	ImGui::Dummy(ImVec2(210, 160)); // Dummy space to avoid overlap with other UI elements
+}
+
+void DrawStatisticsWindow()
+{
+	ImGui::Begin("Statistics", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+
+	ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
+	ImGui::Separator();
+	ImGui::Text("OS: %s", ermy::os_utils::GetOSName());
+	ImGui::SameLine();
+	ImGui::Text("GAPI: %s", rendering_interface::GetName());
+	ImGui::Separator();
+	ImGui::Text("Processor: some cpu");
+	ImGui::Text("GPU: some gpu");
+	ImGui::Text("GPU: some gpu");
+	ImGui::Text("RAM: some ram");
+	ImGui::Text("Disk: some storage info");
+	ImGui::Separator();
+
+	if (ImGui::BeginTabBar("SystemTabs")) {
+		if (ImGui::BeginTabItem("CPU")) {
+			ImGui::Text("CPU Settings");
+			ImGui::Text("Core Count: 8");
+			ImGui::Text("Clock Speed: 3.6 GHz");
+			///ImGui::SliderFloat("CPU Usage", &cpu_usage, 0.0f, 100.0f, "%.1f%%");
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Video")) {
+			ImGui::Text("Video Settings");
+			ImGui::Text("Resolution: 1920x1080");
+			//ImGui::Checkbox("VSync", &vsync_enabled);
+			//ImGui::ColorEdit3("Background Color", background_color);
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Sound")) {
+			ImGui::Text("Sound Settings");
+			//ImGui::SliderFloat("Volume", &volume, 0.0f, 100.0f, "%.1f%%");
+			///ImGui::Checkbox("Mute", &mute_enabled);
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Input")) {
+			ImGui::Text("Input Settings");
+			ImGui::Text("Connected Devices: Keyboard, Mouse");
+			//ImGui::Checkbox("Gamepad Support", &gamepad_enabled);
+
+			for (int i = 0; i < 4; ++i)
+			{
+				DrawGamePad(ImGui::GetWindowDrawList(), ermy::input::gamepad::GetState(i), ermy::input::gamepad::IsConnected(i),float(ermy::input::gamepad::GetControllerBatteryLevel(i)) / 255.0f);
+				ImGui::SameLine();
+			}
+
+			ImGui::EndTabItem();
+		}
+		ImGui::EndTabBar();
+	}
+	ImGui::End();
+}
+
 void imgui_interface::EndFrame(void* cmdList)
 {
-	ImGui::ShowDemoWindow(); // Show demo window! :)
+	//ImGui::ShowDemoWindow(); // Show demo window! :)
+	DrawStatisticsWindow();
 	ImGui::Render();
 
 #ifdef ERMY_GAPI_VULKAN

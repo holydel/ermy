@@ -55,6 +55,8 @@
 //#define ERMY_XR_WEBXR
 //#define ERMY_XR_APPLE_REALITY_KIT
 
+#define ERMY_INPUT_GAMEPAD
+
 #ifdef ERMY_OS_WINDOWS
 //#include <xmmintrin.h>
 #endif

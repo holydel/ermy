@@ -14,5 +14,6 @@ namespace ermy
         void CloseMappedFile(MappedFileHandle mfile);
 
         void SetNativeWindowTitle(const char* title);
+        const char* GetOSName();
     }
 }

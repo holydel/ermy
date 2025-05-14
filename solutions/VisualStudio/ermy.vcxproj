@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Android-arm64-v8a">
@@ -461,6 +461,7 @@
     <ClInclude Include="..\..\engine\src\os\os.h" />
     <ClInclude Include="..\..\engine\src\os\os_entry_point.h" />
     <ClInclude Include="..\..\engine\src\os\os_utils.h" />
+    <ClInclude Include="..\..\engine\src\os\windows\win_gamepads.h" />
     <ClInclude Include="..\..\engine\src\os\windows\win_utils.h" />
     <ClInclude Include="..\..\engine\src\pak.h" />
     <ClInclude Include="..\..\engine\src\profiler.h" />

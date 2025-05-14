@@ -71,6 +71,11 @@ void ChoosePhysicalDevice()
 	}
 }
 
+const char* rendering_interface::GetName()
+{
+	return "D3D12";
+}
+
 void rendering_interface::Initialize()
 {
 	ERMY_LOG("LowLevel Rendering Interface Initialize: D3D12");

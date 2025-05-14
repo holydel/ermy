@@ -78,6 +78,14 @@ void TestBedApplication::OnUpdate()
 
 	//currentCameraOrient = glm::quat(glm::vec3((float)mpos.y * 0.01f, (float)mpos.x * 0.01f, 0.0f));
 	currentCameraOrient *= glm::quat(glm::vec3(mdelta.y * -64.0f, mdelta.x * -64.0f, 0.0f));
+
+	if (input::gamepad::IsConnected(0))
+	{
+		auto& s = input::gamepad::GetState(0);
+		currentCameraOrient *= glm::quat(glm::vec3(s.leftStick.x * 0.01f, s.leftStick.y * 0.01f, 0.0f));
+	}
+	
+
 	scene::SetCameraOrientation(currentCameraOrient);
 
 	for (int i = 0; i < numCubes; ++i)
