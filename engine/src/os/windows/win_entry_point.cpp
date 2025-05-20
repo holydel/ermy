@@ -1,4 +1,4 @@
-#include "../os_entry_point.h"
+﻿#include "../os_entry_point.h"
 #include <iostream>
 #include "win_utils.h"
 #include "../../logger.h"
@@ -72,6 +72,8 @@ void PlatformRun(int argc, char* argv[], HINSTANCE hInstance, int nCmdShow)
 {
     timeBeginPeriod(1);
     SetProcessDPIAware();
+    std::setlocale(LC_ALL, "en_US.utf8");
+	SetConsoleOutputCP(CP_UTF8);
 
 	gXInputCheckThread = new std::thread(XInputCheckThread);
 

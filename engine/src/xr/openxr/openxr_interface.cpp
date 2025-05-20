@@ -1,4 +1,4 @@
-#include "openxr_interface.h"
+﻿#include "openxr_interface.h"
 
 #ifdef ERMY_XR_OPENXR
 
@@ -64,7 +64,7 @@ XrBool32 DebugMessageCallback(
 	{
 		os::FatalFail(callbackData->message);
 	}
-	ERMY_LOG("OpenXR Debug Message: %s", callbackData->message);
+	ERMY_LOG(u8"OpenXR Debug Message: %s", callbackData->message);
 	return XR_FALSE;
 }
 
@@ -114,9 +114,9 @@ void CreateInstance()
 	XrInstanceCreateInfo createInfo{ XR_TYPE_INSTANCE_CREATE_INFO };
 	createInfo.applicationInfo = { "", 1, "Ermy", 1, XR_API_VERSION_1_0 };
 #ifdef _WIN32
-	strcpy_s(createInfo.applicationInfo.applicationName, GetApplication().staticConfig.appName.c_str());
+	strcpy_s(createInfo.applicationInfo.applicationName, (const char*)GetApplication().staticConfig.appName.c_str());
 #else
-	strcpy(createInfo.applicationInfo.applicationName, GetApplication().staticConfig.appName.c_str());
+	strcpy(createInfo.applicationInfo.applicationName, (const char*)GetApplication().staticConfig.appName.c_str());
 #endif
 	createInfo.enabledApiLayerCount = (u32)instance_extender.enabledLayers.size();
 	createInfo.enabledApiLayerNames = instance_extender.enabledLayers.data();
@@ -132,7 +132,7 @@ void PopulateInstanceProperties()
 {
 	XR_CALL(xrGetInstanceProperties(gXRInstance, &gInstanceProperties));
 
-	ERMY_LOG("OpenXR Runtime: %s Version %d.%d.%d", gInstanceProperties.runtimeName
+	ERMY_LOG(u8"OpenXR Runtime: %s Version %d.%d.%d", gInstanceProperties.runtimeName
 		, XR_VERSION_MAJOR(gInstanceProperties.runtimeVersion)
 		, XR_VERSION_MINOR(gInstanceProperties.runtimeVersion)
 		, XR_VERSION_PATCH(gInstanceProperties.runtimeVersion));
@@ -146,7 +146,7 @@ void GetSystem()
 
 	if (getSystemResult == XR_ERROR_FORM_FACTOR_UNAVAILABLE || getSystemResult == XR_ERROR_FORM_FACTOR_UNSUPPORTED)
 	{
-		ERMY_ERROR("Has requested XR mode, but headset not found or not supported!");
+		ERMY_ERROR(u8"Has requested XR mode, but headset not found or not supported!");
 		return;
 	}
 
@@ -160,7 +160,7 @@ void GetSystem()
 		XrResult result = xrGetVulkanGraphicsRequirements2KHR(gXRInstance, gXRSystemID, &graphicsRequirements);
 		if (XR_FAILED(result))
 		{
-			ERMY_ERROR("Failed to get Vulkan graphics requirements: %d", result);
+			ERMY_ERROR(u8"Failed to get Vulkan graphics requirements: %d", result);
 			return;
 		}
 	}
@@ -172,7 +172,7 @@ extern ANativeActivity* gMainNativeActivity;
 
 void xr_interface::Initialize()
 {
-	ERMY_LOG("Initialize OpenXR");
+	ERMY_LOG(u8"Initialize OpenXR");
 	LoadXR_Library();
 
 #ifdef ERMY_OS_ANDROID
@@ -204,7 +204,7 @@ void xr_interface::Shutdown()
 		gXRInstance = XR_NULL_HANDLE;
 	}
 
-	ERMY_LOG("Shutdown OpenXR");
+	ERMY_LOG(u8"Shutdown OpenXR");
 	ShutdownXR_Library();
 }
 
@@ -215,7 +215,7 @@ void xr_interface::WaitFrame()
 
 	if (!gApplicationRunning || gXRSession == XR_NULL_HANDLE || gReferenceSpace == XR_NULL_HANDLE)
 	{
-		ERMY_ERROR("Cannot process: Session or reference space not initialized");
+		ERMY_ERROR(u8"Cannot process: Session or reference space not initialized");
 		return;
 	}
 
@@ -234,23 +234,23 @@ void xr_interface::WaitFrame()
 		case XR_TYPE_EVENT_DATA_EVENTS_LOST:
 		{
 			XrEventDataEventsLost* eventsLost = reinterpret_cast<XrEventDataEventsLost*>(&eventData);
-			ERMY_LOG("OPENXR: Events Lost: %u", eventsLost->lostEventCount);
+			ERMY_LOG(u8"OPENXR: Events Lost: %u", eventsLost->lostEventCount);
 			break;
 		}
 		case XR_TYPE_EVENT_DATA_INSTANCE_LOSS_PENDING:
 		{
 			XrEventDataInstanceLossPending* instanceLossPending = reinterpret_cast<XrEventDataInstanceLossPending*>(&eventData);
-			ERMY_LOG("OPENXR: Instance Loss Pending at: %llu", instanceLossPending->lossTime);
+			ERMY_LOG(u8"OPENXR: Instance Loss Pending at: %llu", instanceLossPending->lossTime);
 			gApplicationRunning = false;
 			break;
 		}
 		case XR_TYPE_EVENT_DATA_INTERACTION_PROFILE_CHANGED:
 		{
 			XrEventDataInteractionProfileChanged* interactionProfileChanged = reinterpret_cast<XrEventDataInteractionProfileChanged*>(&eventData);
-			ERMY_LOG("OPENXR: Interaction Profile changed for Session: %p", interactionProfileChanged->session);
+			ERMY_LOG(u8"OPENXR: Interaction Profile changed for Session: %p", interactionProfileChanged->session);
 			if (interactionProfileChanged->session != gXRSession)
 			{
-				ERMY_LOG("XrEventDataInteractionProfileChanged for unknown Session");
+				ERMY_LOG(u8"XrEventDataInteractionProfileChanged for unknown Session");
 				break;
 			}
 			break;
@@ -258,10 +258,10 @@ void xr_interface::WaitFrame()
 		case XR_TYPE_EVENT_DATA_REFERENCE_SPACE_CHANGE_PENDING:
 		{
 			XrEventDataReferenceSpaceChangePending* referenceSpaceChangePending = reinterpret_cast<XrEventDataReferenceSpaceChangePending*>(&eventData);
-			ERMY_LOG("OPENXR: Reference Space Change pending for Session: %p", referenceSpaceChangePending->session);
+			ERMY_LOG(u8"OPENXR: Reference Space Change pending for Session: %p", referenceSpaceChangePending->session);
 			if (referenceSpaceChangePending->session != gXRSession)
 			{
-				ERMY_LOG("XrEventDataReferenceSpaceChangePending for unknown Session");
+				ERMY_LOG(u8"XrEventDataReferenceSpaceChangePending for unknown Session");
 				break;
 			}
 			break;
@@ -271,7 +271,7 @@ void xr_interface::WaitFrame()
 			XrEventDataSessionStateChanged* sessionStateChanged = reinterpret_cast<XrEventDataSessionStateChanged*>(&eventData);
 			if (sessionStateChanged->session != gXRSession)
 			{
-				ERMY_LOG("XrEventDataSessionStateChanged for unknown Session");
+				ERMY_LOG(u8"XrEventDataSessionStateChanged for unknown Session");
 				break;
 			}
 
@@ -285,12 +285,12 @@ void xr_interface::WaitFrame()
 				XrResult result = xrBeginSession(gXRSession, &sessionBeginInfo);
 				if (XR_FAILED(result))
 				{
-					ERMY_ERROR("Failed to begin session: %d", result);
+					ERMY_ERROR(u8"Failed to begin session: %d", result);
 					gApplicationRunning = false;
 					return;
 				}
 				gSessionRunning = true;
-				ERMY_LOG("Session started");
+				ERMY_LOG(u8"Session started");
 			}
 			else if (gSessionState == XR_SESSION_STATE_STOPPING)
 			{
@@ -298,24 +298,24 @@ void xr_interface::WaitFrame()
 				XrResult result = xrEndSession(gXRSession);
 				if (XR_FAILED(result))
 				{
-					ERMY_ERROR("Failed to end session: %d", result);
+					ERMY_ERROR(u8"Failed to end session: %d", result);
 				}
 				gSessionRunning = false;
-				ERMY_LOG("Session stopped");
+				ERMY_LOG(u8"Session stopped");
 			}
 			else if (gSessionState == XR_SESSION_STATE_EXITING)
 			{
 				// Session is exiting. Mark the application to stop
 				gSessionRunning = false;
 				gApplicationRunning = false;
-				ERMY_LOG("Session exiting");
+				ERMY_LOG(u8"Session exiting");
 			}
 			else if (gSessionState == XR_SESSION_STATE_LOSS_PENDING)
 			{
 				// Session loss is pending. Exit the application
 				gSessionRunning = false;
 				gApplicationRunning = false;
-				ERMY_LOG("Session loss pending");
+				ERMY_LOG(u8"Session loss pending");
 			}
 			break;
 		}
@@ -345,7 +345,7 @@ void xr_interface::WaitFrame()
 		auto result = xrLocateViews(gXRSession, &viewLocateInfo, &viewState, gViewCount, &viewCount, gXRViews.data());
 		if (XR_FAILED(result) || !(viewState.viewStateFlags & XR_VIEW_STATE_POSITION_VALID_BIT) || !(viewState.viewStateFlags & XR_VIEW_STATE_ORIENTATION_VALID_BIT))
 		{
-			ERMY_ERROR("Failed to locate views or views invalid: %d", result);
+			ERMY_ERROR(u8"Failed to locate views or views invalid: %d", result);
 			xrEndFrame(gXRSession, nullptr);
 			return;
 		}
@@ -488,7 +488,7 @@ void InitializeSwapchains()
 	XrResult result = xrEnumerateViewConfigurationViews(gXRInstance, gXRSystemID, gViewConfigType, 0, &viewCount, nullptr);
 	if (XR_FAILED(result))
 	{
-		ERMY_ERROR("Failed to enumerate view configuration views: %d", result);
+		ERMY_ERROR(u8"Failed to enumerate view configuration views: %d", result);
 		return;
 	}
 
@@ -496,14 +496,14 @@ void InitializeSwapchains()
 	result = xrEnumerateViewConfigurationViews(gXRInstance, gXRSystemID, gViewConfigType, viewCount, &viewCount, configViews.data());
 	if (XR_FAILED(result))
 	{
-		ERMY_ERROR("Failed to enumerate view configuration views: %d", result);
+		ERMY_ERROR(u8"Failed to enumerate view configuration views: %d", result);
 		return;
 	}
 
 	// Assume stereo (two views, one per eye)
 	if (viewCount != 2)
 	{
-		ERMY_ERROR("Expected 2 views for stereo, got %u", viewCount);
+		ERMY_ERROR(u8"Expected 2 views for stereo, got %u", viewCount);
 		return;
 	}
 
@@ -515,7 +515,7 @@ void InitializeSwapchains()
 	result = xrEnumerateSwapchainFormats(gXRSession, 0, &formatCount, nullptr);
 	if (XR_FAILED(result))
 	{
-		ERMY_ERROR("Failed to enumerate swapchain formats: %d", result);
+		ERMY_ERROR(u8"Failed to enumerate swapchain formats: %d", result);
 		return;
 	}
 
@@ -523,7 +523,7 @@ void InitializeSwapchains()
 	result = xrEnumerateSwapchainFormats(gXRSession, formatCount, &formatCount, formats.data());
 	if (XR_FAILED(result))
 	{
-		ERMY_ERROR("Failed to enumerate swapchain formats: %d", result);
+		ERMY_ERROR(u8"Failed to enumerate swapchain formats: %d", result);
 		return;
 	}
 
@@ -539,7 +539,7 @@ void InitializeSwapchains()
 
 	if (gSwapchainFormatColor == VK_FORMAT_UNDEFINED)
 	{
-		ERMY_ERROR("No compatible swapchain format found");
+		ERMY_ERROR(u8"No compatible swapchain format found");
 		return;
 	}
 
@@ -568,7 +568,7 @@ void InitializeSwapchains()
 	result = xrEnumerateSwapchainImages(gXRSwapchain_Color, 0, &imageCount, nullptr);
 	if (XR_FAILED(result))
 	{
-		ERMY_ERROR("Failed to enumerate swapchain images for swapchain");
+		ERMY_ERROR(u8"Failed to enumerate swapchain images for swapchain");
 		return;
 	}
 
@@ -576,7 +576,7 @@ void InitializeSwapchains()
 	result = xrEnumerateSwapchainImages(gXRSwapchain_Color, imageCount, &imageCount, reinterpret_cast<XrSwapchainImageBaseHeader*>(swapchainImages.data()));
 	if (XR_FAILED(result))
 	{
-		ERMY_ERROR("Failed to enumerate swapchain images for swapchain");
+		ERMY_ERROR(u8"Failed to enumerate swapchain images for swapchain");
 		return;
 	}
 
@@ -857,14 +857,14 @@ void InitializeSwapchains()
 	rpinfo.renderpass = gXRFinalRenderPass;
 	gAllRenderPasses.push_back(rpinfo);
 	//gErmyXRRenderPassID = gAllRe
-	ERMY_LOG("Successfully initialized swapchains for stereo rendering");
+	ERMY_LOG(u8"Successfully initialized swapchains for stereo rendering");
 }
 
 void xr_interface::CreateSession()
 {
 	if (gXRSystemID == XR_NULL_SYSTEM_ID)
 	{
-		ERMY_ERROR("Cannot create session: No valid XR system available");
+		ERMY_ERROR(u8"Cannot create session: No valid XR system available");
 		return;
 	}
 
@@ -889,11 +889,11 @@ void xr_interface::CreateSession()
 	}
 	else
 	{
-		ERMY_ERROR("Vulkan Enable2 extension is not enabled, cannot create session with Vulkan2 graphics binding");
+		ERMY_ERROR(u8"Vulkan Enable2 extension is not enabled, cannot create session with Vulkan2 graphics binding");
 		return;
 	}
 #else
-	ERMY_ERROR("Vulkan is not enabled, cannot create session with graphics binding");
+	ERMY_ERROR(u8"Vulkan is not enabled, cannot create session with graphics binding");
 	return;
 #endif
 
@@ -902,7 +902,7 @@ void xr_interface::CreateSession()
 	XrResult result = xrCreateSession(gXRInstance, &sessionCreateInfo, &gXRSession);
 	if (XR_FAILED(result))
 	{
-		ERMY_ERROR("Failed to create XR session: %d", result);
+		ERMY_ERROR(u8"Failed to create XR session: %d", result);
 		return;
 	}
 
@@ -931,11 +931,11 @@ void xr_interface::CreateSession()
 
 	if (gViewConfigType == XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO)
 	{
-		ERMY_LOG("Using primary stereo view configuration");
+		ERMY_LOG(u8"Using primary stereo view configuration");
 	}
 	else
 	{
-		ERMY_ERROR("Primary stereo view configuration not supported");
+		ERMY_ERROR(u8"Primary stereo view configuration not supported");
 		return;
 	}
 

@@ -1,4 +1,4 @@
-#include "../os_entry_point.h"
+﻿#include "../os_entry_point.h"
 #include "android_utils.h"
 #include "../../logger.h"
 #include <thread>
@@ -123,7 +123,7 @@ int32_t HandleInputEvent(const AInputEvent* input_event)
 
 void onStart(ANativeActivity* activity)
 {
-    ERMY_LOG("onStart");
+    ERMY_LOG(u8"onStart");
     if (mainThread == nullptr)
     {
         mainThread = new std::thread([]()
@@ -176,7 +176,7 @@ void onStart(ANativeActivity* activity)
  */
 void onResume(ANativeActivity* activity)
 {
-	ERMY_LOG("onResume");
+	ERMY_LOG(u8"onResume");
 }
 
 /**
@@ -190,7 +190,7 @@ void onResume(ANativeActivity* activity)
  */
 void* onSaveInstanceState(ANativeActivity* activity, size_t* outSize)
 {
-	ERMY_LOG("onSaveInstanceState");
+	ERMY_LOG(u8"onSaveInstanceState");
 
 	void* savedData = malloc(64);
 	*outSize = 64;
@@ -203,7 +203,7 @@ void* onSaveInstanceState(ANativeActivity* activity, size_t* outSize)
  */
 void onPause(ANativeActivity* activity)
 {
-	ERMY_LOG("onPause");
+	ERMY_LOG(u8"onPause");
 }
 
 /**
@@ -212,7 +212,7 @@ void onPause(ANativeActivity* activity)
  */
 void onStop(ANativeActivity* activity)
 {
-	ERMY_LOG("onStop");
+	ERMY_LOG(u8"onStop");
 }
 
 /**
@@ -232,7 +232,7 @@ void onDestroy(ANativeActivity* activity)
 	//mainThread->join();
 	//delete mainThread;
 
-	ERMY_LOG("onDestroy");
+	ERMY_LOG(u8"onDestroy");
 }
 
 /**
@@ -241,7 +241,7 @@ void onDestroy(ANativeActivity* activity)
  */
 void onWindowFocusChanged(ANativeActivity* activity, int hasFocus)
 {
-	ERMY_LOG("onWindowFocusChanged");
+	ERMY_LOG(u8"onWindowFocusChanged");
 }
 
 /**
@@ -250,7 +250,7 @@ void onWindowFocusChanged(ANativeActivity* activity, int hasFocus)
  */
 void onNativeWindowCreated(ANativeActivity* activity, ANativeWindow* window)
 {
-	ERMY_LOG("onNativeWindowCreated");
+	ERMY_LOG(u8"onNativeWindowCreated");
 	gMainWindow = window;
 }
 
@@ -261,7 +261,7 @@ void onNativeWindowCreated(ANativeActivity* activity, ANativeWindow* window)
  */
 void onNativeWindowResized(ANativeActivity* activity, ANativeWindow* window)
 {
-	ERMY_LOG("onNativeWindowResized");
+	ERMY_LOG(u8"onNativeWindowResized");
 }
 
 /**
@@ -272,7 +272,7 @@ void onNativeWindowResized(ANativeActivity* activity, ANativeWindow* window)
  */
 void onNativeWindowRedrawNeeded(ANativeActivity* activity, ANativeWindow* window)
 {
-	ERMY_LOG("onNativeWindowRedrawNeeded");
+	ERMY_LOG(u8"onNativeWindowRedrawNeeded");
 }
 
 /**
@@ -285,7 +285,7 @@ void onNativeWindowRedrawNeeded(ANativeActivity* activity, ANativeWindow* window
  */
 void onNativeWindowDestroyed(ANativeActivity* activity, ANativeWindow* window)
 {
-	ERMY_LOG("onNativeWindowDestroyed");
+	ERMY_LOG(u8"onNativeWindowDestroyed");
 	gMainWindow = nullptr;
 }
 /**
@@ -294,7 +294,7 @@ void onNativeWindowDestroyed(ANativeActivity* activity, ANativeWindow* window)
  */
 void onInputQueueCreated(ANativeActivity* activity, AInputQueue* queue)
 {
-	ERMY_LOG("onInputQueueCreated");
+	ERMY_LOG(u8"onInputQueueCreated");
 	gMainInputQueue = queue;
 }
 
@@ -306,7 +306,7 @@ void onInputQueueCreated(ANativeActivity* activity, AInputQueue* queue)
 void onInputQueueDestroyed(ANativeActivity* activity, AInputQueue* queue)
 {
 	gMainInputQueue = nullptr;
-	ERMY_LOG("onInputQueueDestroyed");
+	ERMY_LOG(u8"onInputQueueDestroyed");
 }
 
 /**
@@ -314,7 +314,7 @@ void onInputQueueDestroyed(ANativeActivity* activity, AInputQueue* queue)
  */
 void onContentRectChanged(ANativeActivity* activity, const ARect* rect)
 {
-	ERMY_LOG("onContentRectChanged");
+	ERMY_LOG(u8"onContentRectChanged");
 }
 
 /**
@@ -323,7 +323,7 @@ void onContentRectChanged(ANativeActivity* activity, const ARect* rect)
  */
 void onConfigurationChanged(ANativeActivity* activity)
 {
-	ERMY_LOG("onConfigurationChanged");
+	ERMY_LOG(u8"onConfigurationChanged");
 }
 
 /**
@@ -333,7 +333,7 @@ void onConfigurationChanged(ANativeActivity* activity)
  */
 void onLowMemory(ANativeActivity* activity)
 {
-	ERMY_LOG("onLowMemory");
+	ERMY_LOG(u8"onLowMemory");
 }
 
 extern "C" JNIEXPORT void ANativeActivity_onCreate(ANativeActivity* activity,
@@ -359,6 +359,6 @@ extern "C" JNIEXPORT void ANativeActivity_onCreate(ANativeActivity* activity,
 	activity->callbacks->onStop = onStop;
 	activity->callbacks->onWindowFocusChanged = onWindowFocusChanged;
 
-	ERMY_LOG("ANativeActivity_onCreate");
+	ERMY_LOG(u8"ANativeActivity_onCreate");
 	//mercury::write_log_message("ANativeActivity_onCreate");
 }

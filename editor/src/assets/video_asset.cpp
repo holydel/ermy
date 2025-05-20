@@ -1,4 +1,4 @@
-#include <assets/video_asset.h>
+﻿#include <assets/video_asset.h>
 #include <iostream>
 #include <ermy_log.h>
 
@@ -29,10 +29,10 @@ VideoTextureAsset::~VideoTextureAsset()
 //
 //    while ((input_format = av_demuxer_iterate(&opaque))) {
 //        if (input_format->name) {
-//            ERMY_LOG("support video format: %s\n", input_format->name);
+//            ERMY_LOG(u8"support video format: %s\n", input_format->name);
 //
 //            if (input_format->extensions) {
-//                ERMY_LOG("  video format extensions: %s\n", input_format->extensions);
+//                ERMY_LOG(u8"  video format extensions: %s\n", input_format->extensions);
 //
 //                //AVFormatContext* fmt_ctx = nullptr;
 //                //int errXode = avformat_alloc_context(&fmt_ctx, "", input_format, nullptr);

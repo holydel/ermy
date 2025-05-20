@@ -1,4 +1,4 @@
-#include "project/eproject.h"
+﻿#include "project/eproject.h"
 
 #include <iostream>
 #include <fstream>
@@ -119,7 +119,7 @@ void ErmyProject::UpdateWindowTitle()
     title += " (";
     title += platformInfos[currentPlatformIndex].platformName;
     title += ")";
-    os_utils::SetNativeWindowTitle(title.c_str());
+    os_utils::SetNativeWindowTitle((const char8_t*)title.c_str());
 }
 
 ErmyProject& ErmyProject::Instance()
@@ -129,7 +129,7 @@ ErmyProject& ErmyProject::Instance()
 
 void ErmyProject::TestPCL()
 {
-    std::filesystem::path rootOutputPath = "D:\\temp\\pcm_folder_1";
+    std::filesystem::path rootOutputPath = u8"D:\\temp\\pcm_folder_1";
 
     //grab all filenames in folder and subfolders with *.ply extension
 	std::vector<fs::path> allFiles;
@@ -170,7 +170,7 @@ void ErmyProject::TestPCL()
 				totalPlySize += fs::file_size(fp);
             }
 
-			ERMY_LOG("Compressing %d files for %d cam\n Total ply size: %d \n", allFilesByName[i].size(), i, totalPlySize);
+			ERMY_LOG(u8"Compressing %d files for %d cam\n Total ply size: %d \n", allFilesByName[i].size(), i, totalPlySize);
 
             pcl::io::compression_Profiles_e compressionProfile = pcl::io::MANUAL_CONFIGURATION;
             // instantiate point cloud compression for encoding and decoding
@@ -212,7 +212,7 @@ void ErmyProject::TestPCL()
 				PointCloudEncoder->encodePointCloud(temp_cloud, compressedStream);
 
                 numProcessed++;
-                ERMY_LOG("Processing %d \ %d\n", numProcessed, allFilesByName[i].size());
+                ERMY_LOG(u8"Processing %d \ %d\n", numProcessed, allFilesByName[i].size());
             }
 		}
 	}

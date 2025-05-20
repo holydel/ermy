@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <ermy_api.h>
 #include <vector>
 #include <ermy_shader.h>
@@ -271,6 +271,15 @@ namespace ermy
 			Format texelSourceFormat = Format::RGBA8_UNORM;
 			bool isCubemap : 1 = false;
 			bool isSparse : 1 = false;
+
+			static TextureDesc Create2D(int width, int height, Format texelSourceFormat)
+			{
+				TextureDesc result = {};
+				result.width = width;
+				result.height = height;
+				result.texelSourceFormat = texelSourceFormat;
+				return result;
+			}
 		};
 
 		struct BufferDesc

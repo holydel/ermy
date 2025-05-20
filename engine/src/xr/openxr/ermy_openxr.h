@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <ermy_api.h>
 
 #ifdef ERMY_XR_OPENXR
@@ -138,18 +138,18 @@ struct XRInstanceExtender
 		all_layers = EnumerateXrProps(xrEnumerateApiLayerProperties, XR_TYPE_API_LAYER_PROPERTIES);
 		all_extensions = EnumerateXrProps(xrEnumerateInstanceExtensionProperties, XR_TYPE_EXTENSION_PROPERTIES);
 
-		ERMY_LOG("XRInstance layers lists:");
+		ERMY_LOG(u8"XRInstance layers lists:");
 
 		for (auto& layer : all_layers)
 		{
-			ERMY_LOG("XR Layer: %s description: %s", layer.layerName, layer.description);
+			ERMY_LOG(u8"XR Layer: %s description: %s", layer.layerName, layer.description);
 		}
 
-		ERMY_LOG("XRInstance extension lists:");
+		ERMY_LOG(u8"XRInstance extension lists:");
 
 		for (auto& ex : all_extensions)
 		{
-			ERMY_LOG(ex.extensionName);
+			ERMY_LOG((const char8_t*)ex.extensionName);
 		}
 	}
 

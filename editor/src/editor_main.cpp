@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include "ermy.h"
 
 #include "ermy_entry_point.h"
@@ -19,7 +19,7 @@ public:
 		auto& logConfig = ermy::logger::Config();
 		logConfig.FileMirroring.enabled = true;
 
-		staticConfig.appName = "Ermy Editor";
+		staticConfig.appName = u8"Ermy Editor";
 		//staticConfig.window.initialState = ermy::Application::StaticConfig::WindowConfig::InitialState::Maximized;
 		staticConfig.render.adapterID = 0;
 		staticConfig.render.enableDebugLayers = true;

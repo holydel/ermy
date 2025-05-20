@@ -1,4 +1,4 @@
-#include <assets/texture_asset.h>
+﻿#include <assets/texture_asset.h>
 #include <ermy_log.h>
 #include <imgui.h>
 #include <ermy_utils.h>
@@ -626,7 +626,7 @@ CMP_FORMAT CMPFormatFromErmyFormat(ermy::rendering::Format format)
 
 		// Default case
 	default:
-		ERMY_ERROR("Unsupported ermy::rendering::Format: %d", static_cast<int>(format));
+		ERMY_ERROR(u8"Unsupported ermy::rendering::Format: %d", static_cast<int>(format));
 		return CMP_FORMAT_Unknown;
 	}
 }

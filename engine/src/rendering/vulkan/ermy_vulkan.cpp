@@ -1,4 +1,4 @@
-#include <ermy_api.h>
+﻿#include <ermy_api.h>
 
 #ifdef ERMY_GAPI_VULKAN
 
@@ -241,7 +241,7 @@ void LoadVK_Library()
 	VK_LOAD_GLOBAL_FUNC(vkEnumerateInstanceLayerProperties);
 
 	auto libFullName = os::GetSharedLibraryFullFilename(gLibHandle);
-	ERMY_LOG("Found vulkan loader: %s", libFullName);
+	ERMY_LOG(u8"Found vulkan loader: %s", libFullName);
 }
 
 void LoadVkInstanceLevelFuncs(VkInstance instance)

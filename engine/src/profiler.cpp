@@ -1,4 +1,4 @@
-#include "profiler.h"
+﻿#include "profiler.h"
 #include <vector>
 #include <atomic>
 #include <mutex>
@@ -20,7 +20,7 @@ public:
 private:
 	struct ScopeInfo
 	{
-		const char* name;
+		const char8_t* name;
 		i64 timestamp;
 	};
 
@@ -29,7 +29,7 @@ private:
 		std::unordered_map<size_t, i64> scopeDurations;
 	};
 
-	std::unordered_map<size_t, std::string> humanReadableScopes;
+	std::unordered_map<size_t, std::u8string> humanReadableScopes;
 
 	std::stack<ScopeInfo> scopes;
 	std::array<FrameInfo, MAX_FRAMES_IN_WINDOW> frames;
@@ -39,7 +39,7 @@ public:
 
 	static ProfilerData* GetForCurrentThread();
 
-	void BeginScope(const char* name);
+	void BeginScope(const char8_t* name);
 	void EndScope();
 	void NextFrame();
 };
@@ -47,7 +47,7 @@ public:
 std::mutex gAllDataMutex;
 std::vector<ProfilerData*> gAllThreadsData;
 thread_local ProfilerData* gProfilerDataPerThread = nullptr;
-thread_local std::hash<std::string> gStringHash;
+thread_local std::hash<std::u8string> gStringHash;
 
 void profiler_impl::Initialize()
 {
@@ -59,7 +59,7 @@ void profiler_impl::Shutdown()
 
 }
 
-void ermy::profiler::BeginScope(const char* name)
+void ermy::profiler::BeginScope(const char8_t* name)
 {
 	
 }
@@ -93,7 +93,7 @@ ProfilerData* ProfilerData::GetForCurrentThread()
 	return gProfilerDataPerThread;
 }
 
-void ProfilerData::BeginScope(const char* name)
+void ProfilerData::BeginScope(const char8_t* name)
 {
 	scopes.push({ name, os::GetCurrentTimestamp()});
 }
@@ -105,7 +105,7 @@ void ProfilerData::EndScope()
 	
 	u64 durationClock = os::GetCurrentTimestamp() - scopes.top().timestamp;
 
-	std::string scopeName = scopes.top().name;
+	std::u8string scopeName = scopes.top().name;
 	auto shash = gStringHash(scopeName);
 
 	if (humanReadableScopes.find(shash) == humanReadableScopes.end())

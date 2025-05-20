@@ -1,4 +1,4 @@
-
+﻿
 #pragma once
 
 #include <ermy_api.h>
@@ -367,18 +367,18 @@ struct VKInstanceExtender
 		all_layers = EnumerateVulkanObjects(vkEnumerateInstanceLayerProperties);
 		all_extensions = EnumerateVulkanObjects(vkEnumerateInstanceExtensionProperties);
 
-		ERMY_LOG("Instance layers lists:");
+		ERMY_LOG(u8"Instance layers lists:");
 
 		for (auto& layer : all_layers)
 		{
-			ERMY_LOG("layer: %s description: %s", layer.layerName, layer.description);
+			ERMY_LOG(u8"layer: %s description: %s", layer.layerName, layer.description);
 		}
 
-		ERMY_LOG("Instance extension lists:");
+		ERMY_LOG(u8"Instance extension lists:");
 
 		for (auto& ex : all_extensions)
 		{
-			ERMY_LOG(ex.extensionName);
+			ERMY_LOG(u8"%s", ex.extensionName);
 		}
 	}
 
@@ -462,11 +462,11 @@ struct VKDeviceExtender
 		const char* fakeLayer = nullptr;
 		all_extensions = EnumerateVulkanObjects(physDevice, fakeLayer, vkEnumerateDeviceExtensionProperties);
 
-		ERMY_LOG("Device extension lists:");
+		ERMY_LOG(u8"Device extension lists:");
 
 		for (auto& ex : all_extensions)
 		{
-			ERMY_LOG(ex.extensionName);
+			ERMY_LOG(u8"%s", ex.extensionName);
 
 			all_extensions_str += ex.extensionName;
 			all_extensions_str += "\n";

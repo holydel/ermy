@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <ermy_api.h>
 
 namespace ermy
@@ -7,13 +7,13 @@ namespace ermy
     {
         typedef void* MappedFileHandle;
 
-        MappedFileHandle MapFileReadOnly(const char* pathUtf8);
-        MappedFileHandle MapFileWrite(const char* pathUtf8, u64 filesize);
+        MappedFileHandle MapFileReadOnly(const char8_t* pathUtf8);
+        MappedFileHandle MapFileWrite(const char8_t* pathUtf8, u64 filesize);
 
         void* GetPointer(MappedFileHandle mfile);
         void CloseMappedFile(MappedFileHandle mfile);
 
-        void SetNativeWindowTitle(const char* title);
+        void SetNativeWindowTitle(const char8_t* title);
         const char* GetOSName();
     }
 }

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "assets/OpenImageLoader.h"
 
 #pragma warning(disable : 4244) // Disable C4244
@@ -46,7 +46,7 @@ OpenImageLoader::OpenImageLoader()
 {
 	std::string supported_formats;
     getattribute("extension_list", supported_formats);
-    ERMY_LOG("Supported image formats: %s\n", supported_formats.c_str());
+    ERMY_LOG(u8"Supported image formats: %s\n", supported_formats.c_str());
     std::cout << "Supported image formats: " << supported_formats << std::endl;
 
     

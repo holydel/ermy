@@ -1,4 +1,4 @@
-#include "d3d12_interface.h"
+﻿#include "d3d12_interface.h"
 #include "../../application.h"
 #include "../../os/os.h"
 #include <ermy_log.h>
@@ -46,7 +46,7 @@ void ChoosePhysicalDevice()
 
 		char descStrUtf8[256] = {};
 		os::WCSToUTF8(desc.Description, descStrUtf8, 256);
-		ERMY_LOG("Found D3D12 device (%d): %s", i, descStrUtf8);
+		ERMY_LOG(u8"Found D3D12 device (%d): %s", i, descStrUtf8);
 		adapter->Release();
 	}
 
@@ -61,7 +61,7 @@ void ChoosePhysicalDevice()
 
 			char descStrUtf8[256] = {};
 			os::WCSToUTF8(desc.Description, descStrUtf8, 256);
-			ERMY_LOG("Selected D3D12 device (%d): %s", i, descStrUtf8);
+			ERMY_LOG(u8"Selected D3D12 device (%d): %s", i, descStrUtf8);
 			break;
 		}
 		else
@@ -78,7 +78,7 @@ const char* rendering_interface::GetName()
 
 void rendering_interface::Initialize()
 {
-	ERMY_LOG("LowLevel Rendering Interface Initialize: D3D12");
+	ERMY_LOG(u8"LowLevel Rendering Interface Initialize: D3D12");
 
 	const auto& renderCfg = GetApplication().staticConfig.render;
 
@@ -147,7 +147,7 @@ void rendering_interface::Initialize()
 
 void rendering_interface::Shutdown()
 {
-	ERMY_LOG("LowLevel Rendering Interface Shutdown: D3D12");
+	ERMY_LOG(u8"LowLevel Rendering Interface Shutdown: D3D12");
 }
 
 void rendering_interface::Process()

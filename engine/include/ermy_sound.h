@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <ermy_api.h>
 
@@ -8,7 +8,7 @@ namespace ermy
 	{
 		typedef Handle32 SoundID;
 
-		SoundID LoadFromFile(const char* filename);
+		SoundID LoadFromFile(const char8_t* filename);
 		SoundID LoadFromMemory(const void* dataPtr, u32 filesize);
 		void Play(SoundID sound);
 		void Stop(SoundID sound);

@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include "ermy.h"
 
 #include "ermy_entry_point.h"
@@ -25,19 +25,21 @@ class TestBedApplication : public ermy::Application
 
 	glm::quat currentCameraOrient = glm::identity<glm::quat>();
 	bool isRunningValue = true;
+
+	ermy::Font* atlasFont = nullptr;
 public:
 	void OnConfigure() override
 	{
 		auto& logConfig = ermy::logger::Config();
 		logConfig.FileMirroring.enabled = true;
 
-		staticConfig.appName = "TestBed";
+		staticConfig.appName = u8"TestBed";
 
 		staticConfig.render.enableDebugLayers = false;
 		staticConfig.render.adapterID = 0;
 
 		staticConfig.window.supportTransparent = false;
-		staticConfig.window.mode = ermy::Application::StaticConfig::WindowConfig::WindowMode::BorderlessFullscreen;
+		staticConfig.window.mode = ermy::Application::StaticConfig::WindowConfig::WindowMode::Windowed;
 
 		staticConfig.swapchain.depthMode = ermy::Application::StaticConfig::SwapchainConfig::DepthMode::Depth16;
 		staticConfig.swapchain.msaaMode = ermy::Application::StaticConfig::SwapchainConfig::MSAAMode::Samples4;
@@ -63,11 +65,11 @@ static TestBedApplication myTestBedApp;
 
 void TestBedApplication::OnInitialization()
 {
-	ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Verbose, "TESTBED", "Test Verbose Message");
-	ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Debug, "TESTBED", "Test Debug Message");
-	ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Warning, "TESTBED", "Test Warning Message");
-	ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Error, "TESTBED", "Test Error Message");
-	ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Fatal, "TESTBED", "Test Fatal Message");
+	ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Verbose, u8"TESTBED", u8"Test Verbose Message");
+	ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Debug, u8"TESTBED", u8"Test Debug Message");
+	ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Warning, u8"TESTBED", u8"Test Warning Message");
+	ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Error, u8"TESTBED", u8"Test Error Message世界こんにちは");
+	ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Fatal, u8"TESTBED", u8"Test Fatal Message©\u00df\u6c34\U0001d10b");
 }
 
 void TestBedApplication::OnUpdate()
@@ -120,7 +122,7 @@ glm::quat randomUnitQuaternionAxisAngle()
 	// Random angle [0, 2pi]
 	float angle = dis(gen) * 2.0f * glm::pi<float>();
 
-	// Random unit vector (Marsaglia�s method)
+	// Random unit vector (Marsaglia’s method)
 	float x, y, z;
 	float s, t;
 	do {
@@ -145,9 +147,9 @@ void TestBedApplication::OnLoad()
 	testTrianglePSO = rendering::CreatePSO(desc);
 
 #ifdef _WIN32
-	ermy::pak::MountPak("D:\\Projects\\ermy\\eproj_template\\paks\\0.epak");
+	ermy::pak::MountPak(u8"D:\\Projects\\ermy\\eproj_template\\paks\\0.epak");
 #else
-	ermy::pak::MountPak("/sdcard/Android/data/com.hexcelltechvr.ermy.testbed/files/0.epak");
+	ermy::pak::MountPak(u8"/sdcard/Android/data/com.hexcelltechvr.ermy.testbed/files/0.epak");
 #endif
 
 	sceneId = scene::Create();
@@ -169,6 +171,8 @@ void TestBedApplication::OnLoad()
 		allCubesDeltaRotation[i] = glm::slerp(identityQuat, randomUnitQuaternionAxisAngle(), 0.01f);
 		allCubes[i] = scene::AddEntity(cubeGeom, transform);
 	}
+
+	atlasFont = ermy::Font::CreateFromFile(u8"D:\\Projects\\ermy\\eproj_template\\assets\\UnGraphicBold.ttf");
 }
 
 void TestBedApplication::OnBeginFinalPass(rendering::CommandList& finalCL)

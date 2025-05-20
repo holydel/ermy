@@ -1,4 +1,4 @@
-#include "application.h"
+﻿#include "application.h"
 #include <cassert>
 #include "os/os.h"
 #include "logger.h"
@@ -40,7 +40,7 @@ void ErmyApplicationStart()
 	
 	// initialize engine
 	loggerImpl::Initialize();
-	ERMY_LOG("start initialize ermy engine for application: %s", config.appName.c_str()); //
+	ERMY_LOG(u8"start initialize ermy engine for application: %s", config.appName.c_str()); //
 
 	if(config.engine.EnableXR)
 		xr_interface::Initialize();

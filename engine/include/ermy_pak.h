@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <ermy_api.h>
 #include <ermy_rendering.h>
 
@@ -31,6 +31,8 @@ namespace ermy
 		};
 		constexpr u32 PAK_MAGIC = 0x4B415045; // "EPAK"
 
-		bool MountPak(const char* filePathUtf8);
+		bool MountPak(const char8_t* filePathUtf8);
+		bool UnmountPak();
+		bool IsPakMounted();
 	}
 }

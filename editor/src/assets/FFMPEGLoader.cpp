@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "assets/FFMpegLoader.h"
 #include <iostream>
 #include <ermy_log.h>
@@ -43,10 +43,10 @@ FFMpegLoader::FFMpegLoader()
 
     while ((input_format = av_demuxer_iterate(&opaque))) {
         if (input_format->name) {
-            ERMY_LOG("support video format: %s\n", input_format->name);
+            ERMY_LOG(u8"support video format: %s\n", input_format->name);
 
             if (input_format->extensions) {
-                ERMY_LOG("  video format extensions: %s\n", input_format->extensions);
+                ERMY_LOG(u8"  video format extensions: %s\n", input_format->extensions);
 
                 auto vec = ermy_utils::string::split(input_format->extensions,',');
                 gSupportedExtensions.insert(gSupportedExtensions.end(), vec.begin(), vec.end());

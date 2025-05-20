@@ -1,4 +1,4 @@
-#include "sound_interface.h"
+﻿#include "sound_interface.h"
 
 #define MINIAUDIO_IMPLEMENTATION
 #define MA_ENABLE_FLAC 
@@ -25,7 +25,7 @@ void sound_interface::Initialize()
 	for (int i = 0; i < playbackDeviceCount; ++i)
 	{
 		const auto& device = pPlaybackDeviceInfos[i];
-		ERMY_LOG("Device %d: %s %s", i, device.name, device.isDefault ? " (DEFAULT)" : "");
+		ERMY_LOG(u8"Device %d: %s %s", i, device.name, device.isDefault ? " (DEFAULT)" : "");
 	}
 
 	ma_engine_config engineConfig = ma_engine_config_init();
@@ -57,12 +57,12 @@ void sound_interface::EndFrame()
 {
 }
 
-SoundID sound::LoadFromFile(const char* filename)
+SoundID sound::LoadFromFile(const char8_t* filename)
 {
 	SoundID result = { static_cast<u32>(gSounds.size()) };
 
 	ma_sound* pSound = new ma_sound();
-	ma_result initResult = ma_sound_init_from_file(&gMAEngine, filename, 0, nullptr, nullptr, pSound);
+	ma_result initResult = ma_sound_init_from_file(&gMAEngine, (const char*)filename, 0, nullptr, nullptr, pSound);
 
 	if (initResult != MA_SUCCESS) {
 		delete pSound;

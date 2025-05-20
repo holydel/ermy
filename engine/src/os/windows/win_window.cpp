@@ -1,5 +1,4 @@
-#pragma once
-#include "win_utils.h"
+﻿#include "win_utils.h"
 #include "application.h"
 #include <windowsx.h>
 #include "win_gamepads.h"
@@ -50,7 +49,7 @@ void RegisterRawInputDevices(bool isFullScreen)
 	}
 
 	if (!RegisterRawInputDevices(rid, std::size(rid), sizeof(rid[0]))) {
-		ERMY_ERROR("Failed to register raw input devices: %d", GetLastError());
+		ERMY_ERROR(u8"Failed to register raw input devices: %d", GetLastError());
 	}
 }
 
@@ -60,7 +59,7 @@ void* os::CreateNativeWindow()
 	auto& config = GetApplication().staticConfig;
 	auto& winCfg = GetApplication().staticConfig.window;
 
-	const char* utf8WinCaption = config.GetWindowTitle().c_str();
+	const char8_t* utf8WinCaption = config.GetWindowTitle().c_str();
 	bool is_maximized = winCfg.initialState == Application::StaticConfig::WindowConfig::InitialState::Maximized;
 
 	WNDCLASSEXW windowClass = {};
@@ -179,7 +178,7 @@ void ProcessKeyboardAndMouseRAW()
 				mouseRawDeltaX += pRawInput->data.mouse.lLastX;
 				mouseRawDeltaY += pRawInput->data.mouse.lLastY;
 
-				//ERMY_LOG("Mouse raw X: %d Y: %d\n", mouseRawDeltaX, mouseRawDeltaY);
+				//ERMY_LOG(u8"Mouse raw X: %d Y: %d\n", mouseRawDeltaX, mouseRawDeltaY);
 				// Add mouse movement handling here (e.g., update camera or cursor)
 			}
 			else if (pRawInput->header.dwType == RIM_TYPEKEYBOARD) {
@@ -232,6 +231,22 @@ void ProcessGamepadsXINPUT()
 				else if (state.Gamepad.sThumbRY <= -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)
 					s.rightStick.y = float(state.Gamepad.sThumbRY + XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE) / float(32767 - XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE);
 				else
+					s.rightStick.y = 0.0f;
+				// Thumbsticks
+				s.leftStick.x = state.Gamepad.sThumbLX / 32767.0f;
+				s.leftStick.y = state.Gamepad.sThumbLY / 32767.0f;
+				s.rightStick.x = state.Gamepad.sThumbRX / 32767.0f;
+				s.rightStick.y = state.Gamepad.sThumbRY / 32767.0f;
+
+				// Process deadzone for thumbsticks
+				
+				if (abs(state.Gamepad.sThumbLX) < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+					s.leftStick.x = 0.0f;
+				if (abs(state.Gamepad.sThumbLY) < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+					s.leftStick.y = 0.0f;
+				if (abs(state.Gamepad.sThumbRX) < XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)
+					s.rightStick.x = 0.0f;
+				if (abs(state.Gamepad.sThumbRY) < XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)
 					s.rightStick.y = 0.0f;
 
 				// Triggers
@@ -556,12 +571,15 @@ namespace ermy::os_utils
 		LPVOID pData = 0;
 	};
 
-	MappedFileHandle MapFileReadOnly(const char* pathUtf8)
+	MappedFileHandle MapFileReadOnly(const char8_t* pathUtf8)
 	{
 		MappedFileInfoWin* m = new MappedFileInfoWin();
 
-		m->hFile = CreateFileA(
-			pathUtf8,
+		WCHAR pathW[512] = { 0 };
+		::os::UTF8ToWCS(pathUtf8, pathW);
+
+		m->hFile = CreateFileW(
+			pathW,
 			GENERIC_READ,
 			FILE_SHARE_READ,
 			NULL,                           // Default security
@@ -685,7 +703,7 @@ namespace ermy::os_utils
 		delete m;
 	}
 
-	void SetNativeWindowTitle(const char* title)
+	void SetNativeWindowTitle(const char8_t* title)
 	{
 		if (gMainWindow)
 		{

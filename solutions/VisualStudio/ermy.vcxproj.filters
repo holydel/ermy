@@ -216,6 +216,9 @@
     <ClCompile Include="..\..\engine\src\ermy_file_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\engine\src\graphics\font_interface.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\engine\include\ermy.h">
@@ -385,6 +388,15 @@
     </ClInclude>
     <ClInclude Include="..\..\engine\src\rendering\vulkan\VulkanRenderPass.h">
       <Filter>Source Files\rendering\vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\include\ermy_font.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\graphics\font_interface.h">
+      <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\src\os\windows\win_gamepads.h">
+      <Filter>Source Files\os\windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

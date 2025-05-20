@@ -1,4 +1,4 @@
-
+﻿
 #include "android_utils.h"
 #include <stdio.h>
 #include <android/native_activity.h>
@@ -104,16 +104,16 @@ const char* os::GetSharedLibraryFullFilename(void* libHandle)
 }
 
 #ifdef ERMY_GAPI_VULKAN
-const char* os::GetVulkanRuntimeLibraryName()
+const char8_t* os::GetVulkanRuntimeLibraryName()
 {
-	return "libvulkan.so";
+	return u8"libvulkan.so";
 }
 #endif
 
 #ifdef ERMY_XR_OPENXR
-const char* os::GetOpenXRLoaderLibraryName()
+const char8_t* os::GetOpenXRLoaderLibraryName()
 {
-	return "libopenxr_loader.so";
+	return u8"libopenxr_loader.so";
 }
 #endif
 

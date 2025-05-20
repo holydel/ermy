@@ -1,4 +1,4 @@
-#include "android_utils.h"
+﻿#include "android_utils.h"
 #include "../os.h"
 #include <ermy_input.h>
 
@@ -23,7 +23,7 @@ void* os::GetNativeWindowHandle()
 extern int androidCursorX;
 extern int androidCursorY;
 
-glm::vec2 ermy::input::mouse::GetCurrentPosition()
+glm::ivec2 ermy::input::mouse::GetCurrentPosition()
 {
 	return { androidCursorX ,androidCursorY };
 }

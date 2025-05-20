@@ -1,11 +1,11 @@
-#include "swapchain_interface.h"
+﻿#include "swapchain_interface.h"
 #include "ermy_log.h"
 
 swapchain::Config swapchain::gSwapchainConfig;
 
 void swapchain::Configure(const ermy::Application::StaticConfig& appConfig)
 {
-	ERMY_LOG("SWAPCHAIN Configure");
+	ERMY_LOG(u8"SWAPCHAIN Configure");
 
 	gSwapchainConfig.useDisplay = appConfig.outputMode == ermy::Application::StaticConfig::OutputMode::Display;
 	gSwapchainConfig.resizable = appConfig.window.mode == ermy::Application::StaticConfig::WindowConfig::WindowMode::Windowed;

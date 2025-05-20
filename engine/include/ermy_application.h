@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <string>
 #include "ermy_api.h"
 #include "ermy_commandlist.h"
@@ -39,7 +39,7 @@ namespace ermy
 
 				int width = 800;
 				int height = 600;
-				std::string title = ""; //when empty - get name from AppConfig
+				std::u8string title = u8""; //when empty - get name from AppConfig
 				WindowMode mode = WindowMode::Windowed;
 				InitialState initialState = InitialState::Normal;
 
@@ -140,11 +140,11 @@ namespace ermy
 #endif
 
 				i8 adapterID = -1;
-
+				u32 uploadBufferSize = 16_MB;
 #ifdef NDEBUG
-				bool enableDebugLayers = false;
+				bool enableDebugLayers : 1 = false;
 #else
-				bool enableDebugLayers = true;
+				bool enableDebugLayers : 1 = true;
 #endif
 
 				bool enableRaytracing : 1 = false;	
@@ -155,6 +155,13 @@ namespace ermy
 				bool enableGeometryShader : 1 = false;
 				bool enableTessellation : 1 = false;
 				bool enableSamplerYCbCr : 1 = false;
+				bool enablePartialResidencyTextures : 1 = false;
+				bool enablePartialResidencyBuffers : 1 = false;
+
+				struct FontConfig
+				{
+					u16 initialTextureSize = 512;
+				} fontConfig;
 			};
 
 			OutputMode outputMode = OutputMode::Window;
@@ -180,9 +187,9 @@ namespace ermy
 				};
 			} version = Version{ {{0,0,1}} };
 
-			std::string appName = "Unnamed Ermy APP";
+			std::u8string appName = u8"Unnamed Ermy APP";
 
-			const std::string& GetWindowTitle()
+			const std::u8string& GetWindowTitle()
 			{
 				if (window.title.empty())
 					return appName;

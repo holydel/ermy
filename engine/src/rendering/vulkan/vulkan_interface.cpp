@@ -1,4 +1,4 @@
-#include "vulkan_interface.h"
+﻿#include "vulkan_interface.h"
 #ifdef ERMY_GAPI_VULKAN
 
 #include <ermy_log.h>
@@ -59,7 +59,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 	{
 		if (strcmp(pCallbackData->pMessageIdName, "Loader Message") == 0)
 		{
-			logger::EnqueueLogMessageRAWTagged(LogSeverity::Verbose, "VULKAN_LOADER", pCallbackData->pMessage);
+			logger::EnqueueLogMessageRAWTagged(LogSeverity::Verbose, u8"VULKAN_LOADER", (const char8_t*)pCallbackData->pMessage);
 			return VK_FALSE;
 		}
 	}
@@ -67,7 +67,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 	{
 		if (pCallbackData->messageIdNumber == 0x7f1922d7)
 		{
-			logger::EnqueueLogMessageRAWTagged(LogSeverity::Verbose, "VULKAN", pCallbackData->pMessage);
+			logger::EnqueueLogMessageRAWTagged(LogSeverity::Verbose, u8"VULKAN", (const char8_t*)pCallbackData->pMessage);
 			return VK_FALSE;
 		}
 	}
@@ -87,7 +87,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 		break;
 	}
 
-	logger::EnqueueLogMessageRAWTagged(severity, "VULKAN", pCallbackData->pMessage);
+	logger::EnqueueLogMessageRAWTagged(severity, u8"VULKAN", (const char8_t*)pCallbackData->pMessage);
 
 	return VK_FALSE;
 }
@@ -218,7 +218,7 @@ void InitializeInstance()
 		int minor = VK_VERSION_MINOR(installedVersion);
 		int patch = VK_VERSION_PATCH(installedVersion);
 
-		ERMY_LOG("Found vulkan instance: %d.%d.%d", major, minor, patch);
+		ERMY_LOG(u8"Found vulkan instance: %d.%d.%d", major, minor, patch);
 	}
 
 	VKInstanceExtender instance_extender(installedVersion);
@@ -264,7 +264,7 @@ void InitializeInstance()
 	VkApplicationInfo vkAppInfo;
 	vkAppInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 	vkAppInfo.pNext = nullptr;
-	vkAppInfo.pApplicationName = GetApplication().staticConfig.appName.c_str();
+	vkAppInfo.pApplicationName = (const char*)GetApplication().staticConfig.appName.c_str();
 	vkAppInfo.pEngineName = "mercury";
 	vkAppInfo.applicationVersion = GetApplication().staticConfig.version.packed;
 	vkAppInfo.apiVersion = installedVersion ? installedVersion : VK_MAKE_API_VERSION(0, 1, 1, 0);
@@ -331,7 +331,7 @@ static void ChoosePhysicalDevice()
 		if (props.deviceType == VK_PHYSICAL_DEVICE_TYPE_CPU)
 			deviceType = "CPU";
 
-		ERMY_LOG("Found VK device (%d): %s - (%s)", i, props.deviceName, deviceType.c_str());
+		ERMY_LOG(u8"Found VK device (%d): %s - (%s)", i, props.deviceName, deviceType.c_str());
 	}
 
 	auto selectedAdapterID = renderCfg.adapterID == -1 ? ChoosePhysicalDeviceByHeuristics(phys_devices) : renderCfg.adapterID;
@@ -360,10 +360,10 @@ static void ChoosePhysicalDevice()
 		auto minor = VK_API_VERSION_MINOR(props.properties.apiVersion);
 		auto patch = VK_API_VERSION_PATCH(props.properties.apiVersion);
 
-		ERMY_LOG("Selected Physical Device: %s", props.properties.deviceName);
-		ERMY_LOG("Vulkan API: %d.%d.%d", major, minor, patch);
+		ERMY_LOG(u8"Selected Physical Device: %s", props.properties.deviceName);
+		ERMY_LOG(u8"Vulkan API: %d.%d.%d", major, minor, patch);
 
-		ERMY_LOG("DRIVER: %s %s", driverProps.driverName, driverProps.driverInfo);
+		ERMY_LOG(u8"DRIVER: %s %s", driverProps.driverName, driverProps.driverInfo);
 	}
 	else
 	{
@@ -374,8 +374,8 @@ static void ChoosePhysicalDevice()
 		auto minor = VK_API_VERSION_MINOR(props.apiVersion);
 		auto patch = VK_API_VERSION_PATCH(props.apiVersion);
 
-		ERMY_LOG("Selected Physical Device: %s", props.deviceName);
-		ERMY_LOG("Vulkan API: %d.%d.%d", major, minor, patch);
+		ERMY_LOG(u8"Selected Physical Device: %s", props.deviceName);
+		ERMY_LOG(u8"Vulkan API : % d. % d. % d", major, minor, patch);
 
 		gPhysicalDeviceAPIVersion = props.apiVersion;
 	}
@@ -507,7 +507,7 @@ void CreateDevice()
 		bool supportPresent = false;
 #endif
 
-		ERMY_LOG("queueID: %d (%d) image gran (%d x %d x %d) %s%s%s%s%s%s%s%s",
+		ERMY_LOG(u8"queueID: %d (%d) image gran (%d x %d x %d) %s%s%s%s%s%s%s%s",
 			i, queueFamily.queueCount,
 			queueFamily.minImageTransferGranularity.width,
 			queueFamily.minImageTransferGranularity.height,
@@ -529,7 +529,7 @@ void CreateDevice()
 
 	for (u32 i = 0; i < memProps.memoryHeapCount; ++i)
 	{
-		ERMY_LOG("HEAP(%d) SIZE: %d MB %s", i, (memProps.memoryHeaps[i].size / (1024 * 1024)),
+		ERMY_LOG(u8"HEAP(%d) SIZE: %d MB %s", i, (memProps.memoryHeaps[i].size / (1024 * 1024)),
 			memProps.memoryHeaps[i].flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT ? "DEVICE" : "HOST");
 	}
 
@@ -574,7 +574,7 @@ void CreateDevice()
 		if (memProps.memoryTypes[i].propertyFlags & VK_MEMORY_PROPERTY_RDMA_CAPABLE_BIT_NV)
 			desc += "| RDMA_CAPABLE_BIT_NV";
 
-		ERMY_LOG(desc.c_str());
+		ERMY_LOG((const char8_t*)desc.c_str());
 	}
 
 
@@ -623,9 +623,9 @@ void CreateDevice()
 		
 		renderCfg.enableBarycentricFS = gVKDeviceEnabledExtensions.KhrFragmentShaderBarycentric || gVKDeviceEnabledExtensions.NvFragmentShaderBarycentric;
 		if(!renderCfg.enableBarycentricFS)
-			ERMY_WARNING("Barycentric FS requested but not supported");
+			ERMY_WARNING(u8"Barycentric FS requested but not supported");
 		else
-			ERMY_LOG("Barycentric FS enabled!");
+			ERMY_LOG(u8"Barycentric FS enabled!");
 	}
 
 	if (renderCfg.enableGeometryShader)
@@ -633,9 +633,9 @@ void CreateDevice()
 		renderCfg.enableGeometryShader = enabledFeatures10.geometryShader = supportedFeatures.geometryShader;
 
 		if (!renderCfg.enableGeometryShader)
-			ERMY_WARNING("Geometry Shader requested but not supported");
+			ERMY_WARNING(u8"Geometry Shader requested but not supported");
 		else
-			ERMY_LOG("Geometry Shader enabled!");
+			ERMY_LOG(u8"Geometry Shader enabled!");
 	}
 
 #ifdef ERMY_XR_OPENXR
@@ -890,7 +890,7 @@ const char* rendering_interface::GetName()
 
 void rendering_interface::Initialize()
 {
-	ERMY_LOG("VULKAN Initialize");
+	ERMY_LOG(u8"VULKAN Initialize");
 
 	LoadVK_Library();
 
@@ -902,7 +902,7 @@ void rendering_interface::Initialize()
 
 void rendering_interface::Shutdown()
 {
-	ERMY_LOG("VULKAN Shutdown");
+	ERMY_LOG(u8"VULKAN Shutdown");
 
 	//printf("RENDERING","WEBGPU Shutdown/n");
 }

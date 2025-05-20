@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "assets/SoundsLoader.h"
 
 #include "assets/sound_asset.h"
@@ -91,7 +91,7 @@ AssetData* SoundsLoader::Load(const std::filesystem::path& path)
 {
 	SoundAsset* result = new SoundAsset();
 
-	result->sound = ermy::sound::LoadFromFile(path.string().c_str());
+	result->sound = ermy::sound::LoadFromFile(path.u8string().c_str());
 	result->duration = ermy::sound::GetDuration(result->sound);
 
 	ma_result result2;

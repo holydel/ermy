@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "ermy_api.h"
 #include <vector>
 #include <string>
@@ -11,6 +11,8 @@ namespace ermy_utils
 		std::vector<std::string> split(const std::string& input, char delimiter);
 		std::string toLower(const std::string& input);
 		std::string toUpper(const std::string& input);
+		std::string toLower(const std::u8string& input);
+		std::string toUpper(const std::u8string& input);
 		std::string humanReadableFileSize(ermy::u64 bytes);
 		std::string humanReadableFileDate(const std::filesystem::file_time_type& time);
 	}

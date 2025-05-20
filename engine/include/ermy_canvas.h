@@ -1,7 +1,9 @@
-#pragma once
+﻿#pragma once
 #include "ermy_api.h"
 #include "ermy_shader.h"
 #include "ermy_rendering.h"
+#include "ermy_font.h"
+
 namespace ermy
 {
     namespace canvas

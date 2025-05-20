@@ -1,9 +1,11 @@
-#pragma once
+﻿#pragma once
 
 #include <ermy_rendering.h>
 #include <ermy_geometry.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include <ermy_font.h>
+
 namespace ermy
 {
 	namespace scene

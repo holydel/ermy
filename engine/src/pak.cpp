@@ -1,4 +1,4 @@
-#include "pak.h"
+﻿#include "pak.h"
 #include <cstdio>
 #include <fstream>
 #include <ermy_os_utils.h>
@@ -11,7 +11,7 @@ using namespace ermy::pak;
 ermy::os_utils::MappedFileHandle mappedPak;
 void* mappedData = nullptr;
 
-bool ermy::pak::MountPak(const char* filePathUtf8)
+bool ermy::pak::MountPak(const char8_t* filePathUtf8)
 {
 	mappedPak = ermy::os_utils::MapFileReadOnly(filePathUtf8);
 	if (!mappedPak)
@@ -65,4 +65,13 @@ bool ermy::pak::MountPak(const char* filePathUtf8)
 	}
 
 	return true;
+}
+
+bool ermy::pak::UnmountPak()
+{
+	return true;
+}
+bool ermy::pak::IsPakMounted()
+{
+    return false;	
 }

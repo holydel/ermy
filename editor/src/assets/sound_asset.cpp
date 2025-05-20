@@ -1,4 +1,4 @@
-#include <assets/sound_asset.h>
+﻿#include <assets/sound_asset.h>
 #include <imgui.h>
 #include <preview_renderer.h>
 #include <editor_shader_internal.h>
@@ -91,7 +91,7 @@ void SoundAsset::DrawPreview()
 
 void SoundAsset::LoadFromCachedRaw(std::ifstream& file, const std::filesystem::path& path)
 {
-	sound = ermy::sound::LoadFromFile(path.string().c_str());
+	sound = ermy::sound::LoadFromFile(path.u8string().c_str());
 
 	duration = readBinary<double>(file);
 	channels = readBinary<int>(file);

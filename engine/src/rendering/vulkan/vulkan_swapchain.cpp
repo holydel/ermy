@@ -557,7 +557,7 @@ void swapchain::Initialize()
 
 	if (!is_supported)
 	{
-		ERMY_ERROR("Swapchain surface doesn't support!");
+		ERMY_ERROR(u8"Swapchain surface doesn't support!");
 		return;
 	}
 
@@ -566,7 +566,7 @@ void swapchain::Initialize()
 
 	VK_CALL(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(gVKPhysicalDevice, gVKSurface, &gVKSurfaceCaps));
 
-	ERMY_LOG("Supported surface alpha modes: %s %s %s %s"
+	ERMY_LOG(u8"Supported surface alpha modes: %s %s %s %s"
 		, (gVKSurfaceCaps.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR) ? " Opaque |" : ""
 		, (gVKSurfaceCaps.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR) ? " Inherit |" : ""
 		, (gVKSurfaceCaps.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR) ? " Post Multiplied |" : ""

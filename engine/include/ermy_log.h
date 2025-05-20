@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "ermy_api.h"
 #include <string>
@@ -42,7 +42,7 @@ namespace ermy
 			struct FileMirroringConfig
 			{
 				bool enabled = false;
-				std::string customFilePath = "";
+				std::u8string customFilePath = u8"";
 			} FileMirroring;
 
 			struct OnScreenMirroringConfig
@@ -53,14 +53,14 @@ namespace ermy
 				int fontSize = 16;
 			} OnScreenMirroring;
 
-			std::string tag = "ErmyAPP";
+			std::u8string tag = u8"ErmyAPP";
 		};
 
 		LoggersConfig& Config();
 
 		//TODO: Think about tempalte variant with char8_t
-		void EnqueueLogMessageRAWTagged(LogSeverity severity, const char* tag, const char* message, ...);
-		void EnqueueLogMessageRAW(LogSeverity severity, const char* message, ...);
+		void EnqueueLogMessageRAWTagged(LogSeverity severity, const char8_t* tag, const char8_t* message, ...);
+		void EnqueueLogMessageRAW(LogSeverity severity, const char8_t* message, ...);
 	}
 }
 

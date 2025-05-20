@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "assets/AssimpLoader.h"
 #include <assimp/Importer.hpp>      // C++ importer interface
 #include <assimp/scene.h>           // Output data structure
@@ -43,7 +43,7 @@ AssimpLoader::AssimpLoader()
 	aiString supportedGeometryExtensions;
 	gAssetImporter->GetExtensionList(supportedGeometryExtensions);
 
-	ERMY_LOG("Supported geometry extenions list: %s\n", supportedGeometryExtensions.C_Str());
+	ERMY_LOG(u8"Supported geometry extenions list: %s\n", supportedGeometryExtensions.C_Str());
 	gSupportedExtensions = extractExtensions(supportedGeometryExtensions.C_Str());
 
 	gAssetImporter->SetPropertyInteger(AI_CONFIG_PP_SLM_VERTEX_LIMIT, UINT16_MAX);
@@ -61,7 +61,7 @@ AssetData* AssimpLoader::Load(const std::filesystem::path& path)
 		aiProcess_SortByPType | aiProcess_OptimizeMeshes | aiProcess_OptimizeGraph | aiProcess_GenBoundingBoxes);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-		ERMY_ERROR("Cant load geometry by path: %s", path.string().c_str());
+		ERMY_ERROR(u8"Cant load geometry by path: %s", path.string().c_str());
 		return nullptr;
 	}
 	GeometryAsset* result = new GeometryAsset();
