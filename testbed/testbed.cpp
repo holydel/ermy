@@ -8,7 +8,7 @@
 #include <ermy_geometry.h>
 #include <random>
 
-#include <Windows.h>
+//#include <Windows.h>
 
 using namespace ermy;
 
@@ -65,7 +65,7 @@ static TestBedApplication myTestBedApp;
 
 void TestBedApplication::OnInitialization()
 {
-	ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Verbose, u8"TESTBED", u8"Test Verbose Message");
+	ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Verbose, u8"TESTBED", u8"Test Verbose Message🍌");
 	ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Debug, u8"TESTBED", u8"Test Debug Message");
 	ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Warning, u8"TESTBED", u8"Test Warning Message");
 	ermy::logger::EnqueueLogMessageRAWTagged(ermy::LogSeverity::Error, u8"TESTBED", u8"Test Error Message世界こんにちは");
@@ -106,9 +106,9 @@ void TestBedApplication::OnEndFrame()
 	static float a = 0.0f;
 	a += 0.01f;
 
-	float r = sin(a * 1.5f) * 0.5f + 0.5f;
-	float g = cos(a * 2.5f) * 0.5f + 0.5f;
-	float b = (sin(a * 3.5f) + cos(a * 0.5f)) * 0.25 + 0.5f;
+	float r = (float)sin(a * 1.5f) * 0.5f + 0.5f;
+	float g = (float)cos(a * 2.5f) * 0.5f + 0.5f;
+	float b = float((sin(a * 3.5f) + cos(a * 0.5f)) * 0.25 + 0.5);
 	canvas::SetClearColor(r,g,b,0.0f);
 	
 }
@@ -172,7 +172,7 @@ void TestBedApplication::OnLoad()
 		allCubes[i] = scene::AddEntity(cubeGeom, transform);
 	}
 
-	atlasFont = ermy::Font::CreateFromFile(u8"D:\\Projects\\ermy\\eproj_template\\assets\\UnGraphicBold.ttf");
+	atlasFont = ermy::Font::CreateFromFile(u8"D:\\Projects\\ermy\\eproj_template\\assets\\UnGraphicBold.ttf",Font::AtlasType::MSDFT);
 }
 
 void TestBedApplication::OnBeginFinalPass(rendering::CommandList& finalCL)
@@ -187,6 +187,13 @@ void TestBedApplication::OnBeginFinalPass(rendering::CommandList& finalCL)
 
 	canvas::DrawDedicatedSprite(rendering::TextureID(3), 300, 300, 200, 200);
 
-	canvas::DrawDedicatedSprite(mpos.x, mpos.y, 120, 20, a, 0xAA7722FFu);
+	canvas::DrawDedicatedSprite((float)mpos.x, (float)mpos.y, 120, 20, a, 0xAA7722FFu);
 
+	std::vector<ermy::Font::GlyphData> symbols;
+	std::u8string testString = u8"Hello 🍌 World! こんにちは世界！ Some ©\u00df\u6c34\U0001d10b and 世界こんにちは";
+	//atlasFont->FillTexCoords(testString.c_str(), symbols);
+
+	auto bitmapData = atlasFont->GenerateFullAtlas(32);
+
+	int b = 42;
 }

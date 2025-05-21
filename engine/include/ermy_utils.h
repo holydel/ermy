@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <filesystem>
+#include <vector>
 
 namespace ermy_utils
 {	
@@ -15,6 +16,8 @@ namespace ermy_utils
 		std::string toUpper(const std::u8string& input);
 		std::string humanReadableFileSize(ermy::u64 bytes);
 		std::string humanReadableFileDate(const std::filesystem::file_time_type& time);
+
+		std::vector<char32_t> getCodepoints(const std::u8string& str);
 	}
 
 	namespace hash
@@ -27,5 +30,11 @@ namespace ermy_utils
 		std::vector<ermy::u8> ReadFile(const std::filesystem::path& path);
 		bool WriteFile(const std::filesystem::path& path, const std::vector<ermy::u8>& data);
 		
+	}
+
+	namespace math
+	{
+		ermy::u64 alignUpPow2(ermy::u64 value);
+		ermy::u64 alignUp(ermy::u64 value, ermy::u32 align);
 	}
 }

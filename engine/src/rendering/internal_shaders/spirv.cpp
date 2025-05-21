@@ -1,4 +1,4 @@
-#include <ermy_shader_internal.h>
+﻿#include <ermy_shader_internal.h>
 #ifdef ERMY_GAPI_VULKAN
 namespace ermy::shader_internal
 {
@@ -42,7 +42,7 @@ namespace ermy::shader_internal
 		result.byteCode.isInternal = true;
 		result.byteCode.stage = ShaderStage::Vertex;
 
-		result.bytecodeCRC64 = 9429975783355211060;
+		result.bytecodeCRC64 = 9429975783355211060ull;
 		result.shaderName = "dedicatedSpriteVS";
 		result.tag = ermy::ShaderDomainTag::Internal;
 		return result;

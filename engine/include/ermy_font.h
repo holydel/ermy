@@ -14,7 +14,7 @@ namespace ermy
             MSDFT
         };
 
-        struct SpriteData
+        struct GlyphData
         {
             u16 u0;
             u16 v0;
@@ -31,11 +31,26 @@ namespace ermy
                     static_cast<float>(v1) * v);
             }
         };
+
+        struct FullAtlasInfo
+        {
+            std::vector<std::byte> pixelsData;
+            u16 width;
+            u16 height;
+            ermy::rendering::Format format;
+
+            std::unordered_map<char32_t, GlyphData> allCachedGlyphs;
+        };
+
         static Font* CreateFromFile(const char8_t* u8filename, AtlasType atlasType = AtlasType::Grayscale);
         
         virtual ~Font() = default;
         virtual rendering::TextureID GetAtlas() = 0;
 
-        virtual void FillTexCoords(const char8_t* u8string, std::vector<SpriteData>& out) = 0;
+        virtual void FillTexCoords(const char8_t* u8string, std::vector<GlyphData>& out) = 0;
+
+        virtual u32 GetNumberOfGlyphs() = 0;
+
+        virtual FullAtlasInfo GenerateFullAtlas(int glyphSize) = 0;
     };
 }

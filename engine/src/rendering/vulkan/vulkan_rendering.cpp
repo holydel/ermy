@@ -1,4 +1,4 @@
-#include "vulkan_rendering.h"
+﻿#include "vulkan_rendering.h"
 #include "vulkan_swapchain.h"
 #ifdef ERMY_GAPI_VULKAN
 #include "vk_utils.h"
@@ -203,7 +203,7 @@ RenderpassInfo _createRenderPass(const RenderPassDesc& desc)
 	dependency.dstAccessMask = VK_ACCESS_INPUT_ATTACHMENT_READ_BIT; //renderpass B is reading from the image in a shader.
 	dependency.dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT; //By region dependencies make no sense here, since they're not part of the same renderpass.
 
-	rpass.attachmentCount = attachments.size();
+	rpass.attachmentCount = (u32)attachments.size();
 	rpass.pAttachments = attachments.data();
 	rpass.subpassCount = 1;
 	rpass.pSubpasses = &subpass;

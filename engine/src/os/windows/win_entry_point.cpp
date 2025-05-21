@@ -72,7 +72,7 @@ void PlatformRun(int argc, char* argv[], HINSTANCE hInstance, int nCmdShow)
 {
     timeBeginPeriod(1);
     SetProcessDPIAware();
-    std::setlocale(LC_ALL, "en_US.utf8");
+
 	SetConsoleOutputCP(CP_UTF8);
 
 	gXInputCheckThread = new std::thread(XInputCheckThread);

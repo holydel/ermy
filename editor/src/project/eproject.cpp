@@ -115,7 +115,7 @@ void ErmyProject::MountToLocalDirectory(const std::string& filePath)
 
 void ErmyProject::UpdateWindowTitle()
 {
-    std::string title = projName;
+    std::string title = reinterpret_cast<const char*>(projName);
     title += " (";
     title += platformInfos[currentPlatformIndex].platformName;
     title += ")";
@@ -278,7 +278,7 @@ void ErmyProject::Load()
     if (project)
     {
         if(auto att = project.attribute("name"))        
-            strcpy_s(projName, att.value());
+            strcpy((char*)projName, att.value());
 
         if(auto att = project.attribute("current_platform"))
 			currentPlatformIndex = att.as_int();
@@ -474,7 +474,7 @@ void ErmyProject::DrawProjectSettings()
     {
         if (ImGui::Begin("Ermy Project Settings", &showSettings))
         {
-            ImGui::InputText("Project Name:", projName, sizeof(projName), ImGuiInputTextFlags_NoHorizontalScroll);
+            ImGui::InputText("Project Name:", (char*)projName, sizeof(projName), ImGuiInputTextFlags_NoHorizontalScroll);
   
             if (ImGui::BeginTable("Platforms", 2))
             {

@@ -24,10 +24,10 @@ namespace ermy
 		{
 			u32 reserveTransformsCount = 65536;
 
-			u32 totalStaticVertices = 8_MB;
-			u32 totalSkinnedVertices = 1_MB;
-			u32 totalStaticIndices = 4_MB;
-			u32 totalSkinnedIndices = 2_MB;
+			u32 totalStaticVertices =	(u32)	8_MB;
+			u32 totalSkinnedVertices =	(u32)	1_MB;
+			u32 totalStaticIndices =	(u32)	4_MB;
+			u32 totalSkinnedIndices =	(u32)	2_MB;
 
 			bool isXRScene = false;
 		};

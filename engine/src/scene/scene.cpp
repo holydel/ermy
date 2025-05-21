@@ -1,4 +1,4 @@
-#include "../xr/openxr/openxr_interface.h"
+﻿#include "../xr/openxr/openxr_interface.h"
 
 #include "scene.h"
 #include <glm/glm.hpp>
@@ -26,7 +26,7 @@ void ermy::scene::Unload(SceneID sceneID)
 SceneID ermy::scene::Create(const SceneDesc& desc)
 {
 	auto& scene = gAllScenes3D.emplace_back();
-	SceneID result = static_cast<SceneID>(gAllScenes3D.size() - 1);
+	SceneID result = static_cast<SceneID>((u16)(gAllScenes3D.size() - 1));
 
 	scene.initialDesc = desc;
 	scene.isLoaded = true;
@@ -164,13 +164,13 @@ ermy::scene::GeometryID ermy::scene::LoadSubmesh(int numVertices, int numIndices
 	result.indexOffset = scene.currentIndexOffset;
 	result.vertexOffset = scene.currentVertexOffset;
 
-	rendering::UpdateBufferData(scene.staticVertices, result.vertexOffset * sizeof(rendering::StaticVertexDedicated), vertices, result.vertexCount * sizeof(rendering::StaticVertexDedicated));
+	rendering::UpdateBufferData(scene.staticVertices, result.vertexOffset * (u32)sizeof(rendering::StaticVertexDedicated), vertices, result.vertexCount * (u32)sizeof(rendering::StaticVertexDedicated));
 	rendering::UpdateBufferData(scene.staticIndices, result.indexOffset * sizeof(u16), indices, result.indexCount * sizeof(u16));
 
 	scene.currentVertexOffset += numVertices;
 	scene.currentIndexOffset += numIndices;
 
-	return static_cast<ermy::scene::GeometryID>(scene.allGeometries.size() - 1);
+	return static_cast<ermy::scene::GeometryID>(u32(scene.allGeometries.size() - 1));
 
 	rendering::WaitDeviceIdle();
 }
@@ -337,7 +337,7 @@ EntityID ermy::scene::AddEntity(GeometryID geom, const Transform& initialTransfo
 	scene.entityGeometries.push_back(geom);
 	scene.entityTransformsWorld.push_back(initialTransform);
 
-	return EntityID(scene.entityTransformsWorld.size()-1);
+	return EntityID(u32(scene.entityTransformsWorld.size()-1));
 }
 
 Transform& ermy::scene::GetTransform(EntityID ent)

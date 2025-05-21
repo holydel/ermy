@@ -1,10 +1,11 @@
-#include <ermy_utils.h>
+﻿#include <ermy_utils.h>
 #include <sstream>
 #include <algorithm>
 #include <cctype>
 #include <iomanip>
 #include <chrono>
 #include <ctime>
+#include <cuchar>    // For std::mbrtoc32
 using namespace ermy_utils::string;
 
 std::vector<std::string> ermy_utils::string::split(const std::string& input, char delimiter)
@@ -94,4 +95,27 @@ std::string ermy_utils::string::humanReadableFileDate(const std::filesystem::fil
     }
     
     return std::string(buffer);
+}
+
+std::vector<char32_t> ermy_utils::string::getCodepoints(const std::u8string& str)
+{
+    std::vector<char32_t> result;
+    const char* ptr = reinterpret_cast<const char*>(str.data());
+    const char* end = ptr + str.size();
+    std::mbstate_t state = {}; // Initialize conversion state
+
+    while (ptr < end) {
+        char32_t cp;
+        size_t rc = std::mbrtoc32(&cp, ptr, end - ptr, &state);
+        if (rc == static_cast<size_t>(-1) || rc == static_cast<size_t>(-2)) {
+            // Handle invalid or incomplete sequence
+            result.push_back(0xFFFD); // Unicode replacement character
+            ptr += 1; // Skip one byte to continue parsing
+        }
+        else {
+            result.push_back(cp);
+            ptr += rc; // Advance by the number of bytes consumed
+        }
+    }
+    return result;
 }

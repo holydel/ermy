@@ -42,14 +42,12 @@ void os::WriteDebugLogMessageIDE(ermy::LogSeverity severity, const char8_t* utf8
 	OutputDebugStringW(wcsMessage);
 }
 
-int print_mb(const char8_t* ptr)
+void print_mb(const char8_t* utf8Message)
 {
-	//std::mbtowc(nullptr, 0, 0); // reset the conversion state
-	const char8_t* end = ptr + std::char_traits<char8_t>::length(ptr);
-	int ret{};
-	for (wchar_t wc; (ret = std::mbtowc(&wc, (const char*)ptr, end - ptr)) > 0; ptr += ret)
-		std::wcout << wc;
-	return ret;
+	WCHAR wcsMessage[1024] = {0};
+	std::mbstowcs(wcsMessage, (const char*)utf8Message, sizeof(wcsMessage) / sizeof(WCHAR));
+	std::wcout << wcsMessage;
+	OutputDebugStringW(wcsMessage);
 }
 
 void os::WriteDebugLogMessageConsole(ermy::LogSeverity severity, const char8_t* utf8Message)

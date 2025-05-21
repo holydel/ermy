@@ -51,26 +51,26 @@ void os::Sleep(int ms)
 	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 }
 
-void os::WriteDebugLogMessageIDE(ermy::LogSeverity severity, const char* utf8Message)
+void os::WriteDebugLogMessageIDE(ermy::LogSeverity severity, const char8_t* utf8Message)
 {
-	__android_log_print(ANDROID_LOG_DEBUG, "TAG", "%s", utf8Message);
+	__android_log_print(ANDROID_LOG_DEBUG, "TAG", "%s", (const char*)utf8Message);
 	//TODO: research output debug string for Android Studio
 	//OutputDebugStringA(utf8Message);
 }
 
-void os::WriteDebugLogMessageConsole(ermy::LogSeverity severity, const char* utf8Message)
+void os::WriteDebugLogMessageConsole(ermy::LogSeverity severity, const char8_t* utf8Message)
 {
 
 }
 
-void os::WriteDebugLogMessageFile(ermy::LogSeverity severity, const char* utf8Message)
+void os::WriteDebugLogMessageFile(ermy::LogSeverity severity, const char8_t* utf8Message)
 {
 
 }
 
-void* os::LoadSharedLibrary(const char* utf8libname)
+void* os::LoadSharedLibrary(const char8_t* utf8libname)
 {
-	return dlopen(utf8libname, RTLD_NOW);
+	return dlopen((const char*)utf8libname, RTLD_NOW);
 }
 
 bool os::UnloadSharedLibrary(void* library)

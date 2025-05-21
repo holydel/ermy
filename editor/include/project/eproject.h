@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <ermy_api.h>
 #include <string>
 #include <filesystem>
@@ -124,7 +124,7 @@ class ErmyProject
 	std::filesystem::path rootAssetsPath;
 	std::filesystem::path rootProjectCachePath;
 
-	char projName[64] = { 'U','n','n','a','m','e','d',' ','E','r','m','y',' ','P','r','o','j','e','c','t' };
+	char8_t projName[64] = { 'U','n','n','a','m','e','d',' ','E','r','m','y',' ','P','r','o','j','e','c','t' };
 
 	AssetFolder* rootAssets = nullptr;
 

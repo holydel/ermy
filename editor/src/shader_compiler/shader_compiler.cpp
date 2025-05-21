@@ -1,4 +1,4 @@
-#include "shader_compiler/shader_compiler.h"
+﻿#include "shader_compiler/shader_compiler.h"
 
 #include <slang/slang.h>
 #include <iostream>
@@ -253,7 +253,7 @@ void AppendShader(ermy::ShaderDomainTag shaderTag, std::ostringstream& stream, c
 		"		result.byteCode.isInternal = true;\n";
 	stream << "		result.byteCode.stage = ShaderStage::" << ErmyStageFromSlangStage(stage) << ";\n\n";
 
-	stream << "		result.bytecodeCRC64 = " << bytecodeCRC64 << ";\n";
+	stream << "		result.bytecodeCRC64 = " << bytecodeCRC64 << "ull;\n";
 	stream << "		result.shaderName = \"" << name << "\";\n";
 	stream << "		result.tag = ermy::ShaderDomainTag::" << tagName << ";\n";
 

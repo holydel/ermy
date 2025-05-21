@@ -140,7 +140,7 @@ namespace ermy
 #endif
 
 				i8 adapterID = -1;
-				u32 uploadBufferSize = 16_MB;
+				u32 uploadBufferSize = (u32)16_MB;
 #ifdef NDEBUG
 				bool enableDebugLayers : 1 = false;
 #else

@@ -596,7 +596,7 @@ void swapchain::Initialize()
 			depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 			depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
-			depthAttachmentIndex = attachments.size();
+			depthAttachmentIndex = (i32)attachments.size();
 			attachments.push_back(depthAttachment);
 		}
 
@@ -612,7 +612,7 @@ void swapchain::Initialize()
 			msaaColorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 			msaaColorAttachment.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
-			msaaAttachmentIndex = attachments.size();
+			msaaAttachmentIndex = (i32)attachments.size();
 			attachments.push_back(msaaColorAttachment);
 		}
 
@@ -627,7 +627,7 @@ void swapchain::Initialize()
 			colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 			colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
-			finalAttachmentIndex = attachments.size();
+			finalAttachmentIndex = (i32)attachments.size();
 			attachments.push_back(colorAttachment);
 		}
 

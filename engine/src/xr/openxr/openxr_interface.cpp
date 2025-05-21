@@ -611,7 +611,7 @@ void InitializeSwapchains()
 		depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
-		depthAttachmentIndex = attachments.size();
+		depthAttachmentIndex = (i32)attachments.size();
 		attachments.push_back(depthAttachment);
 	}
 
@@ -627,7 +627,7 @@ void InitializeSwapchains()
 		msaaColorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		msaaColorAttachment.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
-		msaaAttachmentIndex = attachments.size();
+		msaaAttachmentIndex = (i32)attachments.size();
 		attachments.push_back(msaaColorAttachment);
 	}
 
@@ -642,7 +642,7 @@ void InitializeSwapchains()
 		colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		colorAttachment.finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
-		finalAttachmentIndex = attachments.size();
+		finalAttachmentIndex = (i32)attachments.size();
 		attachments.push_back(colorAttachment);
 	}
 
@@ -795,7 +795,7 @@ void InitializeSwapchains()
 	gSwapchainImageViews.resize(imageCount);
 	gSwapchainFramebuffers.resize(imageCount);
 
-	for (int i = 0; i < imageCount; ++i)
+	for (u32 i = 0; i < imageCount; ++i)
 	{
 		vk_utils::debug::SetName(gSwapchainImages[i], "Swapchain XR Target (%d)", i);
 
@@ -845,7 +845,7 @@ void InitializeSwapchains()
 		}
 	}
 
-	gErmyXRRenderPassID = (rendering::RenderPassID)gAllRenderPasses.size();
+	gErmyXRRenderPassID = (rendering::RenderPassID)(u16)gAllRenderPasses.size();
 
 	RenderpassInfo rpinfo;
 	rpinfo.defaultWidth = gSwapchainWidth;

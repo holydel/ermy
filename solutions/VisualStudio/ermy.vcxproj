@@ -71,6 +71,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\..\engine\src\ermy_utils_math.cpp" />
     <ClCompile Include="..\..\engine\src\geometry.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dev|Android-arm64-v8a'">
       </PrecompiledHeader>
@@ -389,6 +390,216 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\autofit\autofit.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\base\ftbase.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\base\ftbbox.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\base\ftbdf.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\base\ftbitmap.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\base\ftcid.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\base\ftdebug.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\base\ftfstype.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\base\ftgasp.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\base\ftglyph.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\base\ftgxval.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\base\ftinit.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\base\ftmm.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\base\ftotval.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\base\ftpatent.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\base\ftpfr.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\base\ftstroke.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\base\ftsynth.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\base\ftsystem.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\base\fttype1.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\base\ftwinfnt.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\bdf\bdf.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\cache\ftcache.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\cff\cff.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\cid\type1cid.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\dlg\dlgwrap.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\gzip\ftgzip.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\lzw\ftlzw.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\pcf\pcf.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\pfr\pfr.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\psaux\psaux.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\pshinter\pshinter.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\psnames\psmodule.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\raster\raster.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\sdf\sdf.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\sfnt\sfnt.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\smooth\smooth.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\svg\svg.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\truetype\truetype.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\type1\type1.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\type42\type42.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\freetype\src\winfonts\winfnt.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">4267;4244</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">4267;4244</DisableSpecificWarnings>
+    </ClCompile>
     <ClCompile Include="..\..\third_party\imgui\imgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Android-arm64-v8a'">
       </PrecompiledHeader>
@@ -429,6 +640,30 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\..\third_party\msdfgen\core\contour-combiners.cpp" />
+    <ClCompile Include="..\..\third_party\msdfgen\core\Contour.cpp" />
+    <ClCompile Include="..\..\third_party\msdfgen\core\DistanceMapping.cpp" />
+    <ClCompile Include="..\..\third_party\msdfgen\core\edge-coloring.cpp" />
+    <ClCompile Include="..\..\third_party\msdfgen\core\edge-segments.cpp" />
+    <ClCompile Include="..\..\third_party\msdfgen\core\edge-selectors.cpp" />
+    <ClCompile Include="..\..\third_party\msdfgen\core\EdgeHolder.cpp" />
+    <ClCompile Include="..\..\third_party\msdfgen\core\equation-solver.cpp" />
+    <ClCompile Include="..\..\third_party\msdfgen\core\export-svg.cpp" />
+    <ClCompile Include="..\..\third_party\msdfgen\core\msdf-error-correction.cpp" />
+    <ClCompile Include="..\..\third_party\msdfgen\core\MSDFErrorCorrection.cpp" />
+    <ClCompile Include="..\..\third_party\msdfgen\core\msdfgen.cpp" />
+    <ClCompile Include="..\..\third_party\msdfgen\core\Projection.cpp" />
+    <ClCompile Include="..\..\third_party\msdfgen\core\rasterization.cpp" />
+    <ClCompile Include="..\..\third_party\msdfgen\core\render-sdf.cpp" />
+    <ClCompile Include="..\..\third_party\msdfgen\core\save-bmp.cpp" />
+    <ClCompile Include="..\..\third_party\msdfgen\core\save-fl32.cpp" />
+    <ClCompile Include="..\..\third_party\msdfgen\core\save-rgba.cpp" />
+    <ClCompile Include="..\..\third_party\msdfgen\core\save-tiff.cpp" />
+    <ClCompile Include="..\..\third_party\msdfgen\core\Scanline.cpp" />
+    <ClCompile Include="..\..\third_party\msdfgen\core\sdf-error-estimation.cpp" />
+    <ClCompile Include="..\..\third_party\msdfgen\core\shape-description.cpp" />
+    <ClCompile Include="..\..\third_party\msdfgen\core\Shape.cpp" />
+    <ClCompile Include="..\..\third_party\msdfgen\ext\import-font.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\engine\include\ermy.h" />
@@ -495,11 +730,6 @@
     <None Include="..\..\engine\src\rendering\internal_shaders\ermy_base.slang" />
     <None Include="..\..\engine\src\rendering\internal_shaders\ermy_engine.slang" />
     <None Include="..\..\engine\src\rendering\internal_shaders\internal.slang" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\third_party\freetype\builds\windows\vc2010\freetype.vcxproj">
-      <Project>{78b079bd-9fc7-4b9e-b4a6-96da0f00248b}</Project>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -591,11 +821,11 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NOMINMAX;_CRT_SECURE_NO_WARNINGS;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>MSDFGEN_PUBLIC=;FT2_BUILD_LIBRARY;FT_DEBUG_LEVEL_ERROR;FT_DEBUG_LEVEL_TRACE;NOMINMAX;_CRT_SECURE_NO_WARNINGS;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include;../../third_party/glm;../../third_party/OpenXR-SDK\include;../../third_party/OpenXR-SDK/src/common;../../third_party/freetype/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include;../../third_party/glm;../../third_party/OpenXR-SDK\include;../../third_party/OpenXR-SDK/src/common;../../third_party/freetype/include;../../third_party/msdfgen</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -614,17 +844,20 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>MSDFGEN_PUBLIC=;FT2_BUILD_LIBRARY;FT_DEBUG_LEVEL_ERROR;FT_DEBUG_LEVEL_TRACE;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/glm;../../third_party/OpenXR-SDK\include;../../third_party/OpenXR-SDK/src/common;../../third_party/freetype/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/glm;../../third_party/OpenXR-SDK\include;../../third_party/OpenXR-SDK/src/common;../../third_party/freetype/include;../../third_party/msdfgen</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
       </SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <CreateThinArchive>false</CreateThinArchive>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">
     <ClCompile>
@@ -632,11 +865,11 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NOMINMAX;_CRT_SECURE_NO_WARNINGS;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>MSDFGEN_PUBLIC=;FT2_BUILD_LIBRARY;NOMINMAX;_CRT_SECURE_NO_WARNINGS;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include;../../third_party/glm;../../third_party/OpenXR-SDK\include;../../third_party/OpenXR-SDK/src/common;../../third_party/freetype/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include;../../third_party/glm;../../third_party/OpenXR-SDK\include;../../third_party/OpenXR-SDK/src/common;../../third_party/freetype/include;../../third_party/msdfgen</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -659,11 +892,11 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NOMINMAX;_CRT_SECURE_NO_WARNINGS;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>MSDFGEN_PUBLIC=;FT2_BUILD_LIBRARY;NOMINMAX;_CRT_SECURE_NO_WARNINGS;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include;../../third_party/glm;../../third_party/OpenXR-SDK\include;../../third_party/OpenXR-SDK/src/common;../../third_party/freetype/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include;../../third_party/glm;../../third_party/OpenXR-SDK\include;../../third_party/OpenXR-SDK/src/common;../../third_party/freetype/include;../../third_party/msdfgen</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -684,11 +917,11 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>MSDFGEN_PUBLIC=;FT2_BUILD_LIBRARY;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/glm;../../third_party/OpenXR-SDK\include;../../third_party/OpenXR-SDK/src/common;../../third_party/freetype/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/glm;../../third_party/OpenXR-SDK\include;../../third_party/OpenXR-SDK/src/common;../../third_party/freetype/include;../../third_party/msdfgen</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -704,11 +937,11 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>MSDFGEN_PUBLIC=;FT2_BUILD_LIBRARY;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/glm;../../third_party/OpenXR-SDK\include;../../third_party/OpenXR-SDK/src/common;../../third_party/freetype/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/glm;../../third_party/OpenXR-SDK\include;../../third_party/OpenXR-SDK/src/common;../../third_party/freetype/include;../../third_party/msdfgen</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>

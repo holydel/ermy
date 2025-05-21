@@ -11,8 +11,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "editor", "editor.vcxproj", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testbed", "testbed.vcxproj", "{584374E0-59D1-4033-A960-3A28A0B1EEA3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "third_party_projects", "third_party_projects", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "freetype", "..\..\third_party\freetype\builds\windows\vc2010\freetype.vcxproj", "{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}"
 EndProject
 Global
@@ -70,24 +68,21 @@ Global
 		{584374E0-59D1-4033-A960-3A28A0B1EEA3}.Retail|Android-arm64-v8a.Build.0 = Retail|Android-arm64-v8a
 		{584374E0-59D1-4033-A960-3A28A0B1EEA3}.Retail|x64.ActiveCfg = Retail|x64
 		{584374E0-59D1-4033-A960-3A28A0B1EEA3}.Retail|x64.Build.0 = Retail|x64
-		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Debug|Android-arm64-v8a.ActiveCfg = Debug Static|ARM64
-		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Debug|Android-arm64-v8a.Build.0 = Debug Static|ARM64
-		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Debug|x64.ActiveCfg = Debug Static|x64
-		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Debug|x64.Build.0 = Debug Static|x64
-		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Dev|Android-arm64-v8a.ActiveCfg = Release Static|ARM64
-		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Dev|Android-arm64-v8a.Build.0 = Release Static|ARM64
-		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Dev|x64.ActiveCfg = Release Static|x64
-		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Dev|x64.Build.0 = Release Static|x64
-		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Retail|Android-arm64-v8a.ActiveCfg = Release Static|ARM64
-		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Retail|Android-arm64-v8a.Build.0 = Release Static|ARM64
-		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Retail|x64.ActiveCfg = Release Static|x64
-		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Retail|x64.Build.0 = Release Static|x64
+		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Debug|Android-arm64-v8a.ActiveCfg = Debug|x64
+		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Debug|Android-arm64-v8a.Build.0 = Debug|x64
+		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Debug|x64.ActiveCfg = Debug|x64
+		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Debug|x64.Build.0 = Debug|x64
+		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Dev|Android-arm64-v8a.ActiveCfg = Release|x64
+		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Dev|Android-arm64-v8a.Build.0 = Release|x64
+		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Dev|x64.ActiveCfg = Release|x64
+		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Dev|x64.Build.0 = Release|x64
+		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Retail|Android-arm64-v8a.ActiveCfg = Debug Static|x64
+		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Retail|Android-arm64-v8a.Build.0 = Debug Static|x64
+		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Retail|x64.ActiveCfg = Debug Static|x64
+		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Retail|x64.Build.0 = Debug Static|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BE8956C6-B384-44A9-B445-E931AE804A7E}
