@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <assets/asset.h>
 #include <ermy_rendering.h>
@@ -25,6 +25,7 @@ class TextureAsset : public AssetData
 		,TP_HDR //linear HDR (BC6H, RGB9E5, uncompressed, ASTC HDR)
 		,TP_UI //sRGB uncompressed
 		,TP_SOURCE //use texture source compression or user defined compression format
+		,TP_HEIGHTMAP //linear compressed RG heightmap (specific case but i have A LOT of heightmap textures)
 	};
 
 	enum class TextureCompression : ermy::u8 {

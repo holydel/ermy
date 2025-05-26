@@ -432,7 +432,13 @@
     <ClCompile Include="..\..\third_party\freetype\src\cid\type1cid.c">
       <Filter>Source Files\third_party\freetype</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\engine\src\ermy_utils_math.cpp">
+    <ClCompile Include="..\..\engine\src\ermy_math_utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\msdfgen\ext\save-png.cpp">
+      <Filter>Source Files\third_party\msdfgen\ext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\src\ermy_image_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

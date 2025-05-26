@@ -1,4 +1,4 @@
-#include <ermy_api.h>
+﻿#include <ermy_api.h>
 
 #ifdef ERMY_GAPI_VULKAN
 #include "../rendering/vulkan/vulkan_interface.h"
@@ -414,7 +414,7 @@ void DrawStatisticsWindow()
 void imgui_interface::EndFrame(void* cmdList)
 {
 	//ImGui::ShowDemoWindow(); // Show demo window! :)
-	DrawStatisticsWindow();
+	//DrawStatisticsWindow();
 	ImGui::Render();
 
 #ifdef ERMY_GAPI_VULKAN

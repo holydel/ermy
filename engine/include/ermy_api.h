@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 // Define platform macros based on the detected platform
 #if defined(_WIN32)
@@ -58,11 +58,18 @@
 #define ERMY_INPUT_GAMEPAD
 
 #ifdef ERMY_OS_WINDOWS
-//#include <xmmintrin.h>
+#include <xmmintrin.h>
 #endif
 
 #ifdef ERMY_OS_ANDROID
-//#include <arm_neon.h>
+#include <arm_neon.h>
+#include <arm_fp16.h>
+#endif
+
+#ifdef _WIN32
+#define ERMY_ASSUME(a) __assume(a)
+#else
+#define ERMY_ASSUME(a) 
 #endif
 
 namespace ermy
@@ -80,7 +87,39 @@ namespace ermy
 	typedef double					f64;
 
 	//TODO: if supported f16
-	typedef	unsigned short			f16;
+#ifdef __ARM_FP16_H
+	typedef float16_t				f16;
+#else
+	struct f16
+	{
+		u16 binary;
+
+		f16(float value)
+		{
+			extern u16 ermy_float_to_u16(float value);
+			binary = ermy_float_to_u16(value);
+		}
+
+		f16(double value)
+		{
+			extern u16 ermy_float_to_u16(float value);
+			binary = ermy_float_to_u16((float)value);
+		}
+
+		operator float()
+		{
+			extern float ermy_u16_to_float(u16 value);
+			return ermy_u16_to_float(binary);
+		}
+
+		operator double()
+		{
+			extern float ermy_u16_to_float(u16 value);
+			return (double)ermy_u16_to_float(binary);
+		}
+	};
+#endif
+	//typedef	unsigned short			f16;
 
 #ifdef ERMY_OS_WINDOWS
 	//typedef __m128					f32v4;

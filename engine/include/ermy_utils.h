@@ -37,4 +37,9 @@ namespace ermy_utils
 		ermy::u64 alignUpPow2(ermy::u64 value);
 		ermy::u64 alignUp(ermy::u64 value, ermy::u32 align);
 	}
+
+	namespace image
+	{
+		void SaveImage(const std::filesystem::path& path, const ermy::u8* data, ermy::u32 width, ermy::u32 height, ermy::u32 channels);
+	}
 }

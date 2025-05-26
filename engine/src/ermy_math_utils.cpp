@@ -1,5 +1,8 @@
 ﻿#include "ermy_utils.h"
 #include <limits.h>
+#ifdef _WIN32
+#include <immintrin.h> // For SIMD intrinsics
+#endif
 
 ermy::u64 ermy_utils::math::alignUpPow2(ermy::u64 in)
 {
@@ -37,7 +40,22 @@ ermy::u64 ermy_utils::math::alignUpPow2(ermy::u64 in)
 
 ermy::u64 ermy_utils::math::alignUp(ermy::u64 value, ermy::u32 align)
 {
-    __assume(align > 0);
+    ERMY_ASSUME(align > 0);
 
     return ((value + align - 1) / align) * align;
 }
+#ifdef _WIN32
+ermy::u16 ermy_float_to_u16(float value) {
+    // Convert float to half-float
+    __m128 floatVal = _mm_set_ss(value); // Set the float value into a __m128
+    __m128h halfFloatVal = _mm_castps_ph(floatVal); // Cast __m128 to __m128h
+    return static_cast<ermy::u16>(_mm_extract_epi16(_mm_castph_si128(halfFloatVal), 0)); // Extract the lower 16 bits
+}
+
+float ermy_u16_to_float(ermy::u16 value) {
+    // Convert half-float to float
+    __m128h halfFloatVal = _mm_castsi128_ph(_mm_set1_epi16(value)); // Set the half-float value into a __m128h
+    __m128 floatVal = _mm_cvtsh_ss(_mm_setzero_ps(), halfFloatVal); // Convert to float
+    return _mm_cvtss_f32(floatVal); // Extract the float value
+}
+#endif

@@ -63,6 +63,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\..\engine\src\ermy_image_utils.cpp" />
     <ClCompile Include="..\..\engine\src\ermy_string_utils.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Android-arm64-v8a'">
       </PrecompiledHeader>
@@ -71,7 +72,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Retail|Android-arm64-v8a'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\engine\src\ermy_utils_math.cpp" />
+    <ClCompile Include="..\..\engine\src\ermy_math_utils.cpp" />
     <ClCompile Include="..\..\engine\src\geometry.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dev|Android-arm64-v8a'">
       </PrecompiledHeader>
@@ -664,6 +665,7 @@
     <ClCompile Include="..\..\third_party\msdfgen\core\shape-description.cpp" />
     <ClCompile Include="..\..\third_party\msdfgen\core\Shape.cpp" />
     <ClCompile Include="..\..\third_party\msdfgen\ext\import-font.cpp" />
+    <ClCompile Include="..\..\third_party\msdfgen\ext\save-png.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\engine\include\ermy.h" />
@@ -825,7 +827,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include;../../third_party/glm;../../third_party/OpenXR-SDK\include;../../third_party/OpenXR-SDK/src/common;../../third_party/freetype/include;../../third_party/msdfgen</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../third_party/stb;../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include;../../third_party/glm;../../third_party/OpenXR-SDK\include;../../third_party/OpenXR-SDK/src/common;../../third_party/freetype/include;../../third_party/msdfgen</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -848,7 +850,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/glm;../../third_party/OpenXR-SDK\include;../../third_party/OpenXR-SDK/src/common;../../third_party/freetype/include;../../third_party/msdfgen</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../third_party/stb;../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/glm;../../third_party/OpenXR-SDK\include;../../third_party/OpenXR-SDK/src/common;../../third_party/freetype/include;../../third_party/msdfgen</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -869,7 +871,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include;../../third_party/glm;../../third_party/OpenXR-SDK\include;../../third_party/OpenXR-SDK/src/common;../../third_party/freetype/include;../../third_party/msdfgen</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../third_party/stb;../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include;../../third_party/glm;../../third_party/OpenXR-SDK\include;../../third_party/OpenXR-SDK/src/common;../../third_party/freetype/include;../../third_party/msdfgen</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -896,7 +898,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include;../../third_party/glm;../../third_party/OpenXR-SDK\include;../../third_party/OpenXR-SDK/src/common;../../third_party/freetype/include;../../third_party/msdfgen</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../third_party/stb;../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/DirectX-Headers/include;../../third_party/D3D12MemoryAllocator/include;../../third_party/glm;../../third_party/OpenXR-SDK\include;../../third_party/OpenXR-SDK/src/common;../../third_party/freetype/include;../../third_party/msdfgen</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -921,7 +923,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/glm;../../third_party/OpenXR-SDK\include;../../third_party/OpenXR-SDK/src/common;../../third_party/freetype/include;../../third_party/msdfgen</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../third_party/stb;../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/glm;../../third_party/OpenXR-SDK\include;../../third_party/OpenXR-SDK/src/common;../../third_party/freetype/include;../../third_party/msdfgen</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -941,7 +943,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/glm;../../third_party/OpenXR-SDK\include;../../third_party/OpenXR-SDK/src/common;../../third_party/freetype/include;../../third_party/msdfgen</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../third_party/stb;../../engine/include;../../engine/src;../../third_party/Vulkan-Headers/include;../../third_party/VulkanMemoryAllocator/include;../../third_party/imgui;../../third_party/glm;../../third_party/OpenXR-SDK\include;../../third_party/OpenXR-SDK/src/common;../../third_party/freetype/include;../../third_party/msdfgen</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>

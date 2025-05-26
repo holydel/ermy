@@ -136,6 +136,8 @@
     <ClCompile Include="..\..\editor\src\assets\CompressonatorLoader.cpp" />
     <ClCompile Include="..\..\editor\src\assets\DDSLoader.cpp" />
     <ClCompile Include="..\..\editor\src\assets\FFMPEGLoader.cpp" />
+    <ClCompile Include="..\..\editor\src\assets\FontLoader.cpp" />
+    <ClCompile Include="..\..\editor\src\assets\font_asset.cpp" />
     <ClCompile Include="..\..\editor\src\assets\geometry_asset.cpp" />
     <ClCompile Include="..\..\editor\src\assets\KTXLoader.cpp" />
     <ClCompile Include="..\..\editor\src\assets\OpenImageLoader.cpp" />
@@ -167,6 +169,8 @@
     <ClInclude Include="..\..\editor\include\assets\CompressonatorLoader.h" />
     <ClInclude Include="..\..\editor\include\assets\DDSLoader.h" />
     <ClInclude Include="..\..\editor\include\assets\FFMPEGLoader.h" />
+    <ClInclude Include="..\..\editor\include\assets\FontLoader.h" />
+    <ClInclude Include="..\..\editor\include\assets\font_asset.h" />
     <ClInclude Include="..\..\editor\include\assets\KTXLoader.h" />
     <ClInclude Include="..\..\editor\include\assets\OpenImageLoader.h" />
     <ClInclude Include="..\..\editor\include\assets\SoundsLoader.h" />

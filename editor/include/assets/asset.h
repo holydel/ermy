@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <ermy_api.h>
 #include <string>
@@ -27,6 +27,7 @@ enum class AssetDataType : ermy::u8
 	Geometry,
 	Sound,
 	Video,
+	Font,
 };
 
 enum class AssetLoaderType : ermy::u8

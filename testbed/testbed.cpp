@@ -172,7 +172,10 @@ void TestBedApplication::OnLoad()
 		allCubes[i] = scene::AddEntity(cubeGeom, transform);
 	}
 
-	atlasFont = ermy::Font::CreateFromFile(u8"D:\\Projects\\ermy\\eproj_template\\assets\\UnGraphicBold.ttf",Font::AtlasType::MSDFT);
+	//atlasFont = ermy::Font::CreateFromFile(u8"D:\\Projects\\ermy\\eproj_template\\assets\\UnGraphicBold.ttf",Font::FontType::MSDFT);
+	atlasFont = ermy::Font::CreateFromFile(u8"D:\\Projects\\ermy\\eproj_template\\assets\\Montserrat-VariableFont_wght.ttf", Font::FontType::MSDFT);
+	auto bitmapData = atlasFont->GenerateFullAtlas(24);
+
 }
 
 void TestBedApplication::OnBeginFinalPass(rendering::CommandList& finalCL)
@@ -189,11 +192,9 @@ void TestBedApplication::OnBeginFinalPass(rendering::CommandList& finalCL)
 
 	canvas::DrawDedicatedSprite((float)mpos.x, (float)mpos.y, 120, 20, a, 0xAA7722FFu);
 
-	std::vector<ermy::Font::GlyphData> symbols;
+	std::vector<ermy::Font::GlyphAtlasData> symbols;
 	std::u8string testString = u8"Hello 🍌 World! こんにちは世界！ Some ©\u00df\u6c34\U0001d10b and 世界こんにちは";
 	//atlasFont->FillTexCoords(testString.c_str(), symbols);
-
-	auto bitmapData = atlasFont->GenerateFullAtlas(32);
 
 	int b = 42;
 }

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <ermy_rendering.h>
 #include <ermy_commandlist.h>
 #include <imgui.h>
@@ -66,5 +66,9 @@ public:
 
 	}
 
+	// 128x128 pixels BC1 texture data
 	std::vector<ermy::u8> GetPreviewDataBC1(std::function<void(ermy::rendering::CommandList&)> renderFunc);
+
+	// rgba data need to be 128x128 pixels, 4 bytes per pixel (RGBA format)
+	std::vector<ermy::u8> ConvertRGBADataToBC1(const std::vector<ermy::u8>& rgbaData);
 };

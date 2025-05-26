@@ -1,4 +1,4 @@
-#include "assets/assets_loader.h"
+﻿#include "assets/assets_loader.h"
 #include "assets/FFMPEGLoader.h"
 #include "assets/OpenImageLoader.h"
 #include "assets/KTXLoader.h"
@@ -10,6 +10,7 @@
 #include "assets/sound_asset.h"
 #include "assets/SoundsLoader.h"
 #include "assets/CompressonatorLoader.h"
+#include "assets/FontLoader.h"
 
 #include <vector>
 #include <tuple>
@@ -28,6 +29,7 @@ KTXLoader* gKTXLoader = nullptr;
 DDSLoader* gDDSLoader = nullptr;
 CompressonatorLoader* gCompressonatorLoader = nullptr;
 SoundsLoader* gSoundsLoader = nullptr;
+FontLoader* gFontLoader = nullptr;
 
 void PopulateLoaderExtensions(AssetsLoader* loader)
 {
@@ -47,7 +49,10 @@ bool AssetsLoader::Initialize()
     gKTXLoader = new KTXLoader();
     gDDSLoader = new DDSLoader();
 	gSoundsLoader = new SoundsLoader();
+    gFontLoader = new FontLoader();
+
     //It's important to populate specific loaders first. The order matters.
+    PopulateLoaderExtensions(gFontLoader);
 	PopulateLoaderExtensions(gSoundsLoader);   
     PopulateLoaderExtensions(gCompressonatorLoader);
     PopulateLoaderExtensions(gKTXLoader);

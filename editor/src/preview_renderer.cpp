@@ -1,4 +1,4 @@
-#include <preview_renderer.h>
+﻿#include <preview_renderer.h>
 #include <imgui.h>
 #include <compressonator_lib.h>
 using namespace ermy;
@@ -125,26 +125,8 @@ PreviewRenderer::~PreviewRenderer()
 
 }
 
-std::vector<ermy::u8> PreviewRenderer::GetPreviewDataBC1(std::function<void(ermy::rendering::CommandList&)> renderFunc)
+std::vector<ermy::u8> PreviewRenderer::ConvertRGBADataToBC1(const std::vector<ermy::u8>& rgbaData)
 {
-	rendering::OneTimeSubmitCommandList otscl = rendering::OneTimeSubmitCommandList::Allocate();
-	auto cl = otscl.GetCL();
-
-	cl.BeginRenderPass(RTT_Static);
-
-	renderFunc(cl);
-
-	cl.EndRenderPass();
-
-	cl.BlitTexture(RTT_ColorStaticDoubleRes, RTT_ColorStaticFinal);
-
-	otscl.Submit();
-	otscl.WaitForCompletion();
-
-	std::vector<u8> dataVec(128 * 128 * 4);
-
-	rendering::ReadbackTexture(RTT_ColorStaticFinal, dataVec.data());
-
 	std::vector<u8> bc1_data(128 * 128 / 2);
 
 	CMP_Texture srcTexture;
@@ -154,7 +136,7 @@ std::vector<ermy::u8> PreviewRenderer::GetPreviewDataBC1(std::function<void(ermy
 	srcTexture.dwPitch = 128 * 4;
 	srcTexture.format = CMP_FORMAT_RGBA_8888;
 	srcTexture.dwDataSize = 128 * 128 * 4;
-	srcTexture.pData = dataVec.data();
+	srcTexture.pData = (CMP_BYTE*)rgbaData.data();
 
 	CMP_Texture destTexture;
 	destTexture.dwSize = sizeof(CMP_Texture);
@@ -173,4 +155,27 @@ std::vector<ermy::u8> PreviewRenderer::GetPreviewDataBC1(std::function<void(ermy
 	CMP_ConvertTexture(&srcTexture, &destTexture, &options, nullptr);
 
 	return bc1_data;
+}
+
+std::vector<ermy::u8> PreviewRenderer::GetPreviewDataBC1(std::function<void(ermy::rendering::CommandList&)> renderFunc)
+{
+	rendering::OneTimeSubmitCommandList otscl = rendering::OneTimeSubmitCommandList::Allocate();
+	auto cl = otscl.GetCL();
+
+	cl.BeginRenderPass(RTT_Static);
+
+	renderFunc(cl);
+
+	cl.EndRenderPass();
+
+	cl.BlitTexture(RTT_ColorStaticDoubleRes, RTT_ColorStaticFinal);
+
+	otscl.Submit();
+	otscl.WaitForCompletion();
+
+	std::vector<u8> dataRgbaVec(128 * 128 * 4);
+
+	rendering::ReadbackTexture(RTT_ColorStaticFinal, dataRgbaVec.data());
+
+	return ConvertRGBADataToBC1(dataRgbaVec);
 }
