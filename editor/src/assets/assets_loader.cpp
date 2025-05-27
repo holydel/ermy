@@ -74,7 +74,7 @@ void Asset::Import()
 {
     std::filesystem::path cachedPath = ErmyProject::Instance().GetProjectCachePath() / (std::to_string(ID) + ".raw");
 
-	if (std::filesystem::exists(cachedPath))
+	if (std::filesystem::exists(cachedPath) && false)
 	{
 		std::ifstream cached(cachedPath, std::ios::binary);
 		ermy::u8 atype = 0;

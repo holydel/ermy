@@ -20,6 +20,7 @@ struct TextureLivePreviewParams2D
 	glm::vec2 uv1;
 	int arrayLevel;
 	int mipLevel;
+	float exposure;
 };
 
 struct TextureLivePreviewParamsCube
@@ -27,6 +28,7 @@ struct TextureLivePreviewParamsCube
 	glm::vec4 dir_tanfov;	
 	int arrayLevel;
 	int mipLevel;
+	float exposure;
 };
 
 class TextureRenderPreview
@@ -377,6 +379,11 @@ void TextureAsset::DrawPreview()
 		UpdateTextureSettings();
 	}
 
+	if (texturePurpose == TexturePurpose::TP_HDR)
+	{
+		ImGui::SliderFloat("Exposure (stops)", &exposure, -8.0f, 8.0f);
+	}
+
 	if (texturePurpose == TexturePurpose::TP_SOURCE)
 	{
 		int curCompression = (int)textureCompression;
@@ -490,7 +497,7 @@ void TextureAsset::RegenerateLivePreview()
 	descLive.isSparse = false;
 	descLive.texelSourceFormat = texelSourceFormat;
 	descLive.dataSize = rawData.size();
-
+	
 	//TODO: remove previous if exists or think about ReCreateDedciatedTexture on exists slot
 	previewTextureLive = ermy::rendering::CreateDedicatedTexture(descLive);
 	assetPreviewTexLive = ermy::rendering::GetTextureDescriptor(previewTextureLive);
@@ -550,6 +557,7 @@ void TextureAsset::RenderPreview(ermy::rendering::CommandList& cl)
 			pass.uv1 = glm::vec2(baseU1, baseV1);
 			pass.arrayLevel = currentArrayLevel;
 			pass.mipLevel = currentMip;
+			pass.exposure = GetPreviewExposure();
 			if(!isStaticPreview)
 			cl.SetRootConstant(pass,ShaderStage::Fragment);
 			cl.SetDescriptorSet(0, assetPreviewTexLive);
@@ -569,7 +577,7 @@ void TextureAsset::RenderPreview(ermy::rendering::CommandList& cl)
 			pass.dir_tanfov = glm::vec4(dirx, diry, dirz, previewZoom);
 			pass.arrayLevel = currentArrayLevel;
 			pass.mipLevel = currentMip;
-
+			pass.exposure = GetPreviewExposure();
 			if(!isStaticPreview)
 			cl.SetRootConstant(pass, ShaderStage::Fragment);
 			cl.SetDescriptorSet(0, assetPreviewTexLive);

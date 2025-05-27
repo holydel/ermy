@@ -81,6 +81,15 @@ namespace ermy
             std::unordered_map<char32_t, GlyphAtlasData> allCachedGlyphsTex;
         };
 
+        struct ASyncAtlasResult
+        {
+            volatile float progress = 0.0f;
+            volatile bool isDone = false;
+
+            //access result ONLY if isDone is true
+            FullAtlasInfo result = {};
+        };
+
         struct FullVertexCacheInfo
         {
             std::vector<u16> meshIndices;
@@ -92,6 +101,7 @@ namespace ermy
         public:
             virtual void FillTexCoords(const char8_t* u8string, std::vector<GlyphAtlasData>& out) = 0;
             virtual FullAtlasInfo GenerateFullAtlas() = 0;
+            virtual bool GenerateFullAtlasASync(ASyncAtlasResult* resultOut) = 0;
             virtual rendering::TextureID GetAtlas() = 0;
         };
 
@@ -108,6 +118,7 @@ namespace ermy
         virtual VertexCache* CreateVertexCache()=0;
 
         static Font* CreateFromFile(const char8_t* u8filename);
+        static Font* CreateFromMappedMemory(const u8* fontDataPtr, size_t size);
         
         virtual ~Font() = default;
 

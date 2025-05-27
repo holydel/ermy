@@ -1,4 +1,4 @@
-#include "screens/assets_browser_screen.h"
+﻿#include "screens/assets_browser_screen.h"
 #include <imgui.h>
 #include <filesystem>
 #include <string>
@@ -147,7 +147,7 @@ float           ZoomWheelAccum = 0.0f;      // Mouse wheel accumulator to handle
 // Calculated sizes for layout, output of UpdateLayoutSizes(). Could be locals but our code is simpler this way.
 ImVec2          LayoutItemSize;
 ImVec2          LayoutItemStep;             // == LayoutItemSize + LayoutItemSpacing
-float           LayoutItemSpacing = 0.0f;
+float           LayoutItemSpacing = 4.0f;
 float           LayoutSelectableSpacing = 0.0f;
 float           LayoutOuterPadding = 0.0f;
 int             LayoutColumnCount = 0;
@@ -169,7 +169,7 @@ void UpdateLayoutSizes(float avail_width)
 	if (StretchSpacing && LayoutColumnCount > 1)
 		LayoutItemSpacing = floorf(avail_width - LayoutItemSize.x * LayoutColumnCount) / LayoutColumnCount;
 
-	LayoutItemStep = ImVec2(LayoutItemSize.x + LayoutItemSpacing, LayoutItemSize.y + LayoutItemSpacing);
+	LayoutItemStep = ImVec2(LayoutItemSize.x + LayoutItemSpacing, LayoutItemSize.y + LayoutItemSpacing + 48);
 	LayoutSelectableSpacing = IM_MAX(floorf(LayoutItemSpacing) - IconHitSpacing, 0.0f);
 	LayoutOuterPadding = floorf(LayoutItemSpacing * 0.5f);
 }
@@ -315,8 +315,14 @@ void DrawFolderContents(AssetFolder* folder)
 				// Because we use ImGuiMultiSelectFlags_BoxSelect2d, clipping vertical may occasionally be larger, so we coarse-clip our rendering as well.
 				if (item_is_visible)
 				{
+					int bottomSpace = 4;
+					if (display_label)
+					{
+						bottomSpace = (item_data->GetAssetNameRows() + 1) * ImGui::GetFontSize();
+					}
+
 					ImVec2 box_min(pos.x - 1, pos.y - 1);
-					ImVec2 box_max(box_min.x + LayoutItemSize.x + 2, box_min.y + LayoutItemSize.y + 2); // Dubious
+					ImVec2 box_max(box_min.x + LayoutItemSize.x + 2, box_min.y + LayoutItemSize.y + 4); // Dubious
 					draw_list->AddRectFilled(box_min, box_max, icon_bg_color); // Background color
 
 
@@ -336,8 +342,7 @@ void DrawFolderContents(AssetFolder* folder)
 					{
 						ImU32 label_col = ImGui::GetColorU32(item_is_selected ? ImGuiCol_Text : ImGuiCol_TextDisabled);
 
-						int bottomSpace = (item_data->GetAssetNameRows() + 1) * ImGui::GetFontSize();
-						draw_list->AddText(ImVec2(box_min.x, box_max.y - bottomSpace), label_col, item_data->AssetNameCStr());
+						draw_list->AddText(ImVec2(box_min.x, box_max.y + 4), label_col, item_data->AssetNameCStr());
 					}
 				}
 

@@ -22,6 +22,7 @@ public:
     ~AtlasImpl();
     virtual void FillTexCoords(const char8_t* u8string, std::vector<ermy::Font::GlyphAtlasData>& out) override;
     virtual ermy::Font::FullAtlasInfo GenerateFullAtlas() override;
+    virtual bool GenerateFullAtlasASync(ermy::Font::ASyncAtlasResult* resultOut) override;
     virtual ermy::rendering::TextureID GetAtlas() override
     {
         return atlasID;
@@ -57,11 +58,13 @@ class FontImpl : public ermy::Font
     msdfgen::FontHandle* font_msdf = nullptr;
 
 	std::unordered_map<uint32_t, GlyphAtlasData> glyphs;
+    void _initFace();
 public:
     FontImpl();
     ~FontImpl();
 
-    void LoadTTFFont(const char8_t* u8filename);
+    void LoadTTFFontFromFile(const char8_t* u8filename);
+	void LoadTTFFontFromMemory(const ermy::u8* data, size_t size);
 
     virtual ermy::u32 GetNumberOfGlyphs() override;
 

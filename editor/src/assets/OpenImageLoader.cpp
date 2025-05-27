@@ -112,6 +112,11 @@ AssetData* OpenImageLoader::Load(const std::filesystem::path& path)
    {
        result->texelSourceFormat = result->texelTargetFormat = ermy::rendering::Format::RGBA16F;
    }
+
+   if (spec.channel_bytes() == 4)
+   {
+       result->texelSourceFormat = result->texelTargetFormat = ermy::rendering::Format::RGBA32F;
+   }
    //direct loading for 1,2,4 channels
    if (numChannels == spec.nchannels)
    {

@@ -1,9 +1,10 @@
-struct PreviewTextureConstants2D
+﻿struct PreviewTextureConstants2D
 {
     float2 uv0;
     float2 uv1;
     int arrayLevel;
     int mipLevel;
+    float exposure;
 };
 
 struct PreviewTextureConstantsCubemap
@@ -11,6 +12,7 @@ struct PreviewTextureConstantsCubemap
     float4 dir_fov;
     int arrayLevel;
     int mipLevel;
+    float exposure;
 };
 
 struct PreviewSoundConstants
@@ -226,7 +228,7 @@ float4 fullscreenFS2D(VOutFS input, uniform PreviewTextureConstants2D transform)
 {
     float2 uv = lerp(transform.uv0, transform.uv1, input.uv);
 
-    float4 color = preview2D.SampleLevel(uv,transform.mipLevel);
+    float4 color = preview2D.SampleLevel(uv,transform.mipLevel) * pow(2.0,transform.exposure);
     if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0)
         color.w = 0.0f;
     
@@ -255,7 +257,7 @@ float4 fullscreenFSCubemap(VOutFS input, uniform PreviewTextureConstantsCubemap 
 
     float3 worldRayDir = rayDir.x * right + rayDir.y * up + rayDir.z * forward;
 
-    return previewCube.SampleLevel(worldRayDir,transform.mipLevel);
+    return previewCube.SampleLevel(worldRayDir, transform.mipLevel) * pow(2.0, transform.exposure);
 }
 
 [shader("fragment")]
@@ -263,7 +265,7 @@ float4 fullscreenFS2DArray(VOutFS input, uniform PreviewTextureConstants2D trans
 {
     float2 uv = lerp(transform.uv0, transform.uv1, input.uv);
 
-    float4 color = preview2DArray.SampleLevel(float3(uv, transform.arrayLevel), transform.mipLevel);
+    float4 color = preview2DArray.SampleLevel(float3(uv, transform.arrayLevel), transform.mipLevel) * pow(2.0, transform.exposure);
     if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0)
         color.w = 0.0f;
 
@@ -292,7 +294,7 @@ float4 fullscreenFSCubemapArray(VOutFS input, uniform PreviewTextureConstantsCub
 
     float3 worldRayDir = rayDir.x * right + rayDir.y * up + rayDir.z * forward;
 
-    return previewCubeArray.SampleLevel(float4(worldRayDir, transform.arrayLevel), transform.mipLevel);
+    return previewCubeArray.SampleLevel(float4(worldRayDir, transform.arrayLevel), transform.mipLevel) * pow(2.0, transform.exposure);
 }
 
 //static shaders
@@ -472,7 +474,7 @@ float4 fullscreenFSVolumetric(VOutFS input, uniform PreviewTextureConstantsCubem
 
     float3 color = checkerColor(input.uv, 16.0f);
     // Return the accumulated color
-    return float4(lerp(color,accumulatedColor.xyz,accumulatedColor.a),1.0);
+    return float4(lerp(color, accumulatedColor.xyz * pow(2.0, transform.exposure),accumulatedColor.a),1.0);
 }
 
 [shader("fragment")]

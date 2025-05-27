@@ -1,11 +1,12 @@
-#include <assets/asset.h>
+﻿#include <assets/asset.h>
 #include <assets/assets_loader.h>
 
 #include <assets/texture_asset.h>
 #include <assets/video_asset.h>
 #include <assets/sound_asset.h>
 #include <assets/geometry_asset.h>
-
+#include <assets/font_asset.h>
+#include <ermy_log.h>
 #include <imgui.h>
 #include <inttypes.h>
 
@@ -275,6 +276,11 @@ AssetData* AssetData::CreateFromType(AssetDataType type)
 			return new SoundAsset();
 		case AssetDataType::Geometry:
 			return new GeometryAsset();
+		case AssetDataType::Font:
+			return new FontAsset();
+
+		default:
+			ERMY_ERROR(u8"Unknown asset data type: %d", static_cast<int>(type));
 	}
 
 	return nullptr;

@@ -43,6 +43,9 @@ FontLoader::~FontLoader()
 AssetData* FontLoader::Load(const std::filesystem::path& path)
 {
 	FontAsset* result = new FontAsset();
+
+	result->fontFileData = ermy_utils::file::ReadFile(path);
+
 	result->font = ermy::Font::CreateFromFile(path.u8string().c_str());
 
 	ImGuiIO& io = ImGui::GetIO();

@@ -8,8 +8,28 @@
 class FontAsset : public AssetData
 {
 	void _createLivePreviewTexture();
+	int numberOfCharacters = 0;
+
 public:
-	AssetDataType GetDataType() override { return AssetDataType::Sound; }
+	struct FontAtlas
+	{
+		ermy::Font::AtlasType type = ermy::Font::AtlasType::Grayscale;
+		ermy::Font::Atlas* atlas = nullptr;
+		ermy::Font::ASyncAtlasResult* aresult = nullptr;
+		ermy::rendering::TextureID previewAtlasTex;
+		ImTextureID previewAtlasTexImgui = 0;
+
+		int glyphSize = 16;
+		char name[64] = { 0 };
+	};
+
+	struct FontVertexCache
+	{
+		ermy::Font::VertexCache* vertexCache = nullptr;
+		char name[64] = { 0 };
+	};
+
+	AssetDataType GetDataType() override { return AssetDataType::Font; }
 
 	FontAsset();
 	virtual ~FontAsset();
@@ -31,4 +51,8 @@ public:
 	void SaveToCachedRaw(std::ofstream& file) override;
 
 	ermy::Font* font = nullptr;
+	std::vector<ermy::u8> fontFileData;
+
+	std::vector<FontAtlas> atlases;
+	std::vector<FontVertexCache> vertexCaches;
 };

@@ -5,7 +5,7 @@
 #include <ermy_utils.h>
 #include <fstream>
 #include <iostream>
-
+#include <thread>
 #include FT_TRUETYPE_TABLES_H
 #include FT_TRUETYPE_TAGS_H
 
@@ -106,7 +106,15 @@ const char* get_encoding_name(FT_UShort platform_id, FT_UShort encoding_id) {
 Font* Font::CreateFromFile(const char8_t* u8filename)
 {
 	FontImpl* result = new FontImpl();
-	result->LoadTTFFont(u8filename);
+	result->LoadTTFFontFromFile(u8filename);
+
+	return result;
+}
+
+Font* Font::CreateFromMappedMemory(const u8* fontDataPtr, size_t size)
+{
+	FontImpl* result = new FontImpl();
+	result->LoadTTFFontFromMemory(fontDataPtr, size);
 
 	return result;
 }
@@ -217,18 +225,13 @@ void extract_kerning_pairs(FT_Face face) {
 	free(buffer);
 }
 
-void FontImpl::LoadTTFFont(const char8_t* u8filename)
+void FontImpl::_initFace()
 {
 	using namespace msdfgen;
 
-	auto error = FT_New_Face(GetFreeTypeLibrary().lib, (const char*)u8filename, 0, &face_ft);
-	if (error) {
-		ERMY_ERROR(u8"Failed to load font face.");
-		return;
-	}
 
 	int FONT_SIZE = 64;
-	error = FT_Set_Char_Size(face_ft, 0, FONT_SIZE * 64, 300, 300);
+	auto error = FT_Set_Char_Size(face_ft, 0, FONT_SIZE * 64, 300, 300);
 	if (error) {
 		ERMY_ERROR(u8"Failed to set character size.");
 		return;
@@ -260,6 +263,23 @@ void FontImpl::LoadTTFFont(const char8_t* u8filename)
 	ERMY_LOG(u8"Font metrics: ascenderY: %f, descenderY: %f, emSize: %f, lineHeight: %f, underlineY: %f", metrics.ascenderY, metrics.descenderY, metrics.emSize, metrics.lineHeight, metrics.underlineY);
 
 	extract_kerning_pairs(face_ft);
+}
+
+void FontImpl::LoadTTFFontFromFile(const char8_t* u8filename)
+{
+	auto error = FT_New_Face(GetFreeTypeLibrary().lib, (const char*)u8filename, 0, &face_ft);
+	if (error) {
+		ERMY_ERROR(u8"Failed to load font face from file %s", u8filename);
+		return;
+	}
+
+	_initFace();
+}
+
+void FontImpl::LoadTTFFontFromMemory(const ermy::u8* data, size_t size)
+{
+	auto error = FT_New_Memory_Face(GetFreeTypeLibrary().lib, data, size, 0, &face_ft);
+	_initFace();
 }
 
 ermy::u32 FontImpl::GetNumberOfGlyphs()
@@ -479,6 +499,119 @@ ermy::Font::FullAtlasInfo AtlasImpl::GenerateFullAtlas()
 
 
 	return result;
+}
+
+bool AtlasImpl::GenerateFullAtlasASync(ermy::Font::ASyncAtlasResult* resultOut)
+{
+	std::thread* workerThread = new std::thread([=]()
+	{
+		if (resultOut)
+		{
+			using namespace msdfgen;
+			auto face_ft = font->face_ft;
+			auto font_msdf = font->font_msdf;
+
+			ermy::Font::FullAtlasInfo& result = resultOut->result;
+
+			u32 glyphsCount = font->GetNumberOfGlyphs();
+			resultOut->progress = 1.0f / float(glyphsCount);
+
+			u64 numPixels = glyphSize * glyphSize * glyphsCount;
+
+			u32 width = ermy_utils::math::alignUpPow2(sqrt(numPixels));
+			u32 alignedGlyphSize = ermy_utils::math::alignUp(glyphSize, 4);
+
+			u32 height = ermy_utils::math::alignUp(numPixels / width, alignedGlyphSize);
+
+			result.width = width;
+			result.height = height;
+
+			int pixelSize = 1;
+			resultOut->result.format = ermy::rendering::Format::R8_UNORM;
+			if (atlasType == ermy::Font::AtlasType::MSDFT)
+			{
+				pixelSize = 4;
+				resultOut->result.format = ermy::rendering::Format::RGBA8_UNORM;
+			}
+
+			result.pixelsData.resize(width * height * pixelSize);
+
+			FT_ULong charcode;
+			FT_UInt gindex;
+
+			charcode = FT_Get_First_Char(face_ft, &gindex);
+			int realCharacters = 0;
+			int visibleCharacters = 0;
+			std::vector<char32_t> availableCharacters;
+			availableCharacters.reserve(glyphsCount);
+
+			Shape shape;
+
+			float outX = 0;
+			float outY = 0;
+			//face_ft->size->generic.
+			while (gindex != 0) {
+				availableCharacters.push_back(charcode);
+				if (loadGlyph(shape, font_msdf, charcode, FONT_SCALING_EM_NORMALIZED)) {
+					if (!shape.contours.empty())
+					{
+						auto glyphMetrics = face_ft->glyph->metrics;
+
+						shape.normalize();
+						//                      max. angle
+						edgeColoringSimple(shape, 3.0);
+						//          output width, height
+						Bitmap<float, 4> msdf(glyphSize, glyphSize);
+						//                            scale, translation (in em's)
+						SDFTransformation t(Projection(float(glyphSize), Vector2(0.125, 0.125)), Range(0.125));
+						generateMTSDF(msdf, shape, t);
+
+						for (int y = 0; y < glyphSize; y++)
+						{
+							int outRowOffset = (outY + y) * width;
+
+							for (int x = 0; x < glyphSize; x++)
+							{
+								int pixelOffset = (outRowOffset + x + outX) * pixelSize;
+
+								if (atlasType == ermy::Font::AtlasType::MSDFT)
+								{
+									result.pixelsData[pixelOffset + 0] = (std::byte)pixelFloatToByte(msdf(x, y)[0]);
+									result.pixelsData[pixelOffset + 1] = (std::byte)pixelFloatToByte(msdf(x, y)[1]);
+									result.pixelsData[pixelOffset + 2] = (std::byte)pixelFloatToByte(msdf(x, y)[2]);
+									result.pixelsData[pixelOffset + 3] = (std::byte)pixelFloatToByte(msdf(x, y)[3]);
+								}
+								else if (atlasType == ermy::Font::AtlasType::SDF)
+								{
+									result.pixelsData[pixelOffset + 0] = (std::byte)pixelFloatToByte(msdf(x, y)[0]);
+								}
+							}
+						}
+
+						outX += glyphSize;
+						if (outX > (width - glyphSize))
+						{
+							outX = 0;
+							outY += glyphSize;
+						}
+
+						visibleCharacters++;
+
+						resultOut->progress = float(visibleCharacters) / float(glyphsCount);
+					}
+				}
+
+
+				charcode = FT_Get_Next_Char(face_ft, charcode, &gindex);
+				realCharacters++;
+			}
+
+			resultOut->isDone = true;
+			resultOut->progress = 1.0f;
+		}
+	});
+
+	return true;
 }
 
 VertexCacheImpl::VertexCacheImpl(FontImpl* hostFont)

@@ -94,7 +94,7 @@ class TextureAsset : public AssetData
 	bool isStaticPreview = false;
 	int currentArrayLevel = 0;
 	int currentMip = 0;
-
+	float exposure = 0.0f;
 
 	ermy::rendering::TextureType texType = ermy::rendering::TextureType::Tex2D;
 public:
@@ -145,4 +145,9 @@ public:
 
 	void LoadFromCachedRaw(std::ifstream& file, const std::filesystem::path& path) override;
 	void SaveToCachedRaw(std::ofstream& file) override;
+
+	float GetPreviewExposure()
+	{
+		return texturePurpose == TexturePurpose::TP_HDR ? exposure : 0.0f;
+	}
 };
